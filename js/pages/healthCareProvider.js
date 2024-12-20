@@ -19,21 +19,18 @@ export const requestPINTemplate = () => {
         </div>
         <div class="col-lg-8 eligibility-form">
             <form method="POST" id="requestPINForm">
-                <div class="form-group row">
-                    
-                    <label style="width:100%" data-i18n="provider.receivedPin"><strong>If you received a PIN as part of your study invitation, please enter it here.<br>
-                    Your PIN should be 6 characters and will include only numbers and uppercase letters.<br></strong></label>
-                    <label><input data-i18n="provider.enterPin" style="margin-left:0px;" type="text" maxlength="6" id="participantPIN" class="form-control" placeholder="Enter PIN"></label>
+                <div class="mb-3">
+                    <label class="form-label" data-i18n="provider.receivedPin">
+                        <strong>If you received a PIN as part of your study invitation, please enter it here.<br>
+                        Your PIN should be 6 characters and will include only numbers and uppercase letters.<br></strong>
+                    </label>
+                    <input data-i18n="provider.enterPin" type="text" maxlength="6" id="participantPIN" class="form-control" placeholder="Enter PIN">
                 </div>
 
-                <div class="form-group row">
-                <button type="submit" class="btn btn-primary save-data" id="noPinSubmit" data-i18n="provider.noPin">I do not have a PIN</button>&nbsp;&nbsp;
-                    <div class="ml-auto">
-                        <button type="submit" disabled class="btn btn-primary save-data consentNextButton" id="pinSubmit" data-i18n="provider.submitText">Submit</button>
-                    </div>
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <button type="submit" class="btn btn-primary save-data" id="noPinSubmit" data-i18n="provider.noPin">I do not have a PIN</button>
+                    <button type="submit" disabled class="btn btn-primary save-data consentNextButton" id="pinSubmit" data-i18n="provider.submitText">Submit</button>
                 </div>
-                </br></br>
-                
             </form>
         </div>
         <div class="col-lg-2">
@@ -52,15 +49,15 @@ export const healthCareProvider = (siteId) => {
         <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title" id="HealthProviderModalLabel"></h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            
             </button>
         </div>
         <div class="modal-body" id="HealthProviderModalBody">
             ...
         </div>
         <div class="modal-footer">
-            <button type="button" id="modalCancel" class="btn btn-secondary" data-dismiss="modal" data-i18n="provider.modalCancel">No</button>
+            <button type="button" id="modalCancel" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="provider.modalCancel">No</button>
             <button type="button" id="modalConfirm" class="btn btn-primary consentNextButton" data-i18n="provider.modalConfirm">Yes</button>
         </div>
         </div>
@@ -85,13 +82,14 @@ export const healthCareProvider = (siteId) => {
                     </select>
                 </label>
             </div>
-            <div class="row">
-            <span class="required" data-i18n="provider.required">*Required</span>
-                <div class="ml-auto">
-                <button style="display:none;" id="openModal" class="btn btn-primary save-data consentNextButton" data-toggle="modal" data-target="#HealthProviderModal" data-i18n="provider.submitText">Submit</button>
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <span class="required" data-i18n="provider.required">*Required</span>
+                <div>
+                    <button style="display:none;" id="openModal" class="btn btn-primary save-data consentNextButton" data-bs-toggle="modal" data-bs-target="#HealthProviderModal" data-i18n="provider.submitText">Submit</button>
                     <button type="submit" class="btn btn-primary save-data consentNextButton" data-i18n="provider.submitText">Submit</button>
                 </div>
-            </div></br></br>
+            </div>
+            </br></br>
         </form>
     </div>
     <div class="col-lg-2">
@@ -173,8 +171,8 @@ export const heardAboutStudy = (formData = {}) => {
             <div class="row" data-i18n="provider.consentProcess">
                 The next screens will take you through the informed consent process. They explain more about the study and what it means to take part in Connect. At the end, you can read the full informed consent form and electronic health records release form before you decide if you want to join.
             </div>
-            <div class="row">
-                <div class="ml-auto">
+            <div class="row justify-content-end">
+                <div class="col-auto">
                     <button type="submit" class="btn btn-primary save-data consentNextButton" data-i18n="provider.submitText">Submit</button>
                 </div>
             </div>

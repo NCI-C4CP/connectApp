@@ -1,4 +1,4 @@
-import { urls , isParticipantDataDestroyed, appState, translateHTML } from "../shared.js";
+import { isParticipantDataDestroyed, appState, translateHTML } from "../shared.js";
 import fieldMapping from '../fieldToConceptIdMapping.js';
 
 export const userNavBar = (response) => {
@@ -6,53 +6,46 @@ export const userNavBar = (response) => {
     const hiddenClass = response.code === 200 && response.data['699625233'] === 353358909 && response.data['919254129'] === 353358909 ? '': 'hidden';
 
     let template = translateHTML(`
-        
-        <div class="navbar-nav transparent-border">
+        <ul class="navbar-nav">
             <li class="nav-item">
-                <a class="nav-link" href="#dashboard" id="userDashboard" data-i18n="navbar.dashboardLink"> Dashboard</a>
+                <a class="nav-link" href="#dashboard" id="userDashboard" data-i18n="navbar.dashboardLink">Dashboard</a>
             </li>
-        </div>
-        <div class="navbar-nav transparent-border" ${/*style ="position:relative;"*/''}>
             <li class="nav-item">
                 <a class="nav-link ${disabledClass}" href="#messages" id="Notifications" data-i18n="navbar.messagesLink">
                     Messages
-                    <!--<span class="badge">2</span>-->
                 </a>
             </li>
-        </div>
-        <div class="navbar-nav transparent-border">
             <li class="nav-item">
                 <a class="nav-link" href="#forms" id="userAgreements" data-i18n="navbar.formsLink">Forms</a>
             </li>
-        </div>
-        <div class="navbar-nav transparent-border">
             <li class="nav-item">
                 <a class="nav-link ${disabledClass}" href="#myprofile" id="userSettings" data-i18n="navbar.profileLink">My Profile</a>
             </li>
-        </div>
-        <div class="navbar-nav transparent-border">
             <li class="nav-item">
-                <a class="nav-link ${disabledClass}" href="#payment" id="connectPayment" data-i18n="navbar.paymentLink"> My Payment</a>
+                <a class="nav-link ${disabledClass}" href="#payment" id="connectPayment" data-i18n="navbar.paymentLink">My Payment</a>
             </li>
-        </div>
-        <div class="navbar-nav transparent-border">
             <li class="nav-item">
-                <a class="nav-link ${disabledClass}" ${hiddenClass} href="#samples" id="connectSamples" data-i18n="navbar.samplesLink"> My Samples</a>
+                <a class="nav-link ${disabledClass} ${hiddenClass}" href="#samples" id="connectSamples" data-i18n="navbar.samplesLink">My Samples</a>
             </li>
-        </div>
-        <div class="navbar-nav transparent-border">
             <li class="nav-item">
-                <a class="nav-link ${disabledClass}" href="#support" id="connectSupport" data-i18n="navbar.supportLink"> Support</a>
+                <a class="nav-link ${disabledClass}" href="#support" id="connectSupport" data-i18n="navbar.supportLink">Support</a>
             </li>
-        </div>
-        <div class="navbar-nav transparent-border ml-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="#sign_out" id="signOut" title="Sign Out" data-i18n="navbar.signOutLink"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
-            </li>
-        </div>
+        </ul>
     `);
 
     return template;
+}
+
+export const signOutNavBarTemplate = () => {
+    return translateHTML(`
+        <ul class="navbar-nav ms-auto pe-3">
+            <li class="nav-item">
+                <a class="nav-link" href="#sign_out" id="signOut" title="Sign Out" data-i18n="navbar.signOutLink">
+                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                </a>
+            </li>
+        </ul>
+    `);
 }
 
 export const homeNavBar = () => {

@@ -603,88 +603,103 @@ const consentConsentPage = async () => {
                 <p class="consentHeadersFont" data-i18n="consent.consentPageHeader">Informed Consent</p>
                 <p class="consentBodyFont1" data-i18n="consent.consentPageBody1">To join Connect, we need you to review the full informed consent form and electronic health records release (HIPAA Authorization) form below. If you have any questions, contact the Connect Support Center at <a target="_blank" href="https://norcfedramp.servicenowservices.com/recruit">Cancer.gov/connectstudy/support</a> or call 1-866-462-6621. Once you are comfortable with the study and decide to join, please sign the forms electronically by scrolling to the bottom of this screen and clicking, “Yes, I agree to join Connect.” Then, please type your name into the fields that appear and click “Next” to view and download copies of your signed forms.</p>
             
-            <div style="width:80%; margin:auto">
-                <h4 class="consentSubheader" style="margin-top:50px" data-i18n="consent.consentPageSubheader1">Informed Consent Form</h4>
-                <p class="consentBodyFont2" style="text-indent:40px" data-i18n="consent.consentPageBody2">This form explains in detail what it means to take part in Connect. To join the study, please scroll down to the bottom of this screen to electronically consent. You do not need to download and sign the form the join the study.</p>
-                <p class="consentBodyFont2" style="text-indent:40px" data-i18n="consent.consentPageBody3">If you have trouble viewing the consent form in the window at the bottom of this screen, you can download an unsigned copy by scrolling down and selecting that option below.</p>
+                <div style="width:80%; margin:auto">
+                    <h4 class="consentSubheader" style="margin-top:50px" data-i18n="consent.consentPageSubheader1">Informed Consent Form</h4>
+                    <p class="consentBodyFont2" style="text-indent:40px" data-i18n="consent.consentPageBody2">This form explains in detail what it means to take part in Connect. To join the study, please scroll down to the bottom of this screen to electronically consent. You do not need to download and sign the form the join the study.</p>
+                    <p class="consentBodyFont2" style="text-indent:40px" data-i18n="consent.consentPageBody3">If you have trouble viewing the consent form in the window at the bottom of this screen, you can download an unsigned copy by scrolling down and selecting that option below.</p>
 
-                <iframe id="pdfIframeContainer" data-i18n="consent.consentIframe${participantSite}" src="${'./forms/consent/' + participantSite + '_Consent_' + formVersions[participantSite]['Consent'] + (langSuffix[selectedLanguage] ? '_' + langSuffix[selectedLanguage] : '') + '.html'}" style="width:100%; height:500px; overflow:scroll;" frameborder="1px"><span class="loader">Please wait...</span></iframe>
-                <div class="row"style="margin:auto"><div style="margin:auto"><a data-i18n="consent.consentUnsigned${participantSite}" href="${'./forms/consent/'  + participantSite + '_Consent_' + formVersions[participantSite]['Consent'] + (langSuffix[selectedLanguage] ? '_' + langSuffix[selectedLanguage] : '') + '.pdf'}" title="Download consent form" data-toggle="tooltip" download="connect_consent.pdf" class="consentBodyFont2" data-file="unsigned-form"> Download an unsigned copy of the informed consent form&nbsp<i class="fas fa-file-download"></i></a></div></div>
-                
-                <h4 class="consentSubheader" style="margin-top:50px" data-i18n="consent.consentPageSubheader2">Electronic health records release (HIPAA Authorization) form</h4>
-                <p class="consentBodyFont2" style="text-indent:40px" data-i18n="consent.consentPageBody4">This allows Connect to access your electronic health records. To join the study, please scroll down to the bottom of this screen to electronically consent. You do not need to download and sign the form to join the study.</p>
-                <p class="consentBodyFont2" style="text-indent:40px" data-i18n="consent.consentPageBody5">If you have trouble viewing the electronic health records release form in the window at the bottom of this screen, you can download an unsigned copy by scrolling down and selecting that option below.</p>
-                <iframe id="pdfIframeContainer1" data-i18n="consent.hipaaIframe${participantSite}" src="${'./forms/HIPAA/' + participantSite + '_HIPAA_' + formVersions[participantSite]['HIPAA'] + '.html'}" style="width:100%; height:500px; overflow:scroll;" frameborder="1px"><span class="loader" data-i18n="consent.consentPageWait">Please wait...</span></iframe>
-                <div class="row" style="margin:auto"><div style="margin:auto"><a data-i18n="consent.hipaaUnsigned${participantSite}" href="${'./forms/HIPAA/'  + participantSite + '_HIPAA_' + formVersions[participantSite]['HIPAA'] + '.pdf'}" title="Download health records release form" data-toggle="tooltip" download="connect_hipaa.pdf" class="consentBodyFont2" data-file="unsigned-form">Download an unsigned copy of the release form&nbsp<i class="fas fa-file-download"></i></a></div></div>
-                
-                <p class="consentBodyFont2" style="margin-top:50px" data-i18n="consent.consentPageBody6">By clicking “Yes, I agree to join Connect” and typing your name, you confirm the following:</p>
-                <ol class="consentBodyFont2" data-i18n="consent.consentPageBody6List">
-                    <li>I have read these forms.</li>
-                    <li>As  stated  in  the  consent  and  HIPAA  Authorization,  I  will allow  the  use,  storage, and  disclosure  (release) of  my  survey  answers, samples,  and  health  information for the research as described above.</li>
-                    <li>If I have questions, I can contact the Connect Support Center at <a target="_blank" href="https://norcfedramp.servicenowservices.com/recruit">Cancer.gov/connectstudy/support</a> or by calling 1-866-462-6621</li>
-                    <li>If I decide to leave the study, I can contact the Connect Support Center at <a target="_blank" href="https://norcfedramp.servicenowservices.com/recruit">Cancer.gov/connectstudy/support</a></li>
-                </ol>
-                <input type="checkbox" name="consentAnswer" value="consentYes" id="CSConsentYesCheck">
-                <label for="consentYes" style=" font-size:20px" id="CSConsentYes" data-i18n="consent.consentPageAgree">Yes, I agree to join Connect</label><br>
-            </div>
+                    <iframe id="pdfIframeContainer" class="border border-secondary rounded" data-i18n="consent.consentIframe${participantSite}" src="${'./forms/consent/' + participantSite + '_Consent_' + formVersions[participantSite]['Consent'] + (langSuffix[selectedLanguage] ? '_' + langSuffix[selectedLanguage] : '') + '.html'}" style="width:100%; height:500px; overflow:scroll;"><span class="loader">Please wait...</span></iframe>
+                    <div class="row"style="margin:auto"><div style="margin:auto"><a data-i18n="consent.consentUnsigned${participantSite}" href="${'./forms/consent/'  + participantSite + '_Consent_' + formVersions[participantSite]['Consent'] + (langSuffix[selectedLanguage] ? '_' + langSuffix[selectedLanguage] : '') + '.pdf'}" title="Download consent form" data-bs-toggle="tooltip" download="connect_consent.pdf" class="consentBodyFont2" data-file="unsigned-form"> Download an unsigned copy of the informed consent form&nbsp<i class="fas fa-file-download"></i></a></div></div>
+                    
+                    <h4 class="consentSubheader" style="margin-top:50px" data-i18n="consent.consentPageSubheader2">Electronic health records release (HIPAA Authorization) form</h4>
+                    <p class="consentBodyFont2" style="text-indent:40px" data-i18n="consent.consentPageBody4">This allows Connect to access your electronic health records. To join the study, please scroll down to the bottom of this screen to electronically consent. You do not need to download and sign the form to join the study.</p>
+                    <p class="consentBodyFont2" style="text-indent:40px" data-i18n="consent.consentPageBody5">If you have trouble viewing the electronic health records release form in the window at the bottom of this screen, you can download an unsigned copy by scrolling down and selecting that option below.</p>
+                    
+                    <iframe id="pdfIframeContainer1" class="border border-secondary rounded" data-i18n="consent.hipaaIframe${participantSite}" src="${'./forms/HIPAA/' + participantSite + '_HIPAA_' + formVersions[participantSite]['HIPAA'] + '.html'}" style="width:100%; height:500px; overflow:scroll;"><span class="loader" data-i18n="consent.consentPageWait">Please wait...</span></iframe>
+                    <div class="row" style="margin:auto"><div style="margin:auto"><a data-i18n="consent.hipaaUnsigned${participantSite}" href="${'./forms/HIPAA/'  + participantSite + '_HIPAA_' + formVersions[participantSite]['HIPAA'] + '.pdf'}" title="Download health records release form" data-bs-toggle="tooltip" download="connect_hipaa.pdf" class="consentBodyFont2" data-file="unsigned-form">Download an unsigned copy of the release form&nbsp<i class="fas fa-file-download"></i></a></div></div>
+                    
+                    <p class="consentBodyFont2" style="margin-top:50px" data-i18n="consent.consentPageBody6">By clicking “Yes, I agree to join Connect” and typing your name, you confirm the following:</p>
+                    <ol class="consentBodyFont2" data-i18n="consent.consentPageBody6List">
+                        <li>I have read these forms.</li>
+                        <li>As  stated  in  the  consent  and  HIPAA  Authorization,  I  will allow  the  use,  storage, and  disclosure  (release) of  my  survey  answers, samples,  and  health  information for the research as described above.</li>
+                        <li>If I have questions, I can contact the Connect Support Center at <a target="_blank" href="https://norcfedramp.servicenowservices.com/recruit">Cancer.gov/connectstudy/support</a> or by calling 1-866-462-6621</li>
+                        <li>If I decide to leave the study, I can contact the Connect Support Center at <a target="_blank" href="https://norcfedramp.servicenowservices.com/recruit">Cancer.gov/connectstudy/support</a></li>
+                    </ol>
+                    <input type="checkbox" name="consentAnswer" value="consentYes" id="CSConsentYesCheck">
+                    <label for="consentYes" style=" font-size:20px" id="CSConsentYes" data-i18n="consent.consentPageAgree">Yes, I agree to join Connect</label><br>
+                </div>
             
-            <form id="consentForm" style="margin-top:50px" method="POST">
-                <div id="CSConsentNameSignContainer" style="display:none">
-                    <div class="row" style="width:80%; margin:auto; padding-left:0px; padding-right:0px">
-                        <div class="col-md-4  consent-form" style="margin-bottom:20px;">
-                            <label class="consent-form-label consentSignHeader" data-i18n="consent.consentPageFormFirstName">
-                                First name<span class="required">*</span>
-                            </label>
-                            <input  type="text" autocomplete="off" id="CSFirstName" class="form-control col-md-10" placeholder="" style="margin-left:0px;">
+                <form id="consentForm" class="mt-5" method="POST">
+                    <div id="CSConsentNameSignContainer" style="display:none">
+                        <div class="row g-0 mx-auto" style="width:80%;">
+                            <div class="col-md-4 mb-4 pe-md-4">
+                                <div style="min-height: 48px">
+                                    <label class="consent-form-label consentSignHeader" data-i18n="consent.consentPageFormFirstName">
+                                        First name<span class="required">*</span>
+                                    </label>
+                                </div>
+                                <input type="text" autocomplete="off" id="CSFirstName" class="form-control" placeholder="">
+                                <div class="invalid-feedback text-danger mt-1" style="font-size: 0.875rem;">
+                                    Your first name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters.
+                                </div>
+                            </div>
+                            <div class="col-md-2 mb-4 px-md-2">
+                                <div style="min-height: 48px">
+                                    <label class="consent-form-label consentSignHeader" data-i18n="consent.consentPageFormMiddleName">
+                                        Middle name<span></span>
+                                    </label>
+                                </div>
+                                <input type="text" autocomplete="off" id="CSMiddleName" class="form-control" placeholder="">
+                                <div class="invalid-feedback text-danger mt-1" style="font-size: 0.875rem;"></div>
+                            </div>
+                            <div class="col-md-4 mb-4 px-md-4">
+                                <div style="min-height: 48px">
+                                    <label class="consent-form-label consentSignHeader" data-i18n="consent.consentPageFormLastName">
+                                        Last name<span class="required">*</span>
+                                    </label>
+                                </div>
+                                <input type="text" autocomplete="off" id="CSLastName" class="form-control" placeholder="">
+                                <div class="invalid-feedback text-danger mt-1" style="font-size: 0.875rem;"></div>
+                            </div>
+                            <div class="col-md-2 mb-4 ps-md-2">
+                                <div style="min-height: 48px">
+                                    <label class="consent-form-label consentSignHeader" data-i18n="consent.consentPageFormSuffixLabel">
+                                        Suffix<span></span>
+                                    </label>
+                                </div>
+                                <select name="NameSuffix" class="form-control" id="CSNameSuffix">
+                                    <option value="" data-i18n="form.selectOption">-- Select --</option>
+                                    <option value="${fieldMapping.suffixValue.jr}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.jr).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.jr).replace('.', ''))}</option>
+                                    <option value="${fieldMapping.suffixValue.sr}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.sr).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.sr).replace('.', ''))}</option>
+                                    <option value="${fieldMapping.suffixValue.first}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.first).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.first).replace('.', ''))}</option>
+                                    <option value="${fieldMapping.suffixValue.second}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.second).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.second).replace('.', ''))}</option>
+                                    <option value="${fieldMapping.suffixValue.third}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.third).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.third).replace('.', ''))}</option>
+                                    <option value="${fieldMapping.suffixValue.fourth}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.fourth).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.fourth).replace('.', ''))}</option>
+                                    <option value="${fieldMapping.suffixValue.fifth}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.fifth).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.fifth).replace('.', ''))}</option>
+                                    <option value="${fieldMapping.suffixValue.sixth}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.sixth).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.sixth).replace('.', ''))}</option>
+                                    <option value="${fieldMapping.suffixValue.seventh}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.seventh).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.seventh).replace('.', ''))}</option>
+                                    <option value="${fieldMapping.suffixValue.eighth}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.eighth).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.eighth).replace('.', ''))}</option>
+                                </select>
+                                <div class="invalid-feedback text-danger mt-1" style="font-size: 0.875rem;"></div>
+                            </div>
                         </div>
-                        <div class="col-md-2 consent-form" style="margin-bottom:20px;">
-                            <label class="consent-form-label consentSignHeader" data-i18n="consent.consentPageFormMiddleName">
-                                Middle name<span></span>
-                            </label>
-                            <input type="text" autocomplete="off" id="CSMiddleName" class="form-control col-md-10" placeholder="" style="margin-left:0px;">
-                        </div>
-                        <div class="col-md-4  consent-form" style="margin-bottom:20px;">
-                            <label class="consent-form-label consentSignHeader" data-i18n="consent.consentPageFormLastName">
-                                Last name<span class="required">*</span>
-                            </label>
-                            <input  type="text" autocomplete="off" id="CSLastName" class="form-control col-md-10" placeholder="" style="margin-left:0px;">
-                        </div>
-                        <div class="col-md-2  consent-form" style="margin-bottom:20px;">
-                            <label class="consent-form-label consentSignHeader" data-i18n="consent.consentPageFormSuffixLabel">
-                                Suffix<span></span>
-                            </label>
-                            <select name="NameSuffix" class="form-control col-md-10" id="CSNameSuffix" style="margin-left:0px;">
-                                <option value="" data-i18n="form.selectOption">-- Select --</option>
-                                <option value="${fieldMapping.suffixValue.jr}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.jr).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.jr).replace('.', ''))}</option>
-                                <option value="${fieldMapping.suffixValue.sr}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.sr).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.sr).replace('.', ''))}</option>
-                                <option value="${fieldMapping.suffixValue.first}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.first).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.first).replace('.', ''))}</option>
-                                <option value="${fieldMapping.suffixValue.second}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.second).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.second).replace('.', ''))}</option>
-                                <option value="${fieldMapping.suffixValue.third}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.third).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.third).replace('.', ''))}</option>
-                                <option value="${fieldMapping.suffixValue.fourth}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.fourth).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.fourth).replace('.', ''))}</option>
-                                <option value="${fieldMapping.suffixValue.fifth}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.fifth).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.fifth).replace('.', ''))}</option>
-                                <option value="${fieldMapping.suffixValue.sixth}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.sixth).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.sixth).replace('.', ''))}</option>
-                                <option value="${fieldMapping.suffixValue.seventh}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.seventh).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.seventh).replace('.', ''))}</option>
-                                <option value="${fieldMapping.suffixValue.eighth}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.eighth).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.eighth).replace('.', ''))}</option>
-                            </select>
+                        <div class="row mx-auto" style="width:80%;">
+                            <p class="consentBodyFont2 text-secondary" data-i18n="consent.consentPageFormLegalName">
+                                Please enter your legal name. If you are a member of Kaiser Permanente, please enter your first and last name exactly as it appears on your Kaiser Permanente ID card.
+                            </p>
                         </div>
                     </div>
-                    <div class="row" style="width:80%; margin:auto; padding-left:0px; padding-right:0px ">
-                        <p class="consentBodyFont2" style="color:gray" data-i18n="consent.consentPageFormLegalName">
-                            Please enter your legal name. If you are a member of Kaiser Permanente, please enter your first and last name exactly as it appears on your Kaiser Permanente ID card.
-                        </p>
+                    <div class="row my-1">
+                        <div class="col-md-2">
+                            <button class="btn btn-primary consentPrevButton w-100 my-2" type="button" id="backToConsent" data-i18n="consent.prevButtonText">Previous</button>
+                        </div>
+                        <div class="col-md-8">
+                        </div>
+                        <div class="col-md-2">
+                            <button class="btn btn-primary save-data consentNextButton w-100" type="submit" id="toConsent" data-i18n="consent.submitButtonText">Submit</button>
+                        </div>
                     </div>
-                </div>
-                <div class="row" style="padding:0; margin-top:40px;margin-bottom:40px">
-                    <div class="col-md-2">
-                        <button class="btn btn-primary consentPrevButton" type="button" id="backToConsent" style="min-width:100%; margin-top:10px;margin-bottom:10px;" data-i18n="consent.prevButtonText">Previous</button>
-                    </div>
-                    <div class="col-md-8">
-                    </div>
-                    <div class="col-md-2">
-                        <button class="btn btn-primary save-data consentNextButton" type="submit" id="toConsent" style="width:100%; margin-top:10px;margin-bottom:10px" data-i18n="consent.submitButtonText">Submit</button>
-                    </div>
-                </div>
-            </form>
+                </form>
             </div>
             <div class="col-lg-2">
             </div>
@@ -759,8 +774,8 @@ export const consentFinishedPage = async () => {
                 <h2 data-i18n="consent.finishedPageHeader">You have completed the consent process</h2>
             </div>
             <div style="margin-left:20px">
-                <div class="row"><div style="margin-left:20px"><i class="fas fa-file-download"></i> <a data-i18n="consent.finishedPageDownloadConsentForm" style="margin-left:10px" title="Download consent form" data-toggle="tooltip" id="consentDownload" download="signed_consent.pdf" data-file="signed-consent" >Download a copy of your signed consent form&nbsp</a></div></div>
-                <div class="row"><div style="margin-left:20px"><i class="fas fa-file-download"></i> <a data-i18n="consent.finishedPageDownloadReleaseForm" style="margin-left:10px" title="Download health records release form" data-toggle="tooltip" id="healthRecordsDownload" download="signed_hipaa.pdf" data-file="signed-HIPAA" >Download a copy of your signed health records release form&nbsp</a></div></div>
+                <div class="row"><div style="margin-left:20px"><i class="fas fa-file-download"></i> <a data-i18n="consent.finishedPageDownloadConsentForm" style="margin-left:10px" title="Download consent form" data-bs-toggle="tooltip" id="consentDownload" download="signed_consent.pdf" data-file="signed-consent" >Download a copy of your signed consent form&nbsp</a></div></div>
+                <div class="row"><div style="margin-left:20px"><i class="fas fa-file-download"></i> <a data-i18n="consent.finishedPageDownloadReleaseForm" style="margin-left:10px" title="Download health records release form" data-bs-toggle="tooltip" id="healthRecordsDownload" download="signed_hipaa.pdf" data-file="signed-HIPAA" >Download a copy of your signed health records release form&nbsp</a></div></div>
             </div>
             <div class="row">
             <div class="col-md-2">  

@@ -1,7 +1,7 @@
-import { addEventHideNotification } from "./event.js";
 import fieldMapping from './fieldToConceptIdMapping.js'; 
 import { signInConfig } from "./pages/signIn.js";
 import { signInCheckRender, signUpRender } from "./pages/homePage.js";
+import { signOut } from "../app.js";
 import en from "../i18n/en.js";
 import es from "../i18n/es.js";
 
@@ -195,6 +195,7 @@ export const generateNewToken = async () => {
 }
 
 //Store tree function being passed into quest
+// @deprecated. Retain until migration to Quest2 is complete. Quest 2.0+ has tree storage integrated into response saving.
 export const storeResponseTree = async (questName) => {
     
     let formData = {[questName]: {treeJSON: questionQueue.toJSON()}};
@@ -232,7 +233,7 @@ export const storeResponseQuest = async (formData) => {
     transformedData = await clientFilterData(transformedData);
 
     if(Object.keys(transformedData[moduleId]).length > 0) {
-        await storeResponse(transformedData);
+        return await storeResponse(transformedData);
     }
 }
 
@@ -261,7 +262,9 @@ export const storeResponse = async (formData) => {
         body: JSON.stringify(formData)
     });
 
-    return await response.json();
+    const responseObj = await response.json();
+
+    return responseObj;
 }
 
 export const storeSocial = async (formData) => {
@@ -927,100 +930,18 @@ export const checkAccount = async (data) => {
     return jsonResponse;
 }
 
-export const connectPushNotification = () => {
-    try {
-        const messaging = firebase.messaging();
-        Notification.requestPermission(async status => {
-            if(status !== "granted") return;
-            const token = await messaging.getToken();
-            manageNotificationTokens(token);
-            messaging.onTokenRefresh(async () => {
-                const refreshedToken = await messaging.getToken();
-                manageNotificationTokens(refreshedToken);
-            });
-            
-            messaging.onMessage(payload => {
-                let timesRun = 0;
-                let interval = setInterval(() => {
-                    timesRun += 1;
-                    if(timesRun === 10){
-                        const bellIcon = document.querySelectorAll('.fa-bell')[0];
-                        bellIcon.style.color = '#82a55a';
-                        clearInterval(interval);
-                    }else{
-                        animateNotificationBell();
-                    }
-                }, 300);
-                
-                const div = document.createElement('div');
-                div.classList = ["notification"];
-                div.innerHTML = `
-                    <div class="toast fade show" role="alert" aria-live="assertive" aria-atomic="true">
-                        <div class="toast-header">
-                            <strong class="mr-auto">${payload.notification.title}</strong>
-                            <button type="button" class="ml-2 mb-1 close hideNotification" data-dismiss="toast" aria-label="${translateText('shared.closeText')}">&times;</button>
-                        </div>
-                        <div class="toast-body">
-                            ${payload.notification.body}
-                        </div>
-                    </div>
-                `
-                document.getElementById('showNotification').appendChild(div);
-                addEventHideNotification(div);
-            });
-        });
-    } catch (error) {
-        console.error(error);
-    }
-}
-
-const animateNotificationBell = () => {
-    const bellIcon = document.querySelectorAll('.fa-bell')[0];
-    
-    if(bellIcon.classList.contains('fas')){
-        bellIcon.classList.remove('fas');
-        bellIcon.classList.add('far');
-    }
-    else if (bellIcon.classList.contains('far')){
-        bellIcon.classList.remove('far');
-        bellIcon.classList.add('fas');
-    }
-}
-
-const manageNotificationTokens = (token) => {
-    try {
-        const messaging = firebase.messaging();
-        subscribeForNotifications({token}).then(async res => {
-            if(res.status === 403){
-                const response = await messaging.deleteToken();
-                manageNotificationTokens(await messaging.getToken());
-            };
-        });
-    } catch (err) {
-        console.error(err);
-    }
-}
-
-export const removeActiveClass = (className, activeClass) => {
-    let fileIconElement = document.getElementsByClassName(className);
-    Array.from(fileIconElement).forEach(elm => {
-        elm.classList.remove(activeClass);
-    });
-}
-
 export const toggleNavbarMobileView = () => {
-    const btn = document.querySelectorAll('.navbar-toggler');
-    if(btn && btn[0]){
-        if(!btn[0].classList.contains('collapsed')) btn[0].click();
-    }
-}
+    const navbarCollapse = document.querySelector('#navbarContent.show');
+    const navbarToggler = document.querySelector('.navbar-toggler');
 
-export const getConceptVariableName = async (conceptId) => {
-    const response = await fetch(`https://raw.githubusercontent.com/episphere/conceptGithubActions/master/jsons/${conceptId}.json`);
-    //return (await response.json()).variableName;
-    let res = await response.json()
-    return res['Variable Name'];
-}
+    if (navbarCollapse) {
+        navbarCollapse.classList.remove('show');
+        if (navbarToggler) {
+            navbarToggler.classList.add('collapsed');
+            navbarToggler.setAttribute('aria-expanded', 'false');
+        }
+    }
+};
 
 export const questionnaireModules = () => {
     
@@ -1116,6 +1037,14 @@ export const questionnaireModules = () => {
                     es: 'prod/moduleQoLSpanish.txt'
                 },
                 moduleId: "PROMIS", 
+                enabled: false
+            },
+            'Cancer Screening History': {
+                path: {
+                    en: 'prod/moduleCancerScreeningHistory.txt', 
+                    es: 'prod/moduleCancerScreeningHistorySpanish.txt'
+                },
+                moduleId: "CancerScreeningHistory", 
                 enabled: false
             }
         }
@@ -1213,6 +1142,14 @@ export const questionnaireModules = () => {
             }, 
             moduleId:"PROMIS", 
             enabled:false
+        },
+        'Cancer Screening History': {
+            path: {
+                en: 'moduleCancerScreeningHistoryStage.txt',
+                es: 'moduleCancerScreeningHistoryStageSpanish.txt'
+            },
+            moduleId: "CancerScreeningHistory", 
+            enabled: false
         }
     };
 }
@@ -1236,75 +1173,233 @@ export const isBrowserCompatible = () => {
     return isValidBrowser;
 }
 
-// TODO: refactor -- multiple issues in datadog
-export const inactivityTime = (user) => {
-    let time;
-    
+/**
+ * Track user inactivity with `lastActivityTimestamp` and log out the user after a period of inactivity.
+ * Show a warning modal 20 minutes after the last user activity.
+ * Log out the user 5 minutes after the warning if there's no response.
+ * Reset the inactivity timer on user activity.
+ */
+
+export const inactivityTime = () => {
+    const activityKey = 'lastMyConnectActivityTimestamp';
+    const warningKey = 'myConnectInactivityWarning';   
+    const inactivityTimeout = 1200000; // 20 minutes (show inactivity warning after 20 minutes)
+    const maxResponseTime = 300000;    // 5 minutes (additional time after warning)
+    const checkInterval = 60000;       // 1 minute checks
+
+    let responseTimeout;
+    let modal;
+    let isInactiveModalShown = false;
+    let intervalId;
+    let loadListener;
+
+    const modalElement = document.getElementById('connectMainModal');
+    if (!modalElement) return;
+
+    // Update the global last activity timestamp in localStorage
+    const updateLastActivity = () => {
+        localStorage.setItem(activityKey, Date.now().toString());
+    };
+
+    // Reset the timer only if the modal is not shown. This represents user activity.
     const resetTimer = () => {
-        
-        clearTimeout(time);
-        time = setTimeout(() => {
-            if(!firebase.auth().currentUser) return;
-            const resposeTimeout = setTimeout(() => {
-                // log out user if they don't respond to warning after 5 minutes.
-                Array.from(document.getElementsByClassName('extend-user-session')).forEach(e => {
-                    e.click();
-                });
+        if (!isInactiveModalShown) {
+            updateLastActivity();
+        }
+    };
 
-                console.log("responseTimeout has been reached!");
+    const checkInactivity = () => {
+        const lastActivity = parseInt(localStorage.getItem(activityKey), 10) || Date.now();
+        const now = Date.now();
 
-                signOut();
-            }, 300000)
-            // Show warning after 20 minutes of no activity.
-            if(!firebase.auth().currentUser) return;
-            const button = document.createElement('button');
-            button.dataset.toggle = 'modal';
-            button.dataset.target = '#connectMainModal'
-            document.body.appendChild(button);
-            button.click();
-            const header = document.getElementById('connectModalHeader');
-            const body = document.getElementById('connectModalBody');
-            document.getElementById('connectModalFooter').style.display = "none";
-            header.innerHTML = `<h5 class="modal-title" data-i18n="shared.sessionInactiveTitle">${translateText('shared.sessionInactiveTitle')}</h5>`;
+        const isWarningShownGlobally = localStorage.getItem(warningKey) === 'true';
 
-            body.innerHTML = `<span data-i18n="shared.sessionInactive">${translateText('shared.sessionInactive')}</span>`;
-            document.body.removeChild(button);
+        // Only show warning if none is currently shown globally (for management with multiple tabs open)
+        // Ensure it's shown in the active tab if a tab is active.
+        if (
+            document.visibilityState === 'visible' &&
+            document.hasFocus() &&
+            !isInactiveModalShown &&
+            !isWarningShownGlobally &&
+            now - lastActivity > inactivityTimeout
+        ) {
+            showInactivityWarning();
+        }
+    };
 
-            console.log("initial timeout has been reached!");
-
-            // TODO: datadog error: TypeError: Cannot read properties of null (reading 'addEventListener')
-            Array.from(document.getElementsByClassName('log-out-user')).forEach(e => {
-                e.addEventListener('click', () => {
-                    clearTimeout(time)
-                    signOut();
-                })
-            })
-            // TODO: datadog error: TypeError: Cannot read properties of null (reading 'addEventListener')
-            document.getElementById('signOut').addEventListener('click', () =>{
-                clearTimeout(time)
-            })
-            Array.from(document.getElementsByClassName('extend-user-session')).forEach(e => {
-                e.addEventListener('click', () => {
-                    clearTimeout(resposeTimeout);
-                    resetTimer;
-                })
-            });
-        }, 1200000);
+    const hideModal = () => {
+        if (modal) {
+            modalElement.inert = true;
+            modal.hide();
+        }
+        isInactiveModalShown = false;
     }
-    //resetTimer();
-    window.onload = resetTimer;
-    document.onmousemove = resetTimer;
-    document.addEventListener('keydown', resetTimer);
+
+    const showModal = () => {
+        if (modal) {
+            modalElement.inert = false;
+            modal.show();
+        }
+    }
+
+    const cleanUpAndLogOut = async () => {
+        clearTimeout(responseTimeout);
+        clearInterval(intervalId);
+        hideModal();
+        detachDocumentEventListeners();
+
+        localStorage.setItem(warningKey, 'false');
+
+        await signOut();
+    }
+
+    const attachModalEventListeners = (modalElement) => {
+        // Log out button
+        const logOutButton = modalElement.querySelector('.log-out-user');
+        if (logOutButton) {
+            logOutButton.addEventListener('click', async () => {
+                await cleanUpAndLogOut();
+            });
+        }
+
+        // Continue session button
+        const continueButton = modalElement.querySelector('.extend-user-session');
+        if (continueButton) {
+            continueButton.addEventListener('click', () => {
+                clearTimeout(responseTimeout);
+
+                // Reset activity on continue
+                updateLastActivity();
+
+                // Clear the warning state on continue click
+                localStorage.setItem(warningKey, 'false');
+                hideModal();
+            });
+        }
+
+        // Return focus to the navbar when the modal is hidden
+        modalElement.addEventListener('hidden.bs.modal', (event) => {
+            if (event.target === modalElement) {
+                const navbar = document.querySelector('.navbar');
+                if (navbar) {
+                    navbar.focus();
+                }
+            }
+        });
+    };
+
+    const attachDocumentEventListeners = () => {
+        const signOutButton = document.querySelector('#signOut');
+        if (signOutButton) {
+            signOutButton.addEventListener('click', async () => {
+                await cleanUpAndLogOut();
+            });
+        }
+
+        // Reset the inactivity timer on user activity
+        document.addEventListener('mousemove', resetTimer);
+        document.addEventListener('keydown', resetTimer);
+
+        window.addEventListener('storage', handleLocalStorageStateChange);
+    }
+
+    const detachDocumentEventListeners = () => {
+        document.removeEventListener('mousemove', resetTimer);
+        document.removeEventListener('keydown', resetTimer);
+
+        const signOutButton = document.querySelector('#signOut');
+        if (signOutButton) {
+            signOutButton.replaceWith(signOutButton.cloneNode(true));
+        }
+
+        window.removeEventListener('storage', handleLocalStorageStateChange);
+    };
+
+    const handleLocalStorageStateChange = (event) => {
+        if (event.key === warningKey) {
+            const warningState = localStorage.getItem(warningKey);
+            if (warningState === 'false' && isInactiveModalShown) {
+                // Another tab cleared the warning, hide modal if it's visible
+                hideModal();
+            }
+        }
+
+        if (event.key === activityKey) {
+            const lastActivity = parseInt(localStorage.getItem(activityKey), 10) || Date.now();
+            const now = Date.now();
+            if ((now - lastActivity < inactivityTimeout) && isInactiveModalShown) {
+                // The user became active again in another tab. Hide this modal and clear the warning
+                hideModal();
+                localStorage.setItem(warningKey, 'false');
+            }
+        }
+    };
+
+    // Show inactivity warning modal and start response timeout
+    const showInactivityWarning = async () => {
+        if (!firebase.auth().currentUser) return;
+
+        // Set the global warning state so other tabs know not to show it
+        localStorage.setItem(warningKey, 'true');
+
+        isInactiveModalShown = true;
+
+        responseTimeout = setTimeout(async () => {
+            console.log("responseTimeout has been reached!");
+            await cleanUpAndLogOut();
+        }, maxResponseTime);
+
+        modal = new bootstrap.Modal(modalElement);
+        showModal();
+
+        const header = document.getElementById('connectModalHeader');
+        const body = document.getElementById('connectModalBody');
+        const footer = document.getElementById('connectModalFooter');
+
+        if (header && body && footer) {
+            footer.style.display = 'none';
+            header.innerHTML = `<h5 class="modal-title" data-i18n="shared.sessionInactiveTitle">${translateText('shared.sessionInactiveTitle')}</h5>`;
+            body.innerHTML = `<span data-i18n="shared.sessionInactive">${translateText('shared.sessionInactive')}</span>`;
+        }
+
+        console.log("initial timeout has been reached!");
+        attachModalEventListeners(modalElement);
+    };
+
+    // Start inactivity checks
+    intervalId = setInterval(checkInactivity, checkInterval);
+
+    // Update on initial load so we have a baseline timestamp
+    if (!localStorage.getItem(activityKey)) {
+        updateLastActivity();
+    }
+
+    // Reset the warning key on load
+    localStorage.setItem(warningKey, 'false');
+
+    // Handle window load event
+    if (document.readyState !== 'complete') {
+        loadListener = () => resetTimer();
+        window.addEventListener('load', loadListener);
+    }
+
+    // Attach event listeners when the DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', attachDocumentEventListeners);
+    } else {
+        attachDocumentEventListeners();
+    }
+
+    // Cleanup function to stop checks and clear timeouts.
+    return () => {
+        if (intervalId) clearInterval(intervalId);
+        if (responseTimeout) clearTimeout(responseTimeout);
+        if (loadListener) window.removeEventListener('load', loadListener);
+        detachDocumentEventListeners();
+        hideModal();
+        localStorage.setItem(warningKey, 'false');
+    };
 };
-
-const signOut = () => {
-
-    console.log("signing current user out!");
-    localforage.clear();
-    firebase.auth().signOut();
-    window.location.hash = '#';
-    document.title = translateText('shared.homeTitle');
-}
 
 export const renderSyndicate = (url, element, page) => {
     const mainContent = document.getElementById(element);
@@ -1368,13 +1463,8 @@ export const renderSyndicate = (url, element, page) => {
         let section = aLinks[i];
         let found = false;
         for(let j = 0; j < allIds.length; j++){
-            //console.log(section.href)
-            //console.log(allIds[j])
             if(section.href.includes(allIds[j])){
                 found = true;
-                //console.log(section.href)
-                //console.log(allIds[j])
-                //console.log(found)
             }
         }
         if(!found){
@@ -1447,45 +1537,18 @@ export function fragment(strings, ...values) {
   }
 
   transformedStringList.push(strings[N]);
-  const documentFragment = stringToFragment(transformedStringList.join(''));
+  const doc = new DOMParser().parseFromString(transformedStringList.join(""), "text/html");
+  const documentFragment = new DocumentFragment();
+  documentFragment.append(...doc.body.children);
 
   if (elementAndDocumentFragmentList.length > 0) {
-    const phEleList = documentFragment.querySelectorAll('#placeholder');
+    const phEleList = documentFragment.querySelectorAll("#placeholder");
     for (let i = 0; i < phEleList.length; i++) {
-      replaceElement(phEleList[i], elementAndDocumentFragmentList[i]);
+      phEleList[i].replaceWith(elementAndDocumentFragmentList[i]);
     }
   }
 
   return documentFragment;
-}
-
-export function stringToFragment(str) {
-  const doc = new DOMParser().parseFromString(str, 'text/html');
-  const fragment = new DocumentFragment();
-  fragment.append(...doc.body.children);
-
-  return fragment;
-}
-
-export function replaceElement(ele, ...nodes) {
-  const divEle = wrapToDiv(nodes);
-  ele.replaceWith(...divEle.children);
-  
-  return ele;
-}
-
-export function removeChildren(ele) {
-    const divEle = document.createElement('div');
-    divEle.append(...ele.children);
-  
-    return Array.from(divEle.children);
-}
-
-function wrapToDiv(nodes) {
-  let divEle = document.createElement('div');
-  divEle.replaceChildren(...nodes);
-
-  return divEle;
 }
 
 export const delay = async (ms) =>
@@ -1606,7 +1669,10 @@ export const firebaseSignInRender = async ({ account = {}, displayFlag = true })
     await elementIsLoaded('div[class~="firebaseui-id-page-email-link-sign-in-confirmation"]', 1500);
     if (emailInput !== null && signInEmail && Date.now() - signInTime < timeLimit) {
       emailInput.value = signInEmail;
-      document.querySelector('button[class~="firebaseui-id-submit"]').click();
+      const submitButton = document.querySelector('button[class~="firebaseui-id-submit"]');
+      submitButton.addEventListener('click', (e) => e.preventDefault());
+      submitButton.click();
+
       window.localStorage.removeItem("connectSignIn");
     }
   } else if (account.type === "email") {
@@ -1615,7 +1681,11 @@ export const firebaseSignInRender = async ({ account = {}, displayFlag = true })
     window.localStorage.setItem("connectSignIn", JSON.stringify(signInData));
     document.querySelector('input[class~="firebaseui-id-email"]').value = account.value;
     document.querySelector('label[class~="firebaseui-label"]').remove();
-    document.querySelector('button[class~="firebaseui-id-submit"]').click();
+
+    const submitButton = document.querySelector('button[class~="firebaseui-id-submit"]');
+    submitButton.addEventListener('click', (e) => e.preventDefault());
+    submitButton.click();
+
   } else if (account.type === "phone") {
     document.querySelector('input[class~="firebaseui-id-phone-number"]').value = account.value;
     document.querySelector('label[class~="firebaseui-label"]').remove();
@@ -1857,7 +1927,7 @@ export const updateStartSurveyParticipantData = async (sha, path, connectId, mod
  * @param {string} path - Path to the module file in the GitHub repository.
  * @param {string} connectID - Connect ID of the logged in participant.
  * @param {string} moduleID - Module ID of the module the participant is accessing.
- * @returns {Object} - { moduleText, surveyVersion } object.
+ * @returns {Promise<{moduleText: string, surveyVersion: string}>} Module text and version number.
  */
 export const getModuleText = async (sha, path, connectID, moduleID) => {
     try {
@@ -1900,7 +1970,7 @@ export const getModuleText = async (sha, path, connectID, moduleID) => {
  */
 export const logDDRumError = (error, errorType = 'CustomError', additionalContext = {}) => {
 
-    console.error('ERROR', error, 'Additional context:', additionalContext);
+    console.error(`${errorType}: ${error.message}. Additional context: ${JSON.stringify(additionalContext, null, 2)}`);
 
     if (window.DD_RUM) {
         window.DD_RUM.addError(
@@ -1936,7 +2006,6 @@ export const translateHTML = (source, language) => {
         sourceElement = source;
     }
 
-    // console.log(source, language, i18n, sourceElement, sourceElement.dataset);
     if (sourceElement.dataset.i18n) {
         let keys = sourceElement.dataset.i18n.split('.');
         let translation = translateText(keys, language);
@@ -2148,3 +2217,81 @@ export const getFirebaseUI = async () => {
         }
     }
 }
+
+export const emailAddressValidation = async (data) => {
+    const idToken = appState.getState().idToken;
+    const response = await fetch(`${api}?api=emailAddressValidation`, {
+        method: "POST",
+        headers: {
+            Authorization: "Bearer " + idToken
+        },
+        body: JSON.stringify(data)
+    });
+
+    const jsonResponse = await response.json();
+    return jsonResponse;
+}
+
+/**
+ * Create a new Date object with adjusted time
+ * @param {number | string | Date} inputTime - Input time to adjust
+ * @param {number} [days = 0] - Number of days to adjust
+ * @param {number} [hours = 0] - Number of hours to adjust
+ * @param {number} [minutes = 0] - Number of minutes to adjust
+ * @returns {Date} Adjusted time
+ */
+export const getAdjustedTime = (inputTime, days = 0, hours = 0, minutes = 0) => {
+    let adjustedTime = new Date(inputTime);
+    adjustedTime.setDate(adjustedTime.getDate() + days);
+    adjustedTime.setHours(adjustedTime.getHours() + hours);
+    adjustedTime.setMinutes(adjustedTime.getMinutes() + minutes);
+  
+    return adjustedTime;
+  };
+
+
+export const emailValidationStatus = {
+    VALID: "valid",
+    INVALID: "invalid",
+    WARNING: "warning",
+};
+
+export const emailValidationAnalysis = (validation) => {
+    if (!validation) return;
+
+    const { verdict, checks, score } = validation;
+    const { INVALID, VALID, WARNING } = emailValidationStatus;
+
+    const isInvalid =
+        verdict === INVALID ||
+        !checks.domain.has_valid_address_syntax ||
+        !checks.domain.has_mx_or_a_record ||
+        score < 0.45;
+
+    if (isInvalid) {
+        // it's for testing with the test email such as *.mailinator
+        if (location.host !== urls.prod) {
+            console.error("Invalid Email", validation);
+            return VALID;
+        }
+        return INVALID;
+    }
+
+    const isWarning =
+        checks.domain.is_suspected_disposable_address ||
+        checks.local_part.is_suspected_role_address ||
+        checks.additional.has_known_bounces ||
+        checks.additional.has_suspected_bounces ||
+        score < 0.8;
+
+    if (isWarning) {
+         // it's for testing with the test email such as *.mailinator
+         if (location.host !== urls.prod) {
+            console.error("Risky Email", validation);
+            return VALID;
+        }
+        return WARNING;
+    }
+
+    return VALID;
+};

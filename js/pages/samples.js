@@ -366,10 +366,10 @@ const sanford = {
             ''
         ],
         [
-            '<span data-i18n="samples.sanford.locations.SiouxFallsName">Sioux Falls, SD: Sanford Imagenetics</span>',
-            '<span data-i18n="samples.sanford.locations.SiouxFallsAddress">1321 W. 22nd St.<br>Sioux Falls, SD 57104</span>',
+            '<span data-i18n="samples.sanford.locations.SiouxFallsName">Sioux Falls, SD: Edith Breast Cancer Center</span>',
+            '<span data-i18n="samples.sanford.locations.SiouxFallsAddress">1210 W. 18th St.<br>Sioux Falls, SD 57104<br><i>Enter Through Door BB</i></span></span>',
             '',
-            '<span data-i18n="samples.sanford.locations.SiouxFallsParking">Free patient parking is available in the lot near the front entrance--Door JJ. No parking validation needed.</span>'
+            '<span data-i18n="samples.sanford.locations.SiouxFallsParking">Free valet parking is available near the front entrance of the Edith Breast Cancer Center. Free patient parking is also available in the lot on the corner of S Grange Ave and W 18th Street. Enter through door BB. No parking validation is needed.</span>'
         ],
         [
             '<span data-i18n="samples.sanford.locations.FargoName">Fargo, ND: South University Urgent Care/Orthopedic Walk-In Clinic</span>',
@@ -377,7 +377,7 @@ const sanford = {
             '',
             '<span data-i18n="samples.sanford.locations.FargoParking">Free patient parking is available in the lot near the Urgent Care entrance—Door #8. No parking validation needed.</span>',
         ]
-    ]
+      ]
 };
 
 const marshfield = {

@@ -1,4 +1,4 @@
-import { getMyData, hasUserData, urls, fragment, checkAccount, validEmailFormat, validPhoneNumberFormat, getCleanSearchString, firebaseSignInRender, signInAnonymously, usGov, translateHTML, translateText, getFirebaseUI } from "../shared.js";
+import { getMyData, hasUserData, urls, fragment, checkAccount, validEmailFormat, validPhoneNumberFormat, getCleanSearchString, firebaseSignInRender, signInAnonymously, usGov, translateHTML, translateText, getFirebaseUI, showAnimation, hideAnimation } from "../shared.js";
 import { signInConfig } from "./signIn.js";
 import { environmentWarningModal, downtimeWarning } from "../event.js";
 
@@ -11,24 +11,12 @@ export const homePage = async () => {
 
     const mainContent = document.getElementById('root');
     mainContent.innerHTML = translateHTML(`
-        <div class="row connectBody1">
-            <div class="col-lg-2 o">
-            </div>
-            <div class="col-lg-4 d-none d-sm-flex text-lg-left text-center" style="text-align:center;">
-                <p class = "homeTitleText" style="text-align:left; font-family: 'Montserrat', sans-serif;" data-i18n="home.titleText">
-                  Connect <em>today.</em>
-                  <br>Prevent cancer
-                  <br><em>tomorrow.</em>
-                  <br>
-                  <br>
-                  <img src="./images/newImages/ConnectLogo.png" alt="Connect logo">
-                  <br><br>
-                   
-                </p>
-            </div>
-            <div class="col-lg-4 d-sm-none text-lg-left text-center" style="text-align:center;">
-                <p class = "homeTitleTextMobile" style="text-align:center; font-family: 'Montserrat', sans-serif;" data-i18n="home.titleText">
-                
+        <div class="container-fluid">
+          <div class="row connectBody1">
+              <div class="col-lg-2">
+              </div>
+              <div class="col-lg-4 d-none d-sm-flex text-lg-start text-center" style="text-align:center;">
+                  <p class = "homeTitleText" style="text-align:left; font-family: 'Montserrat', sans-serif;" data-i18n="home.titleText">
                     Connect <em>today.</em>
                     <br>Prevent cancer
                     <br><em>tomorrow.</em>
@@ -37,36 +25,52 @@ export const homePage = async () => {
                     <img src="./images/newImages/ConnectLogo.png" alt="Connect logo">
                     <br><br>
                     
-                </p>
-            </div>
-            <div class="col-md-8 col-lg-4">
-                <div class="signInWrapper" id="signInWrapperDiv">
-                  <p class="loginTitleFont" style="text-align:center;" data-i18n="home.loginTitle">Sign In</p>
-                  <div id="signInDiv">
-                  </div>
-                  <p data-i18n="home.haveAccount">
-                      <div style="font-size:12px;padding-left:24px; padding-right:24px;margin:auto;.">
-                          If you have an account, please sign in with the email or phone number you used to create your account.
-                      </div>
                   </p>
-                  <div style="font-size:8px;padding-left:24px; padding-right:24px;margin:auto;." data-i18n="shared.usGov">
-                      ${usGov}
+              </div>
+              <div class="col-lg-4 d-sm-none text-lg-start text-center" style="text-align:center;">
+                  <p class = "homeTitleTextMobile" style="text-align:center; font-family: 'Montserrat', sans-serif;" data-i18n="home.titleText">
+                  
+                      Connect <em>today.</em>
+                      <br>Prevent cancer
+                      <br><em>tomorrow.</em>
+                      <br>
+                      <br>
+                      <img src="./images/newImages/ConnectLogo.png" alt="Connect logo">
+                      <br><br>
+                      
+                  </p>
+              </div>
+              <div class="col-md-8 col-lg-4">
+                  <div class="signInWrapper" id="signInWrapperDiv">
+                    <p class="loginTitleFont" style="text-align:center;" data-i18n="home.loginTitle">Sign In</p>
+                    <div id="signInDiv">
+                    </div>
+                    <p data-i18n="home.haveAccount">
+                        <div style="font-size:12px;padding-left:24px; padding-right:24px;margin:auto;.">
+                            If you have an account, please sign in with the email or phone number you used to create your account.
+                        </div>
+                    </p>
+                    <div style="font-size:8px;padding-left:24px; padding-right:24px;margin:auto;." data-i18n="shared.usGov">
+                        ${usGov}
+                    </div>
                   </div>
-                </div>
-            </div>
-            <div class="col-lg-2 order-4">
-            </div>
+              </div>
+              <div class="col-lg-2 order-4">
+              </div>
+          </div>
         </div>
-        <div class="row connectBody">
-            <div class="col-lg-2 ">
-            </div>
-            <div class="col-lg-4 .d-none text-lg-left text-center connectBodyPicture" data-i18n="home.connectBodyPicture">
-                <img src="./images/newImages/Tiles2.png" alt="Connect logo" width="95%" style="float:left; max-width:380px">
-            </div>
-            <div class="col-lg-4">
-            </div>
-            <div class="col-lg-2 order-4">
-            </div>
+        <div class="container-fluid">
+          <div class="row connectBody">
+              <div class="col-lg-2 ">
+              </div>
+              <div class="col-lg-4 .d-none text-lg-start text-center connectBodyPicture" data-i18n="home.connectBodyPicture">
+                  <img src="./images/newImages/Tiles2.png" alt="Connect logo" width="95%" style="float:left; max-width:380px">
+              </div>
+              <div class="col-lg-4">
+              </div>
+              <div class="col-lg-2 order-4">
+              </div>
+          </div>
         </div>
         <div class="row">
             <div class="col-lg-2">
@@ -92,8 +96,6 @@ export const homePage = async () => {
             </div>
         </div>
     `);
-
-    const fbui = await getFirebaseUI();
     
     const cleanSearchStr = getCleanSearchString(location.search);
     const params = new URLSearchParams(cleanSearchStr);
@@ -104,7 +106,7 @@ export const homePage = async () => {
         location.search = cleanSearchStr; // Page reload with clean url
       }
       
-        firebaseSignInRender({account:{type:'magicLink', value:''}});
+        await firebaseSignInRender({account:{type:'magicLink', value:''}});
     } else {
         signInSignUpEntryRender();
     }
@@ -527,18 +529,37 @@ export function signInSignUpEntryRender() {
 
   document.getElementById('signInWrapperDiv').replaceChildren(df);
 
-  signInBtn.addEventListener('click', async () => {
-    await signInCheckRender();
+  signInBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    signInBtn.disabled = true;
+
+    try {
+      await signInCheckRender();
+    } catch (error) {
+      console.error('Error during sign-in:', error);
+    } finally {
+      signInBtn.disabled = false;
+    }
   });
-  signUpBtn.addEventListener('click', async () => {
-    await signUpRender({ signUpType: "phone" });
+  
+  signUpBtn.addEventListener('click', async (e) => {
+    e.preventDefault();
+    signUpBtn.disabled = true;
+
+    try {
+      await signUpRender({ signUpType: "phone" });
+    } catch (error) {
+      console.error('Error during sign-up:', error);
+    } finally {
+      signUpBtn.disabled = false;
+    }
   });
 }
 
 export function signInCheckRender () {
   const df = fragment`
   <div class="mx-4">
-    <form>
+    <form id="signInForm">
       <label for="accountInput" class="form-label" data-i18n="home.phoneEmailLabel">Phone or Email<br />
         <span style="font-size: 0.8rem; color:gray">Phone Format: 123-456-7890</span>
       </label>
@@ -567,54 +588,68 @@ export function signInCheckRender () {
   const signUpAnchor = df.querySelector('#signUpAnchor');
   const invalidInputAlertDiv = df.querySelector('#invalidInputAlert');
 
+  const form = df.querySelector('#signInForm');
+  form.addEventListener('submit', (e) => e.preventDefault());
+
   document.getElementById('signInWrapperDiv').replaceChildren(df);
 
   signInBtn.addEventListener('click', async (e) => {
     e.preventDefault();
+    signInBtn.disabled = true;
     const inputStr = accountInput.value.trim();
     const isEmail = !!inputStr.match(validEmailFormat);
     const isPhone = !!inputStr.match(validPhoneNumberFormat);
 
-    if (isEmail) {
-      await signInAnonymously();
-      const emailForQuery = inputStr
-        .replaceAll('%', '%25')
-        .replaceAll('#', '%23')
-        .replaceAll('&', '%26')
-        .replaceAll(`'`, '%27')
-        .replaceAll('+', '%2B');
+    try {
+      showAnimation();
+      if (isEmail) {
+        await signInAnonymously();
+        const emailForQuery = inputStr
+          .replaceAll('%', '%25')
+          .replaceAll('#', '%23')
+          .replaceAll('&', '%26')
+          .replaceAll(`'`, '%27')
+          .replaceAll('+', '%2B');
 
-      const response = await checkAccount({
-        accountType: 'email',
-        accountValue: emailForQuery,
-      });
+        const response = await checkAccount({
+          accountType: 'email',
+          accountValue: emailForQuery,
+        });
 
-      if (response?.data?.accountExists) {
-        const account = { type: 'email', value: inputStr };
-        firebaseSignInRender({ account });
+        if (response?.data?.accountExists) {
+          const account = { type: 'email', value: inputStr };
+          await firebaseSignInRender({ account });
+        } else {
+          const account = { type: 'email', value: inputStr };
+          accountNotFoundRender({ account });
+        }
+      } else if (isPhone) {
+        await signInAnonymously();
+        const phoneNumberStr = inputStr.match(/\d+/g).join('').slice(-10);
+        const response = await checkAccount({ accountType: 'phone', accountValue: phoneNumberStr });
+
+        if (response?.data?.accountExists) {
+          const account = { type: 'phone', value: phoneNumberStr };
+          await firebaseSignInRender({ account });
+        } else {
+          const account = { type: 'phone number', value: inputStr };
+          accountNotFoundRender({ account });
+        }
       } else {
-        const account = { type: 'email', value: inputStr };
-        accountNotFoundRender({ account });
+        addWarning();
       }
-    } else if (isPhone) {
-      await signInAnonymously();
-      const phoneNumberStr = inputStr.match(/\d+/g).join('').slice(-10);
-      const response = await checkAccount({ accountType: 'phone', accountValue: phoneNumberStr });
-
-      if (response?.data?.accountExists) {
-        const account = { type: 'phone', value: phoneNumberStr };
-        firebaseSignInRender({ account });
-      } else {
-        const account = { type: 'phone number', value: inputStr };
-        accountNotFoundRender({ account });
-      }
-    } else {
+    } catch (error) {
+      console.error('Error checking account', error);
       addWarning();
+    } finally {
+      hideAnimation();
+      accountInput.value = '';
+      signInBtn.disabled = false;
     }
   });
 
-  signUpAnchor.addEventListener('click', () => {
-    signUpRender({ signUpType: "phone" });
+  signUpAnchor.addEventListener('click', async () => {
+    await signUpRender({ signUpType: "phone" });
   });
 
   invalidInputAlertDiv.addEventListener('click', () => {
@@ -629,6 +664,10 @@ export function signInCheckRender () {
   function addWarning() {
     invalidInputAlertDiv.style.display = 'block';
     accountInput.style.border = '2px solid red';
+  }
+
+  if (accountInput) {
+    setTimeout(() => accountInput.focus(), 100);
   }
 }
 
@@ -672,8 +711,8 @@ export async function signUpRender({ signUpType = "phone" }) {
     const verifyButton = document.querySelector('button[class~="firebaseui-id-submit"]');
     verifyButton && verifyButton.addEventListener("click", () => {
         const cancelButton = document.querySelector('button[class~="firebaseui-id-secondary-link"]');
-        cancelButton && cancelButton.addEventListener("click", () => {
-          signUpRender({ signUpType: "phone" });
+        cancelButton && cancelButton.addEventListener("click", async () => {
+          await signUpRender({ signUpType: "phone" });
         });
       });
   } else if (signUpType === "email") {
@@ -698,8 +737,8 @@ export async function signUpRender({ signUpType = "phone" }) {
       }
 
       const backButton = document.querySelector('button[class~="firebaseui-id-secondary-link"]');
-      backButton && backButton.addEventListener("click", () => {
-        signUpRender({ signUpType: "email" });
+      backButton && backButton.addEventListener("click", async () => {
+        await signUpRender({ signUpType: "email" });
       });
     });
     const inputEle = document.querySelector('input[class~="firebaseui-id-email"]');
@@ -719,9 +758,9 @@ export async function signUpRender({ signUpType = "phone" }) {
     signInCheckRender();
   });
 
-  emailSignUpLink && emailSignUpLink.addEventListener("click", (e) => {
+  emailSignUpLink && emailSignUpLink.addEventListener("click", async (e) => {
       e.preventDefault();
-      signUpRender({ signUpType: "email" });
+      await signUpRender({ signUpType: "email" });
     });
 }
 
@@ -754,8 +793,8 @@ function accountNotFoundRender({ account }) {
     signInCheckRender();
   });
 
-  createNewAccountBtn.addEventListener('click', () => {
-    signUpRender({ signUpType: "phone" });
+  createNewAccountBtn.addEventListener('click', async () => {
+    await signUpRender({ signUpType: "phone" });
   });
 }
   

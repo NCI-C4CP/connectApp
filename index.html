@@ -77,58 +77,62 @@
                         </a>
                     </div>
                 </div>
-                <nav class="navbar navbar-dark navbar-expand-lg custom-menu-color fixed-top pt-0">
-                    
-                    <div class="col" style="padding-left:0px">
-                        <button class="navbar-toggler collapsed mt-1 mb-1" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <nav class="navbar navbar-dark navbar-expand-lg custom-menu-color fixed-top">
+                    <div class="container-fluid">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                            aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
                             <span class="navbar-toggler-icon"></span>
                         </button>
-                        <div id="languageSelectorContainer"></div>
-                        <div class="collapse navbar-collapse" id="navbarNavAltMarkup"></div>
+                        <div class="collapse navbar-collapse" id="navbarContent">
+                            <div id="userNavBarContainer" class="navbar-nav me-auto mb-2 mb-lg-0"></div>
+
+                            <div class="d-flex align-items-center">
+                                <div id="signOutContainer"></div>
+                            </div>
+                        </div>
+                        <div id="languageSelectorContainer" class="ms-3 d-flex align-items-center"></div>
                     </div>
-                    
                 </nav>
                 <div style="position: relative;">
                         <div style="position: absolute; top: 0; right: -5rem; min-width: 300px;" id="showNotification"></div>
 
                 </div>
                 <div id="root"></div>
-                <div class="modal fade" id="connectMainModal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal fade" id="connectMainModal" data-bs-keyboard="false" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
                         <div class="modal-content sub-div-shadow">
                             <div class="modal-header allow-overflow" id="connectModalHeader"></div>
                             <div class="modal-body allow-overflow" id="connectModalBody"></div>
                             <div class="modal-footer" id="connectModalFooter">
-                                <button type="button" title="Close" class="btn btn-dark" data-dismiss="modal">Close</button>
+                                <button type="button" title="Close" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="modal fade" id="connectWarningModal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal fade" id="connectWarningModal" data-bs-keyboard="false" data-bs-backdrop="static" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
                         <div class="modal-content sub-div-shadow">
                             <div class="modal-header allow-overflow" id="connectWarningModalHeader"></div>
                             <div class="modal-body allow-overflow" id="connectWarningModalBody"></div>
                             <div class="modal-footer" id="connectWarningModalFooter">
-                                <button type="button" id="warningCloseBtn" title="Close" class="btn btn-dark" data-dismiss="modal" disabled>Close</button>
+                                <button type="button" id="warningCloseBtn" title="Close" class="btn btn-dark" data-bs-dismiss="modal" disabled>Close</button>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="modal fade" id="notificationsModal" data-keyboard="false" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="notificationHeader" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-slideout modal-sm notification-modal" role="document">
+                <div class="modal fade" id="notificationsModal" data-bs-keyboard="false" data-bs-backdrop="static" tabindex="-1" aria-labelledby="notificationHeader" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-slideout modal-sm notification-modal">
                     <div class="modal-content sub-div-shadow">
                         <div class="modal-header">
                             <h5 class="modal-title" id="notificationHeader">Notifications</h5>
-                            <button type="button" class="close close-modal" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">×</span>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                             </button>
                         </div>
                         <div class="modal-body notification-modal-body" id="notificationBody"></div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         </div>
                     </div>
                     </div>
@@ -144,8 +148,8 @@
                             <p id="ssnSoftModalBodyText" data-i18n="ssn.ssnSoftModalBodyText">There is 1 unanswered question on this page. Would you like to continue?</p>
                         </div>
                         <div id="ssnSoftModalFooter" class="modal-footer">
-                            <button type="button" id=ssnSoftModalContinueButton data-i18n="ssn.ssnSoftModalContinueButton" class="btn btn-light" data-dismiss="modal" data-bs-dismiss="modal">Continue Without Answering</button>
-                            <button type="button" id=ssnSoftModalCloseButton data-i18n="ssn.ssnSoftModalCloseButton" class="btn btn-light" data-dismiss="modal" data-bs-dismiss="modal">Answer the Question</button>
+                            <button type="button" id=ssnSoftModalContinueButton data-i18n="ssn.ssnSoftModalContinueButton" class="btn btn-light" data-bs-dismiss="modal">Continue Without Answering</button>
+                            <button type="button" id=ssnSoftModalCloseButton data-i18n="ssn.ssnSoftModalCloseButton" class="btn btn-light" data-bs-dismiss="modal">Answer the Question</button>
                         </div>
                         </div>
                     </div>
@@ -155,14 +159,79 @@
             </div>
         </main>
         <footer role="contentinfo">
-            <div id="footer"></div>
+            <div id="footer">
+                <div class="row footer-content" style="margin:0">
+                    <div class="row w-100" style="margin:0">
+                        <div class="col content-wrapper" data-i18n="footer.nci-dceg">
+                            <div class="dceg-footer align-left text-center text-sm-center">Division of Cancer Epidemiology and Genetics
+                            </div>
+                            <div class="nci-dceg-footer align-left text-center text-sm-center">at the National Cancer Institute</div>
+                        </div>
+                    </div>
+                    <div class="row w-100 pt-0 align-left" style="margin:0">
+                        <div class="col-lg-4 pt-3 content-wrapper text-center text-sm-center">
+                            <div class="footer-heading" data-i18n="footer.Questions">HAVE QUESTIONS?</div>
+                            <div class="footer-sub-heading pt-3" data-i18n="footer.contactLink"><a class="footer-links" target="__blank"
+                                    href="https://norcfedramp.servicenowservices.com/recruit">Contact the Connect Support Center</a>
+                            </div>
+                            <div class="footer-sub-heading pt-3" data-i18n="footer.emailUs"><a class="footer-links"
+                                    href="mailto:ConnectStudy@norc.org">Email Us</a></div>
+                        </div>
+                        <div class="col-lg-4 pt-3 content-wrapper text-center text-sm-center">
+                            <div class="footer-heading" data-i18n="footer.policies">POLICIES</div>
+                            <div class="footer-sub-heading pt-3" data-i18n="footer.accessibility"><a class="footer-links"
+                                    target="__blank" href="https://www.cancer.gov/global/web/policies/accessibility">Accessibility</a>
+                            </div>
+                            <div class="footer-sub-heading pt-3" data-i18n="footer.disclaimer"><a class="footer-links" target="__blank"
+                                    href="https://www.cancer.gov/policies/disclaimer">Disclaimer</a></div>
+                            <div class="footer-sub-heading pt-3" data-i18n="footer.foia"><a class="footer-links" target="__blank"
+                                    href="https://www.cancer.gov/global/web/policies/foia">FOIA</a></div>
+                            <div class="footer-sub-heading pt-3" data-i18n="footer.privacySecurity"><a class="footer-links"
+                                    target="__blank" href="https://www.cancer.gov/policies/privacy-security">Privacy & Security</a>
+                            </div>
+                            <div class="footer-sub-heading pt-3" data-i18n="footer.vulnerability"><a class="footer-links"
+                                    target="__blank" href="https://www.hhs.gov/vulnerability-disclosure-policy/index.html">HHS
+                                    Vulnerability Disclosure</a></div>
+                            <div class="footer-sub-heading pt-3" data-i18n="footer.siteMap"><a class="footer-links" target="__blank"
+                                    href="https://dceg.cancer.gov/about/sitemap">Site Map</a></div>
+                        </div>
+                    </div>
+                    <div class="row w-100 pt-5 align-center" style="margin:0">
+                        <ul class="menu w-100" style="padding:0" data-i18n="footer.menuList">
+                            <li class="menu-item p-0 footer-menu-item"><a target="__blank" class="footer-links gov-dept-links p-0"
+                                    href="http://www.hhs.gov/">U.S. Department of Health and Human Services</a></li>
+                            <li class="menu-item p-0 footer-menu-item"><a target="__blank" class="footer-links gov-dept-links p-0"
+                                    href="http://www.nih.gov/">National Institutes of Health</a></li>
+                            <li class="menu-item p-0 footer-menu-item"><a target="__blank" class="footer-links gov-dept-links p-0"
+                                    href="http://www.cancer.gov/">National Cancer Institute</a></li>
+                            <li class="menu-item p-0"><a target="__blank" class="footer-links gov-dept-links p-0"
+                                    href="http://www.usa.gov/">USA.gov</a></li>
+                        </ul>
+                    </div>
+                    <div class="row w-100">
+                        <div class="col-md-2">
+                        </div>
+                        <div class="col-md-8">
+                            <p class="gov-dept-links" data-i18n="footer.cancerPrevention">Connect for Cancer Prevention Study, the
+                                Connect for Cancer Prevention Study logo, and “Connect today. Prevent cancer tomorrow.” are trademarks
+                                of the U.S. Department of Health and Human Services (HHS).<sup>®</sup></p>
+                        </div>
+                        <div class="col-md-2">
+                        </div>
+                    </div>
+                    <div class="row w-100" style="margin:0">
+                        <div class="col">
+                            <p class="nih-tagline" data-i18n="footer.nihHealth">NIH…Turning Discovery Into Health<sup>®</sup></p>
+                            <p id="appVersion"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </footer>
         <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
         <script type="module" src="./app.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.7.3/localforage.min.js"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="./lib/bootstrap.min.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
         <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.0.943/pdf.min.js"></script>
@@ -170,5 +239,6 @@
         <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/downloadjs/1.4.8/download.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/downloadjs/1.4.8/download.js"></script>
+        <script src="./lib/bootstrap.min.js"></script>
     </body>
 </html>

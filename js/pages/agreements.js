@@ -210,9 +210,7 @@ export const renderAgreements = async () => {
     let template = '';
     if(hasUserData(myData) && myData.data['919254129'] !== undefined && myData.data['919254129'] === 353358909){
         template += translateHTML(`
-            <div class="row">
-                <div class="col-lg-2">
-                </div>
+            <div class="row justify-content-center">
                 <div class="col-lg-8">    
                     <div class="row">
                         <div class="col">
@@ -222,7 +220,7 @@ export const renderAgreements = async () => {
 
                     ${((((myData.data.hasOwnProperty('773707518') && myData.data['773707518'] == 353358909)  || (myData.data['747006172'] && myData.data['747006172'] == 353358909)) && (!myData.data['153713899'] || myData.data['153713899'] == 104430631) || (myData.data.hasOwnProperty('831041022') && myData.data['831041022'] == 353358909 && (!myData.data['359404406'] || myData.data['359404406'] == 104430631)))) ?`
                     <div class="row">
-                        <div class="userProfileBox" style="width:100%">
+                        <div class="userProfileBox w-100">
                             <div class="row">
                                 <div class="col">
                                 <span class="userProfileHeader" data-i18n="agreements.formsToSign">
@@ -233,7 +231,7 @@ export const renderAgreements = async () => {
                             </div>
                             ${(myData.data.hasOwnProperty('831041022') && myData.data['831041022'] == 353358909 && (!myData.data['359404406'] || myData.data['359404406'] == 104430631)) ?`
                                 <div class="row">
-                                    <div class="col" style="padding-left: 30px; padding-right:30px;">
+                                    <div class="col px-2">
                                         <div class="row"  style="border:1px solid lightgrey; border-radius:5px;">
                                             <div class="col-md-2" data-i18n="agreements.surveyIcon">
                                                 <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
@@ -256,7 +254,7 @@ export const renderAgreements = async () => {
                             `:''}
                             ${(((myData.data.hasOwnProperty('773707518') && myData.data['773707518'] == 353358909) || (myData.data['747006172'] && myData.data['747006172'] == 353358909)) && (!myData.data['153713899'] || myData.data['153713899'] == 104430631)) ?`
                                 <div class="row">
-                                    <div class="col" style="padding-left: 30px; padding-right:30px;">
+                                    <div class="col px-2">
                                         <div class="row"  style="border:1px solid lightgrey; border-radius:5px;">
                                             <div class="col-md-2" data-i18n="agreements.surveyIcon">
                                                 <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
@@ -281,7 +279,7 @@ export const renderAgreements = async () => {
                     </div>`:''
                     }
                     <div class="row">
-                        <div class="userProfileBox" style="width:100%">
+                        <div class="userProfileBox w-100">
                             <div class="row">
                                 <div class="col">
                                 <span class="userProfileHeader" data-i18n="agreements.signedFormsText">
@@ -292,7 +290,7 @@ export const renderAgreements = async () => {
                             </div>
                             ${myData.data['119449326'] ?`
                                 <div class="row">
-                                        <div class="col" style="padding-left: 30px; padding-right:30px;">
+                                        <div class="col px-2">
                                             <div class="row"  style="border:1px solid lightgrey; border-radius:5px;">
                                                 <div class="col-md-2" data-i18n="agreements.surveyIcon">
                                                     <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
@@ -320,7 +318,7 @@ export const renderAgreements = async () => {
                             
                             ${myData.data['613641698'] ?`
                                 <div class="row">
-                                    <div class="col" style="padding-left: 30px; padding-right:30px;">
+                                    <div class="col px-2">
                                         <div class="row"  style="border:1px solid lightgrey; border-radius:5px;">
                                             <div class="col-md-2" data-i18n="agreements.surveyIcon">
                                                 <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
@@ -348,7 +346,7 @@ export const renderAgreements = async () => {
                             
                             ${myData.data['454445267'] ?`
                                 <div class="row">
-                                    <div class="col" style="padding-left: 30px; padding-right:30px;">
+                                    <div class="col px-2">
                                         <div class="row"  style="border:1px solid lightgrey; border-radius:5px;">
                                             <div class="col-md-2" data-i18n="agreements.surveyIcon">
                                                 <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
@@ -375,7 +373,7 @@ export const renderAgreements = async () => {
                             
                             ${myData.data['262613359'] ? `
                                 <div class="row">
-                                    <div class="col" style="padding-left: 30px; padding-right:30px;">
+                                    <div class="col px-2">
                                         <div class="row"  style="border:1px solid lightgrey; border-radius:5px;">
                                             <div class="col-md-2" data-i18n="agreements.surveyIcon">
                                                 <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
@@ -400,10 +398,7 @@ export const renderAgreements = async () => {
                             `:''}
                         </div>
                     </div>
-
                     </div>
-                </div>
-                <div class="col-lg-2">
                 </div>
             </div>
         `);
@@ -432,7 +427,7 @@ const addEventAgreementOptions = (myData) => {
       });
 
       // Handle touch events in iPhone/iPad
-      anchorElement.addEventListener('touchend', (e) => {
+      anchorElement.addEventListener('touchend', () => {
         anchorElement.click();
       });
     }
@@ -503,18 +498,14 @@ const renderDownloadDestroy = async (data) => {
 
 const renderSignDataDestroy = async () =>{
     document.getElementById('root').innerHTML = translateHTML(`
-    <div class="row">
-        <div class="col-lg-2">
-        </div>
+    <div class="row justify-content-center">
         <div class="col-lg-8">
             <div style="width:80%; margin:auto">
             <h4 class="consentSubheader" style="margin-top:50px" data-i18n="agreements.destructionFormTitle">Data destruction request form</h4>
             <div id="canvasContainer"></div>
-            <div class="row" style="margin:auto"><div style="margin:auto"><a data-i18n="agreements.downloadDestructionForm" href="./forms/Data_Destruction_${consentVersions['DataDestruction']}.pdf" title="Download Data destruction request form" data-toggle="tooltip" download="DataDestruction_${consentVersions['DataDestruction']}.pdf" class="consentBodyFont2"> Download an unsigned copy of the Data destruction request form&nbsp<i class="fas fa-file-download"></i></a></div></div>
+            <div class="row" style="margin:auto"><div style="margin:auto"><a data-i18n="agreements.downloadDestructionForm" href="./forms/Data_Destruction_${consentVersions['DataDestruction']}.pdf" title="Download Data destruction request form" data-bs-toggle="tooltip" download="DataDestruction_${consentVersions['DataDestruction']}.pdf" class="consentBodyFont2"> Download an unsigned copy of the Data destruction request form&nbsp<i class="fas fa-file-download"></i></a></div></div>
             </div>` + consentSignTemplate() + 
         `</div>
-        <div class="col-lg-2">
-        </div>
     </div>
     `);
     
@@ -552,18 +543,14 @@ const renderSignDataDestroy = async () =>{
 
 const renderSignHIPAARevoke = async () =>{
     document.getElementById('root').innerHTML = translateHTML(`
-    <div class="row">
-        <div class="col-lg-2">
-        </div>
+    <div class="row justify-content-center">
         <div class="col-lg-8">
             <div style="width:80%; margin:auto">
             <h4 class="consentSubheader" style="margin-top:50px" data-i18n="agreements.revocationFormTitle">HIPAA Revocation Form</h4>
             <div id="canvasContainer"></div>
-            <div class="row" style="margin:auto"><div style="margin:auto"><a data-i18n="agreements.downloadRevocationForm" href="./forms/HIPAA_Revocation_${consentVersions['Revocation']}.pdf" title="Download HIPAA Revocation form" data-toggle="tooltip" download="Revocation_${consentVersions['Revocation']}.pdf" class="consentBodyFont2"> Download an unsigned copy of the HIPAA Revocation form&nbsp<i class="fas fa-file-download"></i></a></div></div>
+            <div class="row" style="margin:auto"><div style="margin:auto"><a data-i18n="agreements.downloadRevocationForm" href="./forms/HIPAA_Revocation_${consentVersions['Revocation']}.pdf" title="Download HIPAA Revocation form" data-bs-toggle="tooltip" download="Revocation_${consentVersions['Revocation']}.pdf" class="consentBodyFont2"> Download an unsigned copy of the HIPAA Revocation form&nbsp<i class="fas fa-file-download"></i></a></div></div>
             </div>` + consentSignTemplate() + 
         `</div>
-        <div class="col-lg-2">
-        </div>
     </div>
     `);
 
@@ -639,35 +626,43 @@ const renderDownload = async (participant, timeStamp, fileLocation, nameCoordina
 
 const consentSignTemplate = () => {
     return translateHTML(`
-    <form id="consentForm" style="margin-top:20px; margin-bottom:50px;" method="POST">
-        <div id="CSConsentNameSignContainer" style="">
-            <div class="row" style="width:80%; margin:auto; padding-left:0px; padding-right:0px">
-                <div class="col-md-4 form-group consent-form">
-                    <label class="consent-form-label" data-i18n="agreements.firstName">
-                        First name<span class="required">*</span>
-                    </label>
+    <form id="consentForm" class="mt-5" method="POST">
+        <div id="CSConsentNameSignContainer">
+            <div class="row g-0 mx-auto" style="width:80%;">
+                <div class="col-md-4 mb-4 pe-md-4">
+                    <div style="min-height: 48px">
+                        <label class="consent-form-label" data-i18n="agreements.firstName">
+                            First name<span class="required">*</span>
+                        </label>
+                    </div>
                     <input required type="text" autocomplete="off" id="CSFirstName" class="form-control col-md-10" placeholder="" style="margin-left:0px;">
                     <br>
                 </div>
-                <div class="col-md-2 form-group consent-form" >
-                    <label class="consent-form-label" data-i18n="agreements.middleName">
-                        Middle name<span></span>
-                    </label>
+                <div class="col-md-2 mb-4 px-md-2">
+                    <div style="min-height: 48px">
+                        <label class="consent-form-label" data-i18n="agreements.middleName">
+                            Middle name<span></span>
+                        </label>
+                    </div>
                     <input type="text" autocomplete="off" id="CSMiddleName" class="form-control col-md-10" placeholder="" style="margin-left:0px;">
                     <br>
                 </div>
-                <div class="col-md-4 form-group consent-form">
-                    <label class="consent-form-label" data-i18n="agreements.lastName">
-                        Last name<span class="required">*</span>
-                    </label>
+                <div class="col-md-4 mb-4 px-md-4">
+                    <div style="min-height: 48px">
+                        <label class="consent-form-label" data-i18n="agreements.lastName">
+                            Last name<span class="required">*</span>
+                        </label>
+                    </div>
                     <input required type="text" autocomplete="off" id="CSLastName" class="form-control col-md-10" placeholder="" style="margin-left:0px;">
                     <br>
                 </div>
-                <div class="col-md-2 form-group consent-form" >
-                    <label class="consent-form-label" data-i18n="form.suffixList">
-                        Suffix<span></span>
-                    </label>
-                    <select name="NameSuffix" class="form-control col-md-10" id="CSNameSuffix" style="margin-left:0px;">
+                <div class="col-md-2 mb-4 ps-md-2">
+                    <div style="min-height: 48px">
+                        <label class="consent-form-label" data-i18n="form.suffixList">
+                            Suffix<span></span>
+                        </label>
+                    </div>
+                    <select name="NameSuffix" class="form-control" id="CSNameSuffix">
                         <option value="" data-i18n="form.selectOption">-Select-</option>
                         <option value="${fieldMapping.suffixValue.jr}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.jr).replace('.', '')}">${suffixToTextMapDropdown.get(fieldMapping.suffixValue.jr)}</option>
                         <option value="${fieldMapping.suffixValue.sr}" data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(fieldMapping.suffixValue.sr).replace('.', '')}">${suffixToTextMapDropdown.get(fieldMapping.suffixValue.sr)}</option>
@@ -683,10 +678,14 @@ const consentSignTemplate = () => {
                     <br>
                 </div>
             </div>
-            <div class="row" style="width:80%; margin:auto; padding-left:0px; padding-right:0px" data-i18n="agreements.navButtons">
-                <button class="btn btn-primary consentPrevButton" type="button" id="backToAgreements" style="float:left;">Back</button>
-                <div class="ml-auto">
-                    <button type="submit" class="btn btn-primary save-data consentNextButton">Sign and Submit</button>
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-12">
+                        <div class="d-flex flex-column flex-sm-row justify-content-between gap-3" data-i18n="agreements.navButtons">
+                            <button class="btn btn-primary consentPrevButton w-100 w-sm-auto me-sm-5" type="button" id="backToAgreements">Back</button>
+                            <button type="submit" class="btn btn-primary save-data consentNextButton w-100 w-sm-auto ms-sm-5">Sign and Submit</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

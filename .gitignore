@@ -3,6 +3,10 @@ temp
 .DS_Store
 .hintrc
 .eslintrc.js
+eslint.config.mjs
 connectApp-translation
 node_modules/
 local-dev/
+npm-debug.log*
+package.json
+package-lock.json

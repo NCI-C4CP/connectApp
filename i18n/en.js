@@ -69,7 +69,7 @@ const en = {
         "notFoundTitle": "Not Found",
         "accountNotFoundemail": "Your email (",
         "accountNotFoundphonenumber": "Your phone (",
-        "accountNotFoundEnd": ") cannot be found.",
+        "accountNotFoundemailEnd": ") cannot be found.",
         "signInTrouble": "If you’re having trouble signing in or don’t remember your account information, please contact the Connect Support Center at <a href=\"tel:+18664626621\">1-866-462-6621</a> or <a href=\"mailto:ConnectStudy@norc.org\">ConnectStudy@norc.org</a> before creating a new account.",
         "anotherAccount": "Use another account? ",
         "anotherAccountClick": "Click here",
@@ -98,10 +98,33 @@ const en = {
         "preferredNameField": {
             "placeholder": "Enter preferred name"
         },
+        "formerNameSubHeader": "Former Names",
+        "formerNameIntroduction": "Former names are other name(s) you have used in the past for paperwork and administrative purposes (for example, legal name changes, unmarried or “maiden name”, married name). We collect this information so that we can match information we collect from other sources, like state health registries, to you.",
+        "formerNameCategoryDefaultOption":"-- Select --",
+        "formerNameCategoryOption":{
+            "first" : "First",
+            "middle" : "Middle",
+            "last" : "Last",
+        },
+        "formerNameCategoryTitle": "Name Category",
+        "formerNameValueTitle": "Former Name",
+        "formerNameValue": {
+            "placeholder": "Enter former name",
+            "data-error-validation":"Your former name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters."
+        },
+        "formerNameCategory": {
+            "data-error-required": "Please choose a name category. If you do not have a name to enter, please remove text from Former Name textbox"
+        },
+        "addMoreFormerName": {
+            "title": "Add more email",
+            "innerHTML": "Add more <i class=\"fas fa-plus\"></i>"
+        },
         "birthDateSubHeader": "Date of Birth",
+        "birthPlaceSubHeader": "Place of Birth",
         "monthListLabel": "Month <span class=\"required\">*</span>",
+        "monthListLabelNotRequired": "Month",
         "monthListRequired": {
-            "data-error-required": "Please select your birth month."
+            "data-error-required": "Please complete required Date of Birth fields"
         },
         "monthJanuary": "January",
         "monthFebruary": "February",
@@ -116,15 +139,41 @@ const en = {
         "monthNovember": "November",
         "monthDecember": "December",
         "dayListLabel": "Day <span class=\"required\">*</span>",
+        "dayListLabelNotRequired": "Day",
         "dayListRequired": {
-            "data-error-required": "Please select your birth day."
+            "data-error-required": "Please complete required Date of Birth fields"
         },
         "yearListLabel": "Year <span class=\"required\">*</span>",
+        "yearListLabelNotRequired": "Year",
         "yearListField": {
-            "data-error-required": "Please select your birth year.",
+            "data-error-required": "Please complete required Date of Birth fields",
             "data-error-validation": "The year you entered is outside of our expected range. Please check your entry.",
             "title": "Birth year, must be in 1900s",
             "placeholder": "Enter birth year"
+        },
+        "yearListFieldConfirmation": {
+            "placeholder": "Re-enter birth year",
+            "data-error-confirmation":"Both the Year values do not match "
+        },
+        "monthFieldConfirmation": {
+            "data-error-confirmation":"Both the Month values do not match"
+        },
+        "dayFieldConfirmation": {
+            "data-error-confirmation":"Both the Day values do not match "
+        },
+        "birthPlaceIntroduction": "We collect this information so that we can match information we collect from other sources, like state health registries, to you.",
+        "dobConfirmation": "Please confirm your date of birth by re-entering your information.",
+        "cityOfBirth":{
+            "title": "City",
+            "placeholder": "Enter City"
+        },
+        "stateOfBirth":{
+            "title": "State",
+            "placeholder": "Enter State"
+        },
+            "countryOfBirth":{
+            "title": "Country",
+            "placeholder": "Enter Country"
         },
         "contactSubheader": "Contact Information",
         "preferredEmail": "Preferred Email <span class=\"required\">*</span>",
@@ -178,6 +227,7 @@ const en = {
         "alternateContactPhoneNumberField": {
             "placeholder": "Enter phone number"
         },
+        "addresses": "Addresses",
         "mailAddress": "Mailing Address",
         "mailAddressLine1Label": "Line 1 (street, PO box, rural route)",
         "mailAddressLine1LabelRequired": "Line 1 (street, PO box, rural route) <span class=\"required\">*</span>",
@@ -199,6 +249,7 @@ const en = {
         "mailAddressStateLabelRequired": "State <span class=\"required\">*</span>",
         "mailAddressStateRequired": "Please select the state field of your mailing address.",
         "selectOption": "-- Select --",
+        "selectOptionConfirmation": "-- Re-select month --",
         "mailAddressZipLabel": "Zip ",
         "mailAddressZipLabelRequired": "Zip <span class=\"required\">*</span>",
         "mailAddressZipField": {
@@ -206,8 +257,12 @@ const en = {
             "title": "5 characters long, numeric-only value.",
             "data-error-required": "Please enter the zip field of your mailing address."
         },
+        "isPOBoxChecked": "Please check if mailing address is a P.O. Box",
         "mailAddressCountry": "Country ",
-        "mailAddressCountryRequired": "Country <span class=\"required\">*</span>"
+        "mailAddressCountryRequired": "Country <span class=\"required\">*</span>",
+        "physicalAddress": "Physical Address (if different from Mailing Address)",
+        "physicalAddressDesc":"Physical address is needed so Connect can mail you packages via FedEx for some study activities. FedEx does not deliver to P.O. Boxes.",
+
     },
     "navbar": {
         "dashboardLink": " Dashboard",
@@ -263,7 +318,7 @@ const en = {
         "firstName": "First name <span class=\"required\">*</span>",
         "middleName": "Middle name",
         "lastName": "Last name<span class=\"required\">*</span>",
-        "navButtons": "<button class=\"btn btn-primary consentPrevButton\" type=\"button\" id=\"backToAgreements\" style=\"float:left;\">Back</button><div class=\"ml-auto\"><button type=\"submit\" class=\"btn btn-primary save-data consentNextButton\">Sign and Submit</button></div>"
+        "navButtons": "<button class=\"btn btn-primary consentPrevButton w-100 w-sm-auto me-sm-5\" type=\"button\" id=\"backToAgreements\">Back</button><button type=\"submit\" class=\"btn btn-primary save-data consentNextButton w-100 w-sm-auto ms-sm-5\">Sign and Submit</button>"
     },
     "consent": {
         "list0": "Welcome",
@@ -552,11 +607,13 @@ const en = {
             "innerText": "Download a copy of your signed health records release form "
         },
         "profilePageHeader": "Thank you for your interest in the Connect for Cancer Prevention Study",
-        "profilePageBody": "Thank you for completing the consent process. We need some more information about you to confirm that you can be part of the study. After you complete this step, we will use the information you share to check your eligibility and contact you within a few business days. We respect your privacy and protect the personal information you share with us.<br>If you have any questions, please contact the <a href=\"https://norcfedramp.servicenowservices.com/recruit\" target=\"_blank\">Connect Support Center</a>."
+        "profilePageBody": ` Thank you for completing the consent process. We need some more information about you to confirm that you can be part of the study. After you complete this step, the Connect team at your health care system will use the information you share to check your eligibility.<br><br>
+        Please enter your information carefully to ensure it is correct. This will help your healthcare system match it to your medical record and confirm your eligibility for Connect. If your healthcare system is unable to find a match, it might take longer to confirm your participation. After we confirm your eligibility for Connect, we’ll use the information you share to match any information we collect from other sources, like state health registries, to you. <br><br>
+        We will contact you within a few business days. We respect your privacy and protect the personal information you share with us. If you have questions, please contact the Connect Support Center at <a href="https://myconnect.cancer.gov/support" target="_blank">MyConnect.cancer.gov/support</a>.`
     },
     "footer": {
         "Questions": "HAVE QUESTIONS?",
-        "nci-dceg": "<div class=\"dceg-footer align-left text-center text-sm-left\">Division of Cancer Epidemiology and Genetics</div><div class=\"nci-dceg-footer align-left text-center text-sm-left\">at the National Cancer Institute</div>",
+        "nci-dceg": "<div class=\"dceg-footer align-left text-center text-sm-center\">Division of Cancer Epidemiology and Genetics</div><div class=\"nci-dceg-footer align-left text-center text-sm-center\">at the National Cancer Institute</div>",
         "contactLink": "<a class=\"footer-links\" target=\"__blank\" href=\"https://norcfedramp.servicenowservices.com/recruit\">Contact the Connect Support Center</a>",
         "emailUs": "<a class=\"footer-links\" href=\"mailto:ConnectStudy@norc.org\">Email Us</a>",
         "policies": "POLICIES",
@@ -681,7 +738,9 @@ const en = {
         "mainBodyPROMISHeader": "Quality of Life Survey",
         "mainBodyPROMISDescription": "Questions about your physical, social, and mental health.",
         "mainBodyExperience2024Header": "2024 Connect Experience Survey",
-        "mainBodyExperience2024Description": "Questions about your experience with Connect and your preferences for completing study activities, using MyConnect, and getting messages."
+        "mainBodyExperience2024Description": "Questions about your experience with Connect and your preferences for completing study activities, using MyConnect, and getting messages.",
+        "mainBodyCancerScreeningHistoryHeader": "Cancer Screening History Survey",
+        "mainBodyCancerScreeningHistoryDescription": "Questions about past tests you may have had to screen for cancer. These are tests that look for cancer in people without symptoms.",
     },
     "notifications": {
         "read": "Read",
@@ -776,20 +835,20 @@ const en = {
         "sanford": {
             "donatingSamples": "As part of Connect, we ask you to donate blood, urine, and saliva samples and complete a short survey.",
             "whenToDonate": "The Connect team will send a MyChart message when it is time to donate your samples. If you do not have a MyChart account, we will send you an email. Be sure to check your spam or junk folder. After you receive the MyChart message or email, it is important to donate your samples as soon as you can.<br><br><span style=\"font-weight:900; text-decoration:underline\">Note:</span> If you have recently had a blood transfusion or donated blood, please wait at least <span class=\"site-info-bold\">eight weeks</span> from your donation or transfusion before donating your samples for Connect. If you have recently donated plasma, please wait at least <span class=\"site-info-bold\">two days</span> from your plasma donation before donating samples for Connect. If you have an upcoming colonoscopy, please be sure that you <span class=\"site-info-bold\">do not</span> donate samples for Connect on the <span class=\"site-info-bold\">same day</span> as your colonoscopy.",
-            "howToDonate": "Connect participants at Sanford Health have two options for donating samples. You can choose the most convenient option for you.<br><br> Option 1: Sanford Health Lab Location <br><br> Once you receive our message, you may walk in to donate samples at any participating <span class=\"site-info-bold\">Sanford Health Lab Location</span> during normal hours of operation*. <span class=\"site-info-bold\">You do not need to schedule an appointment</span>. You are welcome to donate your samples for Connect at the same time as any prescheduled medical appointments to save you a trip to the lab. <br><br> <span style=\"font-weight:900; text-decoration:underline\">*Note:</span>  If you live in the Bismarck region, the Sanford lab team prefers you pre-schedule an appointment. You can do this within your MyChart or by calling the lab directly.<br><br> Option 2: Connect Research Lab <br><br>  <span class=\"site-info-bold\">Make an appointment</span> to come into one of our <span class=\"site-info-bold\">Connect Research Labs</span> to donate your samples. <br><br> The table below includes more information about these options. <br><br><table style=\"border: 1px solid\"><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; text-align: center\"></td><td style=\"border: 1px solid; text-align: center\">Option 1: Sanford Health Lab Location </td><td style=\"border: 1px solid; text-align: center\">Option 2: Connect Research Lab </td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; text-align: center\">Will I see a Connect staff member at the clinic?</td><td style=\"border: 1px solid; text-align: center\">No</td><td style=\"border: 1px solid; text-align: center\">Yes</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; text-align: center\">Connect samples collected </td><td style=\"border: 1px solid; text-align: center\">Blood <br> Urine <br> Mouthwash home collection kit <br> mailed to you to complete your saliva sample at home </td> +<td style=\"border: 1px solid; text-align: center\">Blood<br>Urine<br>Saliva</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; text-align: center\">Do I need to schedule an appointment ahead of time?</td><td style=\"border: 1px solid; text-align: center\">Fargo, Sioux Falls, and Bemidji regions: No <br><br>Bismarck region: Preferred, but not required</td><td style=\"border: 1px solid; text-align: center\">Yes</td></tr></table>",
+            "howToDonate": "Connect participants at Sanford Health have two options for donating samples. You can choose the most convenient option for you.<br><br> <span class=\"messagesHeaderFont\">Option 1: Sanford Health Lab Location</span> <br><br> Once you receive our message, you may walk in to donate samples at any participating <span class=\"site-info-bold\">Sanford Health Lab Location</span> during normal hours of operation*. <span class=\"site-info-bold\">You do not need to schedule an appointment</span>. You are welcome to donate your samples for Connect at the same time as any prescheduled medical appointments to save you a trip to the lab. <br><br> <span style=\"font-weight:900; text-decoration:underline\">*Note: If you live in the Bismarck region, the Sanford lab team prefers you pre-schedule an appointment. You can do this within your MyChart or by calling the lab directly.</span> <br><br> <span class=\"messagesHeaderFont\">Option 2: Connect Research Lab</span> <br><br> <span class=\"site-info-bold\">Make an appointment</span> to come into one of our <span class=\"site-info-bold\">Connect Research Labs</span> to donate your samples. <br><br> The table below includes more information about these options. <br><br><table id=\"donateMySamplesTable\" style=\"border: 1px solid\"><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; text-align: center\"></td><td style=\"border: 1px solid; text-align: center\"><span class=\"site-info-bold\">Option 1: Sanford Health Lab Location</span> </td><td style=\"border: 1px solid; text-align: center\"><span class=\"site-info-bold\">Option 2: Connect Research Lab</span> </td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; text-align: center\"><span class=\"site-info-bold\">Will I see a Connect staff member at the clinic?</span></td><td style=\"border: 1px solid; text-align: center\">No</td><td style=\"border: 1px solid; text-align: center\">Yes</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; text-align: center\"><span class=\"site-info-bold\">Connect samples collected</span> </td><td style=\"border: 1px solid; text-align: center\">Blood <br> Urine <br> Mouthwash home collection kit <br> mailed to you to complete your saliva sample at home </td> <td style=\"border: 1px solid; text-align: center\">Blood<br>Urine<br>Saliva</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; text-align: center\"><span class=\"site-info-bold\">Do I need to schedule an appointment ahead of time?</span></td><td style=\"border: 1px solid; text-align: center\">Fargo, Sioux Falls, and Bemidji regions: No <br><br>Bismarck region: Preferred, but not required</td><td style=\"border: 1px solid; text-align: center\">Yes</td></tr></table>",
             "scheduling": "We will send scheduling information through your MyChart or by email.<br><br>For questions, please call 605-312-6100 or email <a href=\"mailto: connectstudy@sanfordhealth.org\">ConnectStudy@sanfordhealth.org</a>.",
-            "howLong": "Option 1: Sanford Health Lab Location<br><br> Wait times to donate samples may vary by location. You may walk in any time the lab is open; however, please note that walking in outside of normal business hours (Monday – Friday 8:00am to 5:00pm) may lead to longer wait times.<br><br> Please expect to spend about 10-15 minutes at your visit to donate your blood and urine samples. <br><br> Option 2: Connect Research Lab<br><br> Please expect to spend about 30 minutes at your appointment to donate your samples and complete a short survey.",
-            "prepareInstructions": "Option 1: Sanford Health Lab Location <br><br> On the day of your appointment, you do not need to fast. Please drink plenty of water to keep hydrated.<br><br><span class=\"site-info-bold\">Things to bring and remember:</span><br><br><ul><li>Please bring a valid government-issued photo ID, such as a driver's license. </li><li>After your appointment: <ul><li>Be sure to check your email for a link to a survey to complete on MyConnect. The survey asks questions about the day you donated samples, so it is important to complete it as soon as you can. </li><li>We will email you when we ship your mouthwash home collection kit. Please use this kit and included instructions to collect your mouthwash sample at home. </li></ul></li></ul><br> Option 2: Connect Research Lab <br><br> On the day of your appointment, you do not need to fast. <span class=\"site-info-bold\"> One hour before your appointment</span>: Please <span class=\"site-info-bold\">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth. <br><br><span class=\"site-info-bold\">Things to bring and remember:</span><br><br><ul><li>Make sure you know your login information for MyConnect. </li><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:  <ul><li>The last time you ate or drank before your appointment, and the times you went to sleep the night before your appointment and woke up on the day of your appointment. </li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.  </li></ul></li></ul>",
-            "whatHappens": "Option 1: Sanford Health Lab Location <br><br> Check in at the registration desk when you arrive. Lab staff will collect blood and urine samples during your visit.<br><br> After your visit, please remember to check your email for a survey to complete on MyConnect. The survey asks questions about the day you donated samples, so please complete it as soon as you can. <br><br> Option 2: Connect Research Lab <br><br> Check in at the registration desk. The registration team will direct you where to go next to get your samples collected. At the end of your visit, the Connect team will check you out of your appointment. <br><br> We will draw a blood sample, collect a urine sample, and collect a saliva sample by asking you to swish with mouthwash.<br><br> We will also ask you to complete a short survey on MyConnect using your mobile phone. You will need your MyConnect login information to complete the survey. If you do not have a mobile phone, we may be able to provide you with a tablet to complete your survey.<br><br> We strongly encourage you to complete your survey at your appointment. If you choose to complete it after you leave your appointment, it is important to do so as soon as possible.<br><br> <div class=\"consentHeadersFont\" style=\"color:#606060;width:100%\">When Will I Receive My $25 Payment?</div><br>You will receive your $25 gift card  after you donate a blood sample and complete <span class=\"site-info-bold\">all four sections</span> of your first Connect survey.<br><br>You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<ol><li>Background and Overall Health</li><li>Medications, Reproductive Health, Exercise, and Sleep</li><li>Smoking, Alcohol, and Sun Exposure</li><li>Where you Live and Work</li></ol>",
+            "howLong": "<br><span class=\"messagesHeaderFont\">Option 1: Sanford Health Lab Location</span> <br><br> Wait times to donate samples may vary by location. You may walk in any time the lab is open; however, please note that walking in outside of normal business hours (Monday – Friday 8:00am to 5:00pm) may lead to longer wait times.<br><br> Please expect to spend about 10-15 minutes at your visit to donate your blood and urine samples. <br><br> <span class=\"messagesHeaderFont\">Option 2: Connect Research Lab</span><br><br> Please expect to spend about 30 minutes at your appointment to donate your samples and complete a short survey.",
+            "prepareInstructions": "<br><span class=\"messagesHeaderFont\">Option 1: Sanford Health Lab Location </span><br><br> On the day of your appointment, you do not need to fast. Please drink plenty of water to keep hydrated.<br><br><span class=\"site-info-bold\">Things to bring and remember:</span><br><br><ul><li>Please bring a valid government-issued photo ID, such as a driver's license. </li><li>After your appointment: <ul><li>Be sure to check your email for a link to a survey to complete on MyConnect. The survey asks questions about the day you donated samples, so it is important to complete it as soon as you can. </li><li>We will email you when we ship your mouthwash home collection kit. Please use this kit and included instructions to collect your mouthwash sample at home. </li></ul></li></ul><br> <span class=\"messagesHeaderFont\">Option 2: Connect Research Lab <br><br> </span>On the day of your appointment, you do not need to fast.  <span class=\"site-info-bold\"> One hour before your appointment</span>: Please <span class=\"site-info-bold\">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth. <br><br><span class=\"site-info-bold\">Things to bring and remember:</span><br><br><ul><li>Make sure you know your login information for MyConnect. </li><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:  <ul><li>The last time you ate or drank before your appointment, and the times you went to sleep the night before your appointment and woke up on the day of your appointment. </li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.  </li></ul></li></ul>",
+            "whatHappens": "<br><span class=\"messagesHeaderFont\">Option 1: Sanford Health Lab Location</span> <br><br> Check in at the registration desk when you arrive. Lab staff will collect blood and urine samples during your visit.<br><br> After your visit, please remember to check your email for a survey to complete on MyConnect. The survey asks questions about the day you donated samples, so please complete it as soon as you can. <br><br> <span class=\"messagesHeaderFont\">Option 2: Connect Research Lab </span><br><br> Check in at the registration or information desk. The registration team will direct you where to go next to get your samples collected. At the end of your visit, the Connect team will check you out of your appointment. <br><br> We will draw a blood sample, collect a urine sample, and collect a saliva sample by asking you to swish with mouthwash.<br><br> We will also ask you to complete a short survey on MyConnect using your mobile phone. You will need your MyConnect login information to complete the survey. If you do not have a mobile phone, we may be able to provide you with a tablet to complete your survey.<br><br> We strongly encourage you to complete your survey at your appointment. If you choose to complete it after you leave your appointment, it is important to do so as soon as possible.<br><br> <div class=\"consentHeadersFont\" style=\"color:#606060;width:100%\">When Will I Receive My $25 Payment?</div><br>You will receive your $25 gift card  after you donate a blood sample and complete <span class=\"site-info-bold\">all four sections</span> of your first Connect survey.<br><br>You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<ol><li>Background and Overall Health</li><li>Medications, Reproductive Health, Exercise, and Sleep</li><li>Smoking, Alcohol, and Sun Exposure</li><li>Where you Live and Work</li></ol>",
             "support": "Call 1-877-505-0253 (8:00 a.m.-10:00 p.m. CT on weekdays and 9:00 a.m.-6:00 p.m. CT on weekends)",
             "locations": {
-                "Option1": "<span>Option 1: Sanford Health Lab Location</span><br><br><span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; font-weight: 400; line-height: 27px; color: #2E2E2E; margin-top: 20px;\"> To find a Sanford Health Lab Location  and its operating hours, please visit <a href=\"https://www.sanfordhealth.org/locations\" target=\"_blank\">https://www.sanfordhealth.org/locations</a> <br><br>  Exact hours may vary by location. Walking in outside of normal business hours may lead to longer wait times. <br><br> Note: If you live in the Bismarck region, the Sanford lab team prefers you pre-schedule an appointment. You can do this within your MyChart or by calling the lab directly.</span>",
+                "Option1": "<span>Option 1: Sanford Health Lab Location</span><br><br><span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; font-weight: 400; line-height: 27px; color: #2E2E2E; margin-top: 20px;\"> To find a Sanford Health Lab Location  and its operating hours, please visit <a href=\"https://www.sanfordhealth.org/locations\" target=\"_blank\">https://www.sanfordhealth.org/locations</a> <br><br>  <span class=\"site-info-underline\">Exact hours may vary by location. Walking in outside of normal business hours may lead to longer wait times.</span> <br><br> <span class=\"site-info-underline\">Note: If you live in the Bismarck region, the Sanford lab team prefers you pre-schedule an appointment. You can do this within your MyChart or by calling the lab directly.</span>",
                 "Option2": "<span>Option 2: Connect Research Lab</span> <br><br> <span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; font-weight: 400; color: #2E2E2E; margin-top: 20px;\">Use the link in the message we send to your MyChart or email to schedule an appointment at one of the below locations. You may also schedule an appointment by calling the Connect team at 605-312-6100. <br><br>  Connect Research Lab appointments are available Monday – Thursday 7:00am – 4:00pm and Friday 7:00am – 2:00pm. If you would like to schedule outside of these hours, please contact the Connect team at 605-312-6100 or ConnectStudy@sanfordhealth.org. </span><span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; line-height: 27px; color: #2E2E2E; margin-top: 20px;\"></span>",
-                "SiouxFallsName": "Sioux Falls, SD: Sanford Imagenetics",
-                "SiouxFallsAddress": "1321 W. 22nd St.<br>Sioux Falls, SD 57104",
-                "SiouxFallsParking": "Free patient parking available is available in the lot near the front entrance--Door JJ. No parking validation needed.",
-                "FargoName": "Fargo, ND: South University Urgent Care/Orthopedic Walk-In Clinic",
-                "FargoAddress": "1720 University Drive S<br>Fargo, ND 58102<br>Enter Through Door #8",
+                "SiouxFallsName": "<span class=\"site-info-underline\">Sioux Falls, SD: Edith Breast Cancer Center</span>",
+                "SiouxFallsAddress": "1210 W. 18th St <br>Sioux Falls, SD 57104 <br><span class=\"site-info-italic\">Enter Through Door BB</span>",
+                "SiouxFallsParking": "Free valet parking is available near the front entrance of the Edith Breast Cancer Center. Free patient parking is also available in the lot on the corner of S Grange Ave and W 18th Street. Enter through door BB. No parking validation is needed.",
+                "FargoName": "<span class=\"site-info-underline\">Fargo, ND: South University Urgent Care/Orthopedic Walk-In Clinic</span>",
+                "FargoAddress": "1720 University Drive S<br>Fargo, ND 58102<br><span class=\"site-info-italic\">Enter Through Door #8</span>",
                 "FargoParking": "Free patient parking is available in the lot near the Urgent Care entrance—Door #8. No parking validation needed."
             }
         },
@@ -1038,6 +1097,7 @@ const en = {
         "failContactUpdate": "Contact Information Update Failed!",
         "chargesMayApply": "*Text message charges may apply",
         "mailAddress": "Mailing Address",
+        "physicalMailAddress": "Physical Mailing Address",
         "updateAddressText": "Update Address",
         "mailAddressLine1": "Line 1 (street, PO box, rural route) <span class=\"required\">*</span>",
         "mailAddressLine1Field": {
@@ -1176,6 +1236,7 @@ const en = {
     },
     "event": {
         "selectBirthDay": "-- Select birth day --",
+        "selectBirthDayConfirmation": "-- Re-select birth day --",
         "sureAboutProvider": "Are you sure ",
         "sureAboutProviderEnd": " is your healthcare provider?",
         "emailPlaceholder2": {
@@ -1254,6 +1315,7 @@ const en = {
         "city": "City",
         "state": "State",
         "zip": "Zip",
+        "poBox": "Mailing address is PO Box",
         "invasiveCancer": "Have you ever had invasive cancer?",
         "yearDiagnosed": "What year were you diagnosed?",
         "typeOfCancer": "What type of cancer did you have?",
@@ -1294,6 +1356,8 @@ const en = {
         "phoneRequired": "At least one phone number is required. Please enter at least one 10-digit phone number in this format: 999-999-9999.",
         "phoneFormat": "Please enter a 10-digit phone number in this format: 999-999-9999.",
         "emailFormat": "Please enter an email address in this format: name@example.com.",
+        "emailInvalid": "This email address is invalid. Please enter a valid email before continuing.",
+        "emailWarning": "Warning- this email address may be invalid. Please double check your entry before continuing.",
         "addressNotEmpty": "Address cannot be blank. Please enter your address.",
         "cityNotEmpty": "City must not be empty. Please select a City.",
         "stateNotEmpty": "State must not be empty. Please select a state.",
@@ -1317,7 +1381,7 @@ const en = {
         "fixesList": "<li>Check if the email was marked as spam or filtered.</li><li>Check your internet connection.</li><li>Check that you did not misspell your email.</li><li>Check that your inbox space is not running out or other inbox settings related issues.</li>",
         "resendEmail": "If the steps above didn't work, you can resend the email. Note that this will deactivate the link in the older email.",
         "resendText": "Resend",
-        "savingSpin": "<div class=\"spinner-border spinner-saving\" role=\"status\"><span class=\"sr-only\">Loading...</span></div> Saving",
+        "savingSpin": "<div class=\"spinner-border spinner-saving\" role=\"status\"><span class=\"visually-hidden\">Loading...</span></div> Saving",
         "stateAlabama": "Alabama",
         "stateAlaska": "Alaska",
         "stateArizona": "Arizona",
@@ -1646,8 +1710,9 @@ const en = {
         "modAtHomeMouthwashSampleSurvey": "At-Home Mouthwash Sample Survey",
         "modQualityofLifeSurvey": "Quality of Life Survey",
         "mod2024ConnectExperienceSurvey": "2024 Connect Experience Survey",
+        "modCancerScreeningHistorySurvey": "Cancer Screening History Survey",
         "sessionInactiveTitle": "Inactive",
-        "sessionInactive": "You were inactive for 20 minutes, would you like to extend your session?<div class=\"modal-footer\"><button type=\"button\" title=\"Close\" class=\"btn btn-dark log-out-user\" data-dismiss=\"modal\">Log Out</button><button type=\"button\" title=\"Continue\" class=\"btn btn-primary extend-user-session\" data-dismiss=\"modal\">Continue</button></div>",
+        "sessionInactive": "You were inactive for 20 minutes, would you like to extend your session?<div class=\"modal-footer\"><button type=\"button\" title=\"Close\" class=\"btn btn-dark log-out-user\" data-bs-dismiss=\"modal\">Log Out</button><button type=\"button\" title=\"Continue\" class=\"btn btn-primary extend-user-session\" data-bs-dismiss=\"modal\">Continue</button></div>",
         "homeTitle": "My Connect - Home",
         "dashboardTitle": "My Connect - Dashboard",
         "signInPhone": "Sign in with phone number"

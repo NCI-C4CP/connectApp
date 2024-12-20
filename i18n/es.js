@@ -99,10 +99,33 @@
         "preferredNameField": {
             "placeholder": "Ingrese el nombre de pila preferido"
         },
+        "formerNameSubHeader": "Nombres anteriores",
+        "formerNameIntroduction": "Los nombres anteriores son otros nombres que ha utilizado en el pasado en documentos y procesos administrativos (por ejemplo, cambios de nombre legal, apellido de soltera, apellido de casada). Recopilamos esta información para poder vincular la información que recopilamos de otras fuentes, como los registros de salud estatales, con la suya. ",
+        "formerNameCategoryDefaultOption":"-- Seleccionar --",
+        "formerNameCategoryOption":{
+            "first" : "Nombre",
+            "middle" : "Segundo Nombre",
+            "last" : "Apellido",
+        },
+        "formerNameCategoryTitle": "Categoría de nombre",
+        "formerNameValueTitle": "Nombre anterior",
+        "formerNameValue": {
+            "placeholder": "Ingrese el nombre anterior",
+            "data-error-validation":"Su antiguo nombre debe contener sólo letras mayúsculas y minúsculas. No utilice números ni caracteres especiales."
+        },
+        "formerNameCategory": {
+            "data-error-required": "Por favor, elija una categoría de nombre. Si no tiene un nombre para ingresar, por favor, elimine el texto del cuadro de texto Nombre anterior"
+        },
+        "addMoreFormerName": {
+            "title": "Agregar otra dirección de correo electrónico",
+            "innerHTML": "Agregar más <i class=\"fas fa-plus\"></i>"
+        },
         "birthDateSubHeader": "Fecha de nacimiento",
+        "birthPlaceSubHeader": "Lugar de nacimiento",
         "monthListLabel": "Mes <span class=\"required\">*</span>",
+        "monthListLabelNotRequired": "Mes",
         "monthListRequired": {
-            "data-error-required": "Seleccione su mes de nacimiento."
+            "data-error-required": "Por favor complete los campos requeridos de fecha de nacimiento"
         },
         "monthJanuary": "Enero",
         "monthFebruary": "Febrero",
@@ -117,15 +140,41 @@
         "monthNovember": "Noviembre",
         "monthDecember": "Diciembre",
         "dayListLabel": "Día <span class=\"required\">*</span>",
+        "dayListLabelNotRequired": "Día",
         "dayListRequired": {
-            "data-error-required": "Seleccione su día de nacimiento."
+            "data-error-required": "Por favor complete los campos requeridos de fecha de nacimiento"
         },
         "yearListLabel": " Año <span class=\"required\">*</span>",
+        "yearListLabelNotRequired": " Año",
         "yearListField": {
-            "data-error-required": "Seleccione su año de nacimiento.",
+            "data-error-required": "Por favor complete los campos requeridos de fecha de nacimiento",
             "data-error-validation": "El año que ha ingresado está fuera de los límites esperados. Por favor, revise sus datos.",
             "title": "Las dos primeras cifras del año de nacimiento deben ser 19",
             "placeholder": "Ingrese su año de nacimiento"
+        },
+        "yearListFieldConfirmation": {
+            "placeholder": "Vuelva a ingresar el año",
+            "data-error-confirmation":"Los valores de la fecha del año no coinciden"
+        },
+        "monthFieldConfirmation": {
+            "data-error-confirmation":"Los valores de los dos meses no coinciden"
+        },
+        "dayFieldConfirmation": {
+            "data-error-confirmation":"Los valores de los dos días no coinciden "
+        },
+        "birthPlaceIntroduction": "Recopilamos esta información para poder vincular la información que recopilamos de otras fuentes, como los registros de salud estatales, con la suya. ",
+        "dobConfirmation": "Por favor, confirme su fecha de nacimiento volviendo a ingresar su información.",
+        "cityOfBirth":{
+            "title": "Ciudad",
+            "placeholder": "Ingrese la ciudad"
+        },
+        "stateOfBirth":{
+            "title": "Estado",
+            "placeholder": "Ingrese la estado"
+        },
+        "countryOfBirth":{
+            "title": "País",
+            "placeholder": "Ingrese la país"
         },
         "contactSubheader": "Información de contacto",
         "preferredEmail": "Dirección de correo electrónico preferida <span class=\"required\">*</span>",
@@ -179,6 +228,7 @@
         "alternateContactPhoneNumberField": {
             "placeholder": "Ingrese el número de teléfono"
         },
+        "addresses": "Direcciones",
         "mailAddress": "Dirección postal",
         "mailAddressLine1Label": "Línea 1 (calle, apartado postal, ruta rural)",
         "mailAddressLine1LabelRequired": "Línea 1 (calle, apartado postal, ruta rural) <span class=\"required\">*</span>",
@@ -200,6 +250,7 @@
         "mailAddressStateLabelRequired": "Estado <span class=\"required\">*</span>",
         "mailAddressStateRequired": "Seleccione el campo de estado de su dirección postal.",
         "selectOption": "-- Seleccione --",
+        "selectOptionConfirmation": "-- Volver a seleccionar --",
         "mailAddressZipLabel": "Código postal ",
         "mailAddressZipLabelRequired": "Código postal <span class=\"required\">*</span>",
         "mailAddressZipField": {
@@ -207,8 +258,11 @@
             "title": "5 caracteres de longitud, solo valor numérico.",
             "data-error-required": "Ingrese el campo de código postal de su dirección postal."
         },
+        "isPOBoxChecked": "La dirección postal es PO Box",
         "mailAddressCountry": "País ",
-        "mailAddressCountryRequired": "País <span class=\"required\">*</span>"
+        "mailAddressCountryRequired": "País <span class=\"required\">*</span>",
+        "physicalAddress": "Dirección física (si es diferente de la dirección postal) ",
+        "physicalAddressDesc": "Se necesita una dirección física para que Connect pueda enviarle paquetes por FedEx para algunas actividades del estudio. FedEx no hace envíos a apartados postales. ",
     },
     "navbar": {
         "dashboardLink": " Panel",
@@ -264,7 +318,7 @@
         "firstName": "Nombre de pila <span class=\"required\">*</span>",
         "middleName": "Segundo nombre",
         "lastName": "Apellido<span class=\"required\">*</span>",
-        "navButtons": "<button class=\"btn btn-primary consentPrevButton\" type=\"button\" id=\"backToAgreements\" style=\"float:left;\">Atrás</button><div class=\"ml-auto\"><button type=\"submit\" class=\"btn btn-primary save-data consentNextButton\">Firmar y enviar</button></div>"
+        "navButtons": "<button class=\"btn btn-primary consentPrevButton w-100 w-sm-auto me-sm-5\" type=\"button\" id=\"backToAgreements\">Atrás</button><button type=\"submit\" class=\"btn btn-primary save-data consentNextButton w-100 w-sm-auto ms-sm-5\">Firmar y enviar</button>"
     },
     "consent": {
         "list0": "Le damos la bienvenida",
@@ -557,11 +611,13 @@
             "innerText": "Descargue una copia de su formulario firmado de divulgación de registros de salud "
         },
         "profilePageHeader": "Gracias por su interés en el Estudio Connect para la Prevención del Cáncer",
-        "profilePageBody": "Gracias por completar el proceso de consentimiento. Necesitamos más información sobre usted para confirmar que puede formar parte del estudio. Después de completar este paso, utilizaremos la información que nos haya dado para ver si cumple con los requisitos, y nos comunicaremos con usted luego de unos días hábiles. Respetamos su privacidad y protegemos la información personal que comparte con nosotros.<br/>Si tiene alguna pregunta, comuníquese con el <a href=\"https://norcfedramp.servicenowservices.com/recruit\" target=\"_blank\">Centro de Asistencia de Connect</a>."
+        "profilePageBody": `Gracias por completar el proceso de consentimiento. Necesitamos más información sobre usted para confirmar que puede participar en el estudio. Después de completar este paso, el equipo de Connect de su sistema de atención médica utilizará la información que nos haya dado para ver si cumple con los requisitos de participación. <br><br>
+        Ingrese la información con cuidado para asegurarse de que sea correcta. Eso ayudará a su sistema de atención médica a asignársela a su historia clínica y a confirmar que cumple con los requisitos para participar en Connect. Si su sistema de atención médica no puede encontrar una historia clínica que coincida con sus datos, es posible que tarde más en confirmar su participación. Una vez que confirmemos que cumple con los requisitos para participar en Connect, usaremos la información que comparta para vincular con usted toda información que reunamos de otras fuentes, como los registros de salud estatales.<br><br>
+        Nos pondremos en contacto con usted dentro de unos días hábiles. Respetamos su privacidad y protegemos la información personal que comparte con nosotros. Si tiene alguna pregunta, comuníquese con el Centro de Asistencia de Connect desde <a href="https://myconnect.cancer.gov/support" target="_blank">MyConnect.cancer.gov/support</a>.`
     },
     "footer": {
         "Questions": "¿TIENE ALGUNA PREGUNTA?",
-        "nci-dceg": "<div class=\"dceg-footer align-left text-center text-sm-left\">División de Epidemiología y Genética del Cáncer</div><div class=\"nci-dceg-footer align-left text-center text-sm-left\">del Instituto Nacional del Cáncer</div>",
+        "nci-dceg": "<div class=\"dceg-footer align-left text-center text-sm-center\">División de Epidemiología y Genética del Cáncer</div><div class=\"nci-dceg-footer align-left text-center text-sm-center\">del Instituto Nacional del Cáncer</div>",
         "contactLink": "<a class=\"footer-links\" target=\"__blank\" href=\"https://norcfedramp.servicenowservices.com/recruit\">Comuníquese con el Centro de Asistencia de Connect</a>",
         "emailUs": "<a class=\"footer-links\" href=\"mailto:ConnectAyuda@norc.org\">Escríbanos</a>",
         "policies": "POLÍTICAS",
@@ -686,7 +742,9 @@
         "mainBodyPROMISHeader": "Encuesta sobre calidad de vida",
         "mainBodyPROMISDescription": "Preguntas sobre su salud física, social y mental.",
         "mainBodyExperience2024Header": "2024 Encuesta Sobre Experiencia de Connect",
-        "mainBodyExperience2024Description": "Preguntas acerca de su experiencia con Connect, y sus preferencias para realizar actividades del estudio, utilizar MyConnect, y recibir mensajes."
+        "mainBodyExperience2024Description": "Preguntas acerca de su experiencia con Connect, y sus preferencias para realizar actividades del estudio, utilizar MyConnect, y recibir mensajes.",
+        "mainBodyCancerScreeningHistoryHeader":"Encuesta sobre historial de exámenes de detección de cáncer",
+        "mainBodyCancerScreeningHistoryDescription": "Preguntas sobre pruebas anteriores para detectar el cáncer. Se trata de pruebas que buscan cáncer en personas sin síntomas.",
     },
     "notifications": {
         "read": "Leídos",
@@ -781,20 +839,20 @@
         "sanford": {
             "donatingSamples": "Como parte de Connect, le pedimos que done muestras de sangre, orina y saliva, y que complete una breve encuesta.",
             "whenToDonate": "El equipo de Connect le enviará un mensaje por MyChart cuando llegue el momento de donar sus muestras. Si no tiene cuenta de MyChart, le escribiremos por correo electrónico. Asegúrese de revisar su carpeta de correo no deseado o basura. Es importante que done sus muestras lo antes posible después de recibir el mensaje de texto de MyChart o por correo electrónico.<br/><br/><span style=\"font-weight:900; text-decoration:underline\">Nota:</span> Si hace poco tiempo se le ha hecho una transfusión de sangre o ha donado sangre, espere al menos <span class=\"site-info-bold\">ocho semanas</span> desde su última donación o transfusión antes de donar muestras para Connect. Si ha donado plasma hace poco, espere al menos <span class=\"site-info-bold\">dos días</span> desde su donación de plasma antes de donar muestras para Connect. Si van a hacerle una colonoscopia dentro de poco tiempo, asegúrese de <span class=\"site-info-bold\">no</span> donar muestras para Connect el <span class=\"site-info-bold\">mismo día</span> de la colonoscopia.",
-            "howToDonate": "Los participantes de Connect que pertenecen a Sanford Health tienen dos opciones para donar muestras. Usted puede elegir la que más le convenga.<br/><br/> Opción 1: Centro del Laboratorio de Sanford Health <br/><br/> Una vez que reciba nuestro mensaje, puede venir a donar muestras en cualquier <span class=\"site-info-bold\">laboratorio de Sanford Health</span> participante durante el horario normal de atención*. <span class=\"site-info-bold\">No es necesario que pida una cita</span>. Para ahorrarse un viaje al laboratorio, puede donar sus muestras para Connect durante cualquier cita médica que ya haya programado. <br/><br/> <span style=\"font-weight:900; text-decoration:underline\">*Nota:</span> Si vive en la región de Bismarck, el equipo del laboratorio de Sanford prefiere que programe una cita antes de ir. Para hacerlo, utilice MyChart o llame directamente al laboratorio.<br/><br/> Opción 2: Laboratorio de investigación de Connect <br/><br/> <span class=\"site-info-bold\">Pida una cita</span> para ir a uno de nuestros <span class=\"site-info-bold\">laboratorios de investigación de Connect</span> y donar sus muestras. <br/><br/> La siguiente tabla incluye más información sobre estas opciones. <br/><br/><table style=\"border: 1px solid\"><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; text-align: center\"></td><td style=\"border: 1px solid; text-align: center\">Opción 1: Laboratorio de Sanford Health </td><td style=\"border: 1px solid; text-align: center\">Opción 2: Laboratorio de investigación de Connect </td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; text-align: center\">¿Veré a un miembro del personal de Connect en la clínica?</td><td style=\"border: 1px solid; text-align: center\">No</td><td style=\"border: 1px solid; text-align: center\">Sí</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; text-align: center\">Muestras que se toman para Connect </td><td style=\"border: 1px solid; text-align: center\">Sangre <br/> Orina <br/> Kit de recolección en el hogar de enjuague bucal <br/> que se le envió para que tome una muestra de saliva en su casa </td> +<td style=\"border: 1px solid; text-align: center\">Sangre<br/>Orina<br/>Saliva</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; text-align: center\">¿Debo pedir una cita antes de ir?</td><td style=\"border: 1px solid; text-align: center\">Regiones de Fargo, Sioux Falls y Bemidji: No <br/><br/>Región de Bismarck: Se prefiere, pero no es obligatorio</td><td style=\"border: 1px solid; text-align: center\">Sí</td></tr></table>",
+            "howToDonate": "Los participantes de Connect que pertenecen a Sanford Health tienen dos opciones para donar muestras. Usted puede elegir la que más le convenga.<br/><br/> <span class=\"messagesHeaderFont\">Opción 1: Centro del Laboratorio de Sanford Health</span> <br/><br/> Una vez que reciba nuestro mensaje, puede venir a donar muestras en cualquier <span class=\"site-info-bold\">laboratorio de Sanford Health</span> participante durante el horario normal de atención*. <span class=\"site-info-bold\">No es necesario que pida una cita</span>. Para ahorrarse un viaje al laboratorio, puede donar sus muestras para Connect durante cualquier cita médica que ya haya programado. <br/><br/> <span style=\"font-weight:900; text-decoration:underline\">*Nota: Si vive en la región de Bismarck, el equipo del laboratorio de Sanford prefiere que programe una cita antes de ir. Para hacerlo, utilice MyChart o llame directamente al laboratorio.</span><br/><br/> <span class=\"messagesHeaderFont\">Opción 2: Laboratorio de investigación de Connect</span> <br/><br/> <span class=\"site-info-bold\">Pida una cita</span> para ir a uno de nuestros <span class=\"site-info-bold\">laboratorios de investigación de Connect</span> y donar sus muestras. <br/><br/> La siguiente tabla incluye más información sobre estas opciones. <br/><br/><table id=\"donateMySamplesTable\"style=\"border: 1px solid\"><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; text-align: center\"></td><td style=\"border: 1px solid; text-align: center\"><span class=\"site-info-bold\">Opción 1: Laboratorio de Sanford Health</span> </td><td style=\"border: 1px solid; text-align: center\"><span class=\"site-info-bold\">Opción 2: Laboratorio de investigación de Connect</span> </td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; text-align: center\"><span class=\"site-info-bold\">¿Veré a un miembro del personal de Connect en la clínica?</span></td><td style=\"border: 1px solid; text-align: center\">No</td><td style=\"border: 1px solid; text-align: center\">Sí</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; text-align: center\"><span class=\"site-info-bold\">Muestras que se toman para Connect</span> </td><td style=\"border: 1px solid; text-align: center\">Sangre <br/> Orina <br/> Kit de recolección en el hogar de enjuague bucal <br/> que se le envió para que tome una muestra de saliva en su casa </td> <td style=\"border: 1px solid; text-align: center\">Sangre<br/>Orina<br/>Saliva</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; text-align: center\"><span class=\"site-info-bold\">¿Debo pedir una cita antes de ir?</span></td><td style=\"border: 1px solid; text-align: center\">Regiones de Fargo, Sioux Falls y Bemidji: No <br/><br/>Región de Bismarck: Se prefiere, pero no es obligatorio</td><td style=\"border: 1px solid; text-align: center\">Sí</td></tr></table>",
             "scheduling": "Le enviaremos la información de programación de citas por MyChart o por correo electrónico.<br/><br/>Si tiene preguntas, llame al 605-312-6100 o escriba a <a href=\"mailto: connectstudy@sanfordhealth.org\">ConnectStudy@sanfordhealth.org</a>.",
-            "howLong": "Opción 1: Laboratorio de Sanford Health<br/><br/> Los tiempos de espera para donar muestras pueden variar según el laboratorio. Puede ir a cualquier hora que el laboratorio esté abierto, pero tenga en cuenta que si va fuera del horario de trabajo normal (de lunes a viernes de 8:00 a. m. a 5:00 p. m.), los tiempos de espera podrían ser más largos.<br/><br/> Espere dedicar entre 10 y 15 minutos a su visita para donar las muestras de sangre y orina. <br/><br/> Opción 2: Laboratorio de investigación de Connect<br/><br/> Espere dedicar unos 30 minutos a su cita para donar muestras y completar una breve encuesta.",
-            "prepareInstructions": "Opción 1: Laboratorio de Sanford Health <br/><br/> El día de la cita, no es necesario que haga ayuno. Beba mucha agua para mantenerse hidratado.<br/><br/><span class=\"site-info-bold\">Qué debe llevar y recordar:</span><br/><br/><ul><li>Traiga un documento de identidad válido con foto emitido por el gobierno (por ejemplo, la licencia de conducir). </li><li>Después de la cita: <ul><li>No olvide buscar en su casilla de correo electrónico un enlace a una encuesta que debe completar en MyConnect. La encuesta tiene preguntas sobre el día que donó las muestras, por eso es importante que la complete lo antes posible. </li><li>Cuando enviemos su kit de recolección de enjuague bucal en el hogar, le escribiremos por correo electrónico. Utilice este kit y las instrucciones incluidas para tomar la muestra de enjuague bucal en su casa. </li></ul></li></ul><br/> Opción 2: Laboratorio de investigación de Connect <br/><br/> El día de la cita, no es necesario que haga ayuno. <span class=\"site-info-bold\"> Una hora antes de la cita</span>: <span class=\"site-info-bold\">No</span> coma, no beba ningún líquido (ni siquiera agua) ni masque chicle, fume, vapee o masque producto alguno (incluido tabaco), no se enjuague la boca ni se cepille los dientes. <br/><br/><span class=\"site-info-bold\">Qué debe llevar y recordar:</span><br/><br/><ul><li>Asegúrese de conocer el nombre de usuario y la contraseña de MyConnect. </li><li>Cuando done sus muestras, le pediremos que complete una breve encuesta. Puede ser útil tener esta información a mano:  <ul><li>La última vez que comió o bebió antes de su cita, y la hora a la que se fue a dormir la noche anterior a la cita y a la que se despertó el día de la cita. </li><li>Si está menstruando, la fecha de inicio de su período menstrual más reciente en los últimos 12 meses.  </li></ul></li></ul>",
-            "whatHappens": "Opción 1: Laboratorio de Sanford Health <br/><br/> Anúnciese en el mostrador de registro al llegar. Durante su visita, el personal del laboratorio le tomará muestras de sangre y orina.<br/><br/> Después de la visita, recuerde buscar en su casilla de correo electrónico un enlace a una encuesta que debe completar en MyConnect. La encuesta contiene preguntas sobre el día que donó las muestras, así que complétela lo antes posible. <br/><br/> Opción 2: Laboratorio de investigación de Connect <br/><br/> Anúnciese en el mostrador de registro. El equipo de registro le indicará a dónde ir para que le tomen las muestras. Al final de su visita, el equipo de Connect le dará el alta de la cita. <br/><br/> Tomaremos una muestra de sangre y una muestra de orina, y le pediremos que haga buches con enjuague bucal para tomar una muestra de saliva.<br/><br/> También le pediremos que complete una breve encuesta en MyConnect con su teléfono celular. Para completar la encuesta, necesitará su información de inicio de sesión de MyConnect. Si no tiene teléfono celular, quizá podamos darle una tableta electrónica para completar la encuesta.<br/><br/> Le rogamos que complete la encuesta durante su cita. Si decide completarla después de terminada la cita, es importante que lo haga lo antes posible.<br/><br/> <div class=\"consentHeadersFont\" style=\"color:#606060;width:100%\">¿Cuándo recibiré mi pago de $25?</div><br/>Recibirá su tarjeta de regalo de regalo de $25 después de donar una muestra de sangre y completar <span class=\"site-info-bold\">las cuatro secciones</span> de su primera encuesta de Connect.<br/><br/>Puede encontrar las cuatro secciones de su primera encuesta en su panel de MyConnect. Las secciones son las siguientes:<ol><li>Antecedentes y estado general de salud</li><li>Medicamentos, salud reproductiva, ejercicio y sueño</li><li>Tabaquismo, alcohol y exposición al sol</li><li>Dónde vive y trabaja</li></ol>",
+            "howLong": "<br><span class=\"messagesHeaderFont\">Opción 1: Laboratorio de Sanford Health</span><br/><br/> Los tiempos de espera para donar muestras pueden variar según el laboratorio. Puede ir a cualquier hora que el laboratorio esté abierto, pero tenga en cuenta que si va fuera del horario de trabajo normal (de lunes a viernes de 8:00 a. m. a 5:00 p. m.), los tiempos de espera podrían ser más largos.<br/><br/> Espere dedicar entre 10 y 15 minutos a su visita para donar las muestras de sangre y orina. <br/><br/> <span class=\"messagesHeaderFont\">Opción 2: Laboratorio de investigación de Connect</span><br/><br/> Espere dedicar unos 30 minutos a su cita para donar muestras y completar una breve encuesta.",
+            "prepareInstructions": "<br><span class=\"messagesHeaderFont\">Opción 1: Laboratorio de Sanford Health</span><br/><br/> El día de la cita, no es necesario que haga ayuno. Beba mucha agua para mantenerse hidratado.<br/><br/><span class=\"site-info-bold\">Qué debe llevar y recordar:</span><br/><br/><ul><li>Traiga un documento de identidad válido con foto emitido por el gobierno (por ejemplo, la licencia de conducir). </li><li>Después de la cita: <ul><li>No olvide buscar en su casilla de correo electrónico un enlace a una encuesta que debe completar en MyConnect. La encuesta tiene preguntas sobre el día que donó las muestras, por eso es importante que la complete lo antes posible. </li><li>Cuando enviemos su kit de recolección de enjuague bucal en el hogar, le escribiremos por correo electrónico. Utilice este kit y las instrucciones incluidas para tomar la muestra de enjuague bucal en su casa. </li></ul></li></ul><br/> <span class=\"messagesHeaderFont\">Opción 2: Laboratorio de investigación de Connect</span> <br/><br/> El día de la cita, no es necesario que haga ayuno. <span class=\"site-info-bold\"> Una hora antes de la cita</span>: <span class=\"site-info-bold\">No</span> coma, no beba ningún líquido (ni siquiera agua) ni masque chicle, fume, vapee o masque producto alguno (incluido tabaco), no se enjuague la boca ni se cepille los dientes. <br/><br/><span class=\"site-info-bold\">Qué debe llevar y recordar:</span><br/><br/><ul><li>Asegúrese de conocer el nombre de usuario y la contraseña de MyConnect. </li><li>Cuando done sus muestras, le pediremos que complete una breve encuesta. Puede ser útil tener esta información a mano:  <ul><li>La última vez que comió o bebió antes de su cita, y la hora a la que se fue a dormir la noche anterior a la cita y a la que se despertó el día de la cita. </li><li>Si está menstruando, la fecha de inicio de su período menstrual más reciente en los últimos 12 meses.  </li></ul></li></ul>",
+            "whatHappens": "<br><span class=\"messagesHeaderFont\">Opción 1: Laboratorio de Sanford Health</span> <br/><br/> Anúnciese en el mostrador de registro al llegar. Durante su visita, el personal del laboratorio le tomará muestras de sangre y orina.<br/><br/> Después de la visita, recuerde buscar en su casilla de correo electrónico un enlace a una encuesta que debe completar en MyConnect. La encuesta contiene preguntas sobre el día que donó las muestras, así que complétela lo antes posible. <br/><br/> <span class=\"messagesHeaderFont\">Opción 2: Laboratorio de investigación de Connect </span><br/><br/> Anúnciese en el mostrador de registro o información. El equipo de registro le indicará a dónde ir para que le tomen las muestras. Al final de su visita, el equipo de Connect le dará el alta de la cita. <br/><br/> Tomaremos una muestra de sangre y una muestra de orina, y le pediremos que haga buches con enjuague bucal para tomar una muestra de saliva.<br/><br/> También le pediremos que complete una breve encuesta en MyConnect con su teléfono celular. Para completar la encuesta, necesitará su información de inicio de sesión de MyConnect. Si no tiene teléfono celular, quizá podamos darle una tableta electrónica para completar la encuesta.<br/><br/> Le rogamos que complete la encuesta durante su cita. Si decide completarla después de terminada la cita, es importante que lo haga lo antes posible.<br/><br/> <div class=\"consentHeadersFont\" style=\"color:#606060;width:100%\">¿Cuándo recibiré mi pago de $25?</div><br/>Recibirá su tarjeta de regalo de regalo de $25 después de donar una muestra de sangre y completar <span class=\"site-info-bold\">las cuatro secciones</span> de su primera encuesta de Connect.<br/><br/>Puede encontrar las cuatro secciones de su primera encuesta en su panel de MyConnect. Las secciones son las siguientes:<ol><li>Antecedentes y estado general de salud</li><li>Medicamentos, salud reproductiva, ejercicio y sueño</li><li>Tabaquismo, alcohol y exposición al sol</li><li>Dónde vive y trabaja</li></ol>",
             "support": "Llame al 1-877-775-7004 (de 8:00 a. m. a 10:00 p. m., hora del centro de EE. UU., o los fines de semana de 9:00 a. m. a 6:00 p. m., hora del centro de EE. UU.)",
             "locations": {
-                "Option1": "<span>Opción 1: Laboratorio de Sanford Health</span><br/><br/><span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; font-weight: 400; line-height: 27px; color: #2E2E2E; margin-top: 20px;\"> Para encontrar un laboratorio de Sanford Health y su horario de atención, visite <a href=\"https://www.sanfordhealth.org/locations\" target=\"_blank\">https://www.sanfordhealth.org/locations</a> <br/><br/> El horario exacto puede variar según el laboratorio. Si va fuera del horario de trabajo normal, los tiempos de espera podrían ser más largos. <br/><br/> Nota: Si vive en la región de Bismarck, el equipo del laboratorio de Sanford prefiere que programe una cita antes de ir. Para hacerlo, utilice MyChart o llame directamente al laboratorio.</span>",
+                "Option1": "<span>Opción 1: Laboratorio de Sanford Health</span><br/><br/><span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; font-weight: 400; line-height: 27px; color: #2E2E2E; margin-top: 20px;\"> Para encontrar un laboratorio de Sanford Health y su horario de atención, visite <a href=\"https://www.sanfordhealth.org/locations\" target=\"_blank\">https://www.sanfordhealth.org/locations</a> <br/><br/> <span class=\"site-info-underline\">El horario exacto puede variar según el laboratorio. Si va fuera del horario de trabajo normal, los tiempos de espera podrían ser más largos.</span> <br/><br/> <span class=\"site-info-underline\"> Nota: Si vive en la región de Bismarck, el equipo del laboratorio de Sanford prefiere que programe una cita antes de ir. Para hacerlo, utilice MyChart o llame directamente al laboratorio.</span>",
                 "Option2": "<span>Opción 2: Laboratorio de investigación de Connect</span> <br/><br/> <span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; font-weight: 400; color: #2E2E2E; margin-top: 20px;\">Use el enlace del mensaje que le enviamos a su MyChart o por correo electrónico para programar una cita en uno de los siguientes laboratorios. Para programar una cita, también puede llamar al equipo de Connect al 605-312-6100. <br/><br/> Las citas para los laboratorios de investigación de Connect están disponibles de lunes a jueves de 7:00 a. m. a 4:00 p. m., y los viernes de 7:00 a. m. a 2:00 p. m. Si desea programar una cita fuera de ese horario, llame al equipo de Connect al 605-312-6100 o escríbale a ConnectStudy@sanfordhealth.org.</span> <span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; line-height: 27px; color: #2E2E2E; margin-top: 20px;\"></span>",
-                "SiouxFallsName": "Sioux Falls, SD: Sanford Imagenetics",
-                "SiouxFallsAddress": "1321 W. 22nd St.<br/>Sioux Falls, SD 57104",
-                "SiouxFallsParking": "Hay estacionamiento gratuito para pacientes cerca de la entrada principal, puerta JJ. No es necesario validar el estacionamiento.",
-                "FargoName": "Fargo, ND: Clínica Ambulatoria Ortopédica y de Emergencias de South University",
-                "FargoAddress": "1720 University Drive S<br/>Fargo, ND 58102<br/>Entre por la puerta n.º 8",
+                "SiouxFallsName": "<span class=\"site-info-underline\"> Sioux Falls, SD: Edith Breast Cancer Center</span>",
+                "SiouxFallsAddress": "Dirección e indicaciones <br>1210 W. 18th St <br>Sioux Falls, SD 57104 <br><span class=\"site-info-italic\">Entre por la puerta BB</span>",
+                "SiouxFallsParking": "Hay servicio de estacionamiento gratuito cerca de la entrada del frente del Edith Breast Cancer Center. Los pacientes también pueden estacionar gratis en el estacionamiento de la esquina de S Grange Ave y W 18th Street. Entre por la puerta BB. No se necesita ninguna validación de estacionamiento.",
+                "FargoName": "<span class=\"site-info-underline\"> Fargo, ND: Clínica Ambulatoria Ortopédica y de Emergencias de South University</span>",
+                "FargoAddress": "1720 University Drive S<br/>Fargo, ND 58102<br/><span class=\"site-info-italic\">Entre por la puerta #8</span>",
                 "FargoParking": "Hay estacionamiento gratis para pacientes en el estacionamiento cercano a la entrada de urgencias, puerta n.º 8. No se necesita validación de estacionamiento."
             }
         },
@@ -1043,6 +1101,7 @@
         "failContactUpdate": "¡Error al modificar la información de contacto!",
         "chargesMayApply": "*Es posible que se le cobren los mensajes de texto",
         "mailAddress": "Dirección postal",
+        "physicalMailAddress": "Dirección física",
         "updateAddressText": "Modificar dirección",
         "mailAddressLine1": "Línea 1 (calle, apartado postal, ruta rural) <span class=\"required\">*</span>",
         "mailAddressLine1Field": {
@@ -1181,6 +1240,7 @@
     },
     "event": {
         "selectBirthDay": "-- Seleccione el día de nacimiento --",
+        "selectBirthDayConfirmation": "-- Vuelva a seleccionar el día de nacimiento --",
         "sureAboutProvider": "¿Está seguro de que ",
         "sureAboutProviderEnd": " es su proveedor de atención médica?",
         "emailPlaceholder2": {
@@ -1259,6 +1319,7 @@
         "city": "Ciudad",
         "state": "Estado",
         "zip": "Código postal",
+        "poBox": "The Spanish text", // Will update later
         "invasiveCancer": "¿Ha tenido alguna vez cáncer invasivo?",
         "yearDiagnosed": "¿En qué año se lo diagnosticaron?",
         "typeOfCancer": "¿Qué tipo de cáncer tenía?",
@@ -1299,6 +1360,8 @@
         "phoneRequired": "Debe ingresar al menos un número de teléfono. Ingrese al menos un número de teléfono de 10 dígitos con este formato: 999-999-9999.",
         "phoneFormat": "Ingrese un número de teléfono de 10 dígitos con este formato: 999-999-9999.",
         "emailFormat": "Ingrese una dirección de correo electrónico con este formato: nombre@ejemplo.com.",
+        "emailInvalid": "Esta dirección de correo electrónico no es válida. Por favor, introduzca un correo electrónico válido antes de continuar.",
+        "emailWarning": "Advertencia: esta dirección de correo electrónico puede no ser válida. Por favor, vuelva a revisar su entrada antes de continuar.",
         "addressNotEmpty": "El campo “Dirección” no puede quedar en blanco. Por favor, ingrese su dirección.",
         "cityNotEmpty": "El campo “Ciudad” no puede quedar vacío. Seleccione una ciudad.",
         "stateNotEmpty": "El campo “Estado” no puede quedar vacío. Seleccione un estado.",
@@ -1322,7 +1385,7 @@
         "fixesList": "<li>Revise si el mensaje se marcó como correo no deseado o se lo filtró.</li><li>Revise su conexión a Internet.</li><li>Revise que no haya escrito mal su dirección de correo electrónico.</li><li>Verifique que la bandeja de entrada no se esté quedando sin espacio y que haya otros problemas relacionados con la configuración de la bandeja de entrada.</li>",
         "resendEmail": "Si los pasos anteriores no funcionan, puede volver a enviar el mensaje. Tenga en cuenta que eso desactivará el enlace del mensaje anterior.",
         "resendText": "Reenviar",
-        "savingSpin": "<div class=\"spinner-border spinner-saving\" role=\"status\"><span class=\"sr-only\">Cargando…</span></div> Guardando",
+        "savingSpin": "<div class=\"spinner-border spinner-saving\" role=\"status\"><span class=\"visually-hidden\">Cargando…</span></div> Guardando",
         "stateAlabama": "Alabama",
         "stateAlaska": "Alaska",
         "stateArizona": "Arizona",
@@ -1651,8 +1714,9 @@
         "modAtHomeMouthwashSampleSurvey": "Encuesta sobre muestra de enjuague bucal tomada en el hogar",
         "modQualityofLifeSurvey": "Encuesta sobre calidad de vida",
         "mod2024ConnectExperienceSurvey": "2024 Encuesta Sobre Experiencia de Connect",
+        "modCancerScreeningHistorySurvey": "Encuesta sobre historial de exámenes de detección de cáncer",
         "sessionInactiveTitle": "Inactivo",
-        "sessionInactive": "Ha estado inactivo durante 20 minutos, ¿desea extender la sesión?<div class=\"modal-footer\"><button type=\"button\" title=\"Cerrar\" class=\"btn btn-dark log-out-user\" data-dismiss=\"modal\">Cerrar sesión</button><button type=\"button\" title=\"Continuar\" class=\"btn btn-primary extend-user-session\" data-dismiss=\"modal\">Continuar</button></div>",
+        "sessionInactive": "Ha estado inactivo durante 20 minutos, ¿desea extender la sesión?<div class=\"modal-footer\"><button type=\"button\" title=\"Cerrar\" class=\"btn btn-dark log-out-user\" data-bs-dismiss=\"modal\">Cerrar sesión</button><button type=\"button\" title=\"Continuar\" class=\"btn btn-primary extend-user-session\" data-bs-dismiss=\"modal\">Continuar</button></div>",
         "homeTitle": "My Connect - Inicio",
         "dashboardTitle": "My Connect - Panel",
         "signInPhone": "Iniciar sesión con el número de teléfono"

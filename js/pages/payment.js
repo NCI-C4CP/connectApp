@@ -91,15 +91,6 @@ export const renderPaymentPage = async () => {
                 <div class="row">
                     <h3 data-i18n="payment.infoTitle">Connect Payment Process</h3>
                 </div>
-                <!--
-                <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn faq-btn" type="button" data-toggle="collapse" data-target="#faq1" aria-expanded="false" aria-controls="faq1">
-                            <span class="faq-text" data-i18n="payment.support">MyConnect Support</span> <span class="faq-icon"><i class="fas fa-plus"></i></span>
-                        </button>
-                    </div>
-                </div>
-                -->
                 <div class="row">
                     <div>
                         ${paymentInfo}

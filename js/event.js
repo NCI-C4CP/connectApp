@@ -1,9 +1,9 @@
 import { allCountries, dataSavingBtn, storeResponse, validatePin, generateNewToken, showAnimation, hideAnimation, sites, errorMessage, BirthMonths, getAge, getMyData, 
-    hasUserData, retrieveNotifications, removeActiveClass, toggleNavbarMobileView, appState, logDDRumError, translateHTML, translateText, firebaseSignInRender } from "./shared.js";
+    hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validNameFormat } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
 import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender } from "./pages/healthCareProvider.js";
 import { myToDoList } from "./pages/myToDoList.js";
-import { suffixToTextMap } from "./settingsHelpers.js";
+import { suffixToTextMap, getFormerNameData, formerNameOptions } from "./settingsHelpers.js";
 import fieldMapping from "./fieldToConceptIdMapping.js";
 import {signUpRender} from "./pages/homePage.js";
 
@@ -30,12 +30,12 @@ export const addEventsConsentSign = () => {
 
 export const addEventAddressAutoComplete = (id, country) => {
     let autocomplete = {};
-    const UPAddress1Line1 = document.getElementById(`UPAddress${id}Line1`);
-    const UPAddress1City = document.getElementById(`UPAddress${id}City`);
-    const UPAddress1State = document.getElementById(`UPAddress${id}State`);
-    const UPAddress1Zip = document.getElementById(`UPAddress${id}Zip`);
-    if(!UPAddress1Line1) return;
-    UPAddress1Line1.addEventListener('focus', () => {
+    const UPAddressLine1 = document.getElementById(`UPAddress${id}Line1`);
+    const UPAddressCity = document.getElementById(`UPAddress${id}City`);
+    const UPAddressState = document.getElementById(`UPAddress${id}State`);
+    const UPAddressZip = document.getElementById(`UPAddress${id}Zip`);
+    if(!UPAddressLine1) return;
+    UPAddressLine1.addEventListener('focus', () => {
         autocomplete = new google.maps.places.Autocomplete(document.getElementById(`UPAddress${id}Line1`), {types: ['geocode']});
         autocomplete.setFields(['address_component']);
         let addressLine1 = '';
@@ -54,10 +54,10 @@ export const addEventAddressAutoComplete = (id, country) => {
                 if(value.types.indexOf('postal_code') !== -1) addressZip = value.long_name;
                 if(value.types.indexOf('country') !== -1) addressCountry = value.long_name;
             });
-            UPAddress1Line1.value = addressLine1;
-            UPAddress1City.value = addressCity;
-            UPAddress1State.value = addressState;
-            UPAddress1Zip.value = addressZip;
+            UPAddressLine1.value = addressLine1;
+            UPAddressCity.value = addressCity;
+            UPAddressState.value = addressState;
+            UPAddressZip.value = addressZip;
             
             if(country){
                 const UPAddress1Country = document.getElementById(`UPAddress${id}Country`);
@@ -79,28 +79,37 @@ export const addEventAddressAutoComplete = (id, country) => {
     });
 }
 
+const getDaysTemplate = (month) => {
+    const monthLengths = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    const daysInMonth = monthLengths[parseInt(month, 10) - 1];
+
+    const options = [];
+
+    for (let i = 1; i <= daysInMonth; i++) {
+        options.push(
+            `<option class="option-dark-mode" value=${i < 10 ? `0${i}` : i}>${i}</option>`
+        );
+    }
+
+    return options.join('');
+};
+
 export const addEventMonthSelection = () => {
     const UPMonth = document.getElementById('UPMonth');
     UPMonth.addEventListener('change', () => {
         const value = UPMonth.value;
         let template = '<option class="option-dark-mode" value="" data-i18n="event.selectBirthDay">-- Select birth day --</option>';
-
-        if(value === '02'){
-            for(let i = 1; i < 30; i++){
-                template += `<option class="option-dark-mode" value=${i < 10 ? `0${i}`: `${i}`}>${i}</option>`
-            }
-        }
-        if(value === '01' || value === '03' || value === '05' || value === '07' || value === '08' || value === '10' || value === '12'){
-            for(let i = 1; i < 32; i++){
-                template += `<option class="option-dark-mode" value=${i < 10 ? `0${i}`: `${i}`}>${i}</option>`
-            }
-        }
-        if(value === '04' || value === '06' || value === '09' || value === '11'){
-            for(let i = 1; i < 31; i++){
-                template += `<option class="option-dark-mode" value=${i < 10 ? `0${i}`: `${i}`}>${i}</option>`
-            }
-        }
+        template += getDaysTemplate(value);
         document.getElementById('UPDay').innerHTML = translateHTML(template);
+    });
+}
+export const addEventMonthConfirmationSelection = () => {
+    const UPMonthConfirmation = document.getElementById('UPMonthConfirmation');
+    UPMonthConfirmation.addEventListener('change', () => {
+        const value = UPMonthConfirmation.value;
+        let template = '<option class="option-dark-mode" value="" data-i18n="event.selectBirthDayConfirmation">Re-select birth day</option>';
+        template += getDaysTemplate(value);
+        document.getElementById('UPDayConfirmation').innerHTML = translateHTML(template);
     });
 }
 
@@ -242,6 +251,144 @@ export const addEventSaveConsentBtn = () => {
     })
 }
 
+const onBlurPhysicalAddressLine = (event, id) => {
+    const UPAddressCity = document.getElementById(`UPAddress${id}City`);
+    const UPAddressState = document.getElementById(
+        `UPAddress${id}State`
+    );
+    const UPAddressZip = document.getElementById(`UPAddress${id}Zip`);
+
+    const UPAddressCityLabel = document.getElementById(
+        `UPAddress${id}CityLabel`
+    );
+    const UPAddressStateLabel = document.getElementById(
+        `UPAddress${id}StateLabel`
+    );
+    const UPAddressZipLabel = document.getElementById(
+        `UPAddress${id}ZipLabel`
+    );
+
+    UPAddressCity.classList.remove("required-field");
+    UPAddressState.classList.remove("required-field");
+    UPAddressZip.classList.remove("required-field");
+    UPAddressCityLabel.setAttribute(
+        "data-i18n",
+        "form.mailAddressCityLabel"
+    );
+    UPAddressStateLabel.setAttribute(
+        "data-i18n",
+        "form.mailAddressStateLabel"
+    );
+    UPAddressZipLabel.setAttribute(
+        "data-i18n",
+        "form.mailAddressZipLabel"
+    );
+
+    if (event.target.value) {
+        UPAddressCity.classList.add("required-field");
+        UPAddressState.classList.add("required-field");
+        UPAddressZip.classList.add("required-field");
+        UPAddressCityLabel.setAttribute(
+            "data-i18n",
+            "form.mailAddressCityLabelRequired"
+        );
+        UPAddressStateLabel.setAttribute(
+            "data-i18n",
+            "form.mailAddressStateLabelRequired"
+        );
+        UPAddressZipLabel.setAttribute(
+            "data-i18n",
+            "form.mailAddressZipLabelRequired"
+        );
+    }
+};
+
+export const addEventPhysicalAddressLine = (id) => {
+    const UPAddressLine1 = document.getElementById(
+        `UPAddress${id}Line1`
+    );
+
+    UPAddressLine1.addEventListener("blur", (event) => onBlurPhysicalAddressLine(event, id));
+};
+
+export const addEventFormerName = () => {
+    const addMoreFormerNameDiv = document.getElementById("addMoreFormerName");
+    addMoreFormerNameDiv.addEventListener("click", addMoreFormerName);
+};
+
+const getFormerNameCategoryTitleElement = () => {
+    const label = document.createElement('label');	
+    label.classList.add('col-form-label', 'col-md-3')
+    label.setAttribute('data-i18n', "form.formerNameCategoryTitle");
+    return label
+}
+const getFormerNameValueTitleElement = () => {
+    const label = document.createElement('label');	
+    label.classList.add('col-form-label', 'col-md-3')
+    label.setAttribute('data-i18n', "form.formerNameValueTitle");
+    return label
+}
+
+export const addMoreFormerName = () => {
+    const div = document.getElementById("former-name-group");
+    const formerNameItems = document.getElementsByClassName("former-name-item");
+    const inputId = `former-name-value-${formerNameItems.length + 1}`;
+    const selectId = `former-name-category-${formerNameItems.length + 1}`;
+
+    const div1 = document.createElement('div');	
+    div1.classList.add('former-name-item')
+
+    const div1_1 = document.createElement('div');
+    div1_1.classList.add('form-group', 'row')
+	
+    const select = document.createElement('select');	
+    select.classList.add('form-control', 'col-md-3');
+    select.setAttribute('data-i18n', "form.formerNameCategory");
+    select.setAttribute('data-error-required', translateText('form.formerNameCategory'));
+    select.style = "max-width:190px"
+    select.id = selectId;	
+
+    formerNameOptions.forEach((option) => {
+        const opt = document.createElement("option");
+        opt.classList.add("option-dark-mode");
+        opt.value = option.value;
+        opt.textContent = option.text;
+        opt.setAttribute("data-i18n", option.i18n);
+        select.appendChild(translateHTML(opt));
+    });
+
+    div1_1.appendChild(translateHTML(getFormerNameCategoryTitleElement()));
+    div1_1.appendChild(translateHTML(select));
+    div1.appendChild(div1_1);
+
+    const div1_2 = document.createElement('div');	
+    div1_2.classList.add('form-group', 'row')
+
+    const input = document.createElement('input');	
+    input.classList.add('form-control', 'col-md-3', 'input-validation');
+    input.setAttribute('data-i18n', "form.formerNameValue");
+    input.setAttribute('data-validation-pattern', "alphabets");
+    input.setAttribute('data-error-validation', "Your former name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters.");
+    input.placeholder = 'Enter former name';	
+    input.style = "max-width:190px"
+    input.type = 'text';	
+    input.id = inputId;	
+
+    div1_2.appendChild(translateHTML(getFormerNameValueTitleElement()));
+    div1_2.appendChild(translateHTML(input));
+    div1.appendChild(div1_2);
+
+    div.appendChild(div1);
+    const inputElement = document.getElementById(inputId);
+    inputElement.addEventListener("blur", () => {
+        const selectElement = document.getElementById(selectId);
+        selectElement.classList.remove("required-field");
+        if (inputElement.value) {
+            selectElement.classList.add("required-field");
+        }
+    });
+};
+
 export const addEventAdditionalEmail = () => {	
     const addMoreEmail = document.getElementById('addMoreEmail');	
     addMoreEmail.addEventListener('click', addEmailFields);	
@@ -303,12 +450,13 @@ const addAnotherEmailField = () => {
     document.getElementById('additionalEmailBtn').innerHTML = '';
 }
 
-export const addEventUPSubmit = () => {
+export const addEventUPSubmit = async () => {
     const userProfileForm = document.getElementById('userProfileForm');
     userProfileForm.addEventListener('submit', async e => {
         e.preventDefault();
         removeAllErrors();
         const requiredFields = document.getElementsByClassName('required-field');
+        const confirmationFields = document.getElementsByClassName('confirmation-field');
         const validations = document.getElementsByClassName('input-validation');
         const numberValidations = document.getElementsByClassName('num-val');
         const radios = document.getElementsByName('UPRadio');
@@ -318,7 +466,7 @@ export const addEventUPSubmit = () => {
             if(element.value){
                 const validationPattern = element.dataset.validationPattern;
                 if(validationPattern && validationPattern === 'alphabets') {
-                    if(!/^[A-Za-z ]+$/.test(element.value)) {
+                    if(!validNameFormat.test(element.value)) {
                         errorMessage(element.id, element.dataset.errorValidation, focus)
                         focus = false;
                         hasError = true;
@@ -362,16 +510,19 @@ export const addEventUPSubmit = () => {
                 errorMessage(element.id, `${element.dataset.errorRequired}`, focus);
                 focus = false;
                 hasError = true;
-            }
+            }    
         });
-        /*Array.from(numberValidations).forEach(element => {
-            const pattern = element.dataset.valPattern
-            if(element.value && !element.value.match(new RegExp(pattern))){
-                errorMessageNumbers(element.id, `${element.dataset.errorValidation}`, focus);
+        Array.from(confirmationFields).forEach(element => {
+            const target = element.getAttribute('target')
+            const targetElement= document.getElementById(target)
+
+            if(element.value !== targetElement.value){
+                errorMessage(element.id, `${element.dataset.errorConfirmation}`, focus);
                 focus = false;
                 hasError = true;
             }
-        });*/
+        });
+        
         if(!(document.getElementById('UPCancer1').checked|| document.getElementById('UPCancer2').checked)){
             errorMessage('UPCancerBtnGroup', '<span data-i18n="event.provideResponse">'+translateText('event.provideResponse')+'</span>', focus);
             focus = false;
@@ -381,7 +532,7 @@ export const addEventUPSubmit = () => {
         Array.from(radios).forEach(element => {
             if(element.checked) radioChecked = true;
         });
-        
+
         const phoneNo = `${document.getElementById('UPPhoneNumber11').value}${document.getElementById('UPPhoneNumber12').value}${document.getElementById('UPPhoneNumber13').value}`;
         const phoneNo2 = `${document.getElementById('UPPhoneNumber21').value}${document.getElementById('UPPhoneNumber22').value}${document.getElementById('UPPhoneNumber23').value}`;
         const phoneNo3 = `${document.getElementById('UPPhoneNumber31').value}${document.getElementById('UPPhoneNumber32').value}${document.getElementById('UPPhoneNumber33').value}`;
@@ -479,30 +630,69 @@ export const addEventUPSubmit = () => {
             focus = false;
             hasError = true;
         }*/
-        if(email && /\S+@\S+\.\S+/.test(email) === false) {
-            errorMessage('UPEmail', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
-            if(focus) document.getElementById('UPPhoneNumber11').focus();
+        const emailValidation = await emailAddressValidation({
+            emails: {
+                upEmail:email,
+                upEmail2: email2 ? email2.value : undefined,
+                upAdditionalEmail2: email3 ? email3.value : undefined,
+                upAdditionalEmail3: email4 ? email4.value : undefined,
+            },
+        });
+        
+        if (emailValidationAnalysis(emailValidation.upEmail) === emailValidationStatus.INVALID) {
+            errorMessage(
+                "UPEmail",
+                '<span data-i18n="settingsHelpers.emailInvalid">' +
+                    translateText("settingsHelpers.emailInvalid") +
+                    "</span>",
+                focus
+            );
+            // Clear the "Confirm Preferred Email" field here
+            document.getElementById('confirmUPEmail').value = '';
+            if (focus) document.getElementById("UPEmail").focus();
             focus = false;
             hasError = true;
         }
-        if(email2 && email2.value && /\S+@\S+\.\S+/.test(email2.value) === false) {
-            errorMessage('UPEmail2', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
-            if(focus) document.getElementById('UPPhoneNumber21').focus();
+
+        if (emailValidationAnalysis(emailValidation.upEmail2) === emailValidationStatus.INVALID) {
+            errorMessage(
+                "UPEmail2",
+                '<span data-i18n="settingsHelpers.emailInvalid">' +
+                    translateText("settingsHelpers.emailInvalid") +
+                    "</span>",
+                focus
+            );
+            if (focus) document.getElementById("UPEmail2").focus();
             focus = false;
             hasError = true;
         }
-        if(email3 && email3.value && /\S+@\S+\.\S+/.test(email3.value) === false) {
-            errorMessage('UPAdditionalEmail2', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
-            if(focus) document.getElementById('UPAdditionalEmail2').focus();
+
+        if (emailValidationAnalysis(emailValidation.upAdditionalEmail2) === emailValidationStatus.INVALID) {
+            errorMessage(
+                "UPAdditionalEmail2",
+                '<span data-i18n="settingsHelpers.emailInvalid">' +
+                    translateText("settingsHelpers.emailInvalid") +
+                    "</span>",
+                focus
+            );
+            if (focus) document.getElementById("UPAdditionalEmail2").focus();
             focus = false;
             hasError = true;
         }
-        if(email4 && email4.value && /\S+@\S+\.\S+/.test(email4.value) === false) {
-            errorMessage('UPAdditionalEmail3', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
-            if(focus) document.getElementById('UPAdditionalEmail3').focus();
+        
+        if (emailValidationAnalysis(emailValidation.upAdditionalEmail3) === emailValidationStatus.INVALID) {
+            errorMessage(
+                "UPAdditionalEmail3",
+                '<span data-i18n="settingsHelpers.emailInvalid">' +
+                    translateText("settingsHelpers.emailInvalid") +
+                    "</span>",
+                focus
+            );
+            if (focus) document.getElementById("UPAdditionalEmail3").focus();
             focus = false;
             hasError = true;
         }
+
         const confirmedEmail = document.getElementById('confirmUPEmail').value;
         if(!confirmedEmail){
             errorMessage('confirmUPEmail', '<span data-i18n="event.confirmEmail">'+translateText('event.confirmEmail')+'</span>', focus);
@@ -518,7 +708,7 @@ export const addEventUPSubmit = () => {
             hasError = true;
             
         }
-        
+
         if(hasError) return false;
         let formData = {};
         formData['507120821'] = 602439976;
@@ -551,6 +741,19 @@ export const addEventUPSubmit = () => {
                 return false;
             }
         }
+
+        formData[fieldMapping.userProfileHistory] = {};
+        // User Profile Former Name
+        const formerNameData = getFormerNameData();
+        if (formerNameData)
+            formData[fieldMapping.userProfileHistory].formerdata =
+                formerNameData;
+
+        // User Profile Place of Birth
+        formData['876546260'] = document.getElementById('cityOfBirth').value;
+        formData['337485417'] = document.getElementById('stateOfBirth').value;
+        formData['384576626'] = document.getElementById('countryOfBirth').value;
+
         const gender = document.getElementsByName('UPRadio');
         Array.from(gender).forEach(radioBtn => {
             if(radioBtn.checked) formData['383945929'] = parseInt(radioBtn.value);
@@ -631,6 +834,34 @@ export const addEventUPSubmit = () => {
         formData['634434746'] = document.getElementById('UPAddress1State').value;
         formData['892050548'] = document.getElementById('UPAddress1Zip').value;
 
+        // const poBoxCheckbox = document.getElementById("poBoxCheckbox");
+
+        // // Physical address
+        // formData[fieldMapping.isPOBox] = poBoxCheckbox && poBoxCheckbox.checked ?
+        //     fieldMapping.yes :
+        //     fieldMapping.no
+
+        // // Physical address info is saved regardless of whether PO Box is checked
+        
+        // const getFieldValue = (id) =>
+        //     document.getElementById(id)?.value || "";
+
+        // // Update formData with physical address details
+        // formData[fieldMapping.physicalAddress1] = getFieldValue(
+        //     "UPAddress2Line1"
+        // );
+        // formData[fieldMapping.physicalAddress2] = getFieldValue(
+        //     "UPAddress2Line2"
+        // );
+        // formData[fieldMapping.physicalCity] = getFieldValue(
+        //     "UPAddress2City"
+        // );
+        // formData[fieldMapping.physicalState] = getFieldValue(
+        //     "UPAddress2State"
+        // );
+        // formData[fieldMapping.physicalZip] =
+        //     getFieldValue("UPAddress2Zip");
+
         const cancer = document.getElementsByName('cancerHistory');
         Array.from(cancer).forEach(radioBtn => {
             if(radioBtn.checked) formData['452166062'] = parseInt(radioBtn.value);
@@ -651,39 +882,17 @@ export const addEventUPSubmit = () => {
 
         
         const ageToday = getAge(`${formData['544150384']}-${formData['564964481']}-${formData['795827569']}`);
-        /*if(!(ageToday < 66 && ageToday > 39)){
-            // Age is out of qualified range.
-            openModal();
-            document.getElementById('connectModalHeader').innerHTML = `
-            <h4>Review your date of birth</h4>
-            <button type="button" class="close close-modal" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            `;
-            document.getElementById('connectModalBody').innerHTML = `The date of birth that you entered does not make you eligible for the study. Please check that you entered your correct date of birth.`;
-            document.getElementById('connectModalFooter').innerHTML = `
-                <button type="button" title="Close" class="btn btn-dark" data-dismiss="modal">Back</button>
-                <button type="button" id="continueAnyways" title="Continue anyways" class="btn btn-primary">Continue anyway</button>
-            `
-            document.getElementById('continueAnyways').addEventListener('click', () => {
-                verifyUserDetails(formData);
-            });
-        }else {*/
-            formData['117249500'] = ageToday;
-            verifyUserDetails(formData);
-        //}
+
+        formData['117249500'] = ageToday;
+        verifyUserDetails(formData, emailValidation);
     });
 }
 
 const openModal = () => {
-    const tmpBtn = document.createElement('button');
-    tmpBtn.dataset.target = "#connectMainModal";
-    tmpBtn.dataset.toggle = "modal";
-    tmpBtn.hidden = true;
-    document.body.appendChild(tmpBtn);
-    tmpBtn.click();
-    document.body.removeChild(tmpBtn);
-}
+    const modalElement = document.getElementById('connectMainModal');
+    const modal = new bootstrap.Modal(modalElement);
+    modal.show();
+};
 
 export const downtimeWarning = () => {
     document.getElementById('connectWarningModalHeader').style.display = 'block'; 
@@ -712,6 +921,12 @@ export const downtimeWarning = () => {
 }
 
 export const environmentWarningModal = () => {
+    // Ensure the warning modal is only shown once per login cycle (dev)
+    const devWarningShown = appState.getState()?.isDevWarningShown;
+    if (devWarningShown === true) return;
+
+    appState.setState({ isDevWarningShown: true });
+
     document.getElementById('connectWarningModalHeader').style.display = 'block'; 
     document.getElementById('connectWarningModalHeader').innerHTML = `
         <h4 style="text-align:center; color:red">WARNING</h4>
@@ -738,19 +953,17 @@ export const environmentWarningModal = () => {
 
         </br>
 
-        <div class="col-md-4" style="width:100%; margin:0 auto; text-align:center;">
+        <div class="col-md-4 mx-auto text-center">
             <label style="text-align:center;">Enter staff access code</label>
             <input type="text" style="text-align:center; margin:0 auto;" class="form-control input-validation row" id="testingAccessCode" name="testingAccessCode">
         </div>
     `;
 
-    const tmpBtn = document.createElement('button');
-    tmpBtn.dataset.target = "#connectWarningModal";
-    tmpBtn.dataset.toggle = "modal";
-    tmpBtn.hidden = true;
-    document.body.appendChild(tmpBtn);
-    tmpBtn.click();
-    document.body.removeChild(tmpBtn);
+    const signInBtn = document.getElementById('signInBtn');
+    const modalElement = document.getElementById('connectWarningModal');
+    const modal = new bootstrap.Modal(modalElement);
+    modalElement.inert = false;
+    modal.show();
 
     const testingAccessCode = document.getElementById('testingAccessCode');
     const warningCloseBtn = document.getElementById('warningCloseBtn');
@@ -758,8 +971,36 @@ export const environmentWarningModal = () => {
     if(testingAccessCode) {
         testingAccessCode.addEventListener('keyup', () => {
             if(warningCloseBtn) warningCloseBtn.disabled = !(testingAccessCode.value == 'agree')
-        })
+        });
+
+        // allow enter key if warningCloseBtn is enabled
+        testingAccessCode.addEventListener('keydown', (e) => {
+            if(e.key === 'Enter' && !warningCloseBtn.disabled) {
+                e.preventDefault();
+                warningCloseBtn.click();
+            }
+        });
+
+        setTimeout(() => {
+            testingAccessCode.focus();
+        }, 500);
+         
     }
+
+    warningCloseBtn.addEventListener('click', () => {
+        modalElement.inert = true;
+        modal.hide();
+
+        if (signInBtn) {
+            signInBtn.focus();
+        }
+    });
+
+    modalElement.addEventListener('hidden.bs.modal', (event) => {
+        if (event.target === modal && signInBtn) {
+            signInBtn.focus();
+        }
+    });
 }
 
 export const removeAllErrors = () => {
@@ -775,16 +1016,14 @@ export const removeAllErrors = () => {
     })
 }
 
-const verifyUserDetails = (formData) => {
+const verifyUserDetails = (formData, emailValidation) => {
     if(!document.getElementById('connectMainModal').classList.contains('show')) openModal();
     document.getElementById('connectModalHeader').innerHTML = translateHTML(`
     <h4 data-i18n="event.reviewProfile">Review your profile details</h4>
-    <button type="button" class="close close-modal" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-    </button>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     `);
-
-    document.getElementById('connectModalBody').innerHTML = translateHTML(`
+    const { formerdata, physicalAddress } = formData[fieldMapping.userProfileHistory];
+    let bodyHtml = `
         <div class="row">
             <div class="col" data-i18n="event.firstName">First name</div>
             <div class="col">${formData['399159511']}</div>
@@ -813,7 +1052,34 @@ const verifyUserDetails = (formData) => {
             <div class="col">${formData['153211406']}</div>
         </div>
         `: ``}
-        <div class="row">
+        ${formerdata && formerdata.length ? `
+            <div class="row">
+                <div class="col"><strong data-i18n="form.formerNameSubHeader">Former Names</strong></div>
+            </div>
+                `: ``}`;
+        if (formerdata && formerdata.length) {
+            formerdata.forEach((item) => {
+                bodyHtml += `<div class="row">
+                                    <div class="col">
+                                        ${
+                                            item[fieldMapping.fName]
+                                                ? translateText("settings.firstName")
+                                                : item[fieldMapping.mName]
+                                                ? translateText("settings.middleName")
+                                                : translateText("settings.lastName")
+                                        }
+                                    </div>
+                                    <div class="col">${
+                                        item[fieldMapping.fName] ||
+                                        item[fieldMapping.mName] ||
+                                        item[fieldMapping.lName || ""]
+                                    }</div>
+                                </div>`;
+            });
+        }
+                
+    bodyHtml += `
+        <div class="row">   
             <div class="col"><strong data-i18n="event.birthDate">Date of birth</strong></div>
         </div>
         <div class="row">
@@ -827,6 +1093,21 @@ const verifyUserDetails = (formData) => {
         <div class="row">
             <div class="col" data-i18n="event.year">Year</div>
             <div class="col">${formData['544150384']}</div>
+        </div>
+        <div class="row">
+            <div class="col"><strong data-i18n="form.birthPlaceSubHeader">Place of birth</strong></div>
+        </div>
+         <div class="row">
+            <div class="col" data-i18n="form.cityOfBirth.title">City</div>
+            <div class="col">${formData['876546260']}</div>
+        </div>
+         <div class="row">
+            <div class="col" data-i18n="form.stateOfBirth.title">State</div>
+            <div class="col">${formData['337485417']}</div>
+        </div>
+         <div class="row">
+            <div class="col" data-i18n="form.countryOfBirth.title">Country</div>
+            <div class="col">${formData['384576626']}</div>
         </div>
         <div class="row">
             <div class="col"><strong data-i18n="event.contactInfo">Contact Information</strong></div>
@@ -883,28 +1164,48 @@ const verifyUserDetails = (formData) => {
         ${formData['869588347'] ? `
         <div class="row">
             <div class="col" data-i18n="event.preferredEmail">Preferred Email</div>
-            <div class="col">${formData['869588347']}</div>
+            <div class="col">
+                ${formData['869588347']} <br />
+                 ${emailValidationAnalysis(emailValidation.upEmail) === emailValidationStatus.WARNING ? `
+                <i style="color:red" data-i18n="settingsHelpers.emailWarning">Warning- this email address may be invalid. Please double check your entry before continuing.</i>
+                `:``}
+            </div>
         </div>
         `:``}
         
         ${formData['849786503'] ? `
         <div class="row">
             <div class="col" data-i18n="event.additionalEmail">Additional Email</div>
-            <div class="col">${formData['849786503']}</div>
+            <div class="col">
+                ${formData['849786503']}<br />
+                 ${emailValidationAnalysis(emailValidation.upEmail2) === emailValidationStatus.WARNING ? `
+                <i style="color:red" data-i18n="settingsHelpers.emailWarning">Warning- this email address may be invalid. Please double check your entry before continuing.</i>
+                `:``}    
+            </div>
         </div>
         `:``}
 
         ${formData['635101039'] ? `
         <div class="row">
             <div class="col" data-i18n="event.additionalEmail2">Additional Email 2</div>
-            <div class="col">${formData['635101039']}</div>
+            <div class="col">
+                ${formData['635101039']}<br />
+                ${emailValidationAnalysis(emailValidation.upAdditionalEmail2) === emailValidationStatus.WARNING ? `
+                <i style="color:red" data-i18n="settingsHelpers.emailWarning">Warning- this email address may be invalid. Please double check your entry before continuing.</i>
+                `:``}
+            </div>
         </div>
         `:``}
 
         ${formData['714419972'] ? `
         <div class="row">
-            <div class="col" data-i18n="event.additionalEmail3">Additional Email 3</div>
-            <div class="col">${formData['714419972']}</div>
+            <div class="col" data-i18n="event.additionalEmail3">Additional Email 3</div> 
+            <div class="col">
+                ${formData['714419972']}<br />
+                ${emailValidationAnalysis(emailValidation.upAdditionalEmail3) === emailValidationStatus.WARNING ? `
+                <i style="color:red" data-i18n="settingsHelpers.emailWarning">Warning- this email address may be invalid. Please double check your entry before continuing.</i>
+                `:``}
+            </div>
         </div>
         `:``}
 
@@ -946,6 +1247,53 @@ const verifyUserDetails = (formData) => {
             <div class="col" data-i18n="event.zip">Zip</div>
             <div class="col">${formData['892050548']}</div>
         </div>
+        
+        <!--${formData[fieldMapping.isPOBox] === fieldMapping.yes ? `
+        <div class="row">
+            <div class="col"><strong data-i18n="settings.physicalMailAddress">Physical Mailing address</strong></div>
+        </div>
+        `:``}
+
+        <div class="row">
+            <div class="col" data-i18n="event.poBox">Mailing address is PO Box</div>
+            <div class="col" data-i18n="settings.${formData[fieldMapping.isPOBox] === fieldMapping.yes ? 'optYes': 'optNo'}">
+            ${formData[fieldMapping.isPOBox] === fieldMapping.yes ? "Yes" : "No"}</div>
+        </div>
+
+        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalAddress1] ? `
+        <div class="row">
+            <div class="col" data-i18n="event.line1">Line 1 (street, PO box, rural route)</div>
+            <div class="col">${physicalAddress[fieldMapping.physicalAddress1]}</div>
+        </div>
+        `:``}
+ 
+        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalAddress2] ? `
+        <div class="row">
+            <div class="col" data-i18n="event.line2">Line 2 (apartment, suite, unit, building)</div>
+            <div class="col">${physicalAddress[fieldMapping.physicalAddress2]}</div>
+        </div>
+        `:``}
+
+        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalCity] ? `
+        <div class="row">
+            <div class="col" data-i18n="event.city">City</div>
+            <div class="col">${physicalAddress[fieldMapping.physicalCity]}</div>
+        </div>
+        `:``}
+
+        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalState] ? `
+        <div class="row">
+            <div class="col" data-i18n="event.state">State</div>
+            <div class="col">${physicalAddress[fieldMapping.physicalState]}</div>
+        </div>
+        `:``}
+
+        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalZip] ? `
+        <div class="row">
+            <div class="col" data-i18n="event.zip">Zip</div>
+            <div class="col">${physicalAddress[fieldMapping.physicalZip]}</div>
+        </div>
+        `:``} -->
 
         ${formData['452166062'] ? `
         <div class="row">
@@ -974,11 +1322,14 @@ const verifyUserDetails = (formData) => {
             <div class="col">${formData['494982282']}</div>
         </div>
         `:``}
-    `);
+    `
+    document.getElementById('connectModalBody').innerHTML = translateHTML(bodyHtml);
 
     document.getElementById('connectModalFooter').innerHTML = translateHTML(`
-        <button data-i18n="event.navButtonsClose" type="button" title="Close" class="btn btn-dark" data-dismiss="modal">Go Back</button>
-        <button data-i18n="event.navButtonsConfirm" type="button" id="confirmReview" title="Confirm details" class="btn btn-primary consentNextButton" data-dismiss="modal">Submit</button>
+        <div class="d-flex justify-content-between w-100">
+            <button data-i18n="event.navButtonsClose" type="button" title="Close" class="btn btn-dark" data-bs-dismiss="modal">Go Back</button>
+            <button data-i18n="event.navButtonsConfirm" type="button" id="confirmReview" title="Confirm details" class="btn btn-primary consentNextButton" data-bs-dismiss="modal">Submit</button>
+        </div>
     `);
     document.getElementById('connectModalFooter').style.display = 'block';
 
@@ -989,6 +1340,13 @@ const verifyUserDetails = (formData) => {
         dataSavingBtn('save-data');
         formData['699625233'] = 353358909;
         formData['430551721'] = new Date().toISOString();
+
+        const { formerdata, physicalAddress } =
+            formData[fieldMapping.userProfileHistory];
+        formData[fieldMapping.userProfileHistory] = formerdata || [];
+        if (physicalAddress)
+            formData[fieldMapping.userProfileHistory].push(physicalAddress);
+        
         showAnimation();
         const response = await storeResponse(formData);
         if(response.code === 200) {
@@ -1000,62 +1358,6 @@ const verifyUserDetails = (formData) => {
         }
     })
 
-}
-
-export const addEventPreferredContactType = () => {
-    const p1 = document.getElementById('textPermissionYes');
-    const p2 = document.getElementById('textPermissionNo');
-    const email = document.getElementById('UPEmail');
-
-    p1.addEventListener('click', () => {
-        const div = document.getElementById('preferredEmailPhone');
-        div.classList = ['form-group row']
-        div.innerHTML = `
-        <div class="col">
-            <label class="col-form-label">
-                How do you prefer that we reach you?
-            </label>
-            <br>
-            <div class="btn-group btn-group-toggle col-md-4" style="margin-left:0px;">
-                <label><input type="radio" name="methodOfContact" value="127547625"> Text Message</label>
-                <label><input type="radio" name="methodOfContact" value="357184057" style="margin-left:10px;"> Email</label>
-            </div>
-        </div>
-        `;
-        /*
-        else {
-            const div = document.getElementById('preferredEmailPhone');
-            div.classList = '';
-            div.innerHTML = '';
-        }*/
-    });
-
-    p2.addEventListener('click', () => {
-        const div = document.getElementById('preferredEmailPhone');
-        div.classList = '';
-        div.innerHTML = '';
-    });
-
-    email.addEventListener('keyup', () => {
-        if(p1.classList.contains('active') && email.value){
-            const div = document.getElementById('preferredEmailPhone');
-            if(div.innerHTML === ''){
-                div.classList = ['form-group row']
-                div.innerHTML = `
-                    <label class="col-md-4 col-form-label">How do you prefer that we reach you?</label>
-                    <div class="btn-group btn-group-toggle col-md-4" data-toggle="buttons">
-                        <label class="btn btn-light up-btns"><input type="radio" name="methodOfContact" value="127547625">Text Message</label>
-                        <label class="btn btn-light up-btns"><input type="radio" name="methodOfContact" value="357184057">Email</label>
-                    </div>
-                `;
-            }
-        }
-        else {
-            const div = document.getElementById('preferredEmailPhone');
-            div.classList = '';
-            div.innerHTML = '';
-        }
-    });
 }
 
 export const addEventPinAutoUpperCase = () => {
@@ -1153,17 +1455,6 @@ export const addEventCancerFollowUp = () => {
     });
 }
 
-
-export const addEventHideNotification = (element) => {
-    const hideNotification = element.querySelectorAll('.hideNotification');
-    Array.from(hideNotification).forEach(btn => {
-        btn.addEventListener('click', () => {
-            btn.parentNode.parentNode.parentNode.parentNode.removeChild(btn.parentNode.parentNode.parentNode);
-        });
-        // setTimeout(() => { btn.dispatchEvent(new Event('click')) }, 5000);
-    });
-}
-
 export const addEventRetrieveNotifications = () => {
     const btn = document.getElementById('retrieveNotifications');
     if(!btn) return;
@@ -1256,10 +1547,12 @@ export const toggleCurrentPage = async (route) => {
     const IDs = ['userDashboard', 'Notifications', 'userAgreements', 'userSettings', 'connectSamples', 'connectSupport', 'connectPayment'];
     IDs.forEach(id => {
         const element = document.getElementById(id);
-        if(element) {
-            element.addEventListener('click', () => {
-                removeActiveClass('navbar-nav', 'current-page');
-                element.parentNode.parentNode.classList.add('current-page');
+        if (element) {
+            const clonedElement = element.cloneNode(true);
+            element.parentNode.replaceChild(clonedElement, element);
+
+            clonedElement.addEventListener('click', () => {
+                updateActiveNavItem(clonedElement);
                 toggleNavbarMobileView();
             });
         }
@@ -1274,30 +1567,32 @@ export const toggleCurrentPage = async (route) => {
     if(route === '#payment') document.getElementById('connectPayment').click();
 }
 
-export const toggleCurrentPageNoUser = async (route) => {
+export const toggleCurrentPageNoUser = async () => {
     const IDs = ['home', 'about', 'expectations', 'privacy'];
     IDs.forEach(id => {
         const element = document.getElementById(id);
-        element.addEventListener('click', () => {
-            removeActiveClass('navbar-nav', 'current-page');
-            element.parentNode.parentNode.classList.add('current-page');
-            toggleNavbarMobileView();
-        })
-    });
-    // if(route === '#') document.getElementById('home').click();
-    // else if(route === '#about') document.getElementById('about').click();
-    // else if(route === '#expectations') document.getElementById('expectations').click();
-    // else if(route === '#privacy') document.getElementById('privacy').click();
+        if (element) {
+            const clonedElement = element.cloneNode(true);
+            element.parentNode.replaceChild(clonedElement, element);
 
+            clonedElement.addEventListener('click', () => {
+                updateActiveNavItem(clonedElement);
+                toggleNavbarMobileView();
+            });
+        }
+    });
+}
+
+export const updateActiveNavItem = (clonedElement) => {
+    document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('current-page');
+    });
+
+    clonedElement.closest('.nav-item').classList.add('current-page');
 }
 
 export const addEventCheckCanText = () => {
 } 
-
-export const addEventDisableCopyPaste = () =>{
-    const myInput = document.getElementById('confirmUPEmail');
-    myInput.onpaste = e => e.preventDefault();
-}
 
 export const addEventLanguageSelection = () => {
     const selector = document.getElementById('languageSelector');
@@ -1305,7 +1600,7 @@ export const addEventLanguageSelection = () => {
         console.warn('Language Selector Not Found');
         return;
     }
-    selector.addEventListener('change', (e) => { 
+    selector.addEventListener('change', async (e) => { 
         const selectedLanguage = parseInt(e.target.value, 10);
         window.localStorage.setItem('preferredLanguage', selectedLanguage);
         appState.setState({"language": selectedLanguage});
@@ -1314,9 +1609,9 @@ export const addEventLanguageSelection = () => {
         if (wrapperDiv && wrapperDiv.dataset.uiType === 'signIn' && 
             (wrapperDiv.dataset.accountType === 'phone' || wrapperDiv.dataset.accountType === 'email')) {
             const account = {type: wrapperDiv.dataset.accountType, value: wrapperDiv.dataset.accountValue};
-            firebaseSignInRender({account});
+            await firebaseSignInRender({account});
         } else if (wrapperDiv && wrapperDiv.dataset.uiType === 'signUp') {
-            signUpRender({signUpType: wrapperDiv.dataset.signupType})
+            await signUpRender({signUpType: wrapperDiv.dataset.signupType})
         }
     });
 }

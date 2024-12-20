@@ -1,4 +1,4 @@
-import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations } from './shared.js';
+import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis} from './shared.js';
 import { removeAllErrors } from './event.js';
 import cId from './fieldToConceptIdMapping.js';
 
@@ -6,6 +6,7 @@ export const showEditButtonsOnUserVerified = () => {
   document.getElementById('changeNameButton').style.display = 'block';
   document.getElementById('changeContactInformationButton').style.display = 'block';
   document.getElementById('changeMailingAddressButton').style.display = 'block';
+  document.getElementById('changePhysicalMailingAddressButton').style.display = 'block';
   document.getElementById('changeLoginButton').style.display = 'block';
 };
 
@@ -149,6 +150,7 @@ export const FormTypes = {
   NAME: 'nameForm',
   CONTACT: 'contactForm',
   MAILING: 'mailingForm',
+  PHYSICAL_MAILING: 'physicalMailingForm',
   LOGIN: 'loginForm',
 };
 
@@ -250,7 +252,7 @@ export const getCheckedRadioButtonValue = radioYes => {
   return document.getElementById(radioYes).checked ? cId.yes : cId.no;
 };
 
-export const validateContactInformation = (mobilePhoneNumberComplete, homePhoneNumberComplete, preferredEmail, otherPhoneNumberComplete, additionalEmail1, additionalEmail2) => {
+export const validateContactInformation = async (mobilePhoneNumberComplete, homePhoneNumberComplete, preferredEmail, otherPhoneNumberComplete, additionalEmail1, additionalEmail2) => {
   removeAllErrors();
   let hasError = false;
   let focus = true;
@@ -285,22 +287,30 @@ export const validateContactInformation = (mobilePhoneNumberComplete, homePhoneN
     hasError = true;
   }
 
-  if (!preferredEmail || !validEmailFormat.test(preferredEmail)) {
-    errorMessage('newPreferredEmail', translateText('settingsHelpers.emailFormat'), focus);
+  const emailValidation = await emailAddressValidation({
+      emails: {
+          upEmail: preferredEmail,
+          upEmail2: additionalEmail1 ? additionalEmail1 : undefined,
+          upAdditionalEmail2: additionalEmail2 ? additionalEmail2 : undefined,
+      },
+  });
+
+  if (emailValidationAnalysis(emailValidation.upEmail) === emailValidationStatus.INVALID) {
+    errorMessage('newPreferredEmail', translateText('settingsHelpers.emailInvalid'), focus);
     if (focus) document.getElementById('newPreferredEmail').focus();
     focus = false;
     hasError = true;
   }
 
-  if (additionalEmail1 && !validEmailFormat.test(additionalEmail1)) {
-    errorMessage('newadditionalEmail1', translateText('settingsHelpers.emailFormat'), focus);
+  if (emailValidationAnalysis(emailValidation.upEmail2) === emailValidationStatus.INVALID) {
+    errorMessage('newadditionalEmail1', translateText('settingsHelpers.emailInvalid'), focus);
     if (focus) document.getElementById('newadditionalEmail1').focus();
     focus = false;
     hasError = true;
   }
 
-  if (additionalEmail2 && !validEmailFormat.test(additionalEmail2)) {
-    errorMessage('newadditionalEmail2', translateText('settingsHelpers.emailFormat'), focus);
+  if (emailValidationAnalysis(emailValidation.upAdditionalEmail2) === emailValidationStatus.INVALID) {
+    errorMessage('newadditionalEmail2', translateText('settingsHelpers.emailInvalid'), focus);
     if (focus) document.getElementById('newadditionalEmail2').focus();
     focus = false;
     hasError = true;
@@ -314,36 +324,36 @@ export const validateContactInformation = (mobilePhoneNumberComplete, homePhoneN
   return true;
 };
 
-export const validateMailingAddress = (addressLine1, city, state, zip) => {
+export const validateMailingAddress = (id, addressLine1, city, state, zip) => {
   removeAllErrors();
   let hasError = false;
   let focus = true;
   const zipRegExp = /[0-9]{5}/;
 
   if (!addressLine1) {
-    errorMessage('UPAddress1Line1', translateText('settingsHelpers.addressNotEmpty'));
-    if (focus) document.getElementById('UPAddress1Line1').focus();
+    errorMessage(`UPAddress${id}Line1`, translateText('settingsHelpers.addressNotEmpty'));
+    if (focus) document.getElementById(`UPAddress${id}Line1`).focus();
     focus = false;
     hasError = true;
   }
 
   if (!city) {
-    errorMessage('UPAddress1City', translateText('settingsHelpers.cityNotEmpty'));
-    if (focus) document.getElementById('UPAddress1City').focus();
+    errorMessage(`UPAddress${id}City`, translateText('settingsHelpers.cityNotEmpty'));
+    if (focus) document.getElementById(`UPAddress${id}City`).focus();
     focus = false;
     hasError = true;
   }
 
   if (!state) {
-    errorMessage('UPAddress1State', translateText('settingsHelpers.stateNotEmpty'));
-    if (focus) document.getElementById('UPAddress1State').focus();
+    errorMessage(`UPAddress${id}State`, translateText('settingsHelpers.stateNotEmpty'));
+    if (focus) document.getElementById(`UPAddress${id}State`).focus();
     focus = false;
     hasError = true;
   }
 
   if (!zip || !zipRegExp.test(zip)) {
-    errorMessage('UPAddress1Zip', translateText('settingsHelpers.zipNotEmpty'));
-    if (focus) document.getElementById('UPAddress1Zip').focus();
+    errorMessage(`UPAddress${id}Zip`, translateText('settingsHelpers.zipNotEmpty'));
+    if (focus) document.getElementById(`UPAddress${id}Zip`).focus();
     focus = false;
     hasError = true;
   }
@@ -355,7 +365,6 @@ export const validateMailingAddress = (addressLine1, city, state, zip) => {
 
   return true;
 };
-
 
 export const validateLoginEmail = (email, emailConfirm) => {
   if (email === emailConfirm) {
@@ -525,17 +534,27 @@ const handleAllEmailField = (changedUserDataForProfile, userData) => {
   return changedUserDataForProfile;
 };
 
-export const changeMailingAddress = async (addressLine1, addressLine2, city, state, zip, userData) => {
-  document.getElementById('mailingAddressFail').style.display = 'none';
-  document.getElementById('changeMailingAddressGroup').style.display = 'none';
+export const changeMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, userData, isPOBox) => {
+  document.getElementById(`mailingAddressFail${id}`).style.display = 'none';
+  document.getElementById(`changeMailingAddressGroup${id}`).style.display = 'none';
 
-  const newValues = {
-    [cId.address1]: addressLine1,
-    [cId.address2]: addressLine2 ?? '',
-    [cId.city]: city,
-    [cId.state]: state,
-    [cId.zip]: zip.toString(),
-  };
+  const newValues =
+      id === 1
+          ? {
+                [cId.address1]: addressLine1,
+                [cId.address2]: addressLine2 ?? "",
+                [cId.city]: city,
+                [cId.state]: state,
+                [cId.zip]: zip.toString(),
+                [cId.isPOBox]: isPOBox ? cId.yes: cId.no,
+            }
+          : {
+                [cId.physicalAddress1]: addressLine1,
+                [cId.physicalAddress2]: addressLine2 ?? "",
+                [cId.physicalCity]: city,
+                [cId.physicalState]: state,
+                [cId.physicalZip]: zip.toString(),
+            };
 
   const { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValues, userData);
   const isSuccess = processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'mailingAddress');
@@ -964,3 +983,43 @@ export const unlinkFirebaseAuthenticationTrigger = async (authToUnlink) =>  {
       throw error;
   }
 }
+
+export const formerNameOptions = [
+  { value: "", text: "-- Select --" , i18n: 'form.formerNameCategoryDefaultOption'},
+  { value: "first", text: "First" , i18n: 'form.formerNameCategoryOption.first'},
+  { value: "middle", text: "Middle" ,i18n: 'form.formerNameCategoryOption.middle'},
+  { value: "last", text: "Last" ,i18n: 'form.formerNameCategoryOption.last'},
+];
+export const numberOfDefaultFormerNames = 1
+export const getFormerNameData = () => {
+    const result = [];
+    const upEmail = document.getElementById("UPEmail");
+    const formerNameItems = document.getElementsByClassName("former-name-item");
+    Array.from(formerNameItems).forEach((_, index) => {
+        const inputElement = document.getElementById(
+            `former-name-value-${index + 1}`
+        );
+        const selectElement = document.getElementById(
+            `former-name-category-${index + 1}`
+        );
+        if (inputElement.value) {
+            const object = {
+                [cId.profileChangeRequestedBy]: upEmail.value,
+                [cId.userProfileUpdateTimestamp]: new Date().toISOString(),
+            };
+            switch (selectElement.value) {
+                case "first":
+                    object[cId.fName] = inputElement.value;
+                    break;
+                case "middle":
+                    object[cId.mName] = inputElement.value;
+                    break;
+                case "last":
+                    object[cId.lName] = inputElement.value;
+                    break;
+            }
+            result.push(object);
+        }
+    });
+    return result;
+};

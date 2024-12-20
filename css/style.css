@@ -14,8 +14,6 @@ a{
 #root {
     height: 100%;
     margin-top:1px;
-    margin-left:15px;
-    margin-right:15px;
 }
 
 #footer {
@@ -1362,6 +1360,10 @@ button.connect-secondary {
     font-family: Montserrat;
 }
 
+.site-info-italic {
+    font-style: italic;
+}
+
 .site-info-underline {
     text-decoration: underline;
 }
@@ -1385,6 +1387,10 @@ button.connect-secondary {
 
 .site-list-item-spacing {
     margin-bottom: 1rem;
+}
+
+#donateMySamplesTable tbody tr td {
+    padding: 0.5rem;
 }
 
 .messagesHeaderFont .samples-page-text {
@@ -1471,33 +1477,55 @@ button.connect-secondary {
     cursor: pointer;
 }
 
-.screen-reader-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0,0,0,0);
-    border: 0;
-}
-
 #languageSelectorContainer {
     float: right;
-    line-height: .9rem;
+    line-height: 0.9rem;
     font-weight: bold;
+    display: flex;
+    flex-direction: column;
 }
 
 #languageSelectorTitle {
-    margin: 2px 0;
-    font-weight: bold;
+    padding-bottom: 0.25rem;
+    text-align: center;
 }
 
 #languageSelector {
-    margin-bottom: 2px;
+    margin-bottom: 0.25rem;
+}
+
+@media (max-width: 991.98px) {
+    .navbar-collapse {
+        padding-top: 0.75rem;
+    }
+
+    .navbar-toggler {
+        margin: 0.5rem ;
+    }
+
+    /* Prevent language selector from moving when navbar expands */
+    .navbar-collapse.show~#languageSelectorContainer,
+    .navbar-collapse.collapsing~#languageSelectorContainer {
+        position: absolute;
+        right: 0.75rem;
+        top: 0.8rem;
+    }
 }
 
 #appVersion {
     color: #fff;
     font-size: 0.8rem;
+}
+
+.survey-main-body {
+    border: 1px solid #dee2e6;
+    padding: 20px;
+    border-radius: 0 10px 10px 10px;
+}
+
+@media (max-width: 768px) {
+    .survey-main-body {
+        padding: 10px;
+        border-width: 0.5px;
+    }
 }

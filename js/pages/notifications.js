@@ -44,7 +44,7 @@ export const renderNotificationsPage = async () => {
 
     
     template += `
-    <div style="border: 1px solid #dee2e6; padding: 20px; border-radius:0px 10px 10px 10px;" id="surveyMainBody">
+        <div class="surveyMainBody id="surveyMainBody">
     `;
     if (unread.length === 0) {
         template += renderMainBody(notifs.data, 'read');

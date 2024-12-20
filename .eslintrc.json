@@ -12,6 +12,7 @@
     "eslint:recommended"
   ],
   "globals": {
+    "bootstrap": "readonly",
     "firebase": "readonly",
     "firebaseui": "readonly",
     "google":"readonly",

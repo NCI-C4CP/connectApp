@@ -42,6 +42,12 @@ export default
     "city":703385619,    
     "state":634434746,
     "zip":892050548,
+    "isPOBox":250235523,
+    "physicalAddress1":207908218,
+    "physicalAddress2":224392018,
+    "physicalCity":451993790,    
+    "physicalState":187799450,
+    "physicalZip":449168732,
     "healthcareProvider":827220437,
     "verification":821247024,
     "verified":197316935,
@@ -121,7 +127,8 @@ export default
         "D_793330426":      "ModuleCovid19",
         "D_390351864":      "Mouthwash",
         "D_601305072":      "PROMIS",
-        "D_506648060":      "Experience2024"
+        "D_506648060":      "Experience2024",
+        "D_369168474":      "CancerScreeningHistory"
     },
 
     "Module1_OLD": {
@@ -248,16 +255,37 @@ export default
         "version":          "905236593"
     },
 
-    // external variables passed into Quest that require extra async/await handling.
+    CancerScreeningHistory: {
+        "conceptId": "D_369168474",
+        "startTs": "609630315",
+        "completeTs": "389890053",
+        "statusFlag": "176068627",
+        "standaloneSurvey": true,
+        "version": "350996955",
+        "questVersion": "562804752",
+    },
+    
+    // @deprecated. Retain until migration to Quest2 is complete. External variables passed into Quest that require extra async/await handling.
     delayedParameterArray: [
-        "D_627122657",
-        "D_796828094",
-        "D_118061122",
-        "D_518387017",
         "D_761310265",
         "D_279637054",
-        "D_951357171",
     ],
+
+    // External question IDs (Quest) mapped to their function names.
+    questAsyncQuestionsMap: {
+        "Module1": {
+            asyncQuestions: {
+                "[D_761310265?]": {
+                    func: "soccer",
+                    args: ["D_627122657", "D_796828094"],
+                },
+                "[D_279637054?]": {
+                    func: "soccer",
+                    args: ["D_118061122", "D_518387017"],
+                }
+            },
+        },
+    },
 
     collectionDetails: 173836415,
     baseline: 266600170,

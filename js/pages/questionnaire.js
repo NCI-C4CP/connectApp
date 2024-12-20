@@ -2,46 +2,70 @@ import { getModuleSHA, getModuleText, getMyData, getShaFromGitHubCommitData, has
 import fieldMapping from '../fieldToConceptIdMapping.js'; 
 import { socialSecurityTemplate } from "./ssn.js";
 
-let questConfig;
-let questVersion;
-let quest;
-let data;
-let modules;
-
-const questDiv = "questionnaireRoot";
+let questVersion;                                       // The Quest version to fetch from the CDN. Stored and updated in Firestore.
+let questConfig;                                        // The config object maps the current environment to the appropriate Quest version.
+let quest;                                              // The Quest module.
+let participantData;                                    // The participant's data.
+let appSettingsData;                                    // The app settings data.
+let modules;                                            // The survey modules data.
+let isQuest2 = false;                                   // To identify the Quest versions < 2 and >= 2. Retain for gradual migration to Quest v2.0+.
+const questDivID = "questionnaireRoot";                 // The div ID for loading surveys.
+const appSettingsArray = [                              // The app settings parameters to fetch (Quest-related settings) from Firestore.
+    'currentQuestVersion',
+    'currentQuest2Version',
+    'quest2ModuleActivatedTimestamp'
+];
 
 /**
- * The questConfig object maps the current environment to the appropriate Quest version.
- * The Quest version is fetched from Firestore.
- * Fetch currentQuestVersion from Firestore: collection: appSettings, document: { "appName":connectApp, "currentQuestVersion": currentQuestVersion }
+ * Maps the current environment to the appropriate Quest version.
+ * Determine whether to load Quest or Quest 2.0+ based on the participant's survey start timestamp and the module's activation timestamp.
+ * If: Quest 2.0+ survey is active AND
+ *     Either the participant is starting a new survey OR the participant's survey start timestamp is greater than the module's activation timestamp,
+ *     Then: load Quest 2.0+.
+ * Else: load Quest 1.
+ * @param {string} moduleId - The ID of the survey module the participant clicked to start.
+ * @returns {void} - Sets the global questVersion and questConfig variables for loading.
+ * Fetch currentQuestVersion from Firestore: collection: appSettings, document:
+ *      { "appName": <string>, "currentQuestVersion": <string>, "currentQuest2Version": <string>, "quest2ModuleActivatedTimestamp": <object>{ <moduleId>: <ISO 8601 timestamp> } }
  */
-async function loadQuestConfig() {
-    const paramsToFetchArray = ['currentQuestVersion'];
 
-    try {
-        const appSettingsResponse = await getAppSettings(paramsToFetchArray);
-        questVersion = appSettingsResponse.currentQuestVersion;
-        
+async function loadQuestConfig(moduleId) {
+    const participantStartSurveyTimestamp = participantData[fieldMapping[moduleId].startTs] || '';
+    const quest2ModuleActivatedTimestamp = appSettingsData.quest2ModuleActivatedTimestamp[moduleId] || '';
+    const currentISOTimestamp = new Date().toISOString();
+
+    if (quest2ModuleActivatedTimestamp && quest2ModuleActivatedTimestamp <= currentISOTimestamp && (!participantStartSurveyTimestamp || participantStartSurveyTimestamp >= quest2ModuleActivatedTimestamp)) {
+        isQuest2 = true;
+    }
+
+    // TODO: Verify and update the CDN location for Quest 2.0+ when available.
+    if (isQuest2) {
+        questVersion = appSettingsData.currentQuest2Version;
+        questConfig = {
+            "myconnect.cancer.gov": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/main.js`, // TODO: verify
+            "myconnect-stage.cancer.gov": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/main.js`, // TODO: verify
+            "episphere.github.io": "https://episphere.github.io/quest-dev/main.js",
+            "localhost:5000": "https://episphere.github.io/quest-dev/main.js", // TODO: update to CDN when available
+        }
+    } else {
+        questVersion = appSettingsData.currentQuestVersion;
         questConfig = {
             "myconnect.cancer.gov": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/replace2.js`,
             "myconnect-stage.cancer.gov": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/replace2.js`,
-            "episphere.github.io": "https://episphere.github.io/quest-dev/replace2.js",
+            "episphere.github.io": "https://episphere.github.io/quest/replace2.js",
             "localhost:5000": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/replace2.js`
         };
-    } catch (error) {
-        console.error(`QuestConfig Loading Error: ${error.message}`);
-        logDDRumError(error, 'QuestConfigError', {
-            userAction: 'click start survey',
-            timestamp: new Date().toISOString(),
-            ...(data?.['Connect_ID'] && { connectID: data['Connect_ID'] }),
-        });
     }
 }
+
+/**
+ * Import the Quest module from the appropriate CDN location (or GitHub location for dev).
+ */
 
 const importQuest = async () => {
     const url = questConfig[location.host];
     
-    try {    
+    try {
         const { transform } = await import(url);
 
         if (!transform) {
@@ -56,9 +80,10 @@ const importQuest = async () => {
 
 /**
  * Questionnaire directs the survey module handling throughout the survey loading process.
- * Errors from children are caught here. The loading animation is shown and hidden here.
+ * Errors from the module loading process are caught here. The loading animation is shown and hidden here.
  * @param {string} moduleId - The ID of the survey module the participant clicked to start.
  */
+
 export const questionnaire = async (moduleId) => {
     try {
         showAnimation();
@@ -66,22 +91,29 @@ export const questionnaire = async (moduleId) => {
         if (!moduleId) {
             throw new Error('No module ID on start survey click.');
         }
-        
-        const [responseData] = await Promise.all([
+
+        const [participantResponse, appSettingsResponse] = await Promise.all([
             fetchDataWithRetry(() => getMyData()),
-            fetchDataWithRetry(() => loadQuestConfig()),
+            fetchDataWithRetry(() => getAppSettings(appSettingsArray)),
         ]);
 
-        if(!hasUserData(responseData)) {
+        if(!hasUserData(participantResponse)) {
             throw new Error('No user data found.');
         }
 
-        data = responseData.data;
+        if (!appSettingsResponse) {
+            throw new Error('Error fetching app settings.');
+        }
 
-        displayQuestionnaire(questDiv, moduleId !== 'ModuleSsn');
+        participantData = participantResponse.data;
+        appSettingsData = appSettingsResponse;
+
+        loadQuestConfig(moduleId);
+
+        displayQuestionnaire(moduleId !== 'ModuleSsn');
 
         if(moduleId === 'ModuleSsn') {
-            socialSecurityTemplate(data);
+            socialSecurityTemplate(participantData);
         } else {
             const [responseModules] = await Promise.all([
                 fetchDataWithRetry(() => getMySurveys([...new Set([
@@ -104,13 +136,14 @@ export const questionnaire = async (moduleId) => {
                 throw new Error('No modules found.');
             }
 
-            await startModule(data, modules, moduleId, questDiv);
+            await startModule(moduleId);
         }
     } catch (error) {
         const errorContext = {
             userAction: 'click start survey',
             timestamp: new Date().toISOString(),
-            ...(data?.['Connect_ID'] && { connectID: data['Connect_ID'] }),
+            isQuest2: isQuest2,
+            ...(participantData?.['Connect_ID'] && { connectID: participantData['Connect_ID'] }),
             ...(moduleId && { moduleId }),
             ...(modules && { modules }),
             ...(error.context && { ...error.context }),
@@ -124,22 +157,26 @@ export const questionnaire = async (moduleId) => {
 }
 
 
-// Questionnaire handles loading animations and receives thrown errors.
-async function startModule(data, modules, moduleId, questDiv) {
-    let tJSON = undefined;
-    let url = "https://raw.githubusercontent.com/episphere/questionnaire/";
-    let inputData;
-    let moduleConfig;
-    let path;
-    let sha;
-    let key;
-    let lang;
-    let moduleText;
+/**
+ * Fetch and load the survey module in Quest.
+ * @param {string} moduleId - The ID of the survey module the participant clicked to start.
+ */
+
+async function startModule(moduleId) {
+    let tJSON = undefined;                                                  // @deprecated. Retain until migration to Quest 2.0+ is complete. tJSON (treeJSON) is integrated into the question saving operation in Quest 2.0+
+    let url = "https://raw.githubusercontent.com/episphere/questionnaire/"; // The base URL for the module's markdown text.
+    let inputData;                                                          // Precalculated input data from the participant's previous surveys.
+    let moduleConfig;                                                       // The module configuration object mapping survey paths.
+    let path;                                                               // The path to the module's markdown text.
+    let sha;                                                                // The SHA value (from the GitHub commit) for the module's markdown text.
+    let key;                                                                // The moduleID key for the module's configuration object.
+    let lang;                                                               // The participant's preferred language.
+    let moduleText;                                                         // The fetched module's markdown text.
 
     await localforage.clear();
 
     try {
-        inputData = setInputData(data, modules); 
+        inputData = setInputData(participantData, modules); 
         moduleConfig = questionnaireModules();
 
         key = Object.keys(moduleConfig).find(key => moduleConfig[key].moduleId === moduleId);
@@ -149,84 +186,95 @@ async function startModule(data, modules, moduleId, questDiv) {
         }
 
         // Module has not been started.
-        if (data[fieldMapping[moduleId].statusFlag] === fieldMapping.moduleStatus.notStarted) {
+        if (participantData[fieldMapping[moduleId].statusFlag] === fieldMapping.moduleStatus.notStarted) {
             
             ({ path, lang } = getMarkdownPath(getSelectedLanguage(), moduleConfig[key]));
             
             try {
-                sha = await fetchDataWithRetry(() => getModuleSHA(path, data['Connect_ID'], moduleId));
+                sha = await fetchDataWithRetry(() => getModuleSHA(path, participantData['Connect_ID'], moduleId));
                 url += sha + "/" + path;
-            } catch (error) {
+            } catch {
                 throw new Error('Error: No SHA found for module.');
             }
             
             try {
-                moduleText = await updateStartSurveyParticipantData(sha, path, data['Connect_ID'], moduleId);
+                moduleText = await updateStartSurveyParticipantData(sha, path, participantData['Connect_ID'], moduleId);
             } catch (error) {
-                throw new Error('Error: Storing questData and formData failed.');
+                throw new Error(`Error: Storing questData and formData failed. ${error.message}`);
             }
 
         // Module has been started and has a SHA value. Note: Don't need to update participant for this case since record exists. Fetch module text directly.
         } else if (modules[fieldMapping[moduleId].conceptId]?.['sha']) {
-
-            tJSON = await getTree(modules, moduleId);
+            tJSON = await getTree(modules, moduleId); // @deprecated. Retain until migration to Quest 2.0+ is complete.
             ({ path, lang } = getMarkdownPath(modules[fieldMapping[moduleId].conceptId][fieldMapping.surveyLanguage], moduleConfig[key]));
 
             sha = modules[fieldMapping[moduleId].conceptId]['sha'];
             url += sha + "/" + path;
 
             try {
-                const moduleFetchResult = await fetchDataWithRetry(() => getModuleText(sha, path, data['Connect_ID'], moduleId));
+                const moduleFetchResult = await fetchDataWithRetry(() => getModuleText(sha, path, participantData['Connect_ID'], moduleId));
                 moduleText = moduleFetchResult.moduleText;
             } catch (error) {
-                throw new Error('Error: Module text prefetch failed.');
+                throw new Error(`Error: Module text prefetch failed. ${error.message}`);
             }
 
         // Module has been started but SHA is not found. 'Fix' the case where the SHA is not found for the module.
         } else {
             console.error('Module started but SHA not found. Fixing the SHA not found case.');
-            const startSurveyTimestamp = data[fieldMapping[moduleId].startTs] || '';
+            const startSurveyTimestamp = participantData[fieldMapping[moduleId].startTs] || '';
 
-            tJSON = await getTree(modules, moduleId);
+            tJSON = await getTree(modules, moduleId); // @deprecated. Retain until migration to Quest 2.0+ is complete.
             ({ path, lang } = getMarkdownPath(modules[fieldMapping[moduleId].conceptId][fieldMapping.surveyLanguage], moduleConfig[key]));
 
             // Get the SHA from the GitHub API. The correct SHA is the SHA for the active survey commit when the participant started the survey.
             let surveyVersion;
             try {
-                [sha, surveyVersion] = await getShaFromGitHubCommitData(startSurveyTimestamp, path, data['Connect_ID'], moduleId);
+                [sha, surveyVersion] = await getShaFromGitHubCommitData(startSurveyTimestamp, path, participantData['Connect_ID'], moduleId);
                 url += sha + "/" + path;
 
             } catch (error) {
-                throw new Error('Error: SHA not retrieved for module (API lookup).');
+                throw new Error(`Error: SHA not retrieved for module (API lookup). ${error.message}`);
             }
 
             // Repair the SHA value in the module data. Do not update the start timestamp (found in participant data) for the module.
             try {
                 const repairShaValue = true;
-                moduleText = await updateStartSurveyParticipantData(sha, path, data['Connect_ID'], moduleId, surveyVersion, repairShaValue);
+                moduleText = await updateStartSurveyParticipantData(sha, path, participantData['Connect_ID'], moduleId, surveyVersion, repairShaValue);
             } catch (error) {
-                throw new Error('Error: Updating participant data failed after EXISTING MODULE: SHA not found.');
+                throw new Error(`Error: Updating participant data failed after EXISTING MODULE: SHA not found. ${error.message}`);
             }   
         }
 
         const questParameters = {
-            url: url,                                                                               // URL for the module's markdown text.
             activate: true,                                                                         // Activate the stylesheets.
-            delayedParameterArray: fieldMapping.delayedParameterArray,                              // Delayed parameters (external questions that require extra processing time).
-            store: storeResponseQuest,                                                              // Store the participant's responses in Firestore.
-            retrieve: function(){return getMySurveys([fieldMapping[moduleId].conceptId], true)},    // Retrieve the module data from Firestore.
-            soccer: function(){return externalListeners(lang)},                                     // External listeners for soccer questions.
-            updateTree: storeResponseTree,                                                          // Update the treeJSON in Firestore.
-            treeJSON: tJSON,                                                                        // Existing treeJSON for the module. Tracks the participant's progress through the module.
+            asyncQuestionsMap: fieldMapping.questAsyncQuestionsMap[moduleId]?.asyncQuestions,       // Map of async question IDs, their fetch functions, and their related variables.
+            delayedParameterArray: fieldMapping.delayedParameterArray,                              // @deprecated. Retain until Quest2 migration is complete. Delayed parameters (external questions that require extra processing time).
+            errorLogger: (error) => {                                                               // Logger for in-survey errors.
+                const additionalContext = {
+                    userAction: 'In-survey error',
+                    timestamp: new Date().toISOString(),
+                    connectId: participantData['Connect_ID'],
+                    questionnaire: moduleId,
+                }
+                questErrorLogger(error, 'QuestError', additionalContext);
+            },
+            fetchAsyncQuestion: fetchAsyncQuestion,                                                 // Fetch async questions within Quest.
             lang: lang,                                                                             // Participant's preferred language.
-            text: moduleText,                                                                       // Markdown text for the module.
             questVersion: questVersion,                                                             // Quest version number, for loading stylesheets from the CDN.
-            surveyDataPrefetch: modules[fieldMapping[moduleId].conceptId]                           // Prefetched survey data.
+            retrieve: () => getMySurveys([fieldMapping[moduleId].conceptId], true),                 // Retrieve the module data from Firestore.
+            showProgressBarInQuest: isQuest2,                                                       // Show the progress bar.
+            soccer: () => externalListeners(lang),                                                  // @deprecated. Retain until Quest2 migration is complete. External listeners for soccer questions.                                                                      // Existing treeJSON for the module. Tracks the participant's progress through the module.
+            store: storeResponseQuest,                                                              // Store the participant's responses in Firestore.
+            surveyDataPrefetch: modules[fieldMapping[moduleId].conceptId],                          // Prefetched survey data from Firestore: existing responses to continue mid-survey where the participant left off.
+            text: moduleText,                                                                       // Markdown text for the module.
+            treeJSON: tJSON,                                                                        // @deprecated. Retain until migration to Quest 2.0+ is complete. Existing treeJSON for the module. Tracks the participant's progress through the module. Handled in retrieve operation for versions 2.0+.
+            updateTree: storeResponseTree,                                                          // @deprecated. Retain until migration to Quest 2.0+ is complete. Update the treeJSON in Firestore. Handled in storeResponseQuest for versions 2.0+.
+            url: url,                                                                               // URL for the module's markdown text.
         }
 
+        // Load the survey module in Quest and reset the window scroll position.
+        await quest.render(questParameters, questDivID, inputData);
         window.scrollTo(0, 0);
-
-        await quest.render(questParameters, questDiv, inputData);
             
         //Grid fix first
         Array.from(document.getElementsByClassName('d-lg-block')).forEach(element => {
@@ -237,10 +285,13 @@ async function startModule(data, modules, moduleId, questDiv) {
             element.classList.replace('d-lg-none', 'd-xxl-none');
         });
 
-        updateProgressBar();
-        setUpMutationObserver();
-        
-        document.getElementById(questDiv).style.visibility = 'visible';
+        if (!isQuest2) {
+            updateProgressBar();
+            setUpMutationObserver();
+        }
+
+        document.getElementById(questDivID).style.visibility = 'visible';
+
     } catch (error) {
         const errorContext = { moduleId, modules, inputData, moduleConfig, key, path, sha };
         error.context = errorContext;
@@ -248,6 +299,34 @@ async function startModule(data, modules, moduleId, questDiv) {
     }
 }
 
+/**
+ * Log quest errors to Datadog RUM.
+ * @param {object} error - The error object.
+ * @param {string} errorType - The type of error.
+ * @param {object} additionalContext - Additional survey context to log with the error.
+ */
+
+const questErrorLogger = (error, errorType = 'QuestError', additionalContext = {}) => {
+    const activeQuestionID = getActiveQuestionID();
+
+    const context = {
+        ...additionalContext,
+        errorName: errorType,
+        errorMessage: error.message || 'An error occurred',
+        errorStack: error.stack || 'No stack trace available',
+        isQuest2: isQuest2,
+        ...activeQuestionID && { activeQuestionID: activeQuestionID },
+    };
+
+    logDDRumError(error, errorType, context);
+}
+
+const getActiveQuestionID = () => {
+    const activeQuestion = document.querySelector('form.active');
+    return activeQuestion?.id;
+}
+
+// @deprecated. This function is used in Quest versions pre-2.0. Retain until migration is complete.
 function externalListeners(language){
     
     const work3 = document.getElementById("D_627122657");
@@ -336,11 +415,11 @@ function externalListeners(language){
                     <div class = "col-md-1">
                     </div>
                     <div class = "col-md-10">
-                        <div class="progress">
+                        ${!isQuest2 ? `<div class="progress">
                             <div id="questProgBar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                <span class="screen-reader-only" id="progressText">0% Complete</span>
+                                <span class="visually-hidden" id="progressText">0% Complete</span>
                             </div>
-                        </div>
+                        </div>` : ''}
                     </div>
                     <div class = "col-md-1">
                     </div>
@@ -376,7 +455,59 @@ function externalListeners(language){
     }
 }
 
-//BUILDING SOCCER
+/**
+ * Build the HTML for the SOCcer results and insert them in the Quest div.
+ * @param {Array} soccerResults - The array of SOCcer results, returned from the API.
+ * @param {HTMLElement} questionID - The active question in Quest.
+ */
+function buildSoccerHTML(soccerResults, question) {
+    let fieldset = question.querySelector('fieldset');
+    fieldset.innerHTML = translateHTML('<span data-i18n="questionnaire.identifyOccupation">Please identify the occupation category that best describes this job.</span><br aria-hidden="true">');
+
+    soccerResults.forEach((soc, indx) => {
+        // Create a div.response for each radio button
+        let responseDiv = document.createElement('div');
+        responseDiv.classList.add('response');
+
+        let resp = document.createElement('input');
+        resp.type = "radio";
+        resp.id = `${question.id}_${indx}`;
+        resp.value = soc.code;
+        resp.name = "SOCcerResults";
+        resp.onclick = quest.rbAndCbClick;
+
+        let label = document.createElement('label');
+        label.setAttribute('for', `${question.id}_${indx}`);
+        label.innerText = soc.label;
+
+        responseDiv.appendChild(resp);
+        responseDiv.appendChild(label);
+        fieldset.appendChild(responseDiv);
+    });
+
+    // Add the NONE OF THE ABOVE option
+    let notaDiv = document.createElement('div');
+    notaDiv.classList.add('response');
+
+    let notaResp = document.createElement('input');
+    notaResp.type = "radio";
+    notaResp.id = `${question.id}_NOTA`;
+    notaResp.value = "NONE_OF_THE_ABOVE";
+    notaResp.name = "SOCcerResults";
+    notaResp.onclick = quest.rbAndCbClick;
+
+    let notaLabel = document.createElement('label');
+    notaLabel.setAttribute('for', `${question.id}_NOTA`);
+    notaLabel.setAttribute('data-i18n', 'questionnaire.noneAbove');
+    notaLabel.innerText = translateText('questionnaire.noneAbove');
+
+    notaDiv.appendChild(notaResp);
+    notaDiv.appendChild(notaLabel);
+    fieldset.appendChild(notaDiv);
+}
+
+//BUILDING SOCCER 
+// @deprecated. This function is used in Quest versions pre-2.0. Retain until migration is complete.
 function buildHTML(soccerResults, question) {
     let fieldset = question.querySelector('fieldset');
     let responseElement = fieldset.querySelector("div[class='response']");
@@ -434,9 +565,71 @@ export const blockParticipant = () => {
 
 }
 
-const buildSoccerResults = async (title, task, language) => { 
+/**
+ * Generalized handler for async questions in Quest. Currently only used for SOCcer questions.
+ * @param {Function} func - The function to fetch and process async questions in Quest.
+ * @param {Array} args - The related arguments for the async function.
+ * @returns {any} - The results of the async function.
+ */
+const fetchAsyncQuestion = async (func, args) => {
 
-    try {    
+    let results = [];
+
+    try {
+        const asyncFunctions = {
+
+            soccer: async (args) => {
+                const [title, task, language] = args;
+                
+                const response = await fetch(`https://us-central1-nih-nci-dceg-connect-dev.cloudfunctions.net/connect-soccer`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ title, task, language })
+                });
+
+                const soccerResponse = await response.json();
+                results = soccerResponse.results;
+
+                if (!results || !Array.isArray(results) || results.length === 0) {
+                    throw new Error('Error: No soccer results found.');
+                }
+
+                for (let i = 0; i < results.length; i++) {
+                    results[i]['code'] += '-' + i;
+                }
+
+                const activeQuestion = document.querySelector('form.question.active');
+                buildSoccerHTML(results, activeQuestion);
+            },
+        }
+
+        if (!asyncFunctions[func]) {
+            throw new Error(`Error: No async function found for ${func}.`);
+        }
+
+        return await asyncFunctions[func](args);
+
+    } catch (error) {
+        logDDRumError(error, 'QuestFetchAsyncQuestionError', {
+            userAction: 'click start survey',
+            timestamp: new Date().toISOString(),
+            func: func,
+            args: args,
+            results: results,
+            isQuest2: isQuest2,
+            ...(participantData?.['Connect_ID'] && { connectID: participantData['Connect_ID'] }),
+        });
+        return [];
+    }
+}
+
+// @deprecated. This function is used in Quest versions pre-2.0. Retain until migration is complete.
+const buildSoccerResults = async (title, task, language) => {
+
+    let soccerResults = [];
+    try {
         const response = await fetch(`https://us-central1-nih-nci-dceg-connect-dev.cloudfunctions.net/connect-soccer`, {
             method: 'POST',
             headers: {
@@ -446,7 +639,7 @@ const buildSoccerResults = async (title, task, language) => {
         });
 
         const soccerResponse = await response.json();
-        const soccerResults = soccerResponse.results;
+        soccerResults = soccerResponse.results;
         
         for (let i = 0; i < soccerResults.length; i++){
             soccerResults[i]['code'] += '-' + i;
@@ -460,11 +653,19 @@ const buildSoccerResults = async (title, task, language) => {
             title: title,
             task: task,
             soccerResults: soccerResults,
-            ...(data?.['Connect_ID'] && { connectID: data['Connect_ID'] }),
+            isQuest2: isQuest2,
+            ...(participantData?.['Connect_ID'] && { connectID: participantData['Connect_ID'] }),
         });
         return [];
     }  
 }
+
+/**
+ * Use previous survey responses to precalculate input data for the participant's current survey.
+ * @param {object} data - The participant's data.
+ * @param {object} modules - The survey modules data from the participant's previously taken surveys.
+ * @returns {object} - The precalculated input data for the participant's current survey.
+ */
 
 const setInputData = (data, modules) => {
 
@@ -528,12 +729,13 @@ const setInputData = (data, modules) => {
         const age = currentYear - birthYear + ageAdjustment;
     
         inputData["age"] = age;
-        inputData["AGE"] = age;
+        inputData["yob"] = birthYear;
     }
 
     return inputData;
 }
 
+// @deprecated: This function is used in Quest versions pre-2.0. Retain until migration is complete.
 function updateProgressBar() {
     const forms = Array.from(document.getElementsByTagName('form'));
     const activeFormIndex = forms.findIndex(form => form.classList.contains('active'));
@@ -548,6 +750,7 @@ function updateProgressBar() {
     }
 }
 
+// @deprecated: This function is used in Quest versions pre-2.0. Retain until migration is complete.
 function setUpMutationObserver() {
     const observer = new MutationObserver(mutations => {
         mutations.forEach(mutation => {
@@ -567,18 +770,25 @@ function setUpMutationObserver() {
     }
 }
 
-const displayQuestionnaire = (id, progressBar) => {
+/**
+ * Page layout for Quest surveys.
+ * Quest versions < 2.0 have an external progress bar.
+ * The progress bar is integrated into Quest versions 2.0+.
+ * @param {boolean} progressBar - Boolean whether to show the progress bar. 
+ */
+
+const displayQuestionnaire = (progressBar) => {
     const rootElement = document.getElementById('root');
     if (rootElement) {
         rootElement.innerHTML = `
-            ${progressBar ? `
+            ${progressBar && !isQuest2 ? `
             <div class="row" style="margin-top:50px">
                 <div class="col-md-1">
                 </div>
                 <div class="col-md-10">
                     <div class="progress">
                         <div id="questProgBar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                            <span class="screen-reader-only" id="progressText">0% Complete</span>
+                            <span class="visually-hidden" id="progressText">0% Complete</span>
                         </div>
                     </div>
                 </div>
@@ -588,7 +798,7 @@ const displayQuestionnaire = (id, progressBar) => {
             <div class="row">
                 <div class = "col-md-1">
                 </div>
-                <div class = "col-md-10" id="${id}">
+                <div class = "col-md-10" id="${questDivID}">
                 </div>
                 <div class = "col-md-1">
                 </div>
@@ -596,9 +806,9 @@ const displayQuestionnaire = (id, progressBar) => {
         `;
     }
     
-    const idElement = document.getElementById(id);
-    if (idElement) {
-        idElement.style.visibility = 'hidden';
+    const questDivElement = document.getElementById(questDivID);
+    if (questDivElement) {
+        questDivElement.style.visibility = 'hidden';
     }
 }
 
@@ -610,7 +820,7 @@ const displayError = () => {
                 <div class = "col-lg-2">
                 </div>
                 <div class = "col">
-                    <h2 class="screen-reader-only">Error Message. Something went wrong. Please try again. Contact the Connect Support Center at 1-877-505-0253 if you continue to experience this problem.</h2>
+                    <h2 class="visually-hidden">Error Message. Something went wrong. Please try again. Contact the Connect Support Center at 1-877-505-0253 if you continue to experience this problem.</h2>
                     <p data-i18n="questionnaire.somethingWrong">Something went wrong. Please try again. Contact the 
                         <a href="https://norcfedramp.servicenowservices.com/participant" target="_blank" rel="noopener noreferrer">Connect Support Center</a> 
                         if you continue to experience this problem.
@@ -645,6 +855,7 @@ const getMarkdownPath = (value, config) => {
     return { path, lang };
 }
 
+// @deprecated: This function is used in Quest versions pre-2.0. Retain until migration is complete.
 const getTree = async (modules, moduleId) => {
 
     return modules[fieldMapping[moduleId].conceptId]?.['treeJSON'];

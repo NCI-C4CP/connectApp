@@ -1,4 +1,4 @@
-import { hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML} from "../shared.js";
+import { hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML, translateText, getAdjustedTime } from "../shared.js";
 import { blockParticipant, questionnaire } from "./questionnaire.js";
 import { renderUserProfile } from "../components/form.js";
 import { consentTemplate } from "./consent.js";
@@ -29,9 +29,9 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
             if(data['699625233'] && data['699625233'] === 353358909){
                 let template = `
                     <div class="row">
-                        <div class="col-lg-2">
+                        <div class="col-xl-2">
                         </div>
-                        <div class="col-lg-8">
+                        <div class="col-xl-8">
                      
                 `;
                 let finalMessage = "";
@@ -62,7 +62,7 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                 }
                 if(finalMessage.trim() !== ""){
                     template += `
-                    <div class="alert alert-warning" id="verificationMessage" style="margin-top:10px;">
+                    <div class="alert alert-warning" role="alert" aria-live="polite" id="verificationMessage" style="margin-top:10px;">
                         ${finalMessage}
                     </div>
                     `
@@ -119,13 +119,13 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                 }
                 else if(data['821247024'] && data['821247024'] == 219863910) {
                     template += `
-                    <div class="alert alert-warning" id="verificationMessage" style="margin-top:10px;"  data-i18n="mytodolist.notEligibleMessage">
+                    <div class="alert alert-warning" role="alert" aria-live="polite" id="verificationMessage" style="margin-top:10px;"  data-i18n="mytodolist.notEligibleMessage">
                         Based on our records you are not eligible for the Connect for Cancer Prevention Study. Thank you for your interest. Any information that you have already provided will remain private. We will not use any information you shared for our research.
                         <br>
                         If you think this is a mistake or if you have any questions, please contact the <a href="https://norcfedramp.servicenowservices.com/participant" target="_blank">Connect Support Center</a>.
                     </div>
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-xl-2">
                     </div>
                     </div>
                     `
@@ -135,11 +135,11 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                 }
                 else if(data['821247024'] && data['821247024'] == 922622075) {
                     template += `
-                    <div class="alert alert-warning" id="verificationMessage" style="margin-top:10px;" data-i18n="mytodolist.alreadyHaveAccount">
+                    <div class="alert alert-warning" role="alert" aria-live="polite" id="verificationMessage" style="margin-top:10px;" data-i18n="mytodolist.alreadyHaveAccount">
                         Our records show that you already have another account with a different email or phone number. Please try signing in again. Contact the Connect Support Center by emailing <a href = "mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a> or calling <span style="white-space:nowrap;overflow:hidden">1-877-505-0253</span> if you need help accessing your account.
                     </div>
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-xl-2">
                     </div>
                     </div>
                     `
@@ -182,11 +182,11 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                     }
 
                     template += `
-                    <div class="alert alert-warning" id="verificationMessage" style="margin-top:10px;">
+                    <div class="alert alert-warning" role="alert" aria-live="polite" id="verificationMessage" style="margin-top:10px;">
                         <span  data-i18n="mytodolist.tryingContact">Our study team has been trying to contact you about your eligibility for the Connect for Cancer Prevention Study. We need more information from you to check that you can be part of Connect. Please contact </span>${body}<span data-i18n="mytodolist.tryingContactEnd"> to confirm that you can take part in the study.</span>    
                     </div>
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-xl-2">
                     </div>
                     </div>
                     `;
@@ -204,7 +204,7 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                 
                 if(topMessage.trim() !== ""){
                     template += `
-                    <div class="alert alert-warning" id="verificationMessage" style="margin-top:10px;">
+                    <div class="alert alert-warning" role="alert" aria-live="polite" id="verificationMessage" style="margin-top:10px;">
                         ${topMessage}
                     </div>
                     `
@@ -214,24 +214,24 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                     <div class="alert alert-warning" id="notesOnLanguage" style="margin-top:10px;" data-i18n="mytodolist.notesOnLanguage">
                         If you'd like to take this survey in another language, simply click the button at the top of the page to switch to your preferred language before you start. Once you start this survey in one language, you'll need to finish it in that language.
                     </div>
-                            <ul class="nav nav-tabs" style="border-bottom:none; margin-top:20px">
-                                <li class="nav-item" style=:padding-left:10px>
-                                    <button class=" nav-link navbar-btn survey-Active-Nav" id="surveysToDoTab" data-i18n="mytodolist.toDoButton">To Do</button>
-                                </li>
-                                <li class="nav-item">
-                                    <button class="nav-link navbar-btn survey-Inactive-Nav" id="surveysCompleted" data-i18n="mytodolist.completed">Completed</button>
-                                </li>
-                            </ul>`
+                    <ul class="nav nav-tabs" role="tablist" style="border-bottom:none; margin-top:20px">
+                        <li class="nav-item" style=:padding-left:10px>
+                            <button class=" nav-link navbar-btn survey-Active-Nav" id="surveysToDoTab" role="tab" aria-selected="true" aria-controls="todoPanel" data-i18n="mytodolist.toDoButton">To Do</button>
+                        </li>
+                        <li class="nav-item">
+                            <button class="nav-link navbar-btn survey-Inactive-Nav" id="surveysCompleted" role="tab" aria-selected="false" aria-controls="completedPanel"data-i18n="mytodolist.completed">Completed</button>
+                        </li>
+                    </ul>`
                 template += `
-                <div style="border: 1px solid #dee2e6; padding: 20px; border-radius:0px 10px 10px 10px;" id="surveyMainBody">
+                    <div class="surveyMainBody" id="surveyMainBody">
                 `;
                 
                 template += renderMainBody(data, collections, 'todo')
                 template += `</ul>`
                 template += `
+                        </div>
                     </div>
-                    </div>
-                    <div class="col-lg-2">
+                    <div class="col-xl-2">
                     </div>
                 </div>
                 `
@@ -291,8 +291,8 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
             mainContent.innerHTML = `
                 <div class="alert alert-warning" id="verificationMessage" style="margin-top:10px;">
                     <div class="row">
-                        <div class="col-lg-2"></div>
-                        <div class="col-lg-8">
+                        <div class="col-xl-2"></div>
+                        <div class="col-xl-8">
                             <p>
                             At your request, we have deleted your Connect data. If you have any questions, please contact the Connect Support Center by calling 1-877-505-0253 or by emailing  <a href='mailto:ConnectSupport@norc.org'>ConnectSupport@norc.org</a>.
                             </p>
@@ -310,18 +310,14 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
 }
 
 const addEventToDoList = () => {
-    const modules = document.getElementsByClassName('questionnaire-module');
-    
-    Array.from(modules).forEach(module => {
-        module.addEventListener('click',() => {
-            
-            if (!module.classList.contains("btn-disabled")) {
-                const moduleId = module.getAttribute("module_id");
-                questionnaire(moduleId);
-            }
-        });
+    const enabledButtons = document.querySelectorAll("button.questionnaire-module:not(.btn-disabled)");
+    enabledButtons.forEach((btn) => {
+      if (!btn.hasClickListener) {
+        btn.addEventListener("click", () => questionnaire(btn.getAttribute("module_id")));
+        btn.hasClickListener = true;
+      }
     });
-}
+  };
 
 const renderMainBody = (data, collections, tab) => {
     let template = `<ul class="questionnaire-module-list" role="list">`;
@@ -382,6 +378,8 @@ const renderMainBody = (data, collections, tab) => {
         toDisplaySystem.unshift({'body':['Connect Experience 2024']});
     }
 
+    modules["Cancer Screening History"].enabled && toDisplaySystem.unshift({ body: ["Cancer Screening History"] });
+
     if(tab === 'todo'){
         for(let obj of toDisplaySystem){
             let started = false;
@@ -402,21 +400,22 @@ const renderMainBody = (data, collections, tab) => {
                         const moduleTitle = modules[thisKey]['header'] || thisKey;
                         const isEnabled = modules[thisKey].enabled && !modules[thisKey].unreleased;
                         const buttonAction = modules[thisKey].unreleased ? 'mytodolist.comingSoon' : data[fieldMapping[modules[thisKey].moduleId]?.statusFlag] === fieldMapping.moduleStatus.started ? 'mytodolist.continue' : 'mytodolist.start';
-                        const ariaLabelButton = `${buttonAction} ${moduleTitle}`;
+                        const strippedModuleTitle = moduleTitle?.replace(/(\s|[-._\(\),])/g, '') || '';
+                        const ariaLabelButton = translateText(buttonAction) + ' ' + translateText(`shared.mod${strippedModuleTitle}`);
 
                         started = true;
                         template += `
-                            <li style="width:95%; margin:auto; margin-bottom:20px; border:1px solid lightgrey; border-radius:5px;" role="listitem" aria-label="${moduleTitle}">
+                            <li class="w-95 mx-auto mb-3 border rounded" role="listitem" aria-label="${moduleTitle}">
                                 <div class="row" role="region" aria-label="${moduleTitle} information">
                                     ${modules[thisKey]['hasIcon'] === false? `` : `
                                     <div class="col-md-1" aria-hidden="true">
-                                        <i class="fas fa-clipboard-list d-none d-md-block" data-i18n="mytodolist.surveyIcon" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
+                                        <i class="fas fa-clipboard-list d-none d-md-block ps-2 fs-1" data-i18n="mytodolist.surveyIcon" title="Survey Icon" style="color:#c2af7f;"></i>
                                     </div>
                                     `}
                                     <div class="${modules[thisKey]['hasIcon'] === false? 'col-9':'col-md-8'}">
-                                        <p style="font-style:bold; font-size:24px; margin-left:30px">
+                                        <p style="font-style:bold; font-size:24px; margin-left:10px">
                                             <b style="color:#5c2d93; font-size:18px;">
-                                            <span data-i18n="${`shared.mod${moduleTitle.replace(/(\s|[-._\(\),])/g,'')}`}">${moduleTitle}</span>
+                                            <span data-i18n="${`shared.mod${strippedModuleTitle}`}">${moduleTitle}</span>
                                             </b>
                                             <br> 
                                             <span data-i18n="${modules[thisKey].description}"></span>
@@ -442,19 +441,22 @@ const renderMainBody = (data, collections, tab) => {
                         const moduleTitle = modules[key]['header'] || key;
                         const isEnabled = modules[key].enabled && !modules[key].unreleased;
                         const buttonAction = modules[key].unreleased ? 'mytodolist.comingSoon' : (data[fieldMapping[modules[key].moduleId].statusFlag] === fieldMapping.moduleStatus.started ? 'mytodolist.continue' : 'mytodolist.start');
-                        const ariaLabelButton = `${buttonAction} ${moduleTitle}`;
+                        const strippedModuleTitle = moduleTitle?.replace(/(\s|[-._\(\),])/g, '') || '';
+                        const ariaLabelButton = translateText(buttonAction) + ' ' + translateText(`shared.mod${strippedModuleTitle}`);
+                        
+                        
                         template += `
-                            <div style="width:95%; margin:auto; margin-bottom:20px; border:1px solid lightgrey; border-radius:5px;" role="listitem" aria-label="${moduleTitle} details">
+                            <div class="w-95 mx-auto mb-3 border rounded" role="listitem" aria-label="${moduleTitle} details">
                                 <div class="row">
                                     ${modules[key]['hasIcon'] === false ? `` : `
                                     <div class="col-md-1" aria-hidden="true">
-                                        <i class="fas fa-clipboard-list d-none d-md-block" data-i18n="mytodolist.surveyIcon" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
+                                        <i class="fas fa-clipboard-list d-none d-md-block ps-2 fs-1" data-i18n="mytodolist.surveyIcon" title="Survey Icon" style="color:#c2af7f;"></i>
                                     </div>
                                     `}
                                     <div class="${modules[key]['hasIcon'] === false ? 'col-9' : 'col-md-8'}">
-                                    <p style="font-style:bold; font-size:24px; margin-left:30px">
+                                    <p style="font-style:bold; font-size:24px; margin-left:10px">
                                         <b style="color:#5c2d93; font-size:18px;">
-                                        <span data-i18n="${`shared.mod${moduleTitle.replace(/(\s|[-._\(\),])/g,'')}`}">${moduleTitle}</span>
+                                        <span data-i18n="${`shared.mod${strippedModuleTitle}`}">${moduleTitle}</span>
                                         </b>
                                         <br> 
                                         <span data-i18n="${modules[key].description}"></span>
@@ -482,16 +484,16 @@ const renderMainBody = (data, collections, tab) => {
                         const moduleTitle = modules[key]['header'] || key; // Use the module's header or key as the title
                         const ariaLabelModule = `${moduleTitle} completed details`;
                         template += `
-                            <div style="width:95%; margin:auto; margin-bottom:20px; border:1px solid lightgrey; border-radius:5px;" role="listitem" aria-label="${ariaLabelModule}">
+                            <div class="w-95 mx-auto mb-3 border rounded" role="listitem" aria-label="${ariaLabelModule}">
                                 <div class="row">
                                     ${modules[key]['hasIcon'] === false? `` : `
                                     <div class="col-md-1" aria-hidden="true">
-                                        <i class="fas fa-clipboard-list d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
+                                        <i class="fas fa-clipboard-list d-none d-md-block ps-2 fs-1" data-i18n="mytodolist.surveyIcon" title="Survey Icon" style="color:#c2af7f;"></i>
                                     </div>
                                     `}
 
                                     <div class="${modules[key]['hasIcon'] === false? 'col-9':'col-md-8'}">
-                                    <p style="font-style:bold; font-size:24px; margin-left:30px">
+                                    <p style="font-style:bold; font-size:24px; margin-left:10px">
                                         <b style="color:#5c2d93; font-size:18px;">
                                         <span data-i18n="${`shared.mod${moduleTitle.replace(/(\s|[-._\(\),])/g,'')}`}">${moduleTitle}</span>
                                         </b>
@@ -536,16 +538,16 @@ const renderMainBody = (data, collections, tab) => {
                                 
                                 started = true;
                                 const moduleTitle = modules[thisKey]['header'] || thisKey; // Use the module's header or key as the title
-                                template += `<li role="listitem" style="width:95%; margin:auto; margin-bottom:20px; border:1px solid lightgrey; border-radius:5px;">
+                                template += `<li role="listitem" class="w-95 mx-auto mb-3 border rounded">
                                                 <div class="row" aria-labelledby="header-${thisKey}">
                                                     ${modules[thisKey]['hasIcon'] === false? `` : `
                                                     <div class="col-md-1" aria-hidden="true">
-                                                        <i class="fas fa-clipboard-list d-md-none d-md-block d-lg-flex" data-i18n="mytodolist.surveyIcon" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
+                                                        <i class="fas fa-clipboard-list d-none d-md-block ps-2 fs-1" data-i18n="mytodolist.surveyIcon" title="Survey Icon" style="color:#c2af7f;"></i>
                                                     </div>
                                                     `}
 
                                                     <div class="${modules[thisKey]['hasIcon'] === false? 'col-9':'col-md-8'}">
-                                                    <p style="font-style:bold; font-size:24px; margin-left:30px">
+                                                    <p style="font-style:bold; font-size:24px; margin-left:10px">
                                                         <b id="header-${thisKey}" style="color:#5c2d93; font-size:18px;">
                                                         <span data-i18n="${`shared.mod${moduleTitle.replace(/(\s|[-._\(\),])/g,'')}`}">${moduleTitle}</span>
                                                         </b>
@@ -571,13 +573,13 @@ const renderMainBody = (data, collections, tab) => {
                             }
                         }
                         const moduleTitle = modules[key]['header'] || key;
-                        template += `<div role="listitem" style="width:95%; margin:auto; margin-bottom:20px; border:1px solid lightgrey; border-radius:5px;">
+                        template += `<div role="listitem" class="w-95 mx-auto mb-3 border rounded">
                             <div class="row" aria-labelledby="completed-header-${key}">
                                 <div class="col-md-1" aria-hidden="true">
-                                <i class="fas fa-clipboard-list d-none d-md-block" data-i18n="mytodolist.surveyIcon" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
+                                    <i class="fas fa-clipboard-list d-none d-md-block ps-2 fs-1" data-i18n="mytodolist.surveyIcon" title="Survey Icon" style="color:#c2af7f;"></i>
                                 </div>
                                 <div class="col-md-8">
-                                <p style="font-style:bold; font-size:24px; margin-left:30px">
+                                <p style="font-style:bold; font-size:24px; margin-left:10px">
                                     <b id="completed-header-${key} style="color:#5c2d93; font-size:18px;">
                                     <span data-i18n="${`shared.mod${moduleTitle.replace(/(\s|[-._\(\),])/g,'')}`}">${moduleTitle}</span>
                                     </b>
@@ -644,7 +646,7 @@ const checkForNewSurveys = async (data, collections) => {
 
     if(newSurvey) {
         template += `
-            <div class="alert alert-warning" id="verificationMessage" style="margin-top:10px;" data-i18n="mytodolist.newSurvey">>
+            <div class="alert alert-warning" id="verificationMessage" style="margin-top:10px;" data-i18n="mytodolist.newSurvey">
                 You have a new survey to complete.
             </div>
         `;
@@ -730,6 +732,12 @@ const setModuleAttributes = (data, modules, collections) => {
     modules['Connect Experience 2024'].header = '2024 Connect Experience Survey';
     modules['Connect Experience 2024'].description = 'mytodolist.mainBodyExperience2024Description';
     modules['Connect Experience 2024'].estimatedTime = 'mytodolist.15_20minutes';
+
+    modules['Cancer Screening History'].header = 'Cancer Screening History Survey';
+    modules['Cancer Screening History'].description = 'mytodolist.mainBodyCancerScreeningHistoryDescription';
+    modules['Cancer Screening History'].estimatedTime = 'mytodolist.15_20minutes';
+
+    const currentTime = new Date();
     
     if(data['331584571']?.['266600170']?.['840048338']) {
         modules['Biospecimen Survey'].enabled = true;
@@ -857,5 +865,19 @@ const setModuleAttributes = (data, modules, collections) => {
         modules['Connect Experience 2024'].completed = true;
     }
 
+    if (
+      data[fieldMapping.verification] === fieldMapping.verified &&
+      data[fieldMapping.verifiedDate] &&
+      currentTime > getAdjustedTime(data[fieldMapping.verifiedDate], 270)
+    ) {
+      if (data[fieldMapping.CancerScreeningHistory.statusFlag]) {
+        modules["Cancer Screening History"].enabled = true;
+      }
+      
+      if (data[fieldMapping.CancerScreeningHistory.statusFlag] === fieldMapping.moduleStatus.submitted) {
+        modules["Cancer Screening History"].completed = true;
+      }
+    }
+      
     return modules;
 };
