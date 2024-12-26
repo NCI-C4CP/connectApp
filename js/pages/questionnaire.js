@@ -44,7 +44,7 @@ async function loadQuestConfig(moduleId) {
         questConfig = {
             "myconnect.cancer.gov": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/main.js`, // TODO: verify
             "myconnect-stage.cancer.gov": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/main.js`, // TODO: verify
-            "episphere.github.io": "https://episphere.github.io/quest-dev/main.js",
+            "nci-c4cp.github.io": "https://episphere.github.io/quest-dev/main.js",
             "localhost:5000": "https://episphere.github.io/quest-dev/main.js", // TODO: update to CDN when available
         }
     } else {
@@ -52,7 +52,7 @@ async function loadQuestConfig(moduleId) {
         questConfig = {
             "myconnect.cancer.gov": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/replace2.js`,
             "myconnect-stage.cancer.gov": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/replace2.js`,
-            "episphere.github.io": "https://episphere.github.io/quest/replace2.js",
+            "nci-c4cp.github.io": "https://episphere.github.io/quest/replace2.js",
             "localhost:5000": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/replace2.js`
         };
     }

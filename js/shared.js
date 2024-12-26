@@ -12,7 +12,7 @@ const i18n = {
 export const urls = {
     'prod': 'myconnect.cancer.gov',
     'stage': 'myconnect-stage.cancer.gov',
-    'dev': 'episphere.github.io'
+    'dev': 'nci-c4cp.github.io'
 }
 
 function createStore(initialState = {}) {
