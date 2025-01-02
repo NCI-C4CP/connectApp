@@ -834,33 +834,33 @@ export const addEventUPSubmit = async () => {
         formData['634434746'] = document.getElementById('UPAddress1State').value;
         formData['892050548'] = document.getElementById('UPAddress1Zip').value;
 
-        // const poBoxCheckbox = document.getElementById("poBoxCheckbox");
+        const poBoxCheckbox = document.getElementById("poBoxCheckbox");
 
-        // // Physical address
-        // formData[fieldMapping.isPOBox] = poBoxCheckbox && poBoxCheckbox.checked ?
-        //     fieldMapping.yes :
-        //     fieldMapping.no
+        // Physical address
+        formData[fieldMapping.isPOBox] = poBoxCheckbox && poBoxCheckbox.checked ?
+            fieldMapping.yes :
+            fieldMapping.no
 
-        // // Physical address info is saved regardless of whether PO Box is checked
+        // Physical address info is saved regardless of whether PO Box is checked
         
-        // const getFieldValue = (id) =>
-        //     document.getElementById(id)?.value || "";
+        const getFieldValue = (id) =>
+            document.getElementById(id)?.value || "";
 
-        // // Update formData with physical address details
-        // formData[fieldMapping.physicalAddress1] = getFieldValue(
-        //     "UPAddress2Line1"
-        // );
-        // formData[fieldMapping.physicalAddress2] = getFieldValue(
-        //     "UPAddress2Line2"
-        // );
-        // formData[fieldMapping.physicalCity] = getFieldValue(
-        //     "UPAddress2City"
-        // );
-        // formData[fieldMapping.physicalState] = getFieldValue(
-        //     "UPAddress2State"
-        // );
-        // formData[fieldMapping.physicalZip] =
-        //     getFieldValue("UPAddress2Zip");
+        // Update formData with physical address details
+        formData[fieldMapping.physicalAddress1] = getFieldValue(
+            "UPAddress2Line1"
+        );
+        formData[fieldMapping.physicalAddress2] = getFieldValue(
+            "UPAddress2Line2"
+        );
+        formData[fieldMapping.physicalCity] = getFieldValue(
+            "UPAddress2City"
+        );
+        formData[fieldMapping.physicalState] = getFieldValue(
+            "UPAddress2State"
+        );
+        formData[fieldMapping.physicalZip] =
+            getFieldValue("UPAddress2Zip");
 
         const cancer = document.getElementsByName('cancerHistory');
         Array.from(cancer).forEach(radioBtn => {
@@ -1248,7 +1248,7 @@ const verifyUserDetails = (formData, emailValidation) => {
             <div class="col">${formData['892050548']}</div>
         </div>
         
-        <!--${formData[fieldMapping.isPOBox] === fieldMapping.yes ? `
+        ${formData[fieldMapping.isPOBox] === fieldMapping.yes ? `
         <div class="row">
             <div class="col"><strong data-i18n="settings.physicalMailAddress">Physical Mailing address</strong></div>
         </div>
@@ -1293,7 +1293,7 @@ const verifyUserDetails = (formData, emailValidation) => {
             <div class="col" data-i18n="event.zip">Zip</div>
             <div class="col">${physicalAddress[fieldMapping.physicalZip]}</div>
         </div>
-        `:``} -->
+        `:``}
 
         ${formData['452166062'] ? `
         <div class="row">
