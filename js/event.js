@@ -842,7 +842,6 @@ export const addEventUPSubmit = async () => {
             fieldMapping.no
 
         // Physical address info is saved regardless of whether PO Box is checked
-        
         const getFieldValue = (id) =>
             document.getElementById(id)?.value || "";
 
@@ -1022,7 +1021,7 @@ const verifyUserDetails = (formData, emailValidation) => {
     <h4 data-i18n="event.reviewProfile">Review your profile details</h4>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     `);
-    const { formerdata, physicalAddress } = formData[fieldMapping.userProfileHistory];
+    const { formerdata } = formData[fieldMapping.userProfileHistory];
     let bodyHtml = `
         <div class="row">
             <div class="col" data-i18n="event.firstName">First name</div>
@@ -1165,10 +1164,7 @@ const verifyUserDetails = (formData, emailValidation) => {
         <div class="row">
             <div class="col" data-i18n="event.preferredEmail">Preferred Email</div>
             <div class="col">
-                ${formData['869588347']} <br />
-                 ${emailValidationAnalysis(emailValidation.upEmail) === emailValidationStatus.WARNING ? `
-                <i style="color:red" data-i18n="settingsHelpers.emailWarning">Warning- this email address may be invalid. Please double check your entry before continuing.</i>
-                `:``}
+                ${formData['869588347']}
             </div>
         </div>
         `:``}
@@ -1177,10 +1173,7 @@ const verifyUserDetails = (formData, emailValidation) => {
         <div class="row">
             <div class="col" data-i18n="event.additionalEmail">Additional Email</div>
             <div class="col">
-                ${formData['849786503']}<br />
-                 ${emailValidationAnalysis(emailValidation.upEmail2) === emailValidationStatus.WARNING ? `
-                <i style="color:red" data-i18n="settingsHelpers.emailWarning">Warning- this email address may be invalid. Please double check your entry before continuing.</i>
-                `:``}    
+                ${formData['849786503']}  
             </div>
         </div>
         `:``}
@@ -1189,10 +1182,7 @@ const verifyUserDetails = (formData, emailValidation) => {
         <div class="row">
             <div class="col" data-i18n="event.additionalEmail2">Additional Email 2</div>
             <div class="col">
-                ${formData['635101039']}<br />
-                ${emailValidationAnalysis(emailValidation.upAdditionalEmail2) === emailValidationStatus.WARNING ? `
-                <i style="color:red" data-i18n="settingsHelpers.emailWarning">Warning- this email address may be invalid. Please double check your entry before continuing.</i>
-                `:``}
+                ${formData['635101039']}
             </div>
         </div>
         `:``}
@@ -1201,10 +1191,7 @@ const verifyUserDetails = (formData, emailValidation) => {
         <div class="row">
             <div class="col" data-i18n="event.additionalEmail3">Additional Email 3</div> 
             <div class="col">
-                ${formData['714419972']}<br />
-                ${emailValidationAnalysis(emailValidation.upAdditionalEmail3) === emailValidationStatus.WARNING ? `
-                <i style="color:red" data-i18n="settingsHelpers.emailWarning">Warning- this email address may be invalid. Please double check your entry before continuing.</i>
-                `:``}
+                ${formData['714419972']}
             </div>
         </div>
         `:``}
@@ -1248,50 +1235,50 @@ const verifyUserDetails = (formData, emailValidation) => {
             <div class="col">${formData['892050548']}</div>
         </div>
         
-        ${formData[fieldMapping.isPOBox] === fieldMapping.yes ? `
-        <div class="row">
-            <div class="col"><strong data-i18n="settings.physicalMailAddress">Physical Mailing address</strong></div>
-        </div>
-        `:``}
-
         <div class="row">
             <div class="col" data-i18n="event.poBox">Mailing address is PO Box</div>
             <div class="col" data-i18n="settings.${formData[fieldMapping.isPOBox] === fieldMapping.yes ? 'optYes': 'optNo'}">
             ${formData[fieldMapping.isPOBox] === fieldMapping.yes ? "Yes" : "No"}</div>
         </div>
 
-        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalAddress1] ? `
+        ${formData[fieldMapping.physicalAddress1] ? `
+        <div class="row">
+            <div class="col"><strong data-i18n="settings.physicalMailAddress">Physical Mailing address</strong></div>
+        </div>
+        `:``}
+
+        ${formData[fieldMapping.physicalAddress1] ? `
         <div class="row">
             <div class="col" data-i18n="event.line1">Line 1 (street, PO box, rural route)</div>
-            <div class="col">${physicalAddress[fieldMapping.physicalAddress1]}</div>
+            <div class="col">${formData[fieldMapping.physicalAddress1]}</div>
         </div>
         `:``}
  
-        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalAddress2] ? `
+        ${formData[fieldMapping.physicalAddress2] ? `
         <div class="row">
             <div class="col" data-i18n="event.line2">Line 2 (apartment, suite, unit, building)</div>
-            <div class="col">${physicalAddress[fieldMapping.physicalAddress2]}</div>
+            <div class="col">${formData[fieldMapping.physicalAddress2]}</div>
         </div>
         `:``}
 
-        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalCity] ? `
+        ${formData[fieldMapping.physicalCity] ? `
         <div class="row">
             <div class="col" data-i18n="event.city">City</div>
-            <div class="col">${physicalAddress[fieldMapping.physicalCity]}</div>
+            <div class="col">${formData[fieldMapping.physicalCity]}</div>
         </div>
         `:``}
 
-        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalState] ? `
+        ${formData[fieldMapping.physicalState] ? `
         <div class="row">
             <div class="col" data-i18n="event.state">State</div>
-            <div class="col">${physicalAddress[fieldMapping.physicalState]}</div>
+            <div class="col">${formData[fieldMapping.physicalState]}</div>
         </div>
         `:``}
 
-        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalZip] ? `
+        ${formData[fieldMapping.physicalZip] ? `
         <div class="row">
             <div class="col" data-i18n="event.zip">Zip</div>
-            <div class="col">${physicalAddress[fieldMapping.physicalZip]}</div>
+            <div class="col">${formData[fieldMapping.physicalZip]}</div>
         </div>
         `:``}
 
@@ -1341,11 +1328,9 @@ const verifyUserDetails = (formData, emailValidation) => {
         formData['699625233'] = 353358909;
         formData['430551721'] = new Date().toISOString();
 
-        const { formerdata, physicalAddress } =
+        const { formerdata } =
             formData[fieldMapping.userProfileHistory];
         formData[fieldMapping.userProfileHistory] = formerdata || [];
-        if (physicalAddress)
-            formData[fieldMapping.userProfileHistory].push(physicalAddress);
         
         showAnimation();
         const response = await storeResponse(formData);
