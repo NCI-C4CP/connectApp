@@ -466,7 +466,6 @@ const handleEditPhysicalMailingAddressSection = () => {
   btnObj.changePhysicalMailingAddressButton.addEventListener('click', () => {
     successMessageElement = hideSuccessMessage(successMessageElement);
     formVisBools.isPhysicalMailingAddressFormDisplayed = toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed);
-    formVisBools.isPhysicalMailingAddressFormDisplayed = true;
     if (formVisBools.isPhysicalMailingAddressFormDisplayed) {
       toggleActiveForm(FormTypes.PHYSICAL_MAILING);
       addEventAddressAutoComplete(2);
