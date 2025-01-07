@@ -237,17 +237,57 @@ export const storeResponseQuest = async (formData) => {
     }
 }
 
+/**
+ * This is only called if one of either COMPLETED or COMPLETED_TS is present in the formData.
+ * Quest1 bug found where the COMPLETED status was not being stored in the Firestore.
+ * This handles that case, updates the completed status, and logs an error if the COMPLETED status is missing.
+ * It also handles the case where the COMPLETED_TS timestamp is missing. We haven't seen this case, but it's possible.
+ * @param {object} data - The formData object with the COMPLETED and COMPLETED_TS properties.
+ * @param {string} moduleId - The module ID of the survey (mapping found in fieldToConceptIdMapping.js).
+ */
+
 const completeSurvey = async (data, moduleId) => {
 
-    let formData = {};
-    let moduleName = fieldMapping.conceptToModule[moduleId];
+    const moduleName = fieldMapping.conceptToModule[moduleId];
 
-    if(data["COMPLETED"]) formData[fieldMapping[moduleName].statusFlag] = 231311385;
-    if(data["COMPLETED_TS"]) formData[fieldMapping[moduleName].completeTs] = data["COMPLETED_TS"];
+    if (!data["COMPLETED"]) {
+        logDDRumError(new Error('Submit Survey Error: Missing COMPLETED status'), 'CompleteSurveyError', {
+            userAction: 'submit survey',
+            timestamp: new Date().toISOString(),
+            questionnaire: moduleId,
+        });
+    }
 
-    await storeResponse(formData);
+    if (!data['COMPLETED_TS']) {
+        logDDRumError(new Error('Submit Survey Error: Missing COMPLETED_TS timestamp'), 'CompleteSurveyError', {
+            userAction: 'submit survey',
+            timestamp: new Date().toISOString(),
+            questionnaire: moduleId,
+        });
 
-    location.reload();
+        data['COMPLETED_TS'] = new Date().toISOString();
+    }
+
+    const formData = {
+        [fieldMapping[moduleName].statusFlag]: fieldMapping.moduleStatus.submitted,
+        [fieldMapping[moduleName].completeTs]: data["COMPLETED_TS"],
+    }
+
+    try {
+        const submitSurveyResponse = await storeResponse(formData);
+
+        if (submitSurveyResponse.code === 200) {
+            location.reload();
+        } else {
+            throw new Error(`Submit Survey Error: Failed to submit survey. Code: ${submitSurveyResponse.code}, Message: ${submitSurveyResponse.message}` );
+        }
+    } catch (error) {
+        logDDRumError(error, 'SubmitSurveyError', {
+            userAction: 'submit survey',
+            timestamp: new Date().toISOString(),
+            questionnaire: moduleId,
+        });
+    }
 }
 
 export const storeResponse = async (formData) => {
