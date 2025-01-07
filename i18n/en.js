@@ -1357,7 +1357,7 @@ const en = {
         "phoneFormat": "Please enter a 10-digit phone number in this format: 999-999-9999.",
         "emailFormat": "Please enter an email address in this format: name@example.com.",
         "emailInvalid": "This email address is invalid. Please enter a valid email before continuing.",
-        "emailWarning": "Warning- this email address may be invalid. Please double check your entry before continuing.",
+        "emailWarning": "This email address may be invalid. Please double check your entry before continuing.",
         "addressNotEmpty": "Address cannot be blank. Please enter your address.",
         "cityNotEmpty": "City must not be empty. Please select a City.",
         "stateNotEmpty": "State must not be empty. Please select a state.",

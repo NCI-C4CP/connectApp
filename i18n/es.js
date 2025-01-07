@@ -1361,7 +1361,7 @@
         "phoneFormat": "Ingrese un número de teléfono de 10 dígitos con este formato: 999-999-9999.",
         "emailFormat": "Ingrese una dirección de correo electrónico con este formato: nombre@ejemplo.com.",
         "emailInvalid": "Esta dirección de correo electrónico no es válida. Por favor, introduzca un correo electrónico válido antes de continuar.",
-        "emailWarning": "Advertencia: esta dirección de correo electrónico puede no ser válida. Por favor, vuelva a revisar su entrada antes de continuar.",
+        "emailWarning": "Esta dirección de correo electrónico puede no ser válida. Por favor, vuelva a revisar su entrada antes de continuar.",
         "addressNotEmpty": "El campo “Dirección” no puede quedar en blanco. Por favor, ingrese su dirección.",
         "cityNotEmpty": "El campo “Ciudad” no puede quedar vacío. Seleccione una ciudad.",
         "stateNotEmpty": "El campo “Estado” no puede quedar vacío. Seleccione un estado.",

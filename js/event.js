@@ -638,8 +638,10 @@ export const addEventUPSubmit = async () => {
                 upAdditionalEmail3: email4 ? email4.value : undefined,
             },
         });
-        
-        if (emailValidationAnalysis(emailValidation.upEmail) === emailValidationStatus.INVALID) {
+        const riskyEmails = []
+        const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail)
+        if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email)
+        if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
             errorMessage(
                 "UPEmail",
                 '<span data-i18n="settingsHelpers.emailInvalid">' +
@@ -654,7 +656,9 @@ export const addEventUPSubmit = async () => {
             hasError = true;
         }
 
-        if (emailValidationAnalysis(emailValidation.upEmail2) === emailValidationStatus.INVALID) {
+        const upEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail2)
+        if (upEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email2.value)
+        if (upEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
             errorMessage(
                 "UPEmail2",
                 '<span data-i18n="settingsHelpers.emailInvalid">' +
@@ -667,7 +671,9 @@ export const addEventUPSubmit = async () => {
             hasError = true;
         }
 
-        if (emailValidationAnalysis(emailValidation.upAdditionalEmail2) === emailValidationStatus.INVALID) {
+        const upAdditionalEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail2)
+        if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email3.value)
+        if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
             errorMessage(
                 "UPAdditionalEmail2",
                 '<span data-i18n="settingsHelpers.emailInvalid">' +
@@ -680,7 +686,9 @@ export const addEventUPSubmit = async () => {
             hasError = true;
         }
         
-        if (emailValidationAnalysis(emailValidation.upAdditionalEmail3) === emailValidationStatus.INVALID) {
+        const upAdditionalEmail3ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail3)
+        if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email4.value)
+        if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.INVALID) {
             errorMessage(
                 "UPAdditionalEmail3",
                 '<span data-i18n="settingsHelpers.emailInvalid">' +
@@ -883,8 +891,41 @@ export const addEventUPSubmit = async () => {
         const ageToday = getAge(`${formData['544150384']}-${formData['564964481']}-${formData['795827569']}`);
 
         formData['117249500'] = ageToday;
-        verifyUserDetails(formData, emailValidation);
+        if (riskyEmails.length) {
+            showRiskyEmailWarning(riskyEmails, formData)
+        } else {
+            verifyUserDetails(formData);
+        }
     });
+}
+
+const showRiskyEmailWarning = (riskyEmails, formData) => {
+    if(!document.getElementById('connectMainModal').classList.contains('show')) openModal();
+    document.getElementById('connectModalHeader').innerHTML = translateHTML(`
+    <h4 data-i18n="event.warning">Warning</h4>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    `);
+    let bodyHtml = ''
+    riskyEmails.forEach(item=>{
+        bodyHtml += `
+            <div class="row">${item}</div>
+            <div class="row">
+                <i style="color:red" data-i18n="settingsHelpers.emailWarning">This email address may be invalid. Please double check your entry before continuing.</i>
+            </div>
+        </div>
+        `
+    })
+    document.getElementById('connectModalBody').innerHTML = translateHTML(bodyHtml);
+    document.getElementById('connectModalFooter').innerHTML = translateHTML(`
+        <div class="d-flex justify-content-between w-100">
+            <button data-i18n="event.navButtonsClose" type="button" title="Close" class="btn btn-dark" data-bs-dismiss="modal">Go Back</button>
+            <button data-i18n="event.navButtonsConfirm" type="button" id="confirmRiskyEmail" title="Confirm details" class="btn btn-primary consentNextButton" data-bs-dismiss="modal">Submit</button>
+        </div>
+    `);
+    document.getElementById('connectModalFooter').style.display = 'block';
+    document.getElementById('confirmRiskyEmail').addEventListener('click', async () => {
+        verifyUserDetails(formData);
+    })
 }
 
 const openModal = () => {
@@ -1015,7 +1056,7 @@ export const removeAllErrors = () => {
     })
 }
 
-const verifyUserDetails = (formData, emailValidation) => {
+const verifyUserDetails = (formData) => {
     if(!document.getElementById('connectMainModal').classList.contains('show')) openModal();
     document.getElementById('connectModalHeader').innerHTML = translateHTML(`
     <h4 data-i18n="event.reviewProfile">Review your profile details</h4>

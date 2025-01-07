@@ -2285,11 +2285,6 @@ export const emailValidationAnalysis = (validation) => {
         score < 0.8;
 
     if (isWarning) {
-         // it's for testing with the test email such as *.mailinator
-         if (location.host !== urls.prod) {
-            console.error("Risky Email", validation);
-            return VALID;
-        }
         return WARNING;
     }
 
