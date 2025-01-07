@@ -275,13 +275,14 @@ const completeSurvey = async (data, moduleId) => {
 
     try {
         const submitSurveyResponse = await storeResponse(formData);
-        
+
         if (submitSurveyResponse.code === 200) {
-            location.reload();   
+            location.reload();
+        } else {
+            throw new Error(`Submit Survey Error: Failed to submit survey. Code: ${submitSurveyResponse.code}, Message: ${submitSurveyResponse.message}` );
         }
-        
     } catch (error) {
-        logDDRumError(error, 'CompleteSurveyError', {
+        logDDRumError(error, 'SubmitSurveyError', {
             userAction: 'submit survey',
             timestamp: new Date().toISOString(),
             questionnaire: moduleId,
