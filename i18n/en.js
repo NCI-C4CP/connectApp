@@ -247,7 +247,9 @@ const en = {
         },
         "mailAddressStateLabel": "State ",
         "mailAddressStateLabelRequired": "State <span class=\"required\">*</span>",
-        "mailAddressStateRequired": "Please select the state field of your mailing address.",
+        "mailAddressState": {
+            "data-error-required": "Please select the state field of your mailing address."
+        },
         "selectOption": "-- Select --",
         "selectOptionConfirmation": "-- Re-select month --",
         "mailAddressZipLabel": "Zip ",

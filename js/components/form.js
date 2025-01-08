@@ -485,7 +485,7 @@ export const renderMailingAddress = (type, id, required, showCountry) => {
                     State ${required ? '<span class="required">*</span>': ''}
                 </label>
                 <br>
-                <select style="margin-left:0px; max-width:301px;" class="form-control ${required ? 'required-field': ''}" data-error-required='${translateText('form.mailAddressStateRequired')}' id="UPAddress${id}State">
+                <select style="margin-left:0px; max-width:301px;" class="form-control ${required ? 'required-field': ''}" data-error-required='Please select the state field of your mailing address.' id="UPAddress${id}State" data-i18n="form.mailAddressState">
                     <option class="option-dark-mode" value="" data-i18n="form.selectOption">-- Select --</option>
                     ${renderStates()}
                 </select>

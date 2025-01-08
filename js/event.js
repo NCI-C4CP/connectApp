@@ -465,27 +465,50 @@ export const addEventUPSubmit = async () => {
         Array.from(validations).forEach(element => {
             if(element.value){
                 const validationPattern = element.dataset.validationPattern;
+                const dataI18n = `${element.dataset.i18n}.data-error-validation`
                 if(validationPattern && validationPattern === 'alphabets') {
                     if(!validNameFormat.test(element.value)) {
-                        errorMessage(element.id, element.dataset.errorValidation, focus)
+                        errorMessage(
+                            element.id,
+                            `<span data-i18n="${dataI18n}">${translateText(dataI18n)}</span>`,
+                            focus
+                        );
                         focus = false;
                         hasError = true;
                     }
                 }
                 if(validationPattern && validationPattern === 'year') {
                     if(!/^(19|20)[0-9]{2}$/.test(element.value)) {
-                        errorMessage(element.id, element.dataset.errorValidation, focus)
+                        errorMessage(
+                            element.id,
+                            `<span data-i18n="${dataI18n}">${translateText(
+                                dataI18n
+                            )}</span>`,
+                            focus
+                        );
                         focus = false;
                         hasError = true;
                     }
                     else {
                         if(element.value.length > 4) {
-                            errorMessage(element.id, element.dataset.errorValidation, focus)
+                            errorMessage(
+                                element.id,
+                                `<span data-i18n="${dataI18n}">${translateText(
+                                    dataI18n
+                                )}</span>`,
+                                focus
+                            );
                             focus = false;
                             hasError = true;
                         }
                         else if (parseInt(element.value) > new Date().getFullYear()) {
-                            errorMessage(element.id, element.dataset.errorValidation, focus)
+                            errorMessage(
+                                element.id,
+                                `<span data-i18n="${dataI18n}">${translateText(
+                                    dataI18n
+                                )}</span>`,
+                                focus
+                            );
                             focus = false;
                             hasError = true;
                         }
@@ -493,7 +516,13 @@ export const addEventUPSubmit = async () => {
                 }
                 if(validationPattern && validationPattern === 'numbers') {
                     if(!/^[0-9]*$/.test(element.value)) {
-                        errorMessage(element.id, element.dataset.errorValidation, focus)
+                        errorMessage(
+                            element.id,
+                            `<span data-i18n="${dataI18n}">${translateText(
+                                dataI18n
+                            )}</span>`,
+                            focus
+                        );
                         focus = false;
                         hasError = true;
                     }
@@ -501,13 +530,26 @@ export const addEventUPSubmit = async () => {
             }
         });
         Array.from(requiredFields).forEach(element => {
+            const dataI18n = `${element.dataset.i18n}.data-error-required`
             if(!element.value){
-                errorMessage(element.id, `${element.dataset.errorRequired}`, focus);
+                errorMessage(
+                    element.id,
+                    `<span data-i18n="${dataI18n}">${translateText(
+                        dataI18n
+                    )}</span>`,
+                    focus
+                );
                 focus = false;
                 hasError = true;
             }
             if(element.type === 'checkbox' && element.checked === false && element.hidden === false){
-                errorMessage(element.id, `${element.dataset.errorRequired}`, focus);
+                errorMessage(
+                    element.id,
+                    `<span data-i18n="${dataI18n}">${translateText(
+                        dataI18n
+                    )}</span>`,
+                    focus
+                );
                 focus = false;
                 hasError = true;
             }    
@@ -515,9 +557,15 @@ export const addEventUPSubmit = async () => {
         Array.from(confirmationFields).forEach(element => {
             const target = element.getAttribute('target')
             const targetElement= document.getElementById(target)
-
+            const dataI18n = `${element.dataset.i18n}.data-error-confirmation`
             if(element.value !== targetElement.value){
-                errorMessage(element.id, `${element.dataset.errorConfirmation}`, focus);
+                errorMessage(
+                    element.id,
+                    `<span data-i18n="${dataI18n}">${translateText(
+                        dataI18n
+                    )}</span>`,
+                    focus
+                );
                 focus = false;
                 hasError = true;
             }

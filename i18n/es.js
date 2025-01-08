@@ -248,7 +248,9 @@
         },
         "mailAddressStateLabel": "Estado ",
         "mailAddressStateLabelRequired": "Estado <span class=\"required\">*</span>",
-        "mailAddressStateRequired": "Seleccione el campo de estado de su dirección postal.",
+        "mailAddressState": {
+            "data-error-required": "Seleccione el campo de estado de su dirección postal."
+        },
         "selectOption": "-- Seleccione --",
         "selectOptionConfirmation": "-- Volver a seleccionar --",
         "mailAddressZipLabel": "Código postal ",
@@ -1319,7 +1321,7 @@
         "city": "Ciudad",
         "state": "Estado",
         "zip": "Código postal",
-        "poBox": "The Spanish text", // Will update later
+        "poBox": "La dirección postal es PO Box",
         "invasiveCancer": "¿Ha tenido alguna vez cáncer invasivo?",
         "yearDiagnosed": "¿En qué año se lo diagnosticaron?",
         "typeOfCancer": "¿Qué tipo de cáncer tenía?",
