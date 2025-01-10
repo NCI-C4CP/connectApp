@@ -954,9 +954,16 @@ const showRiskyEmailWarning = (riskyEmails, formData) => {
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     `);
     let bodyHtml = ''
+    const escapeHTML = (str) => {
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+    };
+
     riskyEmails.forEach(item=>{
+        const escapedItem = escapeHTML(item);
         bodyHtml += `
-            <div class="row">${item}</div>
+            <div class="row">${escapedItem}</div>
             <div class="row">
                 <i style="color:red" data-i18n="settingsHelpers.emailWarning">This email address may be invalid. Please double check your entry before continuing.</i>
             </div>
