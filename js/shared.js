@@ -147,7 +147,8 @@ const signInFlowRender = async (signInEmail) => {
 
 export const sendEmailLink = () => {
     const preferredLanguage = getSelectedLanguage();
-    const signInEmail = window.localStorage.getItem("signInEmail");
+    const wrapperDiv = document.getElementById("signInWrapperDiv");
+    const signInEmail = wrapperDiv.getAttribute("data-account-value");
     const continueUrl = window.location.href;
 
     fetch(`${api}?api=sendEmailLink`, {
