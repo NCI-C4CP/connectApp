@@ -1608,11 +1608,11 @@ export const validPhoneNumberFormat =
  * @returns {string}
  */
 export function getCleanSearchString(urlSearchStr) {
-return urlSearchStr
-.replaceAll('%25', '%')
-.replaceAll('%26', '&')
-.replaceAll('&amp;', '&')
-.replaceAll('%3D', '=');
+    return urlSearchStr
+        .replaceAll('%25', '%')
+        .replaceAll('%3D', '=')
+        .replaceAll('%26', '&')
+        .replaceAll('&amp;', '&')
 }
 
 /**
