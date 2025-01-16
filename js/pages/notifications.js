@@ -100,7 +100,13 @@ const renderMainBody = (data, tab) => {
                 notificationTitle = '<span data-i18n="notifications.sms">'+translateText('notifications.sms')+'</span>';
               }
             
-            const notificationBody = data[i].notification.body.replace(/<style[^>]*>.*?<\/style>/gs, "");
+            let notificationBody = data[i].notification.body;
+            let previousBody;
+            do {
+                previousBody = notificationBody;
+                notificationBody = notificationBody.replace(/<style[^>]*>.*?<\/style>/gs, "");
+            } while (notificationBody !== previousBody);
+            
             template += `<li style="width:100%; margin:auto; margin-bottom:20px; border:1px solid lightgrey; border-radius:5px;">
                 <div>
                     <div class="row">
