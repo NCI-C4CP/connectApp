@@ -38,7 +38,7 @@ registerRoute(
 
 registerRoute(
 	new RegExp(
-		'https://us-central1-nih-nci-dceg-episphere-dev.cloudfunctions.net/.+'
+		'https://us-central1-nih-nci-dceg-episphere-dev\\.cloudfunctions\\.net/.+'
 	),
 	new NetworkFirst({
 		cacheName: 'api-cache',
@@ -52,7 +52,7 @@ registerRoute(
 );
 
 registerRoute(
-	new RegExp('https://api-myconnect-stage.cancer.gov/.+'),
+	new RegExp('https://api-myconnect-stage\\.cancer\\.gov/.+'),
 	new NetworkFirst({
 		cacheName: 'api-cache',
 		plugins: [
@@ -65,7 +65,7 @@ registerRoute(
 );
 
 registerRoute(
-	new RegExp('https://api-myconnect.cancer.gov/.+'),
+	new RegExp('https://api-myconnect\\.cancer\\.gov/.+'),
 	new NetworkFirst({
 		cacheName: 'api-cache',
 		plugins: [
@@ -83,7 +83,7 @@ const bgSyncPlugin = new BackgroundSyncPlugin('ConnectAppBgSync', {
 
 registerRoute(
 	new RegExp(
-		'https://us-central1-nih-nci-dceg-episphere-dev.cloudfunctions.net/.+'
+		'https://us-central1-nih-nci-dceg-episphere-dev\\.cloudfunctions\\.net/.+'
 	),
 	new NetworkOnly({
 		plugins: [bgSyncPlugin],
@@ -92,7 +92,7 @@ registerRoute(
 );
 
 registerRoute(
-	new RegExp('https://api-myconnect-stage.cancer.gov/.+'),
+	new RegExp('https://api-myconnect-stage\\.cancer\\.gov/.+'),
 	new NetworkOnly({
 		plugins: [bgSyncPlugin],
 	}),
@@ -100,7 +100,7 @@ registerRoute(
 );
 
 registerRoute(
-	new RegExp('https://api-myconnect.cancer.gov/.+'),
+	new RegExp('https://api-myconnect\\.cancer\\.gov/.+'),
 	new NetworkOnly({
 		plugins: [bgSyncPlugin],
 	}),
