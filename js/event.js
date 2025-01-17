@@ -939,11 +939,13 @@ export const addEventUPSubmit = async () => {
         const ageToday = getAge(`${formData['544150384']}-${formData['564964481']}-${formData['795827569']}`);
 
         formData['117249500'] = ageToday;
-        if (riskyEmails.length) {
-            showRiskyEmailWarning(riskyEmails, formData)
-        } else {
+
+        // Disable warning in this release => it will be enabled in February release
+        // if (riskyEmails.length) {
+        //     showRiskyEmailWarning(riskyEmails, formData)
+        // } else {
             verifyUserDetails(formData);
-        }
+        // }
     });
 }
 
