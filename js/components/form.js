@@ -327,7 +327,7 @@ export const renderUserProfile = async () => {
             </div>
             ${renderMailingAddress('', 1, true)}
 
-            <!--<div class="checkbox">
+            <div class="checkbox">
                 <label>
                     <input type="checkbox" id="poBoxCheckbox">
                     <span  data-i18n="form.isPOBoxChecked">Please check if mailing address is a P.O. Box</span>
@@ -342,8 +342,8 @@ export const renderUserProfile = async () => {
                 </div>
                 ${renderMailingAddress('', 2)}
             </div>
-            <br>-->
-            <hr>
+
+            <br><hr>
             <div class="userProfileSubHeaders" data-i18n="form.cancerHistorySubheader">Cancer History</div>
             <div class="form-group row">
                 <div class="col">
@@ -385,10 +385,10 @@ export const renderUserProfile = async () => {
     addEventFormerName();
     addEventAdditionalEmail();
     addEventAddressAutoComplete(1);
-    // addEventAddressAutoComplete(2);
+    addEventAddressAutoComplete(2);
     addEventCheckCanText();
     addEventUPSubmit();
-    // addEventPhysicalAddressLine(2);
+    addEventPhysicalAddressLine(2);
 
     for (let i = 0; i < numberOfDefaultFormerNames; i++) {
         addMoreFormerName();
@@ -485,7 +485,7 @@ export const renderMailingAddress = (type, id, required, showCountry) => {
                     State ${required ? '<span class="required">*</span>': ''}
                 </label>
                 <br>
-                <select style="margin-left:0px; max-width:301px;" class="form-control ${required ? 'required-field': ''}" data-error-required='${translateText('form.mailAddressStateRequired')}' id="UPAddress${id}State">
+                <select style="margin-left:0px; max-width:301px;" class="form-control ${required ? 'required-field': ''}" data-error-required='Please select the state field of your mailing address.' id="UPAddress${id}State" data-i18n="form.mailAddressState">
                     <option class="option-dark-mode" value="" data-i18n="form.selectOption">-- Select --</option>
                     ${renderStates()}
                 </select>

@@ -15,6 +15,7 @@ import { firebaseConfig as devFirebaseConfig } from "./dev/config.js";
 import { firebaseConfig as stageFirebaseConfig } from "./stage/config.js";
 import { firebaseConfig as prodFirebaseConfig } from "./prod/config.js";
 import conceptIdMap from "./js/fieldToConceptIdMapping.js";
+import fieldToConceptIdMapping from "./js/fieldToConceptIdMapping.js";
 
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker
@@ -74,6 +75,17 @@ window.onload = async () => {
     if (!preferredLanguage) {
         preferredLanguage = conceptIdMap.language.en;
     }
+
+    // Grab UTM parameters
+    const urlParams = new URLSearchParams(window.location.search);
+    const utmSource = urlParams.get('utm_source');
+    const utmMedium = urlParams.get('utm_medium');
+    const utmCampaign = urlParams.get('utm_campaign');
+
+    // Set UTM in Session Storage
+    if (utmSource) sessionStorage.setItem('utmSource', utmSource);
+    if (utmMedium) sessionStorage.setItem('utmMedium', utmMedium);
+    if (utmCampaign) sessionStorage.setItem('utmCampaign', utmCampaign);
 
     document.documentElement.setAttribute('lang', languageAcronyms()[parseInt(preferredLanguage, 10)]);
     appState.setState({"language": parseInt(preferredLanguage, 10)});
@@ -288,6 +300,16 @@ const router = async () => {
             if (!isLocalDev && window.DD_RUM && data?.data?.['Connect_ID'] && !isDataDogUserSessionSet) {
                 window.DD_RUM.setUser({id: data.data['Connect_ID']});
                 isDataDogUserSessionSet = true;
+            }
+
+            if (!data.data[fieldToConceptIdMapping.firstSignInTime] && !data.data[fieldToConceptIdMapping.utm.source] && !data.data[fieldToConceptIdMapping.utm.medium] && !data.data[fieldToConceptIdMapping.utm.campaign]) {
+                const utm = {};
+
+                if (sessionStorage.getItem('utmSource')) utm[fieldToConceptIdMapping.utm.source] = sessionStorage.getItem('utmSource');
+                if (sessionStorage.getItem('utmMedium')) utm[fieldToConceptIdMapping.utm.medium] = sessionStorage.getItem('utmMedium');
+                if (sessionStorage.getItem('utmCampaign')) utm[fieldToConceptIdMapping.utm.campaign] = sessionStorage.getItem('utmCampaign');
+
+                if (Object.keys(utm).length) storeResponse(utm);
             }
             
             toggleNavBar(route, data);  // If logged in, pass data to toggleNavBar

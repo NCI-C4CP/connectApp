@@ -465,27 +465,50 @@ export const addEventUPSubmit = async () => {
         Array.from(validations).forEach(element => {
             if(element.value){
                 const validationPattern = element.dataset.validationPattern;
+                const dataI18n = `${element.dataset.i18n}.data-error-validation`
                 if(validationPattern && validationPattern === 'alphabets') {
                     if(!validNameFormat.test(element.value)) {
-                        errorMessage(element.id, element.dataset.errorValidation, focus)
+                        errorMessage(
+                            element.id,
+                            `<span data-i18n="${dataI18n}">${translateText(dataI18n)}</span>`,
+                            focus
+                        );
                         focus = false;
                         hasError = true;
                     }
                 }
                 if(validationPattern && validationPattern === 'year') {
                     if(!/^(19|20)[0-9]{2}$/.test(element.value)) {
-                        errorMessage(element.id, element.dataset.errorValidation, focus)
+                        errorMessage(
+                            element.id,
+                            `<span data-i18n="${dataI18n}">${translateText(
+                                dataI18n
+                            )}</span>`,
+                            focus
+                        );
                         focus = false;
                         hasError = true;
                     }
                     else {
                         if(element.value.length > 4) {
-                            errorMessage(element.id, element.dataset.errorValidation, focus)
+                            errorMessage(
+                                element.id,
+                                `<span data-i18n="${dataI18n}">${translateText(
+                                    dataI18n
+                                )}</span>`,
+                                focus
+                            );
                             focus = false;
                             hasError = true;
                         }
                         else if (parseInt(element.value) > new Date().getFullYear()) {
-                            errorMessage(element.id, element.dataset.errorValidation, focus)
+                            errorMessage(
+                                element.id,
+                                `<span data-i18n="${dataI18n}">${translateText(
+                                    dataI18n
+                                )}</span>`,
+                                focus
+                            );
                             focus = false;
                             hasError = true;
                         }
@@ -493,7 +516,13 @@ export const addEventUPSubmit = async () => {
                 }
                 if(validationPattern && validationPattern === 'numbers') {
                     if(!/^[0-9]*$/.test(element.value)) {
-                        errorMessage(element.id, element.dataset.errorValidation, focus)
+                        errorMessage(
+                            element.id,
+                            `<span data-i18n="${dataI18n}">${translateText(
+                                dataI18n
+                            )}</span>`,
+                            focus
+                        );
                         focus = false;
                         hasError = true;
                     }
@@ -501,13 +530,26 @@ export const addEventUPSubmit = async () => {
             }
         });
         Array.from(requiredFields).forEach(element => {
+            const dataI18n = `${element.dataset.i18n}.data-error-required`
             if(!element.value){
-                errorMessage(element.id, `${element.dataset.errorRequired}`, focus);
+                errorMessage(
+                    element.id,
+                    `<span data-i18n="${dataI18n}">${translateText(
+                        dataI18n
+                    )}</span>`,
+                    focus
+                );
                 focus = false;
                 hasError = true;
             }
             if(element.type === 'checkbox' && element.checked === false && element.hidden === false){
-                errorMessage(element.id, `${element.dataset.errorRequired}`, focus);
+                errorMessage(
+                    element.id,
+                    `<span data-i18n="${dataI18n}">${translateText(
+                        dataI18n
+                    )}</span>`,
+                    focus
+                );
                 focus = false;
                 hasError = true;
             }    
@@ -515,9 +557,15 @@ export const addEventUPSubmit = async () => {
         Array.from(confirmationFields).forEach(element => {
             const target = element.getAttribute('target')
             const targetElement= document.getElementById(target)
-
+            const dataI18n = `${element.dataset.i18n}.data-error-confirmation`
             if(element.value !== targetElement.value){
-                errorMessage(element.id, `${element.dataset.errorConfirmation}`, focus);
+                errorMessage(
+                    element.id,
+                    `<span data-i18n="${dataI18n}">${translateText(
+                        dataI18n
+                    )}</span>`,
+                    focus
+                );
                 focus = false;
                 hasError = true;
             }
@@ -638,8 +686,10 @@ export const addEventUPSubmit = async () => {
                 upAdditionalEmail3: email4 ? email4.value : undefined,
             },
         });
-        
-        if (emailValidationAnalysis(emailValidation.upEmail) === emailValidationStatus.INVALID) {
+        const riskyEmails = []
+        const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail)
+        if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email)
+        if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
             errorMessage(
                 "UPEmail",
                 '<span data-i18n="settingsHelpers.emailInvalid">' +
@@ -654,7 +704,9 @@ export const addEventUPSubmit = async () => {
             hasError = true;
         }
 
-        if (emailValidationAnalysis(emailValidation.upEmail2) === emailValidationStatus.INVALID) {
+        const upEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail2)
+        if (upEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email2.value)
+        if (upEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
             errorMessage(
                 "UPEmail2",
                 '<span data-i18n="settingsHelpers.emailInvalid">' +
@@ -667,7 +719,9 @@ export const addEventUPSubmit = async () => {
             hasError = true;
         }
 
-        if (emailValidationAnalysis(emailValidation.upAdditionalEmail2) === emailValidationStatus.INVALID) {
+        const upAdditionalEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail2)
+        if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email3.value)
+        if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
             errorMessage(
                 "UPAdditionalEmail2",
                 '<span data-i18n="settingsHelpers.emailInvalid">' +
@@ -680,7 +734,9 @@ export const addEventUPSubmit = async () => {
             hasError = true;
         }
         
-        if (emailValidationAnalysis(emailValidation.upAdditionalEmail3) === emailValidationStatus.INVALID) {
+        const upAdditionalEmail3ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail3)
+        if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email4.value)
+        if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.INVALID) {
             errorMessage(
                 "UPAdditionalEmail3",
                 '<span data-i18n="settingsHelpers.emailInvalid">' +
@@ -834,33 +890,32 @@ export const addEventUPSubmit = async () => {
         formData['634434746'] = document.getElementById('UPAddress1State').value;
         formData['892050548'] = document.getElementById('UPAddress1Zip').value;
 
-        // const poBoxCheckbox = document.getElementById("poBoxCheckbox");
+        const poBoxCheckbox = document.getElementById("poBoxCheckbox");
 
-        // // Physical address
-        // formData[fieldMapping.isPOBox] = poBoxCheckbox && poBoxCheckbox.checked ?
-        //     fieldMapping.yes :
-        //     fieldMapping.no
+        // Physical address
+        formData[fieldMapping.isPOBox] = poBoxCheckbox && poBoxCheckbox.checked ?
+            fieldMapping.yes :
+            fieldMapping.no
 
-        // // Physical address info is saved regardless of whether PO Box is checked
-        
-        // const getFieldValue = (id) =>
-        //     document.getElementById(id)?.value || "";
+        // Physical address info is saved regardless of whether PO Box is checked
+        const getFieldValue = (id) =>
+            document.getElementById(id)?.value || "";
 
-        // // Update formData with physical address details
-        // formData[fieldMapping.physicalAddress1] = getFieldValue(
-        //     "UPAddress2Line1"
-        // );
-        // formData[fieldMapping.physicalAddress2] = getFieldValue(
-        //     "UPAddress2Line2"
-        // );
-        // formData[fieldMapping.physicalCity] = getFieldValue(
-        //     "UPAddress2City"
-        // );
-        // formData[fieldMapping.physicalState] = getFieldValue(
-        //     "UPAddress2State"
-        // );
-        // formData[fieldMapping.physicalZip] =
-        //     getFieldValue("UPAddress2Zip");
+        // Update formData with physical address details
+        formData[fieldMapping.physicalAddress1] = getFieldValue(
+            "UPAddress2Line1"
+        );
+        formData[fieldMapping.physicalAddress2] = getFieldValue(
+            "UPAddress2Line2"
+        );
+        formData[fieldMapping.physicalCity] = getFieldValue(
+            "UPAddress2City"
+        );
+        formData[fieldMapping.physicalState] = getFieldValue(
+            "UPAddress2State"
+        );
+        formData[fieldMapping.physicalZip] =
+            getFieldValue("UPAddress2Zip");
 
         const cancer = document.getElementsByName('cancerHistory');
         Array.from(cancer).forEach(radioBtn => {
@@ -884,8 +939,48 @@ export const addEventUPSubmit = async () => {
         const ageToday = getAge(`${formData['544150384']}-${formData['564964481']}-${formData['795827569']}`);
 
         formData['117249500'] = ageToday;
-        verifyUserDetails(formData, emailValidation);
+        if (riskyEmails.length) {
+            showRiskyEmailWarning(riskyEmails, formData)
+        } else {
+            verifyUserDetails(formData);
+        }
     });
+}
+
+const showRiskyEmailWarning = (riskyEmails, formData) => {
+    if(!document.getElementById('connectMainModal').classList.contains('show')) openModal();
+    document.getElementById('connectModalHeader').innerHTML = translateHTML(`
+    <h4 data-i18n="event.warning">Warning</h4>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    `);
+    let bodyHtml = ''
+    const escapeHTML = (str) => {
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+    };
+
+    riskyEmails.forEach(item=>{
+        const escapedItem = escapeHTML(item);
+        bodyHtml += `
+            <div class="row">${escapedItem}</div>
+            <div class="row">
+                <i style="color:red" data-i18n="settingsHelpers.emailWarning">This email address may be invalid. Please double check your entry before continuing.</i>
+            </div>
+        </div>
+        `
+    })
+    document.getElementById('connectModalBody').innerHTML = translateHTML(bodyHtml);
+    document.getElementById('connectModalFooter').innerHTML = translateHTML(`
+        <div class="d-flex justify-content-between w-100">
+            <button data-i18n="event.navButtonsClose" type="button" title="Close" class="btn btn-dark" data-bs-dismiss="modal">Go Back</button>
+            <button data-i18n="event.navButtonsConfirm" type="button" id="confirmRiskyEmail" title="Confirm details" class="btn btn-primary consentNextButton" data-bs-dismiss="modal">Submit</button>
+        </div>
+    `);
+    document.getElementById('connectModalFooter').style.display = 'block';
+    document.getElementById('confirmRiskyEmail').addEventListener('click', async () => {
+        verifyUserDetails(formData);
+    })
 }
 
 const openModal = () => {
@@ -1016,13 +1111,13 @@ export const removeAllErrors = () => {
     })
 }
 
-const verifyUserDetails = (formData, emailValidation) => {
+const verifyUserDetails = (formData) => {
     if(!document.getElementById('connectMainModal').classList.contains('show')) openModal();
     document.getElementById('connectModalHeader').innerHTML = translateHTML(`
     <h4 data-i18n="event.reviewProfile">Review your profile details</h4>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     `);
-    const { formerdata, physicalAddress } = formData[fieldMapping.userProfileHistory];
+    const { formerdata } = formData[fieldMapping.userProfileHistory];
     let bodyHtml = `
         <div class="row">
             <div class="col" data-i18n="event.firstName">First name</div>
@@ -1165,10 +1260,7 @@ const verifyUserDetails = (formData, emailValidation) => {
         <div class="row">
             <div class="col" data-i18n="event.preferredEmail">Preferred Email</div>
             <div class="col">
-                ${formData['869588347']} <br />
-                 ${emailValidationAnalysis(emailValidation.upEmail) === emailValidationStatus.WARNING ? `
-                <i style="color:red" data-i18n="settingsHelpers.emailWarning">Warning- this email address may be invalid. Please double check your entry before continuing.</i>
-                `:``}
+                ${formData['869588347']}
             </div>
         </div>
         `:``}
@@ -1177,10 +1269,7 @@ const verifyUserDetails = (formData, emailValidation) => {
         <div class="row">
             <div class="col" data-i18n="event.additionalEmail">Additional Email</div>
             <div class="col">
-                ${formData['849786503']}<br />
-                 ${emailValidationAnalysis(emailValidation.upEmail2) === emailValidationStatus.WARNING ? `
-                <i style="color:red" data-i18n="settingsHelpers.emailWarning">Warning- this email address may be invalid. Please double check your entry before continuing.</i>
-                `:``}    
+                ${formData['849786503']}  
             </div>
         </div>
         `:``}
@@ -1189,10 +1278,7 @@ const verifyUserDetails = (formData, emailValidation) => {
         <div class="row">
             <div class="col" data-i18n="event.additionalEmail2">Additional Email 2</div>
             <div class="col">
-                ${formData['635101039']}<br />
-                ${emailValidationAnalysis(emailValidation.upAdditionalEmail2) === emailValidationStatus.WARNING ? `
-                <i style="color:red" data-i18n="settingsHelpers.emailWarning">Warning- this email address may be invalid. Please double check your entry before continuing.</i>
-                `:``}
+                ${formData['635101039']}
             </div>
         </div>
         `:``}
@@ -1201,10 +1287,7 @@ const verifyUserDetails = (formData, emailValidation) => {
         <div class="row">
             <div class="col" data-i18n="event.additionalEmail3">Additional Email 3</div> 
             <div class="col">
-                ${formData['714419972']}<br />
-                ${emailValidationAnalysis(emailValidation.upAdditionalEmail3) === emailValidationStatus.WARNING ? `
-                <i style="color:red" data-i18n="settingsHelpers.emailWarning">Warning- this email address may be invalid. Please double check your entry before continuing.</i>
-                `:``}
+                ${formData['714419972']}
             </div>
         </div>
         `:``}
@@ -1248,52 +1331,52 @@ const verifyUserDetails = (formData, emailValidation) => {
             <div class="col">${formData['892050548']}</div>
         </div>
         
-        <!--${formData[fieldMapping.isPOBox] === fieldMapping.yes ? `
-        <div class="row">
-            <div class="col"><strong data-i18n="settings.physicalMailAddress">Physical Mailing address</strong></div>
-        </div>
-        `:``}
-
         <div class="row">
             <div class="col" data-i18n="event.poBox">Mailing address is PO Box</div>
             <div class="col" data-i18n="settings.${formData[fieldMapping.isPOBox] === fieldMapping.yes ? 'optYes': 'optNo'}">
             ${formData[fieldMapping.isPOBox] === fieldMapping.yes ? "Yes" : "No"}</div>
         </div>
 
-        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalAddress1] ? `
+        ${formData[fieldMapping.physicalAddress1] ? `
+        <div class="row">
+            <div class="col"><strong data-i18n="settings.physicalMailAddress">Physical Mailing address</strong></div>
+        </div>
+        `:``}
+
+        ${formData[fieldMapping.physicalAddress1] ? `
         <div class="row">
             <div class="col" data-i18n="event.line1">Line 1 (street, PO box, rural route)</div>
-            <div class="col">${physicalAddress[fieldMapping.physicalAddress1]}</div>
+            <div class="col">${formData[fieldMapping.physicalAddress1]}</div>
         </div>
         `:``}
  
-        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalAddress2] ? `
+        ${formData[fieldMapping.physicalAddress2] ? `
         <div class="row">
             <div class="col" data-i18n="event.line2">Line 2 (apartment, suite, unit, building)</div>
-            <div class="col">${physicalAddress[fieldMapping.physicalAddress2]}</div>
+            <div class="col">${formData[fieldMapping.physicalAddress2]}</div>
         </div>
         `:``}
 
-        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalCity] ? `
+        ${formData[fieldMapping.physicalCity] ? `
         <div class="row">
             <div class="col" data-i18n="event.city">City</div>
-            <div class="col">${physicalAddress[fieldMapping.physicalCity]}</div>
+            <div class="col">${formData[fieldMapping.physicalCity]}</div>
         </div>
         `:``}
 
-        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalState] ? `
+        ${formData[fieldMapping.physicalState] ? `
         <div class="row">
             <div class="col" data-i18n="event.state">State</div>
-            <div class="col">${physicalAddress[fieldMapping.physicalState]}</div>
+            <div class="col">${formData[fieldMapping.physicalState]}</div>
         </div>
         `:``}
 
-        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalZip] ? `
+        ${formData[fieldMapping.physicalZip] ? `
         <div class="row">
             <div class="col" data-i18n="event.zip">Zip</div>
-            <div class="col">${physicalAddress[fieldMapping.physicalZip]}</div>
+            <div class="col">${formData[fieldMapping.physicalZip]}</div>
         </div>
-        `:``} -->
+        `:``}
 
         ${formData['452166062'] ? `
         <div class="row">
@@ -1341,11 +1424,9 @@ const verifyUserDetails = (formData, emailValidation) => {
         formData['699625233'] = 353358909;
         formData['430551721'] = new Date().toISOString();
 
-        const { formerdata, physicalAddress } =
+        const { formerdata } =
             formData[fieldMapping.userProfileHistory];
         formData[fieldMapping.userProfileHistory] = formerdata || [];
-        if (physicalAddress)
-            formData[fieldMapping.userProfileHistory].push(physicalAddress);
         
         showAnimation();
         const response = await storeResponse(formData);

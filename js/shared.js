@@ -147,7 +147,8 @@ const signInFlowRender = async (signInEmail) => {
 
 export const sendEmailLink = () => {
     const preferredLanguage = getSelectedLanguage();
-    const signInEmail = window.localStorage.getItem("signInEmail");
+    const wrapperDiv = document.getElementById("signInWrapperDiv");
+    const signInEmail = wrapperDiv.getAttribute("data-account-value");
     const continueUrl = window.location.href;
 
     fetch(`${api}?api=sendEmailLink`, {
@@ -1649,11 +1650,11 @@ export const validPhoneNumberFormat =
  * @returns {string}
  */
 export function getCleanSearchString(urlSearchStr) {
-return urlSearchStr
-.replaceAll('%25', '%')
-.replaceAll('%26', '&')
-.replaceAll('&amp;', '&')
-.replaceAll('%3D', '=');
+    return urlSearchStr
+        .replaceAll('%25', '%')
+        .replaceAll('%3D', '=')
+        .replaceAll('&amp;', '&')
+        .replaceAll('%26', '&')
 }
 
 /**
@@ -1743,23 +1744,8 @@ export const firebaseSignInRender = async ({ account = {}, displayFlag = true })
   let ui = await getFirebaseUI();
   ui.start("#signInDiv", signInConfig(account.type));
 
-  if (account.type === "magicLink") {
-    const { signInEmail, signInTime } = JSON.parse(window.localStorage.getItem("connectSignIn") || "{}");
-    const timeLimit = 1000 * 60 * 60; // 1 hour time limit
-    const emailInput = document.querySelector('input[class~="firebaseui-id-email"]');
-    await elementIsLoaded('div[class~="firebaseui-id-page-email-link-sign-in-confirmation"]', 1500);
-    if (emailInput !== null && signInEmail && Date.now() - signInTime < timeLimit) {
-      emailInput.value = signInEmail;
-      const submitButton = document.querySelector('button[class~="firebaseui-id-submit"]');
-      submitButton.addEventListener('click', (e) => e.preventDefault());
-      submitButton.click();
+  if (account.type === "email") {
 
-      window.localStorage.removeItem("connectSignIn");
-    }
-  } else if (account.type === "email") {
-    window.localStorage.setItem("signInEmail", account.value);
-    const signInData = { signInEmail: account.value, signInTime: Date.now() };
-    window.localStorage.setItem("connectSignIn", JSON.stringify(signInData));
     document.querySelector('input[class~="firebaseui-id-email"]').value = account.value;
     document.querySelector('label[class~="firebaseui-label"]').remove();
 
@@ -2366,11 +2352,6 @@ export const emailValidationAnalysis = (validation) => {
         score < 0.8;
 
     if (isWarning) {
-         // it's for testing with the test email such as *.mailinator
-         if (location.host !== urls.prod) {
-            console.error("Risky Email", validation);
-            return VALID;
-        }
         return WARNING;
     }
 

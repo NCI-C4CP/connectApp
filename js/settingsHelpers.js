@@ -926,6 +926,12 @@ const populateUserHistoryMap = (existingData, preferredEmail, newSuffix) => {
     cId.city,
     cId.state,
     cId.zip,
+    cId.isPOBox,
+    cId.physicalAddress1,
+    cId.physicalAddress2,
+    cId.physicalCity,
+    cId.physicalState,
+    cId.physicalZip,
   ];
 
   keys.forEach((key) => {

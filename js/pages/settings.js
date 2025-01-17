@@ -224,10 +224,7 @@ const showMajorFormDivs = () => {
   document.getElementById('contactInformationDiv').style.display = 'block';
   document.getElementById('mailingAddressDiv').style.display = 'block';
   document.getElementById('signInInformationDiv').style.display = 'block';
-  if (userData[cId.isPOBox]?.toString() === cId.yes.toString()) {
-    const addrDiv = document.getElementById("physicalMailingAddressDiv");
-    if(addrDiv) addrDiv.style.display = "block";
-  }
+  document.getElementById('physicalMailingAddressDiv').style.display = 'block';
 };
 
 /**
@@ -432,14 +429,13 @@ const handleEditMailingAddressSection = () => {
     const city = document.getElementById('UPAddress1City').value.trim();
     const state = document.getElementById('UPAddress1State').value.trim();
     const zip = document.getElementById('UPAddress1Zip').value.trim();
-    // const isPOBox = document.getElementById('poBoxCheckbox').checked;
+    const isPOBox = document.getElementById('poBoxCheckbox').checked;
 
     const isMailingAddressValid = validateMailingAddress(1, addressLine1, city, state, zip);
     if (isMailingAddressValid) {
       formVisBools.isMailingAddressFormDisplayed = toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed);
       toggleButtonText();
-    //   submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isPOBox);
-      submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip);
+      submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isPOBox);
     }
   });
 };
@@ -455,8 +451,6 @@ const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, sta
     } else {
       document.getElementById(`profileMailingAddress${id}`).innerHTML = `${addressLine1}</br>${addressLine2}</br>${city}, ${state} ${zip}`;
     }
-    const addrDiv = document.getElementById("physicalMailingAddressDiv");
-    if(addrDiv) addrDiv.style.display = isPOBox ? 'block' : 'none' ;
     successMessageElement = document.getElementById(`mailingAddressSuccess${id}`);
     successMessageElement.style.display = 'block';
     refreshUserDataAfterEdit();
@@ -471,7 +465,7 @@ const loadPhysicalMailingAddressElements = () => {
 const handleEditPhysicalMailingAddressSection = () => {
   btnObj.changePhysicalMailingAddressButton.addEventListener('click', () => {
     successMessageElement = hideSuccessMessage(successMessageElement);
-    formVisBools.isPhysicalMailingAddressFormDisplayed = true;
+    formVisBools.isPhysicalMailingAddressFormDisplayed = toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed);
     if (formVisBools.isPhysicalMailingAddressFormDisplayed) {
       toggleActiveForm(FormTypes.PHYSICAL_MAILING);
       addEventAddressAutoComplete(2);
@@ -1470,7 +1464,7 @@ export const renderPhysicalMailingAddressData = (id) => {
         `);
 };
 
-export const renderChangeMailingAddressGroup = (id ) => {
+export const renderChangeMailingAddressGroup = (id) => {
   return translateHTML(`
       <div class="row userProfileLinePaddings" id="changeMailingAddressGroup${id}" style="display:none;">
         <div class="col">
@@ -1519,14 +1513,14 @@ export const renderChangeMailingAddressGroup = (id ) => {
                    <input type=text style="max-width:301px;" id="UPAddress${id}Zip" data-i18n="settings.zipField" data-error-validation="${translateText('settings.zipValidator')}" data-val-pattern="[0-9]{5}" title="${translateHTML('settings.zipTitle')}" class="form-control required-field num-val" data-error-required="${translateText('settings.zipRequired')}" size="5" maxlength="5" placeholder="99999">
                 </div>
             </div>
-            <!--${id === 1 ? `
+            ${id === 1 ? `
                 <div class="checkbox">
                     <label>
                         <input type="checkbox" id="poBoxCheckbox">
                         <span  data-i18n="form.isPOBoxChecked">Please check if mailing address is a P.O. Box</span>
                     </label> 
                 </div>
-            `:``} -->
+            `:``}
             <div class="form-group row">
                 
             </div>
