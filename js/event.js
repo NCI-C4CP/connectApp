@@ -680,10 +680,10 @@ export const addEventUPSubmit = async () => {
         }*/
         const emailValidation = await emailAddressValidation({
             emails: {
-                upEmail:email,
-                upEmail2: email2 ? email2.value : undefined,
-                upAdditionalEmail2: email3 ? email3.value : undefined,
-                upAdditionalEmail3: email4 ? email4.value : undefined,
+                upEmail: email.trim(),
+                upEmail2: email2 ? email2.value.trim() : undefined,
+                upAdditionalEmail2: email3 ? email3.value.trim() : undefined,
+                upAdditionalEmail3: email4 ? email4.value.trim() : undefined,
             },
         });
         const riskyEmails = []
