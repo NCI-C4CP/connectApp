@@ -1105,7 +1105,7 @@ const en = {
         "failContactUpdate": "Contact Information Update Failed!",
         "chargesMayApply": "*Text message charges may apply",
         "mailAddress": "Mailing Address",
-        "physicalMailAddress": "Physical Mailing Address",
+        "physicalMailAddress": "Physical Address",
         "updateAddressText": "Update Address",
         "mailAddressLine1": "Line 1 (street, PO box, rural route) <span class=\"required\">*</span>",
         "mailAddressLine1Field": {

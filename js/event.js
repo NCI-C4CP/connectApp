@@ -1339,46 +1339,34 @@ const verifyUserDetails = (formData) => {
             ${formData[fieldMapping.isPOBox] === fieldMapping.yes ? "Yes" : "No"}</div>
         </div>
 
-        ${formData[fieldMapping.physicalAddress1] ? `
         <div class="row">
             <div class="col"><strong data-i18n="settings.physicalMailAddress">Physical Mailing address</strong></div>
         </div>
-        `:``}
 
-        ${formData[fieldMapping.physicalAddress1] ? `
         <div class="row">
             <div class="col" data-i18n="event.line1">Line 1 (street, PO box, rural route)</div>
             <div class="col">${formData[fieldMapping.physicalAddress1]}</div>
         </div>
-        `:``}
  
-        ${formData[fieldMapping.physicalAddress2] ? `
         <div class="row">
             <div class="col" data-i18n="event.line2">Line 2 (apartment, suite, unit, building)</div>
             <div class="col">${formData[fieldMapping.physicalAddress2]}</div>
         </div>
-        `:``}
 
-        ${formData[fieldMapping.physicalCity] ? `
         <div class="row">
             <div class="col" data-i18n="event.city">City</div>
             <div class="col">${formData[fieldMapping.physicalCity]}</div>
         </div>
-        `:``}
 
-        ${formData[fieldMapping.physicalState] ? `
         <div class="row">
             <div class="col" data-i18n="event.state">State</div>
             <div class="col">${formData[fieldMapping.physicalState]}</div>
         </div>
-        `:``}
 
-        ${formData[fieldMapping.physicalZip] ? `
         <div class="row">
             <div class="col" data-i18n="event.zip">Zip</div>
             <div class="col">${formData[fieldMapping.physicalZip]}</div>
         </div>
-        `:``}
 
         ${formData['452166062'] ? `
         <div class="row">

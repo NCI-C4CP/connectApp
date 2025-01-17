@@ -1417,10 +1417,6 @@ export const renderMailingAddressData = (id) => {
   return translateHTML(`
             <div class="row userProfileLinePaddings" id="currentMailingAddressDiv${id}">
                 <div class="col">
-                    <span class="userProfileBodyFonts" data-i18n="settings.mailAddress">
-                        Mailing Address
-                    </span>
-                    <br>
                     <b>
                     <div class="userProfileBodyFonts" id="profileMailingAddress${id}">
                         ${!isParticipantDataDestroyed ?
@@ -1442,17 +1438,13 @@ export const renderPhysicalMailingAddressData = (id) => {
   return translateHTML(`
             <div class="row userProfileLinePaddings" id="currentMailingAddressDiv${id}">
                 <div class="col">
-                    <span class="userProfileBodyFonts" data-i18n="settings.physicalMailAddress">
-                        Physical Address
-                    </span>
-                    <br>
                     <b>
                     <div class="userProfileBodyFonts" id="profileMailingAddress${id}">
                         ${!isParticipantDataDestroyed ?
                         `
-                           ${userData[cId.physicalAddress1]}</br>
+                            ${userData[cId.physicalAddress1]}</br>
                             ${userData[cId.physicalAddress2] ? `${userData[cId.physicalAddress2]}</br>` : ''}
-                            ${userData[cId.physicalCity]}, ${userData[cId.physicalState]} ${userData[cId.physicalZip]}    
+                            ${userData[cId.physicalCity]} ${userData[cId.physicalState] ? ',':''} ${userData[cId.physicalState]} ${userData[cId.physicalZip]}    
                         ` 
                         : translateText('settings.dataDeleted')
                     }
