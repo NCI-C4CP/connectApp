@@ -729,11 +729,6 @@ export async function signUpRender({ signUpType = "phone" }) {
       if (pEle?.innerText !== "") {
         pEle.innerText = translateText('home.validEmail');
         pEle.setAttribute('data-i18n', 'home.validEmail');
-      } else {
-        window.localStorage.setItem(
-          "signInEmail",
-          document.querySelector('input[class~="firebaseui-id-email"]').value
-        );
       }
 
       const backButton = document.querySelector('button[class~="firebaseui-id-secondary-link"]');
@@ -743,14 +738,9 @@ export async function signUpRender({ signUpType = "phone" }) {
     });
     const inputEle = document.querySelector('input[class~="firebaseui-id-email"]');
     inputEle &&
-        inputEle.addEventListener("keyup", (event) => {
-            if (event.keyCode === 13) {
-              window.localStorage.setItem(
-                "signInEmail",
-                inputEle.value
-              );
-            }
-        });
+      inputEle.addEventListener("keyup", () => {
+        wrapperDiv.setAttribute('data-account-value', inputEle.value);
+      });
   }
 
   signInLink.addEventListener("click", (e) => {
@@ -763,8 +753,6 @@ export async function signUpRender({ signUpType = "phone" }) {
       await signUpRender({ signUpType: "email" });
     });
 }
-
-
 
 function accountNotFoundRender({ account }) {
   const df = fragment`
