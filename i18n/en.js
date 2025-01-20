@@ -229,11 +229,17 @@ const en = {
         },
         "addresses": "Addresses",
         "mailAddress": "Mailing Address",
+        "physicalAddressLine1Label": "Line 1 (street, rural route)",
+        "physicalAddressLine1LabelRequired": "Line 1 (street, rural route) <span class=\"required\">*</span>",
         "mailAddressLine1Label": "Line 1 (street, PO box, rural route)",
         "mailAddressLine1LabelRequired": "Line 1 (street, PO box, rural route) <span class=\"required\">*</span>",
         "mailAddressLine1Field": {
             "data-error-required": "Please enter the first line of your mailing address.",
             "placeholder": "Enter street, PO box, rural route"
+        },
+        "physicalAddressLine1Field": {
+            "data-error-required": "Please enter the first line of your mailing address.",
+            "placeholder": "Enter street, rural route"
         },
         "mailAddressLine2Label": "Line 2 (apartment, suite, unit, building)",
         "mailAddressLine2Field": {
@@ -1107,10 +1113,15 @@ const en = {
         "mailAddress": "Mailing Address",
         "physicalMailAddress": "Physical Address",
         "updateAddressText": "Update Address",
+        "physicalAddressLine1": "Line 1 (street, rural route) <span class=\"required\">*</span>",
         "mailAddressLine1": "Line 1 (street, PO box, rural route) <span class=\"required\">*</span>",
         "mailAddressLine1Field": {
             "data-error-required": "Please enter the first line of your mailing address.",
             "placeholder": "Enter street, PO box, rural route"
+        },
+        "physicalAddressLine1Field": {
+            "data-error-required": "Please enter the first line of your mailing address.",
+            "placeholder": "Enter street, rural route"
         },
         "mailAddressLine1Validator": "Please enter the first line of your mailing address.",
         "mailAddressLine1Placeholder": "Enter street, PO box, rural route",
@@ -1139,6 +1150,7 @@ const en = {
         "zipTitle": "5 characters long, numeric-only value.",
         "zipRequired": "Please enter the zip field of your mailing address.",
         "submitMailUpdate": "Submit Mailing Address Update",
+        "submitPhysicalUpdate": "Submit Physical Address Update",
         "successMailUpdate": "Mailing Address Change Success!",
         "failMailUpdate": "Mailing Address Change Failed!",
         "signInInfo": "Sign In Information",
@@ -1318,6 +1330,7 @@ const en = {
         "optSMS": "Text Message",
         "optEmail": "Email",
         "mailAddress": "Mailing address",
+        "physicalLine1": "Line 1 (street, rural route)",
         "line1": "Line 1 (street, PO box, rural route)",
         "line2": "Line 2 (apartment, suite, unit, building)",
         "city": "City",

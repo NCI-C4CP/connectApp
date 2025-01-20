@@ -1344,7 +1344,7 @@ const verifyUserDetails = (formData) => {
         </div>
 
         <div class="row">
-            <div class="col" data-i18n="event.line1">Line 1 (street, PO box, rural route)</div>
+            <div class="col" data-i18n="event.physicalLine1">Line 1 (street, rural route)</div>
             <div class="col">${formData[fieldMapping.physicalAddress1]}</div>
         </div>
  
