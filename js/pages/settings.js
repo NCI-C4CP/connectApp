@@ -1417,17 +1417,15 @@ export const renderMailingAddressData = (id) => {
   return translateHTML(`
             <div class="row userProfileLinePaddings" id="currentMailingAddressDiv${id}">
                 <div class="col">
-                    <span class="userProfileBodyFonts" data-i18n="settings.mailAddress">
-                        Mailing Address
-                    </span>
-                    <br>
                     <b>
                     <div class="userProfileBodyFonts" id="profileMailingAddress${id}">
                         ${!isParticipantDataDestroyed ?
                         `
-                           ${userData[cId.address1]}</br>
+                            ${userData[cId.address1]}</br>
                             ${userData[cId.address2] ? `${userData[cId.address2]}</br>` : ''}
-                            ${userData[cId.city]}, ${userData[cId.state]} ${userData[cId.zip]}    
+                            ${userData[cId.city]}, ${userData[cId.state]} ${userData[cId.zip]}</br>
+                            <span data-i18n="event.poBox">Mailing address is PO Box</span>:
+                            <span data-i18n="settings.${userData[cId.isPOBox] === cId.yes ? 'optYes': 'optNo'}">${userData[cId.isPOBox] === cId.yes ? "Yes" : "No"}</span> 
                         ` 
                         : translateText('settings.dataDeleted')
                     }
@@ -1442,17 +1440,13 @@ export const renderPhysicalMailingAddressData = (id) => {
   return translateHTML(`
             <div class="row userProfileLinePaddings" id="currentMailingAddressDiv${id}">
                 <div class="col">
-                    <span class="userProfileBodyFonts" data-i18n="settings.physicalMailAddress">
-                        Physical Address
-                    </span>
-                    <br>
                     <b>
                     <div class="userProfileBodyFonts" id="profileMailingAddress${id}">
                         ${!isParticipantDataDestroyed ?
                         `
-                           ${userData[cId.physicalAddress1]}</br>
+                            ${userData[cId.physicalAddress1]}</br>
                             ${userData[cId.physicalAddress2] ? `${userData[cId.physicalAddress2]}</br>` : ''}
-                            ${userData[cId.physicalCity]}, ${userData[cId.physicalState]} ${userData[cId.physicalZip]}    
+                            ${userData[cId.physicalCity]} ${userData[cId.physicalState] ? ',':''} ${userData[cId.physicalState]} ${userData[cId.physicalZip]}    
                         ` 
                         : translateText('settings.dataDeleted')
                     }
@@ -1470,11 +1464,11 @@ export const renderChangeMailingAddressGroup = (id) => {
         <div class="col">
             <div class="form-group row">
                 <div class="col">
-                    <label for="UPAddress${id}Line1" class="custom-form-label" data-i18n="settings.mailAddressLine1">
-                        Line 1 (street, PO box, rural route) <span class="required">*</span>
+                    <label for="UPAddress${id}Line1" class="custom-form-label" data-i18n="settings.${id === 2 ? 'physical': 'mail'}AddressLine1">
+                        Line 1 (street, ${id ===1 ? 'PO box, ': '' }rural route) <span class="required">*</span>
                     </label>
                     <br>
-                    <input style="max-width:301px;" type=text id="UPAddress${id}Line1" data-i18n="settings.mailAddressLine1Field" autocomplete="off" class="form-control required-field" data-error-required="${translateText('settings.mailAddressLine1Validator')}" placeholder="${translateText('settings.mailAddressLine1Placeholder')}">
+                    <input style="max-width:301px;" type=text id="UPAddress${id}Line1" data-i18n="settings.${id === 2 ? 'physical': 'mail'}AddressLine1Field" autocomplete="off" class="form-control required-field" placeholder="${translateText('settings.mailAddressLine1Placeholder')}">
                 </div>
             </div>
             <div class="form-group row">
@@ -1527,7 +1521,7 @@ export const renderChangeMailingAddressGroup = (id) => {
                 
             <div class="form-group row">
                       <div class="col">
-                          <button id="changeMailingAddressSubmit${id}" class="btn btn-primary save-data consentNextButton" data-i18n="settings.submitMailUpdate">Submit Mailing Address Update</button>
+                          <button id="changeMailingAddressSubmit${id}" class="btn btn-primary save-data consentNextButton" data-i18n="settings.submit${id === 1 ? 'Mail': 'Physical'}Update">Submit ${id === 1 ? 'Mailing': 'Physical'} Address Update</button>
                       </div>
                   </div>
             </div>

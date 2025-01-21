@@ -454,11 +454,11 @@ export const renderMailingAddress = (type, id, required, showCountry) => {
     return translateHTML(`
         <div class="form-group row">
             <div class="col">
-                <label class="col-form-label" data-i18n="form.mailAddressLine1Label${required ? 'Required': ''}">
-                    Line 1 (street, PO box, rural route) ${required ? '<span class="required">*</span>': ''}
+                <label class="col-form-label" data-i18n="form.${id === 2 ? 'physical': 'mail'}AddressLine1Label${required ? 'Required': ''}">
+                    Line (street, ${id === 1 ? 'PO box, ': '' }rural route) ${required ? '<span class="required">*</span>': ''}
                 </label>
                 <br>
-                <input data-i18n="form.mailAddressLine1Field" style="margin-left:0px; max-width:301px;" type=text id="UPAddress${id}Line1" autocomplete="off" class="form-control ${required ? 'required-field': ''}" data-error-required='Please enter the first line of your mailing address.' placeholder="Enter street, PO box, rural route" maxlength="70">
+                <input data-i18n="form.${id === 2 ? 'physical': 'mail'}AddressLine1Field" style="margin-left:0px; max-width:301px;" type=text id="UPAddress${id}Line1" autocomplete="off" class="form-control ${required ? 'required-field': ''}" data-error-required='Please enter the first line of your mailing address.' placeholder="Enter street, PO box, rural route" maxlength="70">
             </div>
         </div>
         <div class="form-group row">

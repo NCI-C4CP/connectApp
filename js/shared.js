@@ -2310,9 +2310,14 @@ export const emailValidationAnalysis = (validation) => {
         checks.additional.has_suspected_bounces ||
         score < 0.8;
 
-    if (isWarning) {
-        return WARNING;
-    }
+        if (isWarning) {
+            // it's for testing with the test email such as *.mailinator
+            if (location.host !== urls.prod) {
+               console.error("Risky Email", validation);
+               return VALID;
+           }
+           return WARNING;
+       }
 
     return VALID;
 };

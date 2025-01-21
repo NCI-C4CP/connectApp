@@ -680,10 +680,10 @@ export const addEventUPSubmit = async () => {
         }*/
         const emailValidation = await emailAddressValidation({
             emails: {
-                upEmail:email,
-                upEmail2: email2 ? email2.value : undefined,
-                upAdditionalEmail2: email3 ? email3.value : undefined,
-                upAdditionalEmail3: email4 ? email4.value : undefined,
+                upEmail: email.trim(),
+                upEmail2: email2 ? email2.value.trim() : undefined,
+                upAdditionalEmail2: email3 ? email3.value.trim() : undefined,
+                upAdditionalEmail3: email4 ? email4.value.trim() : undefined,
             },
         });
         const riskyEmails = []
@@ -939,11 +939,13 @@ export const addEventUPSubmit = async () => {
         const ageToday = getAge(`${formData['544150384']}-${formData['564964481']}-${formData['795827569']}`);
 
         formData['117249500'] = ageToday;
-        if (riskyEmails.length) {
-            showRiskyEmailWarning(riskyEmails, formData)
-        } else {
+
+        // Disable warning in this release => it will be enabled in February release
+        // if (riskyEmails.length) {
+        //     showRiskyEmailWarning(riskyEmails, formData)
+        // } else {
             verifyUserDetails(formData);
-        }
+        // }
     });
 }
 
@@ -1337,46 +1339,34 @@ const verifyUserDetails = (formData) => {
             ${formData[fieldMapping.isPOBox] === fieldMapping.yes ? "Yes" : "No"}</div>
         </div>
 
-        ${formData[fieldMapping.physicalAddress1] ? `
         <div class="row">
             <div class="col"><strong data-i18n="settings.physicalMailAddress">Physical Mailing address</strong></div>
         </div>
-        `:``}
 
-        ${formData[fieldMapping.physicalAddress1] ? `
         <div class="row">
-            <div class="col" data-i18n="event.line1">Line 1 (street, PO box, rural route)</div>
+            <div class="col" data-i18n="event.physicalLine1">Line 1 (street, rural route)</div>
             <div class="col">${formData[fieldMapping.physicalAddress1]}</div>
         </div>
-        `:``}
  
-        ${formData[fieldMapping.physicalAddress2] ? `
         <div class="row">
             <div class="col" data-i18n="event.line2">Line 2 (apartment, suite, unit, building)</div>
             <div class="col">${formData[fieldMapping.physicalAddress2]}</div>
         </div>
-        `:``}
 
-        ${formData[fieldMapping.physicalCity] ? `
         <div class="row">
             <div class="col" data-i18n="event.city">City</div>
             <div class="col">${formData[fieldMapping.physicalCity]}</div>
         </div>
-        `:``}
 
-        ${formData[fieldMapping.physicalState] ? `
         <div class="row">
             <div class="col" data-i18n="event.state">State</div>
             <div class="col">${formData[fieldMapping.physicalState]}</div>
         </div>
-        `:``}
 
-        ${formData[fieldMapping.physicalZip] ? `
         <div class="row">
             <div class="col" data-i18n="event.zip">Zip</div>
             <div class="col">${formData[fieldMapping.physicalZip]}</div>
         </div>
-        `:``}
 
         ${formData['452166062'] ? `
         <div class="row">
