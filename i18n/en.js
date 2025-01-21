@@ -794,7 +794,7 @@ const en = {
         "identifyOccupation": "Please identify the occupation category that best describes this job.",
         "noneAbove": "NONE OF THE ABOVE",
         "thankYouCompleting": "Thank you for completing your profile for the Connect for Cancer Prevention Study. Next, the Connect team at your health care system will check that you are eligible to be part of the study. We will contact you within a few business days to share information about next steps.</br>Questions? Please contact the <a href= \"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Connect Support Center.</a>",
-        "somethingWrong": "Something went wrong. Please try again. Contact the <a href= \"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Connect Support Center.</a> if you continue to experience this problem."
+        "somethingWrong": "Something went wrong. Please try again. Contact the <a href= \"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Connect Support Center</a> if you continue to experience this problem."
     },
     "samples": {
         "title": "My Connect - Samples",

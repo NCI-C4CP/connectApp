@@ -71,8 +71,11 @@ export default
     "requestedDataDestroySigned": 704529432,
     "noneOfTheseApply": 398561594,
     "outreachTimedOut": 160161595,
+    firstSignInFlag: 230663853,
     firstSignInTime: 335767902,
+    hipaaTimestamp: 262613359,
     pinNumber: 379080287,
+    dontHavePinNumber: 828729648,
     menstrualSurveyEligible: 289750687,
     "preferredLanguage": 255077064,
     "language": {
