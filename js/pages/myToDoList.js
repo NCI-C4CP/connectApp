@@ -6,14 +6,10 @@ import { addEventHeardAboutStudy, addEventRequestPINForm, addEventHealthCareProv
 import { heardAboutStudy, requestPINTemplate, healthCareProvider } from "./healthCareProvider.js";
 import fieldMapping from '../fieldToConceptIdMapping.js';
 
-export const myToDoList = async (data, fromUserProfile, collections) => {
+export const myToDoList = async (data, fromUserProfile, collections) => {    
     const mainContent = document.getElementById('root');
-    if(!data['507120821']){
-        let formData = {
-            '507120821':845979108
-        }
-        storeResponse(formData);
-    }
+
+    // Completed healthcareProvider and heardAboutStudy forms
     if(data['827220437'] && data['142654897']){
         localStorage.eligibilityQuestionnaire = JSON.stringify({'827220437': data['827220437']})
         if(data['919254129'] === 353358909){
@@ -280,19 +276,20 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
         hideAnimation();
         return;
     }
+    // Completed healthcareProvider form. Did not complete heardAboutStudy form.
     else if(data['827220437'] && !data['142654897'] && !isParticipantDataDestroyed(data)){
         mainContent.innerHTML =  heardAboutStudy();
         addEventHeardAboutStudy();
         hideAnimation();
     }
-    else if(data['379080287']){
-        mainContent.innerHTML = requestPINTemplate();
-        addEventPinAutoUpperCase();
-        addEventRequestPINForm();
-        addEventToggleSubmit();
-        hideAnimation();
+    // Completed PIN entry form by either entering a PIN number or specifying no PIN number (passive recruit).
+    else if (data[fieldMapping.pinNumber] || data[fieldMapping.dontHavePinNumber] === fieldMapping.yes){
+        mainContent.innerHTML = healthCareProvider();
+        addEventHealthCareProviderSubmit();
+        addEventHealthProviderModalSubmit();
     }
     else{
+        // Data Destroyed
         if (isParticipantDataDestroyed(data)) {
             mainContent.innerHTML = `
                 <div class="alert alert-warning" id="verificationMessage" style="margin-top:10px;">
@@ -306,10 +303,13 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                     </div>
                 </div>
             `;
+        // None of the above. Start at PIN entry form.
         } else {
-            mainContent.innerHTML = healthCareProvider();
-            addEventHealthCareProviderSubmit();
-            addEventHealthProviderModalSubmit();
+            mainContent.innerHTML = requestPINTemplate();
+            addEventPinAutoUpperCase();
+            addEventRequestPINForm();
+            addEventToggleSubmit();
+            hideAnimation();
         }
         hideAnimation();
     }

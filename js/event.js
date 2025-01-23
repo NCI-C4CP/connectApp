@@ -1,7 +1,7 @@
-import { allCountries, dataSavingBtn, storeResponse, validatePin, generateNewToken, showAnimation, hideAnimation, sites, errorMessage, BirthMonths, getAge, getMyData, 
-    hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validNameFormat } from "./shared.js";
+import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, errorMessage, BirthMonths, getAge, getMyData, 
+    hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validNameFormat } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
-import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender } from "./pages/healthCareProvider.js";
+import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, requestPINTemplate } from "./pages/healthCareProvider.js";
 import { myToDoList } from "./pages/myToDoList.js";
 import { suffixToTextMap, getFormerNameData, formerNameOptions } from "./settingsHelpers.js";
 import fieldMapping from "./fieldToConceptIdMapping.js";
@@ -680,10 +680,10 @@ export const addEventUPSubmit = async () => {
         }*/
         const emailValidation = await emailAddressValidation({
             emails: {
-                upEmail:email,
-                upEmail2: email2 ? email2.value : undefined,
-                upAdditionalEmail2: email3 ? email3.value : undefined,
-                upAdditionalEmail3: email4 ? email4.value : undefined,
+                upEmail: email.trim(),
+                upEmail2: email2 ? email2.value.trim() : undefined,
+                upAdditionalEmail2: email3 ? email3.value.trim() : undefined,
+                upAdditionalEmail3: email4 ? email4.value.trim() : undefined,
             },
         });
         const riskyEmails = []
@@ -766,8 +766,8 @@ export const addEventUPSubmit = async () => {
         }
 
         if(hasError) return false;
+        
         let formData = {};
-        formData['507120821'] = 602439976;
         formData['399159511'] = document.getElementById('UPFirstName').value.trim();
         formData['231676651'] = document.getElementById('UPMiddleInitial').value.trim();
         formData['996038075'] = document.getElementById('UPLastName').value.trim();
@@ -939,11 +939,13 @@ export const addEventUPSubmit = async () => {
         const ageToday = getAge(`${formData['544150384']}-${formData['564964481']}-${formData['795827569']}`);
 
         formData['117249500'] = ageToday;
-        if (riskyEmails.length) {
-            showRiskyEmailWarning(riskyEmails, formData)
-        } else {
+
+        // Disable warning in this release => it will be enabled in February release
+        // if (riskyEmails.length) {
+        //     showRiskyEmailWarning(riskyEmails, formData)
+        // } else {
             verifyUserDetails(formData);
-        }
+        // }
     });
 }
 
@@ -1337,46 +1339,34 @@ const verifyUserDetails = (formData) => {
             ${formData[fieldMapping.isPOBox] === fieldMapping.yes ? "Yes" : "No"}</div>
         </div>
 
-        ${formData[fieldMapping.physicalAddress1] ? `
         <div class="row">
             <div class="col"><strong data-i18n="settings.physicalMailAddress">Physical Mailing address</strong></div>
         </div>
-        `:``}
 
-        ${formData[fieldMapping.physicalAddress1] ? `
         <div class="row">
-            <div class="col" data-i18n="event.line1">Line 1 (street, PO box, rural route)</div>
+            <div class="col" data-i18n="event.physicalLine1">Line 1 (street, rural route)</div>
             <div class="col">${formData[fieldMapping.physicalAddress1]}</div>
         </div>
-        `:``}
  
-        ${formData[fieldMapping.physicalAddress2] ? `
         <div class="row">
             <div class="col" data-i18n="event.line2">Line 2 (apartment, suite, unit, building)</div>
             <div class="col">${formData[fieldMapping.physicalAddress2]}</div>
         </div>
-        `:``}
 
-        ${formData[fieldMapping.physicalCity] ? `
         <div class="row">
             <div class="col" data-i18n="event.city">City</div>
             <div class="col">${formData[fieldMapping.physicalCity]}</div>
         </div>
-        `:``}
 
-        ${formData[fieldMapping.physicalState] ? `
         <div class="row">
             <div class="col" data-i18n="event.state">State</div>
             <div class="col">${formData[fieldMapping.physicalState]}</div>
         </div>
-        `:``}
 
-        ${formData[fieldMapping.physicalZip] ? `
         <div class="row">
             <div class="col" data-i18n="event.zip">Zip</div>
             <div class="col">${formData[fieldMapping.physicalZip]}</div>
         </div>
-        `:``}
 
         ${formData['452166062'] ? `
         <div class="row">
@@ -1457,56 +1447,178 @@ export const addEventToggleSubmit = () => {
     })
 }
 
+/**
+ * Pin submission is the first step in the sign up process.
+ * The submit event creates the new participant record in Firestore with PIN data, firstSignInTime, and default variables.
+ * Notes:
+ *  - Not all participants will have a PIN. We accept and store invalid pin entries.
+ *  - The previously generated PIN is stored in the .pin field. The entered pin is stored in 379080287 (fieldMapping.pinNumber).
+ *  - If a participant enters a pin, we validate it. On match found, we attach the participant to the previously created shell record. See ConnectFaas -> getToken().
+ *  - If an invalid pin is entered, we store it under 379080287 in a new participant record.
+ *  - If a participant does not have a pin, we generate a new token and create a new participant record.
+ */
+
 export const addEventRequestPINForm = () => {
     const form = document.getElementById('requestPINForm');
     form.addEventListener('submit', async e => {
         e.preventDefault();
-        showAnimation();
-        const pin = document.getElementById('participantPIN').value?.trim();
-        const mainContent = document.getElementById('root');
-        let formData = {};
-        formData[fieldMapping.firstSignInTime] = appState.getState().participantData.firstSignInTime;
-        if (!formData[fieldMapping.firstSignInTime]) {
-            const myData = await getMyData();
-            logDDRumError(new Error(`Invalid firstSignInTime`), 'InvalidFirstSignInTimeError', {
-                userAction: 'PWA sign in',
-                timestamp: new Date().toISOString(),
-                connectID: myData.data['Connect_ID'],
-                function: 'addEventRequestPINForm'
-            });
-        }
 
-        if (pin !== "") {
-            const response = await validatePin(pin);
-            if (response.code === 202) {
-                duplicateAccountReminderRender();
-            } else if (response.code === 200) {
-                formData[fieldMapping.pinNumber] = pin;
-                await storeResponse(formData);
-                hideAnimation();
-                mainContent.innerHTML =  heardAboutStudy();
-                addEventHeardAboutStudy();
+        const pin = document.getElementById('participantPIN').value?.trim();
+        let pathAfterPINSubmission;
+        let validatePinResponse;
+        let createParticipantRecordResponse;
+
+        try {
+            showAnimation();
+            
+            // Get the first sign in time in ISO 8601 format.
+            let pinEntryFormData = { [fieldMapping.firstSignInTime]: await getFirstSignInISOTime() };
+
+            // Validate the pin if it's entered. If valid, a shell account already exists from the participant invitation stage (see getToken() API).
+            if (pin !== "") {
+                pinEntryFormData[fieldMapping.pinNumber] = pin;
+                validatePinResponse = await validatePin(pinEntryFormData);
             } else {
-                await generateNewToken();
-                formData[fieldMapping.pinNumber] = pin;
-                await storeResponse(formData);
-                hideAnimation();
-                mainContent.innerHTML = healthCareProvider();
-                addEventHealthCareProviderSubmit();
-                addEventHealthProviderModalSubmit();
+                pinEntryFormData[fieldMapping.dontHavePinNumber] = fieldMapping.yes;
+            }
+            
+            // Valid pin: Account exists. Add the form data. We stored the PIN and first sign in time during the validatePin operation.
+            // We have the healthcare provider from the participant's invitation, so skip to the heardAboutStudy form.
+             if (validatePinResponse && validatePinResponse.code === 200) {
+                pathAfterPINSubmission = 'heardAboutStudy';
+
+            // Duplicate account. Route participant to the duplicate account reminder form.
+            } else if (validatePinResponse && validatePinResponse.code === 202) {
+                pathAfterPINSubmission = 'duplicateAccountReminder';
+
+            // Invalid PIN, no PIN entered, or error (validatePIN failed). Create a new participant record and store the entered PIN regardless of its validity.
+            } else {
+                createParticipantRecordResponse = await createParticipantRecord(pinEntryFormData);
+
+                // Include 401 in case participant submitted PIN form with 'I do not have a PIN' but didn't yet select a healthcare provider.
+                if (createParticipantRecordResponse?.code === 200 || createParticipantRecordResponse?.code === 401) {
+                    pathAfterPINSubmission = 'healthcareProvider';
+
+                } else if (createParticipantRecordResponse?.code === 500) {
+                    pathAfterPINSubmission = 'error';
+                    throw new Error('Failed to create participant record');
+
+                } else {
+                    pathAfterPINSubmission = 'error';
+                    throw new Error('Unhandled path in addEventRequestPINForm()');
+                }
             }
 
-        }else{
-            await generateNewToken();
-            formData["828729648"] = 353358909;
-            await storeResponse(formData);
+        } catch (error) {
+            const myData = await getMyData();
+            logDDRumError(error, 'PINEntryFormError', {
+                userAction: 'PWA sign up',
+                timestamp: new Date().toISOString(),
+                pin: pin,
+                pathAfterPINForm: pathAfterPINSubmission,
+                connectID: myData?.data?.['Connect_ID'],
+                function: 'addEventRequestPINForm',
+                validatePinResponse: validatePinResponse,
+                createParticipantRecordResponse: createParticipantRecordResponse,
+            });
+
+        } finally {
             hideAnimation();
+            loadPathFromPINForm(pathAfterPINSubmission);
+        }
+    });
+}
+
+/**
+ * This method is only used from the PIN entry form on sign up. It is not used elsewhere because we don't risk updating an existing first sign in time.
+ * First sign in time (ISO 8601 format) should be stored in the participantData object in the app state.
+ * If it was lost due to a page refresh or similar, the firebase user metadata is the source of truth. Get it there and convert to ISO 8601.
+ * If it is still not available, log an error.
+ * @returns { string } - The first sign in time in ISO 8601 format.
+ */
+
+const getFirstSignInISOTime = async () => {
+    // Check appState first.
+    let firstSignInISOTime = appState.getState().participantData.firstSignInTime;
+
+    // Fall back to firebase user metadata.
+    if (!firstSignInISOTime) {
+        const user = firebase.auth().currentUser;
+        if (user && user.metadata && user.metadata?.creationTime) {
+            firstSignInISOTime = new Date(user.metadata.creationTime).toISOString();
+            
+            if (firstSignInISOTime) {
+                appState.setState({
+                    participantData: {
+                        ...appState.getState().participantData,
+                        firstSignInTime: firstSignInISOTime
+                    }
+                });
+            }
+        }
+    }
+
+    // Shouldn't hit this block. Fall back to participant profile (sanity check), then use current time at PIN entry submission (the first sign-up step).
+    if (!firstSignInISOTime) {
+        const myData = await getMyData();
+        firstSignInISOTime = myData?.data?.[fieldMapping.firstSignInTime];
+        
+        if (!firstSignInISOTime) {
+            
+            // Sanity check, expected to be null.
+            const hipaaAuthorizationTimestamp = myData?.data?.[fieldMapping.hipaaAuthorizationDateSigned];
+            
+            if (!hipaaAuthorizationTimestamp) {
+                firstSignInISOTime = new Date().toISOString();
+                console.error('Error: First Sign in time is not available from Firebase Auth. Using current time.', firstSignInISOTime);
+            }
+        }
+    }
+    
+    return firstSignInISOTime;
+}
+
+/**
+ * Load the next form after the PIN form based on the path provided.
+ * @param { string } path - The path to load after the PIN form.
+ */
+
+const loadPathFromPINForm = (path) => {
+    const mainContent = document.getElementById('root');
+    if (!mainContent) {
+        console.error('loadPathFromPINForm(): Could not find mainContent element');
+        return;
+    }
+
+    switch (path) {
+        case 'error':
+            mainContent.innerHTML = requestPINTemplate();
+            addEventPinAutoUpperCase();
+            addEventRequestPINForm();
+            addEventToggleSubmit();
+            showErrorAlert();
+            break;
+
+        case 'duplicateAccountReminder':
+            duplicateAccountReminderRender();
+            break;
+
+        case 'heardAboutStudy':
+            mainContent.innerHTML = heardAboutStudy();
+            addEventHeardAboutStudy();
+            break;
+
+        case 'healthcareProvider':
             mainContent.innerHTML = healthCareProvider();
             addEventHealthCareProviderSubmit();
             addEventHealthProviderModalSubmit();
-        }
-        hideAnimation();
-    })
+            break;
+
+        default:
+            console.error(`loadPathFromPINForm(): Invalid path provided: ${path}`);
+            loadPathFromPINForm('healthcareProvider');
+            break;
+    }
 }
 
 export const addEventCancerFollowUp = () => {

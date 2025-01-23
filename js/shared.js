@@ -162,37 +162,70 @@ export const sendEmailLink = () => {
     });
 };
 
-export const validateToken = async (token) => {
-    const idToken = await getIdToken();
-    const response = await fetch(api+`?api=validateToken${token? `&token=${token}` : ``}`, {
-        headers: {
-            Authorization:"Bearer "+idToken
-        }
-    });
-    const data = await response.json();
-    return data;
+/**
+ * Validate the PIN entered by the new participant. Send the PIN for validation. Include the first sign in time. Both are added to Firestore on success.
+ * PIN number and first sign in time are required.
+ * @param {object} pinEntryFormData - The form data object containing the PIN and first sign in time.
+ * @returns {object} - The response object from the API.
+ */
+
+export const validatePin = async (pinEntryFormData) => {
+
+    if (!pinEntryFormData[fieldMapping.pinNumber] || typeof pinEntryFormData[fieldMapping.pinNumber] !== 'string') {
+        return { code: 400, message: 'Invalid PIN format.' };
+    }
+
+    if (!pinEntryFormData[fieldMapping.firstSignInTime] || typeof pinEntryFormData[fieldMapping.firstSignInTime] !== 'string') {
+        return { code: 400, message: 'Invalid first sign in time format.' };
+    }
+
+    try {
+        const idToken = await getIdToken();
+        const response = await fetch(api + '?api=validatePin', {
+            method: "POST",
+            contentType: "application/json",
+            headers: {
+                Authorization: "Bearer " + idToken
+            },
+            body: JSON.stringify(pinEntryFormData)
+        });
+
+        return await response.json();
+
+    } catch (error) {
+        throw new Error('An unexpected error occurred in validatePin(). Error: ' + error.message);
+    }
 }
 
-export const validatePin = async (pin) => {
-    const idToken = await getIdToken();
-    const response = await fetch(api+`?api=validateToken${pin? `&pin=${pin}` : ``}`, {
-        headers: {
-            Authorization:"Bearer "+idToken
-        }
-    });
-    const data = await response.json();
-    return data;
-}
+/**
+ * The participant clicked 'I do not have a PIN' OR submitted a PIN and validation failed.
+ * That means there's no existing participant record and we need to create one.
+ * Required fields: first sign in time.
+ * Optional fields: PIN number (if participant entered a PIN that failed to validate) and 'don't have a PIN' flag if no PIN was entered.
+ * @param {object} pinEntryFormData - The form data object containing first sign in time.
+ */
 
-export const generateNewToken = async () => {
-    const idToken = await getIdToken();
-    const response = await fetch(`${api}?api=generateToken`, {
-        headers: {
-            Authorization:"Bearer "+idToken
+export const createParticipantRecord = async (pinEntryFormData) => {
+    try {
+        if (!pinEntryFormData[fieldMapping.firstSignInTime] || typeof pinEntryFormData[fieldMapping.firstSignInTime] !== 'string') {
+            return { code: 400, message: 'Invalid first sign in time format.' };
         }
-    });
-    const data = await response.json();
-    return data;
+
+        const idToken = await getIdToken();
+        const response = await fetch(`${api}?api=createParticipantRecord`, {
+            method: "POST",
+            contentType: "application/json",
+            headers: {
+                Authorization: "Bearer " + idToken
+            },
+            body: JSON.stringify(pinEntryFormData)
+        });
+        
+        return await response.json();
+
+    } catch (error) {
+        throw new Error('An unexpected error occurred in createParticipantRecord(). Error: ' + error.message);
+    }
 }
 
 //Store tree function being passed into quest
@@ -401,15 +434,23 @@ export const getMySurveys = async (data, filter = false) => {
 }
 
 export const getMyCollections = async () => {
+    try {
+        const idToken = await getIdToken();
+        const response = await fetch(`${api}?api=getUserCollections`, {
+            headers: {
+                Authorization: "Bearer " + idToken
+            }
+        });
 
-    const idToken = await getIdToken();
-    const response = await fetch(`${api}?api=getUserCollections`, {
-        headers: {
-            Authorization: "Bearer " + idToken
-        }
-    })
-
-    return await response.json();
+        return await response.json();
+        
+    } catch (error) {
+        logDDRumError(error, 'GetMyCollectionsError', {
+            userAction: 'get user collections',
+            timestamp: new Date().toISOString(),
+        });
+        return { code: 500, message: 'An unexpected error occurred in getMyCollections()' };
+    }
 }
 
 const allIHCS = {
@@ -2409,9 +2450,30 @@ export const emailValidationAnalysis = (validation) => {
         checks.additional.has_suspected_bounces ||
         score < 0.8;
 
-    if (isWarning) {
-        return WARNING;
-    }
+        if (isWarning) {
+            // it's for testing with the test email such as *.mailinator
+            if (location.host !== urls.prod) {
+               console.error("Risky Email", validation);
+               return VALID;
+           }
+           return WARNING;
+       }
 
     return VALID;
+};
+
+export const showErrorAlert = (messageTranslationKey = 'questionnaire.somethingWrong') => {
+    const language = appState.getState().language || 'en';
+
+    // Get the translation. Use a generic fallback.
+    let errorMessage = translateText(messageTranslationKey.split('.'), language);
+    if (!errorMessage) {
+        errorMessage = 'Something went wrong. Please try again. Contact the Connect Support Center at 1-877-505-0253 if you continue to experience this problem.';
+    }
+
+    // Alert doesn't support HTML. Remove markdown links.
+    const plainMessage = errorMessage.replace(/<\/?[^>]+(>|$)/g, '');
+
+    // Display the alert
+    alert(plainMessage);
 };

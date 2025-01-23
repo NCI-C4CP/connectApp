@@ -230,11 +230,17 @@
         },
         "addresses": "Direcciones",
         "mailAddress": "Dirección postal",
+        "physicalAddressLine1Label": "Línea 1 (calle, ruta rural)",
+        "physicalAddressLine1LabelRequired": "Línea 1 (calle, ruta rural) <span class=\"required\">*</span>",
         "mailAddressLine1Label": "Línea 1 (calle, apartado postal, ruta rural)",
         "mailAddressLine1LabelRequired": "Línea 1 (calle, apartado postal, ruta rural) <span class=\"required\">*</span>",
         "mailAddressLine1Field": {
             "data-error-required": "Ingrese la primera línea de su dirección postal.",
             "placeholder": "Ingrese la calle, el apartado postal, la ruta rural"
+        },
+        "physicalAddressLine1Field": {
+            "data-error-required": "Ingrese la primera línea de su dirección postal.",
+            "placeholder": "Ingrese la calle, la ruta rural"
         },
         "mailAddressLine2Label": "Línea 2 (apartamento, suite, unidad, edificio)",
         "mailAddressLine2Field": {
@@ -1112,10 +1118,15 @@
         "mailAddress": "Dirección postal",
         "physicalMailAddress": "Dirección física",
         "updateAddressText": "Modificar dirección",
+        "physicalAddressLine1": "Línea 1 (calle, ruta rural) <span class=\"required\">*</span>",
         "mailAddressLine1": "Línea 1 (calle, apartado postal, ruta rural) <span class=\"required\">*</span>",
         "mailAddressLine1Field": {
             "data-error-required": "Ingrese la primera línea de su dirección postal.",
             "placeholder": "Ingrese la calle, el apartado postal, la ruta rural"
+        },
+        "physicalAddressLine1Field": {
+            "data-error-required": "Ingrese la primera línea de su dirección postal.",
+            "placeholder": "Ingrese la calle, la ruta rural"
         },
         "mailAddressLine1Validator": "Ingrese la primera línea de su dirección postal.",
         "mailAddressLine1Placeholder": "Ingrese la calle, el apartado postal, la ruta rural",
@@ -1144,6 +1155,7 @@
         "zipTitle": "5 caracteres de longitud, solo valor numérico.",
         "zipRequired": "Ingrese el campo de código postal de su dirección postal.",
         "submitMailUpdate": "Enviar modificación de dirección postal",
+        "submitPhysicalUpdate": "Enviar modificación de dirección postal",
         "successMailUpdate": "Se completó el cambio de dirección postal",
         "failMailUpdate": "¡Error al cambiar la dirección postal!",
         "signInInfo": "Información de inicio de sesión",
@@ -1323,6 +1335,7 @@
         "optSMS": "Mensaje de texto",
         "optEmail": "Correo electrónico",
         "mailAddress": "Dirección postal",
+        "physicalLine1": "Línea 1 (calle, ruta rural)",
         "line1": "Línea 1 (calle, apartado postal, ruta rural)",
         "line2": "Línea 2 (apartamento, suite, unidad, edificio)",
         "city": "Ciudad",
