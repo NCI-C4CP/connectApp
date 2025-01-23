@@ -1625,7 +1625,7 @@ export const retrieveNotificationsInBackgroound = async () => {
 }
 
 export const toggleCurrentPage = async (route) => {
-    const IDs = ['userDashboard', 'Notifications', 'userAgreements', 'userSettings', 'connectSamples', 'connectSupport', 'connectPayment'];
+    const IDs = ['userDashboard', 'Notifications', 'userAgreements', 'userSettings', 'reports', 'connectSamples', 'connectSupport', 'connectPayment'];
     IDs.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
@@ -1643,6 +1643,7 @@ export const toggleCurrentPage = async (route) => {
     if(route === '#messages') document.getElementById('Notifications').click();
     if(route === '#forms') document.getElementById('userAgreements').click();
     if(route === '#myprofile') document.getElementById('userSettings').click();
+    if(route === '#reports') document.getElementById('reports').click();
     if(route === '#support') document.getElementById('connectSupport').click();
     if(route === '#samples') document.getElementById('connectSamples').click();
     if(route === '#payment') document.getElementById('connectPayment').click();

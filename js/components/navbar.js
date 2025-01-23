@@ -22,6 +22,9 @@ export const userNavBar = (response) => {
                 <a class="nav-link ${disabledClass}" href="#myprofile" id="userSettings" data-i18n="navbar.profileLink">My Profile</a>
             </li>
             <li class="nav-item">
+                <a class="nav-link ${disabledClass}" href="#reports" id="reports" data-i18n="navbar.reportsLink">My Reports</a>
+            </li>
+            <li class="nav-item">
                 <a class="nav-link ${disabledClass}" href="#payment" id="connectPayment" data-i18n="navbar.paymentLink">My Payment</a>
             </li>
             <li class="nav-item">

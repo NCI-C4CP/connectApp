@@ -335,6 +335,19 @@ export const getMyData = async () => {
     return await response.json();
 };
 
+export const retrievePhysicalActivityReport = async () => {
+
+    let api = 'http://localhost:8080/';
+    const idToken = await getIdToken();
+    const response = await fetch(`${api}?api=retrievePhysicalActivityReport`, {
+        headers: {
+            Authorization: 'Bearer ' + idToken,
+        },
+    });
+
+    return await response.json();
+};
+
 export const hasUserData = (response) => {
 
     return response.code === 200 && Object.keys(response.data).length > 0;
@@ -1195,6 +1208,51 @@ export const questionnaireModules = () => {
     };
 }
 
+export const reportConfiguration = () => {
+    
+    if(location.host === urls.prod) {
+        return {
+            'Physical Activity Report': {
+                path: {
+                    en: 'prod/module2024ConnectExperience.txt', 
+                    es: 'prod/module2024ConnectExperienceSpanish.txt'
+                },
+                reportId: "physicalActivity", 
+                enabled: false
+            }
+        }
+    }
+
+    return {
+        'Physical Activity Report': {
+            reportId: "physicalActivity", 
+            enabled: false
+        }
+    }
+}
+
+export const setReportAttributes = async (data, reports, populateReportData) => {
+    //Does the user have a physical activity report
+    if (data[fieldMapping.reports.physicalActivityStatus] && 
+        (data[fieldMapping.reports.physicalActivityStatus] == fieldMapping.reports.unread ||
+            data[fieldMapping.reports.physicalActivityStatus] == fieldMapping.reports.viewed ||
+            data[fieldMapping.reports.physicalActivityStatus] == fieldMapping.reports.declined 
+        )
+    ) {
+        reports['Physical Activity Report'].enabled = true;
+        reports['Physical Activity Report'].status = data[fieldMapping.reports.physicalActivityStatus];
+        reports['Physical Activity Report'].dateField = 'd_416831581';
+        reports['Physical Activity Report'].surveyDate = data[fieldMapping.Module2.completeTs];
+        if (populateReportData) {
+            let reportData = await retrievePhysicalActivityReport();
+            if (reportData.code === 200) {
+                reports['Physical Activity Report'].data = reportData.data[0];
+            }
+        }
+    }
+    return reports;
+}
+
 export const isBrowserCompatible = () => {
     const userAgent = navigator.userAgent;
     let browserName;
@@ -2034,7 +2092,20 @@ export const translateHTML = (source, language) => {
 
     if (sourceElement.dataset.i18n) {
         let keys = sourceElement.dataset.i18n.split('.');
-        let translation = translateText(keys, language);
+        let translation;
+        if (keys.length === 1 && keys[0] === 'date' && sourceElement.dataset.timestamp) {
+            let options;
+            if (sourceElement.dataset.dateOptions) {
+                try {
+                    options = JSON.parse(decodeURIComponent(sourceElement.dataset.dateOptions));
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+            translation = translateDate(sourceElement.dataset.timestamp, language, options);
+        } else {
+            translation = translateText(keys, language);
+        }
         if (translation) {
             if (typeof translation === 'object') {
                 Object.keys(translation).forEach((key) => {
@@ -2062,6 +2133,34 @@ export const translateHTML = (source, language) => {
     } else {
        return sourceElement;
     }
+}
+
+/**
+ * Returns a formatted Date based on the language and options
+ * 
+ * @param {string} timestamp
+ * @param {string} language
+ * @param {Object} options - Same as Intl.DateTimeFormat() constructor
+ */
+export const translateDate = (timestamp, language, options) => {
+    if (!language) {
+        language = appState.getState().language;
+        if (!language) {
+            language = 'en';
+        } else {
+            language = languageAcronyms()[language];
+        }
+    }
+
+    let date;
+    if (typeof timestamp === 'string' && /^[0-9]+$/.test(timestamp)) {
+        date = new Date(parseInt(timestamp, 10));
+    } else if (typeof timestamp === 'number') {
+        date = new Date(timestamp);
+    } else {
+        date = new Date(Date.parse(timestamp));
+    }
+    return date.toLocaleDateString(language, options);
 }
 
 /**

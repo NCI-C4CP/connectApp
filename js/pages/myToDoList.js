@@ -1,4 +1,4 @@
-import { hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML, translateText, getAdjustedTime } from "../shared.js";
+import { hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML, translateText, getAdjustedTime, reportConfiguration, setReportAttributes } from "../shared.js";
 import { blockParticipant, questionnaire } from "./questionnaire.js";
 import { renderUserProfile } from "../components/form.js";
 import { consentTemplate } from "./consent.js";
@@ -200,6 +200,12 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
 
                 if(surveyMessage) {
                     template += surveyMessage;
+                }
+
+                const reportMessage = await checkForNewReports(data);
+
+                if(reportMessage) {
+                    template += reportMessage;
                 }
                 
                 if(topMessage.trim() !== ""){
@@ -669,6 +675,48 @@ const checkForNewSurveys = async (data, collections) => {
     let obj = {
         566565527: enabledSurveys,
         677381583: completedStandaloneSurveys
+    };
+
+    await storeResponse(obj);
+    return template;
+};
+
+const checkForNewReports = async (data) => {
+    let template = ``;
+    let reports = reportConfiguration();
+    reports = await setReportAttributes(data, reports);
+    let availableReports = 0;
+    let newReport = false;
+    let knownReports;
+    let completedStandaloneSurveys = 0;
+    let knownCompletedStandaloneSurveys;
+
+    Object.keys(reports).forEach(rep => {
+        if(reports[rep].reportId) {
+            if(reports[rep].enabled) availableReports++;
+        }
+    });
+
+    if(data[fieldMapping.reports.knownReports]) {
+        knownReports = data[fieldMapping.reports.knownReports];
+        if(knownReports < availableReports) {
+            newReport = true;
+        }
+    }
+    else if (availableReports > 0) {
+        newReport = true;
+    }
+
+    if(newReport) {
+        template += `
+            <div class="alert alert-warning" id="verificationMessage" style="margin-top:10px;" data-i18n="mytodolist.newReport">
+                You have a new report available.
+            </div>
+        `;
+    }
+
+    let obj = {
+        [fieldMapping.reports.knownReports]: availableReports
     };
 
     await storeResponse(obj);
