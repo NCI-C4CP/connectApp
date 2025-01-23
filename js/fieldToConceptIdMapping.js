@@ -327,9 +327,12 @@ export default
 
     reports: {
         knownReports: 794047378,
-        physicalActivityStatus: 446235715,
-        physicalActivityViewed: 749055145,
-        physicalActivityDeclined: 295732360,
+        physicalActivityReport: 686238347,
+        physicalActivity: {
+            status: 446235715,
+            viewedTS: 749055145,
+            declinedTS: 295732360
+        },
         unread: 702641611,
         viewed: 469323437,
         declined: 746038746

@@ -1274,14 +1274,14 @@ export const reportConfiguration = () => {
 
 export const setReportAttributes = async (data, reports, populateReportData) => {
     //Does the user have a physical activity report
-    if (data[fieldMapping.reports.physicalActivityStatus] && 
-        (data[fieldMapping.reports.physicalActivityStatus] == fieldMapping.reports.unread ||
-            data[fieldMapping.reports.physicalActivityStatus] == fieldMapping.reports.viewed ||
-            data[fieldMapping.reports.physicalActivityStatus] == fieldMapping.reports.declined 
+    if (data[fieldMapping.reports.physicalActivityReport] && data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] && 
+        (data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] == fieldMapping.reports.unread ||
+            data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] == fieldMapping.reports.viewed ||
+            data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] == fieldMapping.reports.declined 
         )
     ) {
         reports['Physical Activity Report'].enabled = true;
-        reports['Physical Activity Report'].status = data[fieldMapping.reports.physicalActivityStatus];
+        reports['Physical Activity Report'].status = data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status];
         reports['Physical Activity Report'].dateField = 'd_416831581';
         reports['Physical Activity Report'].surveyDate = data[fieldMapping.Module2.completeTs];
         if (populateReportData) {

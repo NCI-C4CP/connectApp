@@ -4,13 +4,15 @@ import { validateLoginPhone } from "../settingsHelpers.js";
 const { PDFDocument, StandardFonts, rgb } = PDFLib;
 
 let reports = reportConfiguration();
+let myData;
 
 export const renderReportsPage = async () => {
     document.title = translateText('reports.pageTitle');
     showAnimation();
-    const myData = await getMyData();
+    myData = await getMyData();
+    myData = myData.data || myData;
     
-    reports = await setReportAttributes(myData.data, reports, true);
+    reports = await setReportAttributes(myData, reports, true);
 
     let template =  `
         <div class="row">
@@ -266,10 +268,12 @@ const initializeReadButtons = () => {
             okButton.addEventListener('click', async () => {
                 let currentTime = new Date();
                 let obj = {
-                    [fieldMapping.reports.physicalActivityStatus]: fieldMapping.reports.declined,
-                    [fieldMapping.reports.physicalActivityDeclined]: currentTime.toISOString()
+                    [fieldMapping.reports.physicalActivityReport]: {
+                        [fieldMapping.reports.physicalActivity.status]: fieldMapping.reports.declined,
+                        [fieldMapping.reports.physicalActivity.declinedTS]: currentTime.toISOString()
+                    }
                 };
-                await storeResponse(obj);
+                await storeResponse(myData[fieldMapping.reports.physicalActivityReport] ? {[fieldMapping.reports.physicalActivityReport]: Object.assign({},  myData[fieldMapping.reports.physicalActivityReport], obj[fieldMapping.reports.physicalActivityReport])} : obj);
                 window.location.reload();
             });
             const softModal = new bootstrap.Modal(document.getElementById('declineModal'));
@@ -323,9 +327,11 @@ const initializeDeclinedButtons = () => {
             okButton.addEventListener('click', async () => {
                 let currentTime = new Date();
                 let obj = {
-                    [fieldMapping.reports.physicalActivityStatus]: fieldMapping.reports.viewed
+                    [fieldMapping.reports.physicalActivityReport]: {
+                        [fieldMapping.reports.physicalActivity.status]: fieldMapping.reports.viewed
+                    }
                 };
-                await storeResponse(obj);
+                await storeResponse(myData[fieldMapping.reports.physicalActivityReport] ? {[fieldMapping.reports.physicalActivityReport]: Object.assign({},  myData[fieldMapping.reports.physicalActivityReport], obj[fieldMapping.reports.physicalActivityReport])} : obj);
                 window.location.reload();
             });
             const softModal = new bootstrap.Modal(document.getElementById('reinstateModal'));
@@ -367,10 +373,12 @@ const initializePhysicalActivityInformedConsent = () => {
         okButton.addEventListener('click', async () => {
             let currentTime = new Date();
             let obj = {
-                [fieldMapping.reports.physicalActivityStatus]: fieldMapping.reports.declined,
-                [fieldMapping.reports.physicalActivityDeclined]: currentTime.toISOString()
+                [fieldMapping.reports.physicalActivityReport]: {
+                    [fieldMapping.reports.physicalActivity.status]: fieldMapping.reports.declined,
+                    [fieldMapping.reports.physicalActivity.declinedTS]: currentTime.toISOString()
+                }
             };
-            await storeResponse(obj);
+            await storeResponse(myData[fieldMapping.reports.physicalActivityReport] ? {[fieldMapping.reports.physicalActivityReport]: Object.assign({},  myData[fieldMapping.reports.physicalActivityReport], obj[fieldMapping.reports.physicalActivityReport])} : obj);
             window.location.reload();
         });
         const softModal = new bootstrap.Modal(document.getElementById('declineModal'));
@@ -381,10 +389,12 @@ const initializePhysicalActivityInformedConsent = () => {
     viewButton.addEventListener('click', async () => { 
         let currentTime = new Date();
         let obj = {
-            [fieldMapping.reports.physicalActivityStatus]: fieldMapping.reports.viewed,
-            [fieldMapping.reports.physicalActivityViewed]: currentTime.toISOString()
+            [fieldMapping.reports.physicalActivityReport]: {
+                [fieldMapping.reports.physicalActivity.status]: fieldMapping.reports.viewed,
+                [fieldMapping.reports.physicalActivity.viewedTS]: currentTime.toISOString()
+            }
         };
-        await storeResponse(obj);
+        await storeResponse(myData[fieldMapping.reports.physicalActivityReport] ? {[fieldMapping.reports.physicalActivityReport]: Object.assign({},  myData[fieldMapping.reports.physicalActivityReport], obj[fieldMapping.reports.physicalActivityReport])} : obj);
         document.getElementById('physicalActivityContainer').innerHTML = translateHTML(renderPhysicalActivityReport(true));
         document.getElementById('physicalActivityDownloadReport').addEventListener('click', async () => {
             renderPhysicalActivityReportPDF();
