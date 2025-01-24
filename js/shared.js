@@ -370,7 +370,6 @@ export const getMyData = async () => {
 
 export const retrievePhysicalActivityReport = async () => {
 
-    let api = 'http://localhost:8080/';
     const idToken = await getIdToken();
     const response = await fetch(`${api}?api=retrievePhysicalActivityReport`, {
         headers: {
@@ -1272,7 +1271,14 @@ export const reportConfiguration = () => {
     }
 }
 
-export const setReportAttributes = async (data, reports, populateReportData) => {
+/**
+ * Sets various flags of the reports based on the user data
+ * 
+ * @param {Object} data 
+ * @param {Object[]} reports 
+ * @returns 
+ */
+export const setReportAttributes = async (data, reports) => {
     //Does the user have a physical activity report
     if (data[fieldMapping.reports.physicalActivityReport] && data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] && 
         (data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] == fieldMapping.reports.unread ||
@@ -1284,13 +1290,21 @@ export const setReportAttributes = async (data, reports, populateReportData) => 
         reports['Physical Activity Report'].status = data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status];
         reports['Physical Activity Report'].dateField = 'd_416831581';
         reports['Physical Activity Report'].surveyDate = data[fieldMapping.Module2.completeTs];
-        if (populateReportData) {
-            let reportData = await retrievePhysicalActivityReport();
-            if (reportData.code === 200) {
-                reports['Physical Activity Report'].data = reportData.data[0];
-            }
-        }
     }
+    return reports;
+}
+
+/**
+ * Populates the report data from the backend
+ * 
+ * @param {Object[]} reports 
+ */
+export const populateReportData = async (reports) => {
+    let reportData = await retrievePhysicalActivityReport();
+    if (reportData.code === 200) {
+        reports['Physical Activity Report'].data = reportData.data[0];
+    }
+
     return reports;
 }
 
@@ -2477,3 +2491,26 @@ export const showErrorAlert = (messageTranslationKey = 'questionnaire.somethingW
     // Display the alert
     alert(plainMessage);
 };
+
+ /* Checks for each code point whether the given font supports it.
+If not, tries to remove diacritics from said code point.
+If that doesn't work either, replaces the unsupported character with '?'. */
+export function replaceUnsupportedPDFCharacters(string, font) {
+ const charSet = font.getCharacterSet()
+ const codePoints = []
+ for (const codePointStr of string) {
+     const codePoint = codePointStr.codePointAt(0);
+     if (!charSet.includes(codePoint)) {
+         const withoutDiacriticsStr = codePointStr.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+         const withoutDiacritics = withoutDiacriticsStr.charCodeAt(0);
+         if (charSet.includes(withoutDiacritics)) {
+             codePoints.push(withoutDiacritics);
+         } else {
+             codePoints.push('?'.codePointAt(0));
+         }
+     } else {
+         codePoints.push(codePoint)
+     }
+ }
+ return String.fromCodePoint(...codePoints);
+}

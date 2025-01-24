@@ -688,8 +688,6 @@ const checkForNewReports = async (data) => {
     let availableReports = 0;
     let newReport = false;
     let knownReports;
-    let completedStandaloneSurveys = 0;
-    let knownCompletedStandaloneSurveys;
 
     Object.keys(reports).forEach(rep => {
         if(reports[rep].reportId) {
