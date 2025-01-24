@@ -323,5 +323,18 @@ export default
         source: 761057722,
         medium: 207613315,
         campaign: 163847117
+    },
+
+    reports: {
+        knownReports: 794047378,
+        physicalActivityReport: 686238347,
+        physicalActivity: {
+            status: 446235715,
+            viewedTS: 749055145,
+            declinedTS: 295732360
+        },
+        unread: 702641611,
+        viewed: 469323437,
+        declined: 746038746
     }
 };

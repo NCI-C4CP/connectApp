@@ -7,6 +7,7 @@ import { myToDoList } from "./js/pages/myToDoList.js";
 import {renderNotificationsPage} from "./js/pages/notifications.js"
 import { renderAgreements } from "./js/pages/agreements.js";
 import { renderSettingsPage } from "./js/pages/settings.js";
+import { renderReportsPage } from "./js/pages/reports.js";
 import { renderSupportPage } from "./js/pages/support.js";
 import { renderPaymentPage } from "./js/pages/payment.js";
 import { renderSamplesPage } from "./js/pages/samples.js";
@@ -320,6 +321,7 @@ const router = async () => {
             else if (route === '#sign_out') await signOut();
             else if (route === '#forms') renderAgreements();
             else if (route === '#myprofile') renderSettingsPage();
+            else if (route === '#reports') renderReportsPage();
             else if (route === '#support') renderSupportPage();
             else if (route === '#samples') renderSamplesPage();
             else if (route === '#payment') renderPaymentPage();
