@@ -842,7 +842,7 @@ const en = {
                 "NicolletAddress": "300 Lake Dr E<br>Chanhassen, MN 55317 <br><br>Upon arrival, please take the stairs or elevator to the 2nd floor and check in for your appointment at the lab check in desk.",
                 "NicolletParking": "Parking is free in the Chanhassen Clinic parking lot.<br><br><div class=\"messagesHeaderFont\">Scheduling Information</div><br>Self-scheduling is not currently available for the Chanhassen location. For questions and scheduling, please call 952-967-5067.",
                 "NicolletMinneapolisName": "Park Nicollet Clinic Minneapolis",
-                "NicolletMinneapolisAddress": "2001 Blaisdell Ave <br>Minneapolis, MN 55404 <br><br>Upon entering the building, go to the left and take the stairs or elevator down to the lower-level lobby. In the lower level-lobby, please check-in at the laboratory front desk.",
+                "NicolletMinneapolisAddress": "2001 Blaisdell Ave <br>Minneapolis, MN 55404 <br><br>Upon entering the building, go to the left and take the stairs or elevator down to the lower-level lobby. In the lower level-lobby, please check in at the laboratory front desk.",
                 "NicolletMinneapolisParking": "Parking is free and available at the front entrance or across the street.<br><br><div class=\"messagesHeaderFont\">Scheduling Information</div><br>Self-scheduling is not currently available for the Minneapolis location. For questions and scheduling, please call 952-967-5067. "
             }
         },

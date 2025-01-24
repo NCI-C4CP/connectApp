@@ -329,7 +329,7 @@ const health_partners = {
         ],
         [
             '<span data-i18n="samples.health_partners.locations.NicolletMinneapolisName">Park Nicollet Clinic Minneapolis</span>',
-            '<span data-i18n="samples.health_partners.locations.NicolletMinneapolisAddress">2001 Blaisdell Ave <br>Minneapolis, MN 55404 <br><br>Upon entering the building, go to the left and take the stairs or elevator down to the lower-level lobby. In the lower level-lobby, please check-in at the laboratory front desk.</span>',
+            '<span data-i18n="samples.health_partners.locations.NicolletMinneapolisAddress">2001 Blaisdell Ave <br>Minneapolis, MN 55404 <br><br>Upon entering the building, go to the left and take the stairs or elevator down to the lower-level lobby. In the lower level-lobby, please check in at the laboratory front desk.</span>',
             '',
             '<span data-i18n="samples.health_partners.locations.NicolletMinneapolisParking">Parking is free and available at the front entrance or across the street.<br><br><div class="messagesHeaderFont">Scheduling Information</div><br>Self-scheduling is not currently available for the Minneapolis location. For questions and scheduling, please call 952-967-5067.</span>',
         ]
