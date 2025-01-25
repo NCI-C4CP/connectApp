@@ -1302,7 +1302,11 @@ export const setReportAttributes = async (data, reports) => {
 export const populateReportData = async (reports) => {
     let reportData = await retrievePhysicalActivityReport();
     if (reportData.code === 200) {
-        reports['Physical Activity Report'].data = reportData.data[0];
+        if (reportData.data && reportData.data[0]) {
+            reports['Physical Activity Report'].data = reportData.data[0];
+        } else {
+            reports['Physical Activity Report'].data = {};
+        }
     }
 
     return reports;
@@ -2496,6 +2500,7 @@ export const showErrorAlert = (messageTranslationKey = 'questionnaire.somethingW
 If not, tries to remove diacritics from said code point.
 If that doesn't work either, replaces the unsupported character with '?'. */
 export function replaceUnsupportedPDFCharacters(string, font) {
+ if (!string) return;
  const charSet = font.getCharacterSet()
  const codePoints = []
  for (const codePointStr of string) {
