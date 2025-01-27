@@ -1388,7 +1388,7 @@ export const renderMailingAddressHeadingAndButton = () => {
       <div class="row">
           <div class="col-12 col-sm-6">
               <span class="userProfileLabels" data-i18n="settings.mailAddress">
-                  Mailing Address
+                  Mailing Address (Required)
               </span>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-end">
@@ -1403,8 +1403,9 @@ export const renderPhysicalMailingAddressHeadingAndButton = () => {
       <div class="row">
           <div class="col-12 col-sm-6">
               <span class="userProfileLabels" data-i18n="settings.physicalMailAddress">
-                  Physical Mailing Address
-              </span>
+                  Physical Address (Optional)
+              </span><br>
+              <i data-i18n="settings.physicalMailAddressNote">If different from mailing address</i>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-end">
               <button id="changePhysicalMailingAddressButton" class="btn btn-primary save-data consentNextButton px-3" style="float:right; display:none;" data-i18n="settings.updateAddressText">Update Address</button>
