@@ -198,7 +198,9 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                     template += surveyMessage;
                 }
 
-                const reportMessage = await checkForNewReports(data);
+                //Temporarly Disabling the new report notification
+                const reportMessage = '';
+                // const reportMessage = await checkForNewReports(data);
 
                 if(reportMessage) {
                     template += reportMessage;
