@@ -71,8 +71,11 @@ export default
     "requestedDataDestroySigned": 704529432,
     "noneOfTheseApply": 398561594,
     "outreachTimedOut": 160161595,
+    firstSignInFlag: 230663853,
     firstSignInTime: 335767902,
+    hipaaTimestamp: 262613359,
     pinNumber: 379080287,
+    dontHavePinNumber: 828729648,
     menstrualSurveyEligible: 289750687,
     "preferredLanguage": 255077064,
     "language": {
@@ -315,4 +318,23 @@ export default
     sanfordHealth: 657167265,
     uChicagoMedicine: 809703864,
     baylorScottAndWhiteHealth: 976883292,
+
+    utm: {
+        source: 761057722,
+        medium: 207613315,
+        campaign: 163847117
+    },
+
+    reports: {
+        knownReports: 794047378,
+        physicalActivityReport: 686238347,
+        physicalActivity: {
+            status: 446235715,
+            viewedTS: 749055145,
+            declinedTS: 295732360
+        },
+        unread: 702641611,
+        viewed: 469323437,
+        declined: 746038746
+    }
 };

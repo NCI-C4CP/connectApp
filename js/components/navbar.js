@@ -5,6 +5,7 @@ export const userNavBar = (response) => {
     const disabledClass = isParticipantDataDestroyed(response.data) ? 'disabled': '';
     const hiddenClass = response.code === 200 && response.data['699625233'] === 353358909 && response.data['919254129'] === 353358909 ? '': 'hidden';
 
+    //Temporarly hidden the report tab
     let template = translateHTML(`
         <ul class="navbar-nav">
             <li class="nav-item">
@@ -21,6 +22,9 @@ export const userNavBar = (response) => {
             <li class="nav-item">
                 <a class="nav-link ${disabledClass}" href="#myprofile" id="userSettings" data-i18n="navbar.profileLink">My Profile</a>
             </li>
+            <!-- li class="nav-item">
+                <a class="nav-link ${disabledClass}" href="#reports" id="reports" data-i18n="navbar.reportsLink">My Reports</a>
+            </li -->
             <li class="nav-item">
                 <a class="nav-link ${disabledClass}" href="#payment" id="connectPayment" data-i18n="navbar.paymentLink">My Payment</a>
             </li>

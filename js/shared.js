@@ -162,37 +162,70 @@ export const sendEmailLink = () => {
     });
 };
 
-export const validateToken = async (token) => {
-    const idToken = await getIdToken();
-    const response = await fetch(api+`?api=validateToken${token? `&token=${token}` : ``}`, {
-        headers: {
-            Authorization:"Bearer "+idToken
-        }
-    });
-    const data = await response.json();
-    return data;
+/**
+ * Validate the PIN entered by the new participant. Send the PIN for validation. Include the first sign in time. Both are added to Firestore on success.
+ * PIN number and first sign in time are required.
+ * @param {object} pinEntryFormData - The form data object containing the PIN and first sign in time.
+ * @returns {object} - The response object from the API.
+ */
+
+export const validatePin = async (pinEntryFormData) => {
+
+    if (!pinEntryFormData[fieldMapping.pinNumber] || typeof pinEntryFormData[fieldMapping.pinNumber] !== 'string') {
+        return { code: 400, message: 'Invalid PIN format.' };
+    }
+
+    if (!pinEntryFormData[fieldMapping.firstSignInTime] || typeof pinEntryFormData[fieldMapping.firstSignInTime] !== 'string') {
+        return { code: 400, message: 'Invalid first sign in time format.' };
+    }
+
+    try {
+        const idToken = await getIdToken();
+        const response = await fetch(api + '?api=validatePin', {
+            method: "POST",
+            contentType: "application/json",
+            headers: {
+                Authorization: "Bearer " + idToken
+            },
+            body: JSON.stringify(pinEntryFormData)
+        });
+
+        return await response.json();
+
+    } catch (error) {
+        throw new Error('An unexpected error occurred in validatePin(). Error: ' + error.message);
+    }
 }
 
-export const validatePin = async (pin) => {
-    const idToken = await getIdToken();
-    const response = await fetch(api+`?api=validateToken${pin? `&pin=${pin}` : ``}`, {
-        headers: {
-            Authorization:"Bearer "+idToken
-        }
-    });
-    const data = await response.json();
-    return data;
-}
+/**
+ * The participant clicked 'I do not have a PIN' OR submitted a PIN and validation failed.
+ * That means there's no existing participant record and we need to create one.
+ * Required fields: first sign in time.
+ * Optional fields: PIN number (if participant entered a PIN that failed to validate) and 'don't have a PIN' flag if no PIN was entered.
+ * @param {object} pinEntryFormData - The form data object containing first sign in time.
+ */
 
-export const generateNewToken = async () => {
-    const idToken = await getIdToken();
-    const response = await fetch(`${api}?api=generateToken`, {
-        headers: {
-            Authorization:"Bearer "+idToken
+export const createParticipantRecord = async (pinEntryFormData) => {
+    try {
+        if (!pinEntryFormData[fieldMapping.firstSignInTime] || typeof pinEntryFormData[fieldMapping.firstSignInTime] !== 'string') {
+            return { code: 400, message: 'Invalid first sign in time format.' };
         }
-    });
-    const data = await response.json();
-    return data;
+
+        const idToken = await getIdToken();
+        const response = await fetch(`${api}?api=createParticipantRecord`, {
+            method: "POST",
+            contentType: "application/json",
+            headers: {
+                Authorization: "Bearer " + idToken
+            },
+            body: JSON.stringify(pinEntryFormData)
+        });
+        
+        return await response.json();
+
+    } catch (error) {
+        throw new Error('An unexpected error occurred in createParticipantRecord(). Error: ' + error.message);
+    }
 }
 
 //Store tree function being passed into quest
@@ -335,6 +368,18 @@ export const getMyData = async () => {
     return await response.json();
 };
 
+export const retrievePhysicalActivityReport = async () => {
+
+    const idToken = await getIdToken();
+    const response = await fetch(`${api}?api=retrievePhysicalActivityReport`, {
+        headers: {
+            Authorization: 'Bearer ' + idToken,
+        },
+    });
+
+    return await response.json();
+};
+
 export const hasUserData = (response) => {
 
     return response.code === 200 && Object.keys(response.data).length > 0;
@@ -388,15 +433,23 @@ export const getMySurveys = async (data, filter = false) => {
 }
 
 export const getMyCollections = async () => {
+    try {
+        const idToken = await getIdToken();
+        const response = await fetch(`${api}?api=getUserCollections`, {
+            headers: {
+                Authorization: "Bearer " + idToken
+            }
+        });
 
-    const idToken = await getIdToken();
-    const response = await fetch(`${api}?api=getUserCollections`, {
-        headers: {
-            Authorization: "Bearer " + idToken
-        }
-    })
-
-    return await response.json();
+        return await response.json();
+        
+    } catch (error) {
+        logDDRumError(error, 'GetMyCollectionsError', {
+            userAction: 'get user collections',
+            timestamp: new Date().toISOString(),
+        });
+        return { code: 500, message: 'An unexpected error occurred in getMyCollections()' };
+    }
 }
 
 const allIHCS = {
@@ -1193,6 +1246,70 @@ export const questionnaireModules = () => {
             enabled: false
         }
     };
+}
+
+export const reportConfiguration = () => {
+    
+    if(location.host === urls.prod) {
+        return {
+            'Physical Activity Report': {
+                path: {
+                    en: 'prod/module2024ConnectExperience.txt', 
+                    es: 'prod/module2024ConnectExperienceSpanish.txt'
+                },
+                reportId: "physicalActivity", 
+                enabled: false
+            }
+        }
+    }
+
+    return {
+        'Physical Activity Report': {
+            reportId: "physicalActivity", 
+            enabled: false
+        }
+    }
+}
+
+/**
+ * Sets various flags of the reports based on the user data
+ * 
+ * @param {Object} data 
+ * @param {Object[]} reports 
+ * @returns 
+ */
+export const setReportAttributes = async (data, reports) => {
+    //Does the user have a physical activity report
+    if (data[fieldMapping.reports.physicalActivityReport] && data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] && 
+        (data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] == fieldMapping.reports.unread ||
+            data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] == fieldMapping.reports.viewed ||
+            data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] == fieldMapping.reports.declined 
+        )
+    ) {
+        reports['Physical Activity Report'].enabled = true;
+        reports['Physical Activity Report'].status = data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status];
+        reports['Physical Activity Report'].dateField = 'd_416831581';
+        reports['Physical Activity Report'].surveyDate = data[fieldMapping.Module2.completeTs];
+    }
+    return reports;
+}
+
+/**
+ * Populates the report data from the backend
+ * 
+ * @param {Object[]} reports 
+ */
+export const populateReportData = async (reports) => {
+    let reportData = await retrievePhysicalActivityReport();
+    if (reportData.code === 200) {
+        if (reportData.data && reportData.data[0]) {
+            reports['Physical Activity Report'].data = reportData.data[0];
+        } else {
+            reports['Physical Activity Report'].data = {};
+        }
+    }
+
+    return reports;
 }
 
 export const isBrowserCompatible = () => {
@@ -2034,7 +2151,20 @@ export const translateHTML = (source, language) => {
 
     if (sourceElement.dataset.i18n) {
         let keys = sourceElement.dataset.i18n.split('.');
-        let translation = translateText(keys, language);
+        let translation;
+        if (keys.length === 1 && keys[0] === 'date' && sourceElement.dataset.timestamp) {
+            let options;
+            if (sourceElement.dataset.dateOptions) {
+                try {
+                    options = JSON.parse(decodeURIComponent(sourceElement.dataset.dateOptions));
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+            translation = translateDate(sourceElement.dataset.timestamp, language, options);
+        } else {
+            translation = translateText(keys, language);
+        }
         if (translation) {
             if (typeof translation === 'object') {
                 Object.keys(translation).forEach((key) => {
@@ -2062,6 +2192,34 @@ export const translateHTML = (source, language) => {
     } else {
        return sourceElement;
     }
+}
+
+/**
+ * Returns a formatted Date based on the language and options
+ * 
+ * @param {string} timestamp
+ * @param {string} language
+ * @param {Object} options - Same as Intl.DateTimeFormat() constructor
+ */
+export const translateDate = (timestamp, language, options) => {
+    if (!language) {
+        language = appState.getState().language;
+        if (!language) {
+            language = 'en';
+        } else {
+            language = languageAcronyms()[language];
+        }
+    }
+
+    let date;
+    if (typeof timestamp === 'string' && /^[0-9]+$/.test(timestamp)) {
+        date = new Date(parseInt(timestamp, 10));
+    } else if (typeof timestamp === 'number') {
+        date = new Date(timestamp);
+    } else {
+        date = new Date(Date.parse(timestamp));
+    }
+    return date.toLocaleDateString(language, options);
 }
 
 /**
@@ -2310,14 +2468,54 @@ export const emailValidationAnalysis = (validation) => {
         checks.additional.has_suspected_bounces ||
         score < 0.8;
 
-    if (isWarning) {
-         // it's for testing with the test email such as *.mailinator
-         if (location.host !== urls.prod) {
-            console.error("Risky Email", validation);
-            return VALID;
-        }
-        return WARNING;
-    }
+        if (isWarning) {
+            // it's for testing with the test email such as *.mailinator
+            if (location.host !== urls.prod) {
+               console.error("Risky Email", validation);
+               return VALID;
+           }
+           return WARNING;
+       }
 
     return VALID;
 };
+
+export const showErrorAlert = (messageTranslationKey = 'questionnaire.somethingWrong') => {
+    const language = appState.getState().language || 'en';
+
+    // Get the translation. Use a generic fallback.
+    let errorMessage = translateText(messageTranslationKey.split('.'), language);
+    if (!errorMessage) {
+        errorMessage = 'Something went wrong. Please try again. Contact the Connect Support Center at 1-877-505-0253 if you continue to experience this problem.';
+    }
+
+    // Alert doesn't support HTML. Remove markdown links.
+    const plainMessage = errorMessage.replace(/<\/?[^>]+(>|$)/g, '');
+
+    // Display the alert
+    alert(plainMessage);
+};
+
+ /* Checks for each code point whether the given font supports it.
+If not, tries to remove diacritics from said code point.
+If that doesn't work either, replaces the unsupported character with '?'. */
+export function replaceUnsupportedPDFCharacters(string, font) {
+ if (!string) return;
+ const charSet = font.getCharacterSet()
+ const codePoints = []
+ for (const codePointStr of string) {
+     const codePoint = codePointStr.codePointAt(0);
+     if (!charSet.includes(codePoint)) {
+         const withoutDiacriticsStr = codePointStr.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+         const withoutDiacritics = withoutDiacriticsStr.charCodeAt(0);
+         if (charSet.includes(withoutDiacritics)) {
+             codePoints.push(withoutDiacritics);
+         } else {
+             codePoints.push('?'.codePointAt(0));
+         }
+     } else {
+         codePoints.push(codePoint)
+     }
+ }
+ return String.fromCodePoint(...codePoints);
+}

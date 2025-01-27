@@ -1,7 +1,7 @@
-import { allCountries, dataSavingBtn, storeResponse, validatePin, generateNewToken, showAnimation, hideAnimation, sites, errorMessage, BirthMonths, getAge, getMyData, 
-    hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validNameFormat } from "./shared.js";
+import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, errorMessage, BirthMonths, getAge, getMyData, 
+    hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validNameFormat } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
-import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender } from "./pages/healthCareProvider.js";
+import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, requestPINTemplate } from "./pages/healthCareProvider.js";
 import { myToDoList } from "./pages/myToDoList.js";
 import { suffixToTextMap, getFormerNameData, formerNameOptions } from "./settingsHelpers.js";
 import fieldMapping from "./fieldToConceptIdMapping.js";
@@ -465,27 +465,50 @@ export const addEventUPSubmit = async () => {
         Array.from(validations).forEach(element => {
             if(element.value){
                 const validationPattern = element.dataset.validationPattern;
+                const dataI18n = `${element.dataset.i18n}.data-error-validation`
                 if(validationPattern && validationPattern === 'alphabets') {
                     if(!validNameFormat.test(element.value)) {
-                        errorMessage(element.id, element.dataset.errorValidation, focus)
+                        errorMessage(
+                            element.id,
+                            `<span data-i18n="${dataI18n}">${translateText(dataI18n)}</span>`,
+                            focus
+                        );
                         focus = false;
                         hasError = true;
                     }
                 }
                 if(validationPattern && validationPattern === 'year') {
                     if(!/^(19|20)[0-9]{2}$/.test(element.value)) {
-                        errorMessage(element.id, element.dataset.errorValidation, focus)
+                        errorMessage(
+                            element.id,
+                            `<span data-i18n="${dataI18n}">${translateText(
+                                dataI18n
+                            )}</span>`,
+                            focus
+                        );
                         focus = false;
                         hasError = true;
                     }
                     else {
                         if(element.value.length > 4) {
-                            errorMessage(element.id, element.dataset.errorValidation, focus)
+                            errorMessage(
+                                element.id,
+                                `<span data-i18n="${dataI18n}">${translateText(
+                                    dataI18n
+                                )}</span>`,
+                                focus
+                            );
                             focus = false;
                             hasError = true;
                         }
                         else if (parseInt(element.value) > new Date().getFullYear()) {
-                            errorMessage(element.id, element.dataset.errorValidation, focus)
+                            errorMessage(
+                                element.id,
+                                `<span data-i18n="${dataI18n}">${translateText(
+                                    dataI18n
+                                )}</span>`,
+                                focus
+                            );
                             focus = false;
                             hasError = true;
                         }
@@ -493,7 +516,13 @@ export const addEventUPSubmit = async () => {
                 }
                 if(validationPattern && validationPattern === 'numbers') {
                     if(!/^[0-9]*$/.test(element.value)) {
-                        errorMessage(element.id, element.dataset.errorValidation, focus)
+                        errorMessage(
+                            element.id,
+                            `<span data-i18n="${dataI18n}">${translateText(
+                                dataI18n
+                            )}</span>`,
+                            focus
+                        );
                         focus = false;
                         hasError = true;
                     }
@@ -501,13 +530,26 @@ export const addEventUPSubmit = async () => {
             }
         });
         Array.from(requiredFields).forEach(element => {
+            const dataI18n = `${element.dataset.i18n}.data-error-required`
             if(!element.value){
-                errorMessage(element.id, `${element.dataset.errorRequired}`, focus);
+                errorMessage(
+                    element.id,
+                    `<span data-i18n="${dataI18n}">${translateText(
+                        dataI18n
+                    )}</span>`,
+                    focus
+                );
                 focus = false;
                 hasError = true;
             }
             if(element.type === 'checkbox' && element.checked === false && element.hidden === false){
-                errorMessage(element.id, `${element.dataset.errorRequired}`, focus);
+                errorMessage(
+                    element.id,
+                    `<span data-i18n="${dataI18n}">${translateText(
+                        dataI18n
+                    )}</span>`,
+                    focus
+                );
                 focus = false;
                 hasError = true;
             }    
@@ -515,9 +557,15 @@ export const addEventUPSubmit = async () => {
         Array.from(confirmationFields).forEach(element => {
             const target = element.getAttribute('target')
             const targetElement= document.getElementById(target)
-
+            const dataI18n = `${element.dataset.i18n}.data-error-confirmation`
             if(element.value !== targetElement.value){
-                errorMessage(element.id, `${element.dataset.errorConfirmation}`, focus);
+                errorMessage(
+                    element.id,
+                    `<span data-i18n="${dataI18n}">${translateText(
+                        dataI18n
+                    )}</span>`,
+                    focus
+                );
                 focus = false;
                 hasError = true;
             }
@@ -632,14 +680,16 @@ export const addEventUPSubmit = async () => {
         }*/
         const emailValidation = await emailAddressValidation({
             emails: {
-                upEmail:email,
-                upEmail2: email2 ? email2.value : undefined,
-                upAdditionalEmail2: email3 ? email3.value : undefined,
-                upAdditionalEmail3: email4 ? email4.value : undefined,
+                upEmail: email.trim(),
+                upEmail2: email2 ? email2.value.trim() : undefined,
+                upAdditionalEmail2: email3 ? email3.value.trim() : undefined,
+                upAdditionalEmail3: email4 ? email4.value.trim() : undefined,
             },
         });
-        
-        if (emailValidationAnalysis(emailValidation.upEmail) === emailValidationStatus.INVALID) {
+        const riskyEmails = []
+        const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail)
+        if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email)
+        if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
             errorMessage(
                 "UPEmail",
                 '<span data-i18n="settingsHelpers.emailInvalid">' +
@@ -654,7 +704,9 @@ export const addEventUPSubmit = async () => {
             hasError = true;
         }
 
-        if (emailValidationAnalysis(emailValidation.upEmail2) === emailValidationStatus.INVALID) {
+        const upEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail2)
+        if (upEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email2.value)
+        if (upEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
             errorMessage(
                 "UPEmail2",
                 '<span data-i18n="settingsHelpers.emailInvalid">' +
@@ -667,7 +719,9 @@ export const addEventUPSubmit = async () => {
             hasError = true;
         }
 
-        if (emailValidationAnalysis(emailValidation.upAdditionalEmail2) === emailValidationStatus.INVALID) {
+        const upAdditionalEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail2)
+        if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email3.value)
+        if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
             errorMessage(
                 "UPAdditionalEmail2",
                 '<span data-i18n="settingsHelpers.emailInvalid">' +
@@ -680,7 +734,9 @@ export const addEventUPSubmit = async () => {
             hasError = true;
         }
         
-        if (emailValidationAnalysis(emailValidation.upAdditionalEmail3) === emailValidationStatus.INVALID) {
+        const upAdditionalEmail3ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail3)
+        if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email4.value)
+        if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.INVALID) {
             errorMessage(
                 "UPAdditionalEmail3",
                 '<span data-i18n="settingsHelpers.emailInvalid">' +
@@ -710,8 +766,8 @@ export const addEventUPSubmit = async () => {
         }
 
         if(hasError) return false;
+        
         let formData = {};
-        formData['507120821'] = 602439976;
         formData['399159511'] = document.getElementById('UPFirstName').value.trim();
         formData['231676651'] = document.getElementById('UPMiddleInitial').value.trim();
         formData['996038075'] = document.getElementById('UPLastName').value.trim();
@@ -834,33 +890,32 @@ export const addEventUPSubmit = async () => {
         formData['634434746'] = document.getElementById('UPAddress1State').value;
         formData['892050548'] = document.getElementById('UPAddress1Zip').value;
 
-        // const poBoxCheckbox = document.getElementById("poBoxCheckbox");
+        const poBoxCheckbox = document.getElementById("poBoxCheckbox");
 
-        // // Physical address
-        // formData[fieldMapping.isPOBox] = poBoxCheckbox && poBoxCheckbox.checked ?
-        //     fieldMapping.yes :
-        //     fieldMapping.no
+        // Physical address
+        formData[fieldMapping.isPOBox] = poBoxCheckbox && poBoxCheckbox.checked ?
+            fieldMapping.yes :
+            fieldMapping.no
 
-        // // Physical address info is saved regardless of whether PO Box is checked
-        
-        // const getFieldValue = (id) =>
-        //     document.getElementById(id)?.value || "";
+        // Physical address info is saved regardless of whether PO Box is checked
+        const getFieldValue = (id) =>
+            document.getElementById(id)?.value || "";
 
-        // // Update formData with physical address details
-        // formData[fieldMapping.physicalAddress1] = getFieldValue(
-        //     "UPAddress2Line1"
-        // );
-        // formData[fieldMapping.physicalAddress2] = getFieldValue(
-        //     "UPAddress2Line2"
-        // );
-        // formData[fieldMapping.physicalCity] = getFieldValue(
-        //     "UPAddress2City"
-        // );
-        // formData[fieldMapping.physicalState] = getFieldValue(
-        //     "UPAddress2State"
-        // );
-        // formData[fieldMapping.physicalZip] =
-        //     getFieldValue("UPAddress2Zip");
+        // Update formData with physical address details
+        formData[fieldMapping.physicalAddress1] = getFieldValue(
+            "UPAddress2Line1"
+        );
+        formData[fieldMapping.physicalAddress2] = getFieldValue(
+            "UPAddress2Line2"
+        );
+        formData[fieldMapping.physicalCity] = getFieldValue(
+            "UPAddress2City"
+        );
+        formData[fieldMapping.physicalState] = getFieldValue(
+            "UPAddress2State"
+        );
+        formData[fieldMapping.physicalZip] =
+            getFieldValue("UPAddress2Zip");
 
         const cancer = document.getElementsByName('cancerHistory');
         Array.from(cancer).forEach(radioBtn => {
@@ -884,8 +939,50 @@ export const addEventUPSubmit = async () => {
         const ageToday = getAge(`${formData['544150384']}-${formData['564964481']}-${formData['795827569']}`);
 
         formData['117249500'] = ageToday;
-        verifyUserDetails(formData, emailValidation);
+
+        // Disable warning in this release => it will be enabled in February release
+        // if (riskyEmails.length) {
+        //     showRiskyEmailWarning(riskyEmails, formData)
+        // } else {
+            verifyUserDetails(formData);
+        // }
     });
+}
+
+const showRiskyEmailWarning = (riskyEmails, formData) => {
+    if(!document.getElementById('connectMainModal').classList.contains('show')) openModal();
+    document.getElementById('connectModalHeader').innerHTML = translateHTML(`
+    <h4 data-i18n="event.warning">Warning</h4>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    `);
+    let bodyHtml = ''
+    const escapeHTML = (str) => {
+        const div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+    };
+
+    riskyEmails.forEach(item=>{
+        const escapedItem = escapeHTML(item);
+        bodyHtml += `
+            <div class="row">${escapedItem}</div>
+            <div class="row">
+                <i style="color:red" data-i18n="settingsHelpers.emailWarning">This email address may be invalid. Please double check your entry before continuing.</i>
+            </div>
+        </div>
+        `
+    })
+    document.getElementById('connectModalBody').innerHTML = translateHTML(bodyHtml);
+    document.getElementById('connectModalFooter').innerHTML = translateHTML(`
+        <div class="d-flex justify-content-between w-100">
+            <button data-i18n="event.navButtonsClose" type="button" title="Close" class="btn btn-dark" data-bs-dismiss="modal">Go Back</button>
+            <button data-i18n="event.navButtonsConfirm" type="button" id="confirmRiskyEmail" title="Confirm details" class="btn btn-primary consentNextButton" data-bs-dismiss="modal">Submit</button>
+        </div>
+    `);
+    document.getElementById('connectModalFooter').style.display = 'block';
+    document.getElementById('confirmRiskyEmail').addEventListener('click', async () => {
+        verifyUserDetails(formData);
+    })
 }
 
 const openModal = () => {
@@ -1016,13 +1113,13 @@ export const removeAllErrors = () => {
     })
 }
 
-const verifyUserDetails = (formData, emailValidation) => {
+const verifyUserDetails = (formData) => {
     if(!document.getElementById('connectMainModal').classList.contains('show')) openModal();
     document.getElementById('connectModalHeader').innerHTML = translateHTML(`
     <h4 data-i18n="event.reviewProfile">Review your profile details</h4>
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
     `);
-    const { formerdata, physicalAddress } = formData[fieldMapping.userProfileHistory];
+    const { formerdata } = formData[fieldMapping.userProfileHistory];
     let bodyHtml = `
         <div class="row">
             <div class="col" data-i18n="event.firstName">First name</div>
@@ -1165,10 +1262,7 @@ const verifyUserDetails = (formData, emailValidation) => {
         <div class="row">
             <div class="col" data-i18n="event.preferredEmail">Preferred Email</div>
             <div class="col">
-                ${formData['869588347']} <br />
-                 ${emailValidationAnalysis(emailValidation.upEmail) === emailValidationStatus.WARNING ? `
-                <i style="color:red" data-i18n="settingsHelpers.emailWarning">Warning- this email address may be invalid. Please double check your entry before continuing.</i>
-                `:``}
+                ${formData['869588347']}
             </div>
         </div>
         `:``}
@@ -1177,10 +1271,7 @@ const verifyUserDetails = (formData, emailValidation) => {
         <div class="row">
             <div class="col" data-i18n="event.additionalEmail">Additional Email</div>
             <div class="col">
-                ${formData['849786503']}<br />
-                 ${emailValidationAnalysis(emailValidation.upEmail2) === emailValidationStatus.WARNING ? `
-                <i style="color:red" data-i18n="settingsHelpers.emailWarning">Warning- this email address may be invalid. Please double check your entry before continuing.</i>
-                `:``}    
+                ${formData['849786503']}  
             </div>
         </div>
         `:``}
@@ -1189,10 +1280,7 @@ const verifyUserDetails = (formData, emailValidation) => {
         <div class="row">
             <div class="col" data-i18n="event.additionalEmail2">Additional Email 2</div>
             <div class="col">
-                ${formData['635101039']}<br />
-                ${emailValidationAnalysis(emailValidation.upAdditionalEmail2) === emailValidationStatus.WARNING ? `
-                <i style="color:red" data-i18n="settingsHelpers.emailWarning">Warning- this email address may be invalid. Please double check your entry before continuing.</i>
-                `:``}
+                ${formData['635101039']}
             </div>
         </div>
         `:``}
@@ -1201,10 +1289,7 @@ const verifyUserDetails = (formData, emailValidation) => {
         <div class="row">
             <div class="col" data-i18n="event.additionalEmail3">Additional Email 3</div> 
             <div class="col">
-                ${formData['714419972']}<br />
-                ${emailValidationAnalysis(emailValidation.upAdditionalEmail3) === emailValidationStatus.WARNING ? `
-                <i style="color:red" data-i18n="settingsHelpers.emailWarning">Warning- this email address may be invalid. Please double check your entry before continuing.</i>
-                `:``}
+                ${formData['714419972']}
             </div>
         </div>
         `:``}
@@ -1248,52 +1333,40 @@ const verifyUserDetails = (formData, emailValidation) => {
             <div class="col">${formData['892050548']}</div>
         </div>
         
-        <!--${formData[fieldMapping.isPOBox] === fieldMapping.yes ? `
-        <div class="row">
-            <div class="col"><strong data-i18n="settings.physicalMailAddress">Physical Mailing address</strong></div>
-        </div>
-        `:``}
-
         <div class="row">
             <div class="col" data-i18n="event.poBox">Mailing address is PO Box</div>
             <div class="col" data-i18n="settings.${formData[fieldMapping.isPOBox] === fieldMapping.yes ? 'optYes': 'optNo'}">
             ${formData[fieldMapping.isPOBox] === fieldMapping.yes ? "Yes" : "No"}</div>
         </div>
 
-        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalAddress1] ? `
         <div class="row">
-            <div class="col" data-i18n="event.line1">Line 1 (street, PO box, rural route)</div>
-            <div class="col">${physicalAddress[fieldMapping.physicalAddress1]}</div>
+            <div class="col"><strong data-i18n="settings.physicalMailAddress">Physical Mailing address</strong></div>
         </div>
-        `:``}
+
+        <div class="row">
+            <div class="col" data-i18n="event.physicalLine1">Line 1 (street, rural route)</div>
+            <div class="col">${formData[fieldMapping.physicalAddress1]}</div>
+        </div>
  
-        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalAddress2] ? `
         <div class="row">
             <div class="col" data-i18n="event.line2">Line 2 (apartment, suite, unit, building)</div>
-            <div class="col">${physicalAddress[fieldMapping.physicalAddress2]}</div>
+            <div class="col">${formData[fieldMapping.physicalAddress2]}</div>
         </div>
-        `:``}
 
-        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalCity] ? `
         <div class="row">
             <div class="col" data-i18n="event.city">City</div>
-            <div class="col">${physicalAddress[fieldMapping.physicalCity]}</div>
+            <div class="col">${formData[fieldMapping.physicalCity]}</div>
         </div>
-        `:``}
 
-        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalState] ? `
         <div class="row">
             <div class="col" data-i18n="event.state">State</div>
-            <div class="col">${physicalAddress[fieldMapping.physicalState]}</div>
+            <div class="col">${formData[fieldMapping.physicalState]}</div>
         </div>
-        `:``}
 
-        ${formData[fieldMapping.isPOBox] === fieldMapping.yes && physicalAddress[fieldMapping.physicalZip] ? `
         <div class="row">
             <div class="col" data-i18n="event.zip">Zip</div>
-            <div class="col">${physicalAddress[fieldMapping.physicalZip]}</div>
+            <div class="col">${formData[fieldMapping.physicalZip]}</div>
         </div>
-        `:``} -->
 
         ${formData['452166062'] ? `
         <div class="row">
@@ -1341,11 +1414,9 @@ const verifyUserDetails = (formData, emailValidation) => {
         formData['699625233'] = 353358909;
         formData['430551721'] = new Date().toISOString();
 
-        const { formerdata, physicalAddress } =
+        const { formerdata } =
             formData[fieldMapping.userProfileHistory];
         formData[fieldMapping.userProfileHistory] = formerdata || [];
-        if (physicalAddress)
-            formData[fieldMapping.userProfileHistory].push(physicalAddress);
         
         showAnimation();
         const response = await storeResponse(formData);
@@ -1376,56 +1447,178 @@ export const addEventToggleSubmit = () => {
     })
 }
 
+/**
+ * Pin submission is the first step in the sign up process.
+ * The submit event creates the new participant record in Firestore with PIN data, firstSignInTime, and default variables.
+ * Notes:
+ *  - Not all participants will have a PIN. We accept and store invalid pin entries.
+ *  - The previously generated PIN is stored in the .pin field. The entered pin is stored in 379080287 (fieldMapping.pinNumber).
+ *  - If a participant enters a pin, we validate it. On match found, we attach the participant to the previously created shell record. See ConnectFaas -> getToken().
+ *  - If an invalid pin is entered, we store it under 379080287 in a new participant record.
+ *  - If a participant does not have a pin, we generate a new token and create a new participant record.
+ */
+
 export const addEventRequestPINForm = () => {
     const form = document.getElementById('requestPINForm');
     form.addEventListener('submit', async e => {
         e.preventDefault();
-        showAnimation();
-        const pin = document.getElementById('participantPIN').value?.trim();
-        const mainContent = document.getElementById('root');
-        let formData = {};
-        formData[fieldMapping.firstSignInTime] = appState.getState().participantData.firstSignInTime;
-        if (!formData[fieldMapping.firstSignInTime]) {
-            const myData = await getMyData();
-            logDDRumError(new Error(`Invalid firstSignInTime`), 'InvalidFirstSignInTimeError', {
-                userAction: 'PWA sign in',
-                timestamp: new Date().toISOString(),
-                connectID: myData.data['Connect_ID'],
-                function: 'addEventRequestPINForm'
-            });
-        }
 
-        if (pin !== "") {
-            const response = await validatePin(pin);
-            if (response.code === 202) {
-                duplicateAccountReminderRender();
-            } else if (response.code === 200) {
-                formData[fieldMapping.pinNumber] = pin;
-                await storeResponse(formData);
-                hideAnimation();
-                mainContent.innerHTML =  heardAboutStudy();
-                addEventHeardAboutStudy();
+        const pin = document.getElementById('participantPIN').value?.trim();
+        let pathAfterPINSubmission;
+        let validatePinResponse;
+        let createParticipantRecordResponse;
+
+        try {
+            showAnimation();
+            
+            // Get the first sign in time in ISO 8601 format.
+            let pinEntryFormData = { [fieldMapping.firstSignInTime]: await getFirstSignInISOTime() };
+
+            // Validate the pin if it's entered. If valid, a shell account already exists from the participant invitation stage (see getToken() API).
+            if (pin !== "") {
+                pinEntryFormData[fieldMapping.pinNumber] = pin;
+                validatePinResponse = await validatePin(pinEntryFormData);
             } else {
-                await generateNewToken();
-                formData[fieldMapping.pinNumber] = pin;
-                await storeResponse(formData);
-                hideAnimation();
-                mainContent.innerHTML = healthCareProvider();
-                addEventHealthCareProviderSubmit();
-                addEventHealthProviderModalSubmit();
+                pinEntryFormData[fieldMapping.dontHavePinNumber] = fieldMapping.yes;
+            }
+            
+            // Valid pin: Account exists. Add the form data. We stored the PIN and first sign in time during the validatePin operation.
+            // We have the healthcare provider from the participant's invitation, so skip to the heardAboutStudy form.
+             if (validatePinResponse && validatePinResponse.code === 200) {
+                pathAfterPINSubmission = 'heardAboutStudy';
+
+            // Duplicate account. Route participant to the duplicate account reminder form.
+            } else if (validatePinResponse && validatePinResponse.code === 202) {
+                pathAfterPINSubmission = 'duplicateAccountReminder';
+
+            // Invalid PIN, no PIN entered, or error (validatePIN failed). Create a new participant record and store the entered PIN regardless of its validity.
+            } else {
+                createParticipantRecordResponse = await createParticipantRecord(pinEntryFormData);
+
+                // Include 401 in case participant submitted PIN form with 'I do not have a PIN' but didn't yet select a healthcare provider.
+                if (createParticipantRecordResponse?.code === 200 || createParticipantRecordResponse?.code === 401) {
+                    pathAfterPINSubmission = 'healthcareProvider';
+
+                } else if (createParticipantRecordResponse?.code === 500) {
+                    pathAfterPINSubmission = 'error';
+                    throw new Error('Failed to create participant record');
+
+                } else {
+                    pathAfterPINSubmission = 'error';
+                    throw new Error('Unhandled path in addEventRequestPINForm()');
+                }
             }
 
-        }else{
-            await generateNewToken();
-            formData["828729648"] = 353358909;
-            await storeResponse(formData);
+        } catch (error) {
+            const myData = await getMyData();
+            logDDRumError(error, 'PINEntryFormError', {
+                userAction: 'PWA sign up',
+                timestamp: new Date().toISOString(),
+                pin: pin,
+                pathAfterPINForm: pathAfterPINSubmission,
+                connectID: myData?.data?.['Connect_ID'],
+                function: 'addEventRequestPINForm',
+                validatePinResponse: validatePinResponse,
+                createParticipantRecordResponse: createParticipantRecordResponse,
+            });
+
+        } finally {
             hideAnimation();
+            loadPathFromPINForm(pathAfterPINSubmission);
+        }
+    });
+}
+
+/**
+ * This method is only used from the PIN entry form on sign up. It is not used elsewhere because we don't risk updating an existing first sign in time.
+ * First sign in time (ISO 8601 format) should be stored in the participantData object in the app state.
+ * If it was lost due to a page refresh or similar, the firebase user metadata is the source of truth. Get it there and convert to ISO 8601.
+ * If it is still not available, log an error.
+ * @returns { string } - The first sign in time in ISO 8601 format.
+ */
+
+const getFirstSignInISOTime = async () => {
+    // Check appState first.
+    let firstSignInISOTime = appState.getState().participantData.firstSignInTime;
+
+    // Fall back to firebase user metadata.
+    if (!firstSignInISOTime) {
+        const user = firebase.auth().currentUser;
+        if (user && user.metadata && user.metadata?.creationTime) {
+            firstSignInISOTime = new Date(user.metadata.creationTime).toISOString();
+            
+            if (firstSignInISOTime) {
+                appState.setState({
+                    participantData: {
+                        ...appState.getState().participantData,
+                        firstSignInTime: firstSignInISOTime
+                    }
+                });
+            }
+        }
+    }
+
+    // Shouldn't hit this block. Fall back to participant profile (sanity check), then use current time at PIN entry submission (the first sign-up step).
+    if (!firstSignInISOTime) {
+        const myData = await getMyData();
+        firstSignInISOTime = myData?.data?.[fieldMapping.firstSignInTime];
+        
+        if (!firstSignInISOTime) {
+            
+            // Sanity check, expected to be null.
+            const hipaaAuthorizationTimestamp = myData?.data?.[fieldMapping.hipaaAuthorizationDateSigned];
+            
+            if (!hipaaAuthorizationTimestamp) {
+                firstSignInISOTime = new Date().toISOString();
+                console.error('Error: First Sign in time is not available from Firebase Auth. Using current time.', firstSignInISOTime);
+            }
+        }
+    }
+    
+    return firstSignInISOTime;
+}
+
+/**
+ * Load the next form after the PIN form based on the path provided.
+ * @param { string } path - The path to load after the PIN form.
+ */
+
+const loadPathFromPINForm = (path) => {
+    const mainContent = document.getElementById('root');
+    if (!mainContent) {
+        console.error('loadPathFromPINForm(): Could not find mainContent element');
+        return;
+    }
+
+    switch (path) {
+        case 'error':
+            mainContent.innerHTML = requestPINTemplate();
+            addEventPinAutoUpperCase();
+            addEventRequestPINForm();
+            addEventToggleSubmit();
+            showErrorAlert();
+            break;
+
+        case 'duplicateAccountReminder':
+            duplicateAccountReminderRender();
+            break;
+
+        case 'heardAboutStudy':
+            mainContent.innerHTML = heardAboutStudy();
+            addEventHeardAboutStudy();
+            break;
+
+        case 'healthcareProvider':
             mainContent.innerHTML = healthCareProvider();
             addEventHealthCareProviderSubmit();
             addEventHealthProviderModalSubmit();
-        }
-        hideAnimation();
-    })
+            break;
+
+        default:
+            console.error(`loadPathFromPINForm(): Invalid path provided: ${path}`);
+            loadPathFromPINForm('healthcareProvider');
+            break;
+    }
 }
 
 export const addEventCancerFollowUp = () => {
@@ -1544,7 +1737,7 @@ export const retrieveNotificationsInBackgroound = async () => {
 }
 
 export const toggleCurrentPage = async (route) => {
-    const IDs = ['userDashboard', 'Notifications', 'userAgreements', 'userSettings', 'connectSamples', 'connectSupport', 'connectPayment'];
+    const IDs = ['userDashboard', 'Notifications', 'userAgreements', 'userSettings', 'reports', 'connectSamples', 'connectSupport', 'connectPayment'];
     IDs.forEach(id => {
         const element = document.getElementById(id);
         if (element) {
@@ -1562,6 +1755,7 @@ export const toggleCurrentPage = async (route) => {
     if(route === '#messages') document.getElementById('Notifications').click();
     if(route === '#forms') document.getElementById('userAgreements').click();
     if(route === '#myprofile') document.getElementById('userSettings').click();
+    if(route === '#reports') document.getElementById('reports').click();
     if(route === '#support') document.getElementById('connectSupport').click();
     if(route === '#samples') document.getElementById('connectSamples').click();
     if(route === '#payment') document.getElementById('connectPayment').click();
