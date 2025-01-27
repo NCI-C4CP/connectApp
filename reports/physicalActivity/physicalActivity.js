@@ -348,7 +348,7 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                     </div>
                     <br>
                     <div data-i18n="reports.physicalActivityNationalFootnote"
-                        style="align-self: stretch color: #2E2E2E; font-size: 14px; font-family: Noto Sans; font-weight: 400; line-height: 20px; word-wrap: break-word" data-i18n="physicalActivityNationalFootnote"><span
+                        style="align-self: stretch; color: #2E2E2E; font-size: 14px; font-family: Noto Sans; font-weight: 400; line-height: 20px; word-wrap: break-word" data-i18n="physicalActivityNationalFootnote"><span
                             1. National Center for Health Statistics. National health and nutrition examination survey. 2020;
                             <a
                                 style="color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word"
@@ -449,7 +449,7 @@ export const renderPhysicalActivityReportPDF = async (reports) => {
         pngAerobicImage = await pdfDoc.embedPng(pngAerobicImageBytes);
         editPage.drawImage(pngAerobicImage, {
             x: 50,
-            y: 415,
+            y: 425,
             width: 83,
             height: 43,
         });
@@ -459,7 +459,7 @@ export const renderPhysicalActivityReportPDF = async (reports) => {
         pngMuscleImage = await pdfDoc.embedPng(pngMuscleImageBytes);
         editPage.drawImage(pngMuscleImage, {
             x: 55,
-            y: 175,
+            y: 185,
             width: 43,
             height: 43,
         });
@@ -470,7 +470,7 @@ export const renderPhysicalActivityReportPDF = async (reports) => {
     if (aerobicTitle) {
         editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', aerobicTitle]), helveticaFontBold), {
             x: 150,
-            y: 425,
+            y: 435,
             size: 15,
             font: helveticaFontBold,
             color: rgb(1, 1, 1)
@@ -480,7 +480,7 @@ export const renderPhysicalActivityReportPDF = async (reports) => {
     if (aerobicBody) {
         editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', aerobicBody]), helveticaFont), {
             x: 50,
-            y: 390,
+            y: 400,
             size: 12,
             font: helveticaFont,
             color: rgb(1, 1, 1),
@@ -491,7 +491,7 @@ export const renderPhysicalActivityReportPDF = async (reports) => {
     if (muscleTitle) {
         editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', muscleTitle]), helveticaFontBold), {
             x: 115,
-            y: 185,
+            y: 195,
             size: 15,
             font: helveticaFontBold,
             color: rgb(1, 1, 1)
@@ -500,7 +500,7 @@ export const renderPhysicalActivityReportPDF = async (reports) => {
     if (muscleBody) {
         editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', muscleBody]), helveticaFont), {
             x: 50,
-            y: 150,
+            y: 160,
             size: 12,
             font: helveticaFont,
             color: rgb(1, 1, 1),
@@ -512,8 +512,8 @@ export const renderPhysicalActivityReportPDF = async (reports) => {
         let reportTime = currentReport.data[currentReport.dateField];
         let dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
         editPage.drawText(replaceUnsupportedPDFCharacters(translateDate(reportTime, null, dateOptions), helveticaFont), {
-            x: 107,
-            y: 725,
+            x: 102,
+            y: 727,
             size: 9,
             font: helveticaFont,
             color: rgb(0.18, 0.18, 0.18),
