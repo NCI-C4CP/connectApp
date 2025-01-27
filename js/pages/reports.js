@@ -397,7 +397,7 @@ const initializePhysicalActivityInformedConsent = () => {
         await storeResponse(myData[fieldMapping.reports.physicalActivityReport] ? { [fieldMapping.reports.physicalActivityReport]: Object.assign({}, myData[fieldMapping.reports.physicalActivityReport], obj[fieldMapping.reports.physicalActivityReport]) } : obj);
         document.getElementById('physicalActivityContainer').innerHTML = translateHTML(renderPhysicalActivityReport(reports, true));
         document.getElementById('physicalActivityDownloadReport').addEventListener('click', async () => {
-            renderPhysicalActivityReportPDF();
+            renderPhysicalActivityReportPDF(reports);
         });
     });
 }

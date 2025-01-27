@@ -17,7 +17,7 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
             </p>
             ${reportTime}`;
     }
-    let monthDateOptions = { month: '2-digit' };
+    let monthDateOptions = { month: 'long' };
     let yearDateOptions = { year: 'numeric' };
     let aerobicImage;
     let aerobicTitle;
@@ -58,9 +58,9 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
         <p><button id="physicalActivityDownloadReport" class="btn btn-primary save-data consentNextButton px-3" data-i18n="reports.downloadReport">Download a PDF of my report</button></p>
         <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; display: inline-flex">
             <div
-                style="align-self: stretch; height: 3700px; padding: 32px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 36px; display: flex">
+                style="align-self: stretch; padding: 32px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 36px; display: flex">
                 <div
-                    style="align-self: stretch; height: 315px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 24px; display: flex">
+                    style="align-self: stretch; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 24px; display: flex">
                     <div data-i18n="reports.physicalActivityDefinition" 
                         style="align-self: stretch; color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">
                         Physical activity includes the ways people move their bodies and use energy. Two broad
@@ -98,23 +98,22 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                                 style="width: 364px; color: #606060; font-size: 20px; font-family: Montserrat; font-weight: 700; line-height: 23px; word-wrap: break-word">
                                 Your aerobic activity</div>
                             <div
-                                style="height: 249.90px; padding: 24px; background: #164C71; border-radius: 3px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 18px; display: flex; min-width: 450px;">
+                                style="align-self: stretch; height: 249.90px; padding: 24px; background: #164C71; border-radius: 3px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 18px; display: flex; min-width: 450px;">
                                 <div
                                     style="align-self: stretch; height: 141px; flex-direction: column; justify-content: center; align-items: flex-start; gap: 12px; display: flex">
                                     <div
                                         style="height: 43px;line-height: 50px;background-image: url('${aerobicImage}');background-repeat: no-repeat;color: white;font-size: 18px;font-family: Montserrat;font-weight: 700;word-wrap: break-word;padding-left: 100px;">
-                                        <span data-i18n="reports.${aerobicTitle}">Achieving</span></div>
+                                        <span data-i18n="reports.${aerobicTitle}"></span></div>
                                     <div
                                         style="align-self: stretch; color: white; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">
-                                        <span data-i18n="reports.${aerobicBody}">Congratulations, you're engaging in the recommended amount of weekly aerobic
-                                        physical activity based on national guidelines. Keep it up!</span></div>
+                                        <span data-i18n="reports.${aerobicBody}"></span></div>
                                 </div>
                             </div>
                         </div>
                         <div
                             style="align-self: stretch; height: 311.90px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
-                            <div
-                                style="width: 364px; color: #606060; font-size: 20px; font-family: Montserrat; font-weight: 700; line-height: 23px; word-wrap: break-word">
+                            <div data-i18n="reports.physicalActivityMuscleHeader"
+                                style="color: #606060; font-size: 20px; font-family: Montserrat; font-weight: 700; line-height: 23px; word-wrap: break-word">
                                 Your muscle strengthening activity</div>
                             <div
                                 style="align-self: stretch; height: 276.90px; padding: 24px; background: #164C71; border-radius: 3px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 18px; display: flex; min-width: 450px;">
@@ -122,12 +121,10 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                                     style="align-self: stretch; height: 168px; flex-direction: column; justify-content: center; align-items: flex-start; gap: 12px; display: flex">
                                     <div
                                         style="height: 43px;line-height: 50px;background-image: url('${muscleImage}');background-repeat: no-repeat;color: white;font-size: 18px;font-family: Montserrat;font-weight: 700;word-wrap: break-word;padding-left: 60px;">
-                                        <span data-i18n="reports.${muscleTitle}">Performing</span> </div>
+                                        <span data-i18n="reports.${muscleTitle}"></span> </div>
                                     <div
                                         style="align-self: stretch; color: white; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">
-                                        <span data-i18n="reports.${muscleBody}">Keep up the great work! You're engaging in muscle strengthening activity.
-                                        National guidelines suggest doing muscle strengthening activities 2 or more days
-                                        per week.</span></div>
+                                        <span data-i18n="reports.${muscleBody}"></span></div>
                                 </div>
                             </div>
                         </div>
@@ -145,13 +142,13 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                             activities, like weight training.</div>
                     </div>
                 </div>
-                <div style="width: 598px; height: 0px; border: 1px #A9AEB1 solid"></div>
+                <div style="width: 80%; height: 0px; border: 1px #A9AEB1 solid; margin-left: auto; margin-right: auto;"></div>
                 <div
-                    style="align-self: stretch; height: 1645px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 24px; display: flex">
+                    style="align-self: stretch; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 24px; display: flex">
                     <div
                         style="align-self: stretch; height: 100px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
                         <div data-i18n="reports.physicalActivityGuidlinesHeader"
-                            style="width: 598px; color: #606060; font-size: 20px; font-family: Montserrat; font-weight: 700; line-height: 23px; word-wrap: break-word">
+                            style="color: #606060; font-size: 20px; font-family: Montserrat; font-weight: 700; line-height: 23px; word-wrap: break-word">
                             Key guidelines for adults</div>
                         <div data-i18n="reports.physicalActivityGuidlinesIntro"
                             style="align-self: stretch; color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">
@@ -160,7 +157,7 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                     </div>
                     <div style="justify-content: flex-start; align-items: flex-start; gap: 24px; display: inline-flex">
                         <div
-                            style="width: 376px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: inline-flex">
+                            style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: inline-flex">
                             <div data-i18n="reports.physicalActivityGuidlinesListHeader"
                                 style="align-self: stretch; color: #606060; font-size: 18px; font-family: Montserrat; font-weight: 700; line-height: 21px; word-wrap: break-word">
                                 Adults need a mix of activity to be healthy</div>
@@ -224,7 +221,7 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                                 style="color: #2E2E2E; font-size: 14px; font-family: Noto Sans; font-weight: 700; line-height: 20px; word-wrap: break-word">There
                                 are key considerations for certain people, including people with chronic conditions,
                                 people with disabilities, people who are pregnant or postpartum, and adults over
-                                65</span><span  data-i18n="reports.physicalActivityConsiderationsWarningBody" 
+                                65.</span> <span  data-i18n="reports.physicalActivityConsiderationsWarningBody" 
                                 style="color: #2E2E2E; font-size: 14px; font-family: Noto Sans; font-weight: 400; line-height: 20px; word-wrap: break-word">.
                                 It’s important for these groups of people to talk to a health care provider before
                                 continuing or starting a new exercise program. For more information, please visit
@@ -246,22 +243,22 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                     </div>
                     <div
                         style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
-                        <div
-                            style="width: 598px; color: #606060; font-size: 18px; font-family: Montserrat; font-weight: 700; line-height: 21px; word-wrap: break-word">
+                        <div data-i18n="reports.physicalActivityTipsHeader"
+                            style="color: #606060; font-size: 18px; font-family: Montserrat; font-weight: 700; line-height: 21px; word-wrap: break-word">
                             Tips for maintaining or improving your activity</div>
-                        <div style="width: 598px">
+                        <div>
                             <ol>
-                                <li
+                                <li data-i18n="reports.physicalActivityTipsTip1"
                                     style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">
                                     Break up activity over the week. Switch things up and get creative! There’s no wrong
                                     way to get in your aerobic and muscle strengthening activity.
                                 </li>
-                                <li
+                                <li data-i18n="reports.physicalActivityTipsTip2"
                                     style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">
                                     It all adds up. If you don’t meet the guidelines for activity this week, don’t sweat
                                     it. Even a little bit of activity can have health benefits.
                                 </li>
-                                <li
+                                <li data-i18n="reports.physicalActivityTipsTip3"
                                     style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">
                                     Try adding more movement into your day, like going for a short walk during a lunch
                                     break, taking the stairs to your office, or sneaking in some muscle strengthening
@@ -271,7 +268,7 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                                         [YouTube – 1:59]</a><span
                                         style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">.
                                     </span></li>
-                                <li
+                                <li data-i18n="reports.physicalActivityTipsTip4"
                                     style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">
                                     You can find the right activity for you! The key is to make activity fun and
                                     sustainable so you can continue being active over the long term. Use tips like these
@@ -279,7 +276,7 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                                     <a href="https://youtu.be/0i1lCNHaxhs"
                                         style="color: #2973A5; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word">[YouTube
                                         – 2:04]</a>
-                                <li
+                                <li data-i18n="reports.physicalActivityTipsTip5"
                                     style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">
                                     Use the handy
                                     </span><a href="https://odphp.health.gov/moveyourway/activity-planner"
@@ -291,22 +288,24 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                                         with your health care provider.</span>
                                 </li>
                             </ol>
-                            <span
-                                style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word"><br />Visit
-                            </span>
-                            <a style="color: #2973A5; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word"
-                                href="https://health.gov/moveyourway">https://health.gov/moveyourway</a><span
-                                style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">
-                                for more tools, tips, and resources.</span>
+                            <br />
+                            <div data-i18n="reports.physicalActivityVisit" 
+                               style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">
+                                Visit
+                                <a 
+                                    style="color: #2973A5; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word"
+                                    href="https://health.gov/moveyourway">https://health.gov/moveyourway</a>
+                                for more tools, tips, and resources.
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div
                     style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
-                    <div
-                        style="width: 598px; color: #606060; font-size: 18px; font-family: Montserrat; font-weight: 700; line-height: 21px; word-wrap: break-word">
+                    <div data-i18n="reports.physicalActivityBenefits" 
+                        style="color: #606060; font-size: 18px; font-family: Montserrat; font-weight: 700; line-height: 21px; word-wrap: break-word">
                         Studied benefits of physical activity:</div>
-                    <div style="width: 598px"><span
+                    <div data-i18n="reports.physicalActivityBenefitsLong" ><span 
                             style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 700; line-height: 27px; word-wrap: break-word">Long
                             term</span><span
                             style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">:
@@ -314,70 +313,81 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                                 href="https://www.cancer.gov/about-cancer/causes-prevention/risk/obesity/physical-activity-fact-sheet"
                                 style="color: #2973A5; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word">certain
                                 cancers</a>; reduces risk of dementia, heart disease, and type 2 diabetes;
-                            improves bone health; and helps ease anxiety and depression.<br /><br /></span><span
+                            improves bone health; and helps ease anxiety and depression.</span>
+                    </div>
+                    <div data-i18n="reports.physicalActivityBenefitsShort"><span
                             style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 700; line-height: 27px; word-wrap: break-word">Short
                             term:</span><span
                             style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">
                             Reduces stress, lowers blood pressure, sharpens focus, improves sleep, and boosts
                             mood.</span></div>
                 </div>
-                <div style="width: 598px; height: 0px; border: 1px #A9AEB1 solid"></div>
+                <div style="height: 0px; width: 80%; margin-left: auto; margin-right: auto; border: 1px #A9AEB1 solid"></div>
                 <div
-                    style="align-self: stretch; height: 351px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 24px; display: flex">
+                    style="align-self: stretch; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 24px; display: flex">
                     <div
-                        style="align-self: stretch; height: 247px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
-                        <div
-                            style="width: 598px; color: #606060; font-size: 20px; font-family: Montserrat; font-weight: 700; line-height: 23px; word-wrap: break-word">
+                        style="align-self: stretch; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
+                        <div data-i18n="reports.physicalActivityNationalHeader"
+                            style="color: #606060; font-size: 20px; font-family: Montserrat; font-weight: 700; line-height: 23px; word-wrap: break-word">
                             National Data: How many adults are meeting the physical activity guidelines?</div>
-                        <div style="width: 598px"><span
-                                style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">A
-                                recent nationwide survey found that about </span><span
-                                style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 700; line-height: 27px; word-wrap: break-word">39%
-                                of adults in the U.S.</span><span
+                        <div>
+                            <div data-i18n="reports.physicalActivityNationalAerobic"
                                 style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">
+                                A recent nationwide survey found that about <span style="font-weight: 700;">39% of adults in the U.S.</span>
                                 reported engaging in recommended amounts of aerobic physical activity through leisure
-                                activities, such as sports, fitness, or recreational activities.¹<br /><br />
-                            </span><span
-                                style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 700; line-height: 27px; word-wrap: break-word">31%</span><span
-                                style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">
+                                activities, such as sports, fitness, or recreational activities.¹
+                            </div>
+                            <br />
+                            <div data-i18n="reports.physicalActivityNationalMuscle" 
+                                style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word"/>
+                                <span style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 700; line-height: 27px; word-wrap: break-word">31%</span>
                                 of adults met the guidelines for muscle strengthening activity, with or without meeting
-                                the aerobic activity guidelines.²</span></div>
+                                the aerobic activity guidelines.²
+                            </div>
+                        </div<
                     </div>
-                    <div style="align-self: stretch"><span
-                            style="color: #2E2E2E; font-size: 14px; font-family: Noto Sans; font-weight: 400; line-height: 20px; word-wrap: break-word">1.
-                            National
-                            Center for Health Statistics. National health and nutrition examination survey. 2020;
-                        </span><a
-                            style="color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word"
-                            href="https://www.cdc.gov/nchs/nhanes/index.htm">https://www.cdc.gov/nchs/nhanes/index.htm</a><span
-                            style="color: #2E2E2E; font-size: 14px; font-family: Noto Sans; font-weight: 400; line-height: 20px; word-wrap: break-word">.<br />2.
-                            National
-                            Center for Health Statistics, National Health Interview Survey, 2020; </span><a
-                            style="color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word"
-                            href="https://www.cdc.gov/nchs/nhis/documentation/2020-nhis.html">https://www.cdc.gov/nchs/nhis/documentation/2020-nhis.html</a><span
-                            style="color: #2E2E2E; font-size: 14px; font-family: Noto Sans; font-weight: 400; line-height: 20px; word-wrap: break-word">.</span>
+                    <br>
+                    <div data-i18n="reports.physicalActivityNationalFootnote"
+                        style="align-self: stretch; color: #2E2E2E; font-size: 14px; font-family: Noto Sans; font-weight: 400; line-height: 20px; word-wrap: break-word" data-i18n="physicalActivityNationalFootnote"><span
+                            1. National Center for Health Statistics. National health and nutrition examination survey. 2020;
+                            <a
+                                style="color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word"
+                                href="https://www.cdc.gov/nchs/nhanes/index.htm">https://www.cdc.gov/nchs/nhanes/index.htm</a>.
+                            <br />
+                            2. National Center for Health Statistics, National Health Interview Survey, 2020;
+                            <a
+                                style="color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word"
+                                href="https://www.cdc.gov/nchs/nhis/documentation/2020-nhis.html">https://www.cdc.gov/nchs/nhis/documentation/2020-nhis.html</a>.
                     </div>
                 </div>
                 <div
-                    style="width: 598px; padding: 24px; background: #164C71; border-radius: 3px; justify-content: flex-start; align-items: flex-start; gap: 18px; display: inline-flex">
+                    style=" padding: 24px; background: #164C71; border-radius: 3px; justify-content: flex-start; align-items: flex-start; gap: 18px; display: inline-flex">
                     <div
                         style="flex: 1 1 0; flex-direction: column; justify-content: center; align-items: flex-start; gap: 12px; display: inline-flex">
-                        <div
+                        <div data-i18n="reports.physicalActivityInTouch" 
                             style="align-self: stretch; color: white; font-size: 20px; font-family: Montserrat; font-weight: 700; line-height: 23px; word-wrap: break-word">
                             Get in touch</div>
-                        <div style="align-self: stretch"><span
+                        <div style="align-self: stretch">
+                            <div data-i18n="reports.physicalActivityInTouchThanks"
                                 style="color: white; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">Thanks
-                                for reading! We hope you're inspired to move for your health.<br /><br />Questions about
-                                your report or the resources we shared? Reach out to the </span><span
+                                for reading! We hope you're inspired to move for your health.
+                            </div><br />
+                            <div data-i18n="reports.physicalActivityInTouchQuestions"
+                                style="color: white; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">
+                                Questions about your report or the resources we shared? Reach out to the <span
                                 style="color: white; font-size: 18px; font-family: Noto Sans; font-weight: 700; line-height: 27px; word-wrap: break-word">Connect
-                                Support Center</span><span
+                                Support Center</span> at
+                            <span>
                                 style="color: white; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">
                                 at </span><a
-                                style="color: white; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word"
-                                href="https://MyConnect.cancer.gov/support">MyConnect.cancer.gov/support</a><span
-                                style="color: white; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">.<br /><br />Questions
+                                style="color: white !important; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word"
+                                href="https://MyConnect.cancer.gov/support" target="_blank">MyConnect.cancer.gov/support</a>
+                            </div>
+                            <br>
+                            <div data-i18n="reports.physicalActivityInTouchProvider" 
+                                style="color: white; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">Questions
                                 about your current health or about changing your physical activity plan? Reach out to
-                                your health care provider.</span></div>
+                                your health care provider.</div>
                     </div>
                 </div>
             </div>
@@ -429,65 +439,81 @@ export const renderPhysicalActivityReportPDF = async (reports) => {
 
     const pdfLocation = './reports/physicalActivity/report_en.pdf';
     const existingPdfBytes = await fetch(pdfLocation).then(res => res.arrayBuffer());
-    const pngAerobicImageBytes = await fetch(aerobicImage).then((res) => res.arrayBuffer());
-    const pngMuscleImageBytes = await fetch(muscleImage).then((res) => res.arrayBuffer())
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
-    const pngAerobicImage = await pdfDoc.embedPng(pngAerobicImageBytes);
-    const pngMuscleImage = await pdfDoc.embedPng(pngMuscleImageBytes);
-    const helveticaFontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-    const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
     const editPage = pdfDoc.getPages().at(0);
 
-    editPage.drawImage(pngAerobicImage, {
-        x: 50,
-        y: 415,
-        width: 83,
-        height: 43,
-    });
-    editPage.drawImage(pngMuscleImage, {
-        x: 55,
-        y: 175,
-        width: 43,
-        height: 43,
-    });
-    editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', aerobicTitle]), helveticaFontBold), {
-        x: 150,
-        y: 425,
-        size: 15,
-        font: helveticaFontBold,
-        color: rgb(1, 1, 1)
-    });
-    editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', aerobicBody]), helveticaFont), {
-        x: 50,
-        y: 390,
-        size: 12,
-        font: helveticaFont,
-        color: rgb(1, 1, 1),
-        maxWidth: 320,
-        lineHeight: 15
-    });
-    editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', muscleTitle]), helveticaFontBold), {
-        x: 115,
-        y: 185,
-        size: 15,
-        font: helveticaFontBold,
-        color: rgb(1, 1, 1)
-    });
-    editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', muscleBody]), helveticaFont), {
-        x: 50,
-        y: 150,
-        size: 12,
-        font: helveticaFont,
-        color: rgb(1, 1, 1),
-        maxWidth: 315,
-        lineHeight: 15
-    });
+    let pngAerobicImage;
+    let pngMuscleImage;
+    if (aerobicImage) {
+        const pngAerobicImageBytes = await fetch(aerobicImage).then((res) => res.arrayBuffer());
+        pngAerobicImage = await pdfDoc.embedPng(pngAerobicImageBytes);
+        editPage.drawImage(pngAerobicImage, {
+            x: 50,
+            y: 425,
+            width: 83,
+            height: 43,
+        });
+    }
+    if (muscleImage) {
+        const pngMuscleImageBytes = await fetch(muscleImage).then((res) => res.arrayBuffer())
+        pngMuscleImage = await pdfDoc.embedPng(pngMuscleImageBytes);
+        editPage.drawImage(pngMuscleImage, {
+            x: 55,
+            y: 185,
+            width: 43,
+            height: 43,
+        });
+    }
+    const helveticaFontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+    const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    
+    if (aerobicTitle) {
+        editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', aerobicTitle]), helveticaFontBold), {
+            x: 150,
+            y: 435,
+            size: 15,
+            font: helveticaFontBold,
+            color: rgb(1, 1, 1)
+        });
+    }
+
+    if (aerobicBody) {
+        editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', aerobicBody]), helveticaFont), {
+            x: 50,
+            y: 400,
+            size: 12,
+            font: helveticaFont,
+            color: rgb(1, 1, 1),
+            maxWidth: 320,
+            lineHeight: 15
+        });
+    }
+    if (muscleTitle) {
+        editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', muscleTitle]), helveticaFontBold), {
+            x: 115,
+            y: 195,
+            size: 15,
+            font: helveticaFontBold,
+            color: rgb(1, 1, 1)
+        });
+    }
+    if (muscleBody) {
+        editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', muscleBody]), helveticaFont), {
+            x: 50,
+            y: 160,
+            size: 12,
+            font: helveticaFont,
+            color: rgb(1, 1, 1),
+            maxWidth: 315,
+            lineHeight: 15
+        });
+    }
     if (currentReport.dateField && currentReport.data[currentReport.dateField]) {
         let reportTime = currentReport.data[currentReport.dateField];
         let dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
         editPage.drawText(replaceUnsupportedPDFCharacters(translateDate(reportTime, null, dateOptions), helveticaFont), {
-            x: 107,
-            y: 725,
+            x: 102,
+            y: 727,
             size: 9,
             font: helveticaFont,
             color: rgb(0.18, 0.18, 0.18),
