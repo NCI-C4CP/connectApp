@@ -1523,10 +1523,21 @@ export const addEventRequestPINForm = () => {
             });
 
         } finally {
+            await storeParameters();
             hideAnimation();
             loadPathFromPINForm(pathAfterPINSubmission);
         }
     });
+}
+
+const storeParameters = async () => {
+    const utm = {};
+
+    if (sessionStorage.getItem('utmSource')) utm[fieldMapping.utm.source] = sessionStorage.getItem('utmSource');
+    if (sessionStorage.getItem('utmMedium')) utm[fieldMapping.utm.medium] = sessionStorage.getItem('utmMedium');
+    if (sessionStorage.getItem('utmCampaign')) utm[fieldMapping.utm.campaign] = sessionStorage.getItem('utmCampaign');
+
+    if (Object.keys(utm).length) storeResponse(utm);
 }
 
 /**

@@ -79,13 +79,32 @@ window.onload = async () => {
 
     // Grab UTM parameters
     const urlParams = new URLSearchParams(window.location.search);
-    const utmSource = urlParams.get('utm_source');
-    const utmMedium = urlParams.get('utm_medium');
-    const utmCampaign = urlParams.get('utm_campaign');
 
-    // Set UTM in Session Storage
-    if (utmSource) sessionStorage.setItem('utmSource', utmSource);
-    if (utmMedium) sessionStorage.setItem('utmMedium', utmMedium);
+    // Check for a continueUrl parameter
+    const continueUrlParam = urlParams.get('continueUrl');
+
+    let utmSource, utmMedium, utmCampaign;
+
+    if (continueUrlParam) {
+        // If we have a continueUrl, decode & parse the nested URL
+        const decodedContinueUrl = decodeURIComponent(continueUrlParam);
+        const continueUrlObj = new URL(decodedContinueUrl);
+
+        // Extract UTM parameters from the nested URL
+        utmSource   = continueUrlObj.searchParams.get('utm_source');
+        utmMedium   = continueUrlObj.searchParams.get('utm_medium');
+        utmCampaign = continueUrlObj.searchParams.get('utm_campaign');
+    } 
+    else {
+        // Otherwise, parse the top-level URL params
+        utmSource   = urlParams.get('utm_source');
+        utmMedium   = urlParams.get('utm_medium');
+        utmCampaign = urlParams.get('utm_campaign');
+    }
+
+    // Store UTM parameters in session storage (only if they exist)
+    if (utmSource)   sessionStorage.setItem('utmSource',   utmSource);
+    if (utmMedium)   sessionStorage.setItem('utmMedium',   utmMedium);
     if (utmCampaign) sessionStorage.setItem('utmCampaign', utmCampaign);
 
     document.documentElement.setAttribute('lang', languageAcronyms()[parseInt(preferredLanguage, 10)]);
@@ -301,16 +320,6 @@ const router = async () => {
             if (!isLocalDev && window.DD_RUM && data?.data?.['Connect_ID'] && !isDataDogUserSessionSet) {
                 window.DD_RUM.setUser({id: data.data['Connect_ID']});
                 isDataDogUserSessionSet = true;
-            }
-
-            if (!data.data[fieldToConceptIdMapping.firstSignInTime] && !data.data[fieldToConceptIdMapping.utm.source] && !data.data[fieldToConceptIdMapping.utm.medium] && !data.data[fieldToConceptIdMapping.utm.campaign]) {
-                const utm = {};
-
-                if (sessionStorage.getItem('utmSource')) utm[fieldToConceptIdMapping.utm.source] = sessionStorage.getItem('utmSource');
-                if (sessionStorage.getItem('utmMedium')) utm[fieldToConceptIdMapping.utm.medium] = sessionStorage.getItem('utmMedium');
-                if (sessionStorage.getItem('utmCampaign')) utm[fieldToConceptIdMapping.utm.campaign] = sessionStorage.getItem('utmCampaign');
-
-                if (Object.keys(utm).length) storeResponse(utm);
             }
             
             toggleNavBar(route, data);  // If logged in, pass data to toggleNavBar
