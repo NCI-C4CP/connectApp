@@ -1530,6 +1530,11 @@ export const addEventRequestPINForm = () => {
     });
 }
 
+/**
+ * Store the UTM parameters in the participant record.
+ * This method is called after the PIN entry form is submitted.
+ * The UTM parameters are stored in the participant record if they exist in the session storage.
+ */
 const storeParameters = async () => {
     const utm = {};
 
