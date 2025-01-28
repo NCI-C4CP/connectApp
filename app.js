@@ -302,16 +302,6 @@ const router = async () => {
                 window.DD_RUM.setUser({id: data.data['Connect_ID']});
                 isDataDogUserSessionSet = true;
             }
-
-            if (!data.data[fieldToConceptIdMapping.firstSignInTime] && !data.data[fieldToConceptIdMapping.utm.source] && !data.data[fieldToConceptIdMapping.utm.medium] && !data.data[fieldToConceptIdMapping.utm.campaign]) {
-                const utm = {};
-
-                if (sessionStorage.getItem('utmSource')) utm[fieldToConceptIdMapping.utm.source] = sessionStorage.getItem('utmSource');
-                if (sessionStorage.getItem('utmMedium')) utm[fieldToConceptIdMapping.utm.medium] = sessionStorage.getItem('utmMedium');
-                if (sessionStorage.getItem('utmCampaign')) utm[fieldToConceptIdMapping.utm.campaign] = sessionStorage.getItem('utmCampaign');
-
-                if (Object.keys(utm).length) storeResponse(utm);
-            }
             
             toggleNavBar(route, data);  // If logged in, pass data to toggleNavBar
 
