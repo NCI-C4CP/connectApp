@@ -886,10 +886,10 @@ const en = {
                 "LakeHallieSchedule": "Monday - Thursday: 7:00 a.m. to 4:00 p.m.<br>Fridays: 8:00 a.m. to 2:00 p.m.",
                 "MinocquaName": "Minocqua Center",
                 "MinocquaAddress": "9576 WI-70 Trunk<br>Minocqua, WI 54548",
-                "MinocquaSchedule": "Wednesdays: 8:00 a.m. to 1:00 p.m.",
+                "MinocquaSchedule": "Tuesdays: 8:00 a.m. to 4:00 p.m. Wednesdays: 8:00 a.m. to 12:00 p.m.",
                 "WestonName": "Weston Center",
                 "WestonAddress": "3400 Ministry Pkwy<br>Weston, WI 54476",
-                "WestonSchedule": "Mondays - Thursdays: 7:00 a.m. to 1:00 p.m. *Please ask about evening and Friday appointment availability if needed",
+                "WestonSchedule": "Tuesday – Thursday: 7:00 a.m. to 1:00 p.m.",
                 "WisconsinRapidsName": "Wisconsin Rapids Center",
                 "WisconsinRapidsAddress": "220 24th St S,<br>Wisconsin Rapids,WI 54494",
                 "WisconsinRapidsSchedule": "Thursdays: 7:00 a.m. to 4:00 p.m.<br>Fridays: 7:00 a.m. to 10:00 a.m."

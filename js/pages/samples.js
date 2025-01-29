@@ -428,13 +428,13 @@ const marshfield = {
         [
             '<span data-i18n="samples.marshfield.locations.MinocquaName">Minocqua Center</span>',
             '<span data-i18n="samples.marshfield.locations.MinocquaAddress">9576 WI-70 Trunk<br>Minocqua, WI 54548</span>',
-            '<span data-i18n="samples.marshfield.locations.MinocquaSchedule">Wednesdays: 8:00 a.m. to 1:00 p.m.</span>',
+            '<span data-i18n="samples.marshfield.locations.MinocquaSchedule">Tuesdays: 8:00 a.m. to 4:00 p.m. Wednesdays: 8:00 a.m. to 12:00 p.m.</span>',
             '<span data-i18n="samples.marshfield.locations.generalParking">General parking available</span>'
         ],
         [
             '<span data-i18n="samples.marshfield.locations.WestonName">Weston Center</span>',
             '<span data-i18n="samples.marshfield.locations.WestonAddress">3400 Ministry Pkwy<br>Weston, WI 54476</span>',
-            '<span data-i18n="samples.marshfield.locations.WestonSchedule">Mondays - Thursdays: 7:00 a.m. to 1:00 p.m. *Please ask about evening and Friday appointment availability if needed</span>',
+            '<span data-i18n="samples.marshfield.locations.WestonSchedule">Tuesday – Thursday: 7:00 a.m. to 1:00 p.m.</span>',
             '<span data-i18n="samples.marshfield.locations.generalParking">General parking available</span>'
         ],
         [

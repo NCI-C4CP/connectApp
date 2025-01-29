@@ -890,10 +890,10 @@
                 "LakeHallieSchedule": "De lunes a jueves: de 7:00 a. m. a 4:00 p. m.<br/>Viernes: de 8:00 a. m. a 2:00 p. m.",
                 "MinocquaName": "Centro Minocqua",
                 "MinocquaAddress": "9576 WI-70 Trunk<br/>Minocqua, WI 54548",
-                "MinocquaSchedule": "Miércoles: de 8:00 a. m. a 1:00 p. m.",
+                "MinocquaSchedule": "Martes: 8:00 a.m. to 4:00 p.m. Miércoles 8:00 a.m. to 12:00 p.m.",
                 "WestonName": "Centro Weston",
                 "WestonAddress": "3400 Ministry Pkwy<br/>Weston, WI 54476",
-                "WestonSchedule": "De lunes a jueves: de 7:00 a. m. a 1:00 p. m. *Pregunte por la disponibilidad de citas por la noche y los viernes, si es necesario",
+                "WestonSchedule": "De martes a jueves: 7:00 a.m. to 1:00 p.m.",
                 "WisconsinRapidsName": "Centro Wisconsin Rapids",
                 "WisconsinRapidsAddress": "220 24th St S,<br/>Wisconsin Rapids, WI 54494",
                 "WisconsinRapidsSchedule": "Jueves: de 7:00 a. m. a 4:00 p. m.<br/>Viernes: de 7:00 a. m. a 10:00 a. m."
