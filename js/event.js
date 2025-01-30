@@ -680,10 +680,10 @@ export const addEventUPSubmit = async () => {
         }*/
         const emailValidation = await emailAddressValidation({
             emails: {
-                upEmail: email.trim(),
-                upEmail2: email2 ? email2.value.trim() : undefined,
-                upAdditionalEmail2: email3 ? email3.value.trim() : undefined,
-                upAdditionalEmail3: email4 ? email4.value.trim() : undefined,
+                upEmail: email,
+                upEmail2: email2 ? email2.value : undefined,
+                upAdditionalEmail2: email3 ? email3.value : undefined,
+                upAdditionalEmail3: email4 ? email4.value : undefined,
             },
         });
         const riskyEmails = []
@@ -1530,6 +1530,11 @@ export const addEventRequestPINForm = () => {
     });
 }
 
+/**
+ * Store the UTM parameters in the participant record.
+ * This method is called after the PIN entry form is submitted.
+ * The UTM parameters are stored in the participant record if they exist in the session storage.
+ */
 const storeParameters = async () => {
     const utm = {};
 
