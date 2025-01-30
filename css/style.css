@@ -879,7 +879,13 @@ input:checked + .slider:before {
     color:#303030 !important;
     font-family: 'Noto Sans', sans-serif;
     background-color:white;
+}
+.messages-Inactive-Nav:hover{
+    color:#303030 !important;
+    font-family: 'Noto Sans', sans-serif;
+    background-color:white;
     border-bottom: 1px solid lightgrey !important;
+    border-top: 5px solid lightgrey !important;
 }
 
 .survey-Active-Nav {
@@ -1475,6 +1481,10 @@ button.connect-secondary {
     position: absolute;
     right: 10px;
     cursor: pointer;
+}
+
+.report-generated {
+    font-size: 14px;
 }
 
 #languageSelectorContainer {

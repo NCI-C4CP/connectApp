@@ -1,4 +1,4 @@
-import { hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML, translateText, getAdjustedTime } from "../shared.js";
+import { hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML, translateText, getAdjustedTime, reportConfiguration, setReportAttributes } from "../shared.js";
 import { blockParticipant, questionnaire } from "./questionnaire.js";
 import { renderUserProfile } from "../components/form.js";
 import { consentTemplate } from "./consent.js";
@@ -6,14 +6,10 @@ import { addEventHeardAboutStudy, addEventRequestPINForm, addEventHealthCareProv
 import { heardAboutStudy, requestPINTemplate, healthCareProvider } from "./healthCareProvider.js";
 import fieldMapping from '../fieldToConceptIdMapping.js';
 
-export const myToDoList = async (data, fromUserProfile, collections) => {
+export const myToDoList = async (data, fromUserProfile, collections) => {    
     const mainContent = document.getElementById('root');
-    if(!data['507120821']){
-        let formData = {
-            '507120821':845979108
-        }
-        storeResponse(formData);
-    }
+
+    // Completed healthcareProvider and heardAboutStudy forms
     if(data['827220437'] && data['142654897']){
         localStorage.eligibilityQuestionnaire = JSON.stringify({'827220437': data['827220437']})
         if(data['919254129'] === 353358909){
@@ -201,6 +197,14 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                 if(surveyMessage) {
                     template += surveyMessage;
                 }
+
+                //Temporarly Disabling the new report notification
+                const reportMessage = '';
+                // const reportMessage = await checkForNewReports(data);
+
+                if(reportMessage) {
+                    template += reportMessage;
+                }
                 
                 if(topMessage.trim() !== ""){
                     template += `
@@ -274,19 +278,20 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
         hideAnimation();
         return;
     }
+    // Completed healthcareProvider form. Did not complete heardAboutStudy form.
     else if(data['827220437'] && !data['142654897'] && !isParticipantDataDestroyed(data)){
         mainContent.innerHTML =  heardAboutStudy();
         addEventHeardAboutStudy();
         hideAnimation();
     }
-    else if(data['379080287']){
-        mainContent.innerHTML = requestPINTemplate();
-        addEventPinAutoUpperCase();
-        addEventRequestPINForm();
-        addEventToggleSubmit();
-        hideAnimation();
+    // Completed PIN entry form by either entering a PIN number or specifying no PIN number (passive recruit).
+    else if (data[fieldMapping.pinNumber] || data[fieldMapping.dontHavePinNumber] === fieldMapping.yes){
+        mainContent.innerHTML = healthCareProvider();
+        addEventHealthCareProviderSubmit();
+        addEventHealthProviderModalSubmit();
     }
     else{
+        // Data Destroyed
         if (isParticipantDataDestroyed(data)) {
             mainContent.innerHTML = `
                 <div class="alert alert-warning" id="verificationMessage" style="margin-top:10px;">
@@ -300,10 +305,13 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                     </div>
                 </div>
             `;
+        // None of the above. Start at PIN entry form.
         } else {
-            mainContent.innerHTML = healthCareProvider();
-            addEventHealthCareProviderSubmit();
-            addEventHealthProviderModalSubmit();
+            mainContent.innerHTML = requestPINTemplate();
+            addEventPinAutoUpperCase();
+            addEventRequestPINForm();
+            addEventToggleSubmit();
+            hideAnimation();
         }
         hideAnimation();
     }
@@ -669,6 +677,46 @@ const checkForNewSurveys = async (data, collections) => {
     let obj = {
         566565527: enabledSurveys,
         677381583: completedStandaloneSurveys
+    };
+
+    await storeResponse(obj);
+    return template;
+};
+
+const checkForNewReports = async (data) => {
+    let template = ``;
+    let reports = reportConfiguration();
+    reports = await setReportAttributes(data, reports);
+    let availableReports = 0;
+    let newReport = false;
+    let knownReports;
+
+    Object.keys(reports).forEach(rep => {
+        if(reports[rep].reportId) {
+            if(reports[rep].enabled) availableReports++;
+        }
+    });
+
+    if(data[fieldMapping.reports.knownReports]) {
+        knownReports = data[fieldMapping.reports.knownReports];
+        if(knownReports < availableReports) {
+            newReport = true;
+        }
+    }
+    else if (availableReports > 0) {
+        newReport = true;
+    }
+
+    if(newReport) {
+        template += `
+            <div class="alert alert-warning" id="verificationMessage" style="margin-top:10px;" data-i18n="mytodolist.newReport">
+                You have a new report available.
+            </div>
+        `;
+    }
+
+    let obj = {
+        [fieldMapping.reports.knownReports]: availableReports
     };
 
     await storeResponse(obj);

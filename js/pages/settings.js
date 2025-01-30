@@ -224,10 +224,7 @@ const showMajorFormDivs = () => {
   document.getElementById('contactInformationDiv').style.display = 'block';
   document.getElementById('mailingAddressDiv').style.display = 'block';
   document.getElementById('signInInformationDiv').style.display = 'block';
-  if (userData[cId.isPOBox]?.toString() === cId.yes.toString()) {
-    const addrDiv = document.getElementById("physicalMailingAddressDiv");
-    if(addrDiv) addrDiv.style.display = "block";
-  }
+  document.getElementById('physicalMailingAddressDiv').style.display = 'block';
 };
 
 /**
@@ -432,14 +429,13 @@ const handleEditMailingAddressSection = () => {
     const city = document.getElementById('UPAddress1City').value.trim();
     const state = document.getElementById('UPAddress1State').value.trim();
     const zip = document.getElementById('UPAddress1Zip').value.trim();
-    // const isPOBox = document.getElementById('poBoxCheckbox').checked;
+    const isPOBox = document.getElementById('poBoxCheckbox').checked;
 
     const isMailingAddressValid = validateMailingAddress(1, addressLine1, city, state, zip);
     if (isMailingAddressValid) {
       formVisBools.isMailingAddressFormDisplayed = toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed);
       toggleButtonText();
-    //   submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isPOBox);
-      submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip);
+      submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isPOBox);
     }
   });
 };
@@ -455,8 +451,6 @@ const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, sta
     } else {
       document.getElementById(`profileMailingAddress${id}`).innerHTML = `${addressLine1}</br>${addressLine2}</br>${city}, ${state} ${zip}`;
     }
-    const addrDiv = document.getElementById("physicalMailingAddressDiv");
-    if(addrDiv) addrDiv.style.display = isPOBox ? 'block' : 'none' ;
     successMessageElement = document.getElementById(`mailingAddressSuccess${id}`);
     successMessageElement.style.display = 'block';
     refreshUserDataAfterEdit();
@@ -471,7 +465,7 @@ const loadPhysicalMailingAddressElements = () => {
 const handleEditPhysicalMailingAddressSection = () => {
   btnObj.changePhysicalMailingAddressButton.addEventListener('click', () => {
     successMessageElement = hideSuccessMessage(successMessageElement);
-    formVisBools.isPhysicalMailingAddressFormDisplayed = true;
+    formVisBools.isPhysicalMailingAddressFormDisplayed = toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed);
     if (formVisBools.isPhysicalMailingAddressFormDisplayed) {
       toggleActiveForm(FormTypes.PHYSICAL_MAILING);
       addEventAddressAutoComplete(2);
@@ -1394,7 +1388,7 @@ export const renderMailingAddressHeadingAndButton = () => {
       <div class="row">
           <div class="col-12 col-sm-6">
               <span class="userProfileLabels" data-i18n="settings.mailAddress">
-                  Mailing Address
+                  Mailing Address (Required)
               </span>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-end">
@@ -1409,8 +1403,9 @@ export const renderPhysicalMailingAddressHeadingAndButton = () => {
       <div class="row">
           <div class="col-12 col-sm-6">
               <span class="userProfileLabels" data-i18n="settings.physicalMailAddress">
-                  Physical Mailing Address
-              </span>
+                  Physical Address (Optional)
+              </span><br>
+              <i data-i18n="settings.physicalMailAddressNote">If different from mailing address</i>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-end">
               <button id="changePhysicalMailingAddressButton" class="btn btn-primary save-data consentNextButton px-3" style="float:right; display:none;" data-i18n="settings.updateAddressText">Update Address</button>
@@ -1423,17 +1418,15 @@ export const renderMailingAddressData = (id) => {
   return translateHTML(`
             <div class="row userProfileLinePaddings" id="currentMailingAddressDiv${id}">
                 <div class="col">
-                    <span class="userProfileBodyFonts" data-i18n="settings.mailAddress">
-                        Mailing Address
-                    </span>
-                    <br>
                     <b>
                     <div class="userProfileBodyFonts" id="profileMailingAddress${id}">
                         ${!isParticipantDataDestroyed ?
                         `
-                           ${userData[cId.address1]}</br>
+                            ${userData[cId.address1]}</br>
                             ${userData[cId.address2] ? `${userData[cId.address2]}</br>` : ''}
-                            ${userData[cId.city]}, ${userData[cId.state]} ${userData[cId.zip]}    
+                            ${userData[cId.city]}, ${userData[cId.state]} ${userData[cId.zip]}</br>
+                            <span data-i18n="event.poBox">Mailing address is PO Box</span>:
+                            <span data-i18n="settings.${userData[cId.isPOBox] === cId.yes ? 'optYes': 'optNo'}">${userData[cId.isPOBox] === cId.yes ? "Yes" : "No"}</span> 
                         ` 
                         : translateText('settings.dataDeleted')
                     }
@@ -1448,17 +1441,13 @@ export const renderPhysicalMailingAddressData = (id) => {
   return translateHTML(`
             <div class="row userProfileLinePaddings" id="currentMailingAddressDiv${id}">
                 <div class="col">
-                    <span class="userProfileBodyFonts" data-i18n="settings.physicalMailAddress">
-                        Physical Address
-                    </span>
-                    <br>
                     <b>
                     <div class="userProfileBodyFonts" id="profileMailingAddress${id}">
                         ${!isParticipantDataDestroyed ?
                         `
-                           ${userData[cId.physicalAddress1]}</br>
+                            ${userData[cId.physicalAddress1]}</br>
                             ${userData[cId.physicalAddress2] ? `${userData[cId.physicalAddress2]}</br>` : ''}
-                            ${userData[cId.physicalCity]}, ${userData[cId.physicalState]} ${userData[cId.physicalZip]}    
+                            ${userData[cId.physicalCity]} ${userData[cId.physicalState] ? ',':''} ${userData[cId.physicalState]} ${userData[cId.physicalZip]}    
                         ` 
                         : translateText('settings.dataDeleted')
                     }
@@ -1470,17 +1459,17 @@ export const renderPhysicalMailingAddressData = (id) => {
         `);
 };
 
-export const renderChangeMailingAddressGroup = (id ) => {
+export const renderChangeMailingAddressGroup = (id) => {
   return translateHTML(`
       <div class="row userProfileLinePaddings" id="changeMailingAddressGroup${id}" style="display:none;">
         <div class="col">
             <div class="form-group row">
                 <div class="col">
-                    <label for="UPAddress${id}Line1" class="custom-form-label" data-i18n="settings.mailAddressLine1">
-                        Line 1 (street, PO box, rural route) <span class="required">*</span>
+                    <label for="UPAddress${id}Line1" class="custom-form-label" data-i18n="settings.${id === 2 ? 'physical': 'mail'}AddressLine1">
+                        Line 1 (street, ${id ===1 ? 'PO box, ': '' }rural route) <span class="required">*</span>
                     </label>
                     <br>
-                    <input style="max-width:301px;" type=text id="UPAddress${id}Line1" data-i18n="settings.mailAddressLine1Field" autocomplete="off" class="form-control required-field" data-error-required="${translateText('settings.mailAddressLine1Validator')}" placeholder="${translateText('settings.mailAddressLine1Placeholder')}">
+                    <input style="max-width:301px;" type=text id="UPAddress${id}Line1" data-i18n="settings.${id === 2 ? 'physical': 'mail'}AddressLine1Field" autocomplete="off" class="form-control required-field" placeholder="${translateText('settings.mailAddressLine1Placeholder')}">
                 </div>
             </div>
             <div class="form-group row">
@@ -1519,21 +1508,21 @@ export const renderChangeMailingAddressGroup = (id ) => {
                    <input type=text style="max-width:301px;" id="UPAddress${id}Zip" data-i18n="settings.zipField" data-error-validation="${translateText('settings.zipValidator')}" data-val-pattern="[0-9]{5}" title="${translateHTML('settings.zipTitle')}" class="form-control required-field num-val" data-error-required="${translateText('settings.zipRequired')}" size="5" maxlength="5" placeholder="99999">
                 </div>
             </div>
-            <!--${id === 1 ? `
+            ${id === 1 ? `
                 <div class="checkbox">
                     <label>
                         <input type="checkbox" id="poBoxCheckbox">
                         <span  data-i18n="form.isPOBoxChecked">Please check if mailing address is a P.O. Box</span>
                     </label> 
                 </div>
-            `:``} -->
+            `:``}
             <div class="form-group row">
                 
             </div>
                 
             <div class="form-group row">
                       <div class="col">
-                          <button id="changeMailingAddressSubmit${id}" class="btn btn-primary save-data consentNextButton" data-i18n="settings.submitMailUpdate">Submit Mailing Address Update</button>
+                          <button id="changeMailingAddressSubmit${id}" class="btn btn-primary save-data consentNextButton" data-i18n="settings.submit${id === 1 ? 'Mail': 'Physical'}Update">Submit ${id === 1 ? 'Mailing': 'Physical'} Address Update</button>
                       </div>
                   </div>
             </div>
