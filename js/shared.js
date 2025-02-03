@@ -2450,7 +2450,7 @@ export const emailValidationAnalysis = (validation) => {
         verdict === INVALID ||
         !checks.domain.has_valid_address_syntax ||
         !checks.domain.has_mx_or_a_record ||
-        score < 0.45;
+        score < 0.01;
 
     if (isInvalid) {
         // it's for testing with the test email such as *.mailinator
