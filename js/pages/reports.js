@@ -186,7 +186,7 @@ const renderMainBody = (data, tab) => {
                     break;
                 case 'Declined':
                     collapser = `<p><a href="#reports" id="${currentReport.reportId}Collapser" data-i18n="reports.collapserClosed"></a></p>`;
-                    buttons = `<button id="${currentReport.reportId}ReinstateReport" style="display: none"  class="btn btn-primary save-data consentNextButton px-3" data-i18n="reports.reinstate">Reinstate this report</button>`;
+                    buttons = `<button id="${currentReport.reportId}ReinstateReport" style="display: none"  class="btn btn-primary save-data consentNextButton px-3" data-i18n="reports.viewReport">View my report</button>`;
                     break;
             }
 

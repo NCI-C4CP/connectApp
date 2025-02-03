@@ -1,4 +1,4 @@
-import { translateText, translateDate, replaceUnsupportedPDFCharacters } from "../../js/shared.js";
+import { translateText, translateDate, replaceUnsupportedPDFCharacters, appState, languageAcronyms } from "../../js/shared.js";
 const { PDFDocument, StandardFonts, rgb } = PDFLib;
 import fieldMapping from "../../js/fieldToConceptIdMapping.js";
 
@@ -399,6 +399,15 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
 }
 
 export const renderPhysicalActivityReportPDF = async (reports) => {
+    let language;
+    if (!language) {
+        language = appState.getState().language;
+        if (!language) {
+            language = 'en';
+        } else {
+            language = languageAcronyms()[language];
+        }
+    }
 
     let currentReport = reports['Physical Activity Report'];
     let aerobicImage;
@@ -437,7 +446,7 @@ export const renderPhysicalActivityReportPDF = async (reports) => {
             break;
     }
 
-    const pdfLocation = './reports/physicalActivity/report_en.pdf';
+    const pdfLocation = './reports/physicalActivity/report_'+language+'.pdf';
     const existingPdfBytes = await fetch(pdfLocation).then(res => res.arrayBuffer());
     const pdfDoc = await PDFDocument.load(existingPdfBytes);
     const editPage = pdfDoc.getPages().at(0);
@@ -468,7 +477,7 @@ export const renderPhysicalActivityReportPDF = async (reports) => {
     const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
     
     if (aerobicTitle) {
-        editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', aerobicTitle]), helveticaFontBold), {
+        editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', aerobicTitle], language), helveticaFontBold), {
             x: 150,
             y: 435,
             size: 15,
@@ -478,7 +487,7 @@ export const renderPhysicalActivityReportPDF = async (reports) => {
     }
 
     if (aerobicBody) {
-        editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', aerobicBody]), helveticaFont), {
+        editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', aerobicBody], language), helveticaFont), {
             x: 50,
             y: 400,
             size: 12,
@@ -489,7 +498,7 @@ export const renderPhysicalActivityReportPDF = async (reports) => {
         });
     }
     if (muscleTitle) {
-        editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', muscleTitle]), helveticaFontBold), {
+        editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', muscleTitle], language), helveticaFontBold), {
             x: 115,
             y: 195,
             size: 15,
@@ -498,7 +507,7 @@ export const renderPhysicalActivityReportPDF = async (reports) => {
         });
     }
     if (muscleBody) {
-        editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', muscleBody]), helveticaFont), {
+        editPage.drawText(replaceUnsupportedPDFCharacters(translateText(['reports', muscleBody], language), helveticaFont), {
             x: 50,
             y: 160,
             size: 12,
@@ -508,11 +517,21 @@ export const renderPhysicalActivityReportPDF = async (reports) => {
             lineHeight: 15
         });
     }
+
+    let dateX;
+    switch (language) {
+        case 'en':
+            dateX = 102;
+            break;
+        case 'es':
+            dateX = 112;
+            break;
+    }
     if (currentReport.dateField && currentReport.data[currentReport.dateField]) {
         let reportTime = currentReport.data[currentReport.dateField];
         let dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
         editPage.drawText(replaceUnsupportedPDFCharacters(translateDate(reportTime, null, dateOptions), helveticaFont), {
-            x: 102,
+            x: dateX,
             y: 727,
             size: 9,
             font: helveticaFont,
