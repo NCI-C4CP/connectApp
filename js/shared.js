@@ -1726,11 +1726,15 @@ export const validPhoneNumberFormat =
  * @returns {string}
  */
 export function getCleanSearchString(urlSearchStr) {
-    return urlSearchStr
-        .replaceAll('%25', '%')
-        .replaceAll('%3D', '=')
-        .replaceAll('&amp;', '&')
-        .replaceAll('%26', '&')
+  let prevStr = urlSearchStr;
+  let currStr = decodeURIComponent(urlSearchStr);
+
+  while (prevStr !== currStr) {
+    prevStr = currStr;
+    currStr = decodeURIComponent(currStr);
+  }
+
+  return currStr.replace(/&amp;/g, "&");
 }
 
 /**
