@@ -940,21 +940,16 @@ export const addEventUPSubmit = async () => {
 
         formData['117249500'] = ageToday;
 
-        // Disable warning in this release => it will be enabled in February release
-        // if (riskyEmails.length) {
-        //     showRiskyEmailWarning(riskyEmails, formData)
-        // } else {
+        if (riskyEmails.length) {
+            showRiskyEmailWarning(riskyEmails, formData)
+        } else {
             verifyUserDetails(formData);
-        // }
+        }
     });
 }
 
 const showRiskyEmailWarning = (riskyEmails, formData) => {
     if(!document.getElementById('connectMainModal').classList.contains('show')) openModal();
-    document.getElementById('connectModalHeader').innerHTML = translateHTML(`
-    <h4 data-i18n="event.warning">Warning</h4>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-    `);
     let bodyHtml = ''
     const escapeHTML = (str) => {
         const div = document.createElement('div');
