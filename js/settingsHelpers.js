@@ -711,7 +711,7 @@ export const unlinkFirebaseAuthProvider = async (providerType, userData, newPhon
     if (providerType === 'phone') {
       updateResult = await unlinkFirebaseAuthenticationTrigger(providerType);
     } else if (providerType === 'email') {
-      noReplyEmail = `noreply${firebaseAuthUser.uid}@episphere.github.io`.toLowerCase();
+      noReplyEmail = `noreply${firebaseAuthUser.uid}@nci-c4cp.github.io`.toLowerCase();
       updateResult = await updateToNoReplyEmail(firebaseAuthUser.uid, noReplyEmail);
     } else {
       console.error('bad providerType arg in unlinkFirebaseAuthProvider()');
@@ -926,6 +926,12 @@ const populateUserHistoryMap = (existingData, preferredEmail, newSuffix) => {
     cId.city,
     cId.state,
     cId.zip,
+    cId.isPOBox,
+    cId.physicalAddress1,
+    cId.physicalAddress2,
+    cId.physicalCity,
+    cId.physicalState,
+    cId.physicalZip,
   ];
 
   keys.forEach((key) => {

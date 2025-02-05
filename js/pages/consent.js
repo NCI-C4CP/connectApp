@@ -1030,7 +1030,7 @@ const consentSubmit = async e => {
             focus = false;
             hasError = true;
         }
-}
+    }
     if(hasError) return false;
     dataSavingBtn('save-data');
     const CSDate = todaysDate();
@@ -1077,7 +1077,6 @@ const consentSubmit = async e => {
         formData['700668490'] = CSWLastName.value;
         formData['430184574'] = CSWDate.split('/')[2] + CSWDate.split('/')[1] + CSWDate.split('/')[0]
     }
-    formData['507120821'] = 596523216;
 
     //set the prefered language
     formData[fieldMapping.preferredLanguage] = selectedLanguage;

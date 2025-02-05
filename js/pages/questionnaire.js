@@ -38,21 +38,20 @@ async function loadQuestConfig(moduleId) {
         isQuest2 = true;
     }
 
-    // TODO: Verify and update the CDN location for Quest 2.0+ when available.
     if (isQuest2) {
         questVersion = appSettingsData.currentQuest2Version;
         questConfig = {
-            "myconnect.cancer.gov": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/main.js`, // TODO: verify
-            "myconnect-stage.cancer.gov": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/main.js`, // TODO: verify
-            "episphere.github.io": "https://episphere.github.io/quest-dev/main.js",
-            "localhost:5000": "https://episphere.github.io/quest-dev/main.js", // TODO: update to CDN when available
+            "myconnect.cancer.gov": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/main.js`,
+            "myconnect-stage.cancer.gov": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/main.js`,
+            "nci-c4cp.github.io": "https://episphere.github.io/quest-dev/main.js",
+            "localhost:5000": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/main.js`,
         }
     } else {
         questVersion = appSettingsData.currentQuestVersion;
         questConfig = {
             "myconnect.cancer.gov": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/replace2.js`,
             "myconnect-stage.cancer.gov": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/replace2.js`,
-            "episphere.github.io": "https://episphere.github.io/quest/replace2.js",
+            "nci-c4cp.github.io": "https://episphere.github.io/quest/replace2.js",
             "localhost:5000": `https://cdn.jsdelivr.net/gh/episphere/quest@v${questVersion}/replace2.js`
         };
     }

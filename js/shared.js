@@ -12,7 +12,7 @@ const i18n = {
 export const urls = {
     'prod': 'myconnect.cancer.gov',
     'stage': 'myconnect-stage.cancer.gov',
-    'dev': 'episphere.github.io'
+    'dev': 'nci-c4cp.github.io'
 }
 
 function createStore(initialState = {}) {
@@ -147,7 +147,8 @@ const signInFlowRender = async (signInEmail) => {
 
 export const sendEmailLink = () => {
     const preferredLanguage = getSelectedLanguage();
-    const signInEmail = window.localStorage.getItem("signInEmail");
+    const wrapperDiv = document.getElementById("signInWrapperDiv");
+    const signInEmail = wrapperDiv.getAttribute("data-account-value");
     const continueUrl = window.location.href;
 
     fetch(`${api}?api=sendEmailLink`, {
@@ -161,37 +162,70 @@ export const sendEmailLink = () => {
     });
 };
 
-export const validateToken = async (token) => {
-    const idToken = await getIdToken();
-    const response = await fetch(api+`?api=validateToken${token? `&token=${token}` : ``}`, {
-        headers: {
-            Authorization:"Bearer "+idToken
-        }
-    });
-    const data = await response.json();
-    return data;
+/**
+ * Validate the PIN entered by the new participant. Send the PIN for validation. Include the first sign in time. Both are added to Firestore on success.
+ * PIN number and first sign in time are required.
+ * @param {object} pinEntryFormData - The form data object containing the PIN and first sign in time.
+ * @returns {object} - The response object from the API.
+ */
+
+export const validatePin = async (pinEntryFormData) => {
+
+    if (!pinEntryFormData[fieldMapping.pinNumber] || typeof pinEntryFormData[fieldMapping.pinNumber] !== 'string') {
+        return { code: 400, message: 'Invalid PIN format.' };
+    }
+
+    if (!pinEntryFormData[fieldMapping.firstSignInTime] || typeof pinEntryFormData[fieldMapping.firstSignInTime] !== 'string') {
+        return { code: 400, message: 'Invalid first sign in time format.' };
+    }
+
+    try {
+        const idToken = await getIdToken();
+        const response = await fetch(api + '?api=validatePin', {
+            method: "POST",
+            contentType: "application/json",
+            headers: {
+                Authorization: "Bearer " + idToken
+            },
+            body: JSON.stringify(pinEntryFormData)
+        });
+
+        return await response.json();
+
+    } catch (error) {
+        throw new Error('An unexpected error occurred in validatePin(). Error: ' + error.message);
+    }
 }
 
-export const validatePin = async (pin) => {
-    const idToken = await getIdToken();
-    const response = await fetch(api+`?api=validateToken${pin? `&pin=${pin}` : ``}`, {
-        headers: {
-            Authorization:"Bearer "+idToken
-        }
-    });
-    const data = await response.json();
-    return data;
-}
+/**
+ * The participant clicked 'I do not have a PIN' OR submitted a PIN and validation failed.
+ * That means there's no existing participant record and we need to create one.
+ * Required fields: first sign in time.
+ * Optional fields: PIN number (if participant entered a PIN that failed to validate) and 'don't have a PIN' flag if no PIN was entered.
+ * @param {object} pinEntryFormData - The form data object containing first sign in time.
+ */
 
-export const generateNewToken = async () => {
-    const idToken = await getIdToken();
-    const response = await fetch(`${api}?api=generateToken`, {
-        headers: {
-            Authorization:"Bearer "+idToken
+export const createParticipantRecord = async (pinEntryFormData) => {
+    try {
+        if (!pinEntryFormData[fieldMapping.firstSignInTime] || typeof pinEntryFormData[fieldMapping.firstSignInTime] !== 'string') {
+            return { code: 400, message: 'Invalid first sign in time format.' };
         }
-    });
-    const data = await response.json();
-    return data;
+
+        const idToken = await getIdToken();
+        const response = await fetch(`${api}?api=createParticipantRecord`, {
+            method: "POST",
+            contentType: "application/json",
+            headers: {
+                Authorization: "Bearer " + idToken
+            },
+            body: JSON.stringify(pinEntryFormData)
+        });
+        
+        return await response.json();
+
+    } catch (error) {
+        throw new Error('An unexpected error occurred in createParticipantRecord(). Error: ' + error.message);
+    }
 }
 
 //Store tree function being passed into quest
@@ -237,17 +271,57 @@ export const storeResponseQuest = async (formData) => {
     }
 }
 
+/**
+ * This is only called if one of either COMPLETED or COMPLETED_TS is present in the formData.
+ * Quest1 bug found where the COMPLETED status was not being stored in the Firestore.
+ * This handles that case, updates the completed status, and logs an error if the COMPLETED status is missing.
+ * It also handles the case where the COMPLETED_TS timestamp is missing. We haven't seen this case, but it's possible.
+ * @param {object} data - The formData object with the COMPLETED and COMPLETED_TS properties.
+ * @param {string} moduleId - The module ID of the survey (mapping found in fieldToConceptIdMapping.js).
+ */
+
 const completeSurvey = async (data, moduleId) => {
 
-    let formData = {};
-    let moduleName = fieldMapping.conceptToModule[moduleId];
+    const moduleName = fieldMapping.conceptToModule[moduleId];
 
-    if(data["COMPLETED"]) formData[fieldMapping[moduleName].statusFlag] = 231311385;
-    if(data["COMPLETED_TS"]) formData[fieldMapping[moduleName].completeTs] = data["COMPLETED_TS"];
+    if (!data["COMPLETED"]) {
+        logDDRumError(new Error('Submit Survey Error: Missing COMPLETED status'), 'CompleteSurveyError', {
+            userAction: 'submit survey',
+            timestamp: new Date().toISOString(),
+            questionnaire: moduleId,
+        });
+    }
 
-    await storeResponse(formData);
+    if (!data['COMPLETED_TS']) {
+        logDDRumError(new Error('Submit Survey Error: Missing COMPLETED_TS timestamp'), 'CompleteSurveyError', {
+            userAction: 'submit survey',
+            timestamp: new Date().toISOString(),
+            questionnaire: moduleId,
+        });
 
-    location.reload();
+        data['COMPLETED_TS'] = new Date().toISOString();
+    }
+
+    const formData = {
+        [fieldMapping[moduleName].statusFlag]: fieldMapping.moduleStatus.submitted,
+        [fieldMapping[moduleName].completeTs]: data["COMPLETED_TS"],
+    }
+
+    try {
+        const submitSurveyResponse = await storeResponse(formData);
+
+        if (submitSurveyResponse.code === 200) {
+            location.reload();
+        } else {
+            throw new Error(`Submit Survey Error: Failed to submit survey. Code: ${submitSurveyResponse.code}, Message: ${submitSurveyResponse.message}` );
+        }
+    } catch (error) {
+        logDDRumError(error, 'SubmitSurveyError', {
+            userAction: 'submit survey',
+            timestamp: new Date().toISOString(),
+            questionnaire: moduleId,
+        });
+    }
 }
 
 export const storeResponse = async (formData) => {
@@ -286,6 +360,18 @@ export const getMyData = async () => {
 
     const idToken = await getIdToken();
     const response = await fetch(`${api}?api=getUserProfile`, {
+        headers: {
+            Authorization: 'Bearer ' + idToken,
+        },
+    });
+
+    return await response.json();
+};
+
+export const retrievePhysicalActivityReport = async () => {
+
+    const idToken = await getIdToken();
+    const response = await fetch(`${api}?api=retrievePhysicalActivityReport`, {
         headers: {
             Authorization: 'Bearer ' + idToken,
         },
@@ -347,15 +433,23 @@ export const getMySurveys = async (data, filter = false) => {
 }
 
 export const getMyCollections = async () => {
+    try {
+        const idToken = await getIdToken();
+        const response = await fetch(`${api}?api=getUserCollections`, {
+            headers: {
+                Authorization: "Bearer " + idToken
+            }
+        });
 
-    const idToken = await getIdToken();
-    const response = await fetch(`${api}?api=getUserCollections`, {
-        headers: {
-            Authorization: "Bearer " + idToken
-        }
-    })
-
-    return await response.json();
+        return await response.json();
+        
+    } catch (error) {
+        logDDRumError(error, 'GetMyCollectionsError', {
+            userAction: 'get user collections',
+            timestamp: new Date().toISOString(),
+        });
+        return { code: 500, message: 'An unexpected error occurred in getMyCollections()' };
+    }
 }
 
 const allIHCS = {
@@ -1154,6 +1248,70 @@ export const questionnaireModules = () => {
     };
 }
 
+export const reportConfiguration = () => {
+    
+    if(location.host === urls.prod) {
+        return {
+            'Physical Activity Report': {
+                path: {
+                    en: 'prod/module2024ConnectExperience.txt', 
+                    es: 'prod/module2024ConnectExperienceSpanish.txt'
+                },
+                reportId: "physicalActivity", 
+                enabled: false
+            }
+        }
+    }
+
+    return {
+        'Physical Activity Report': {
+            reportId: "physicalActivity", 
+            enabled: false
+        }
+    }
+}
+
+/**
+ * Sets various flags of the reports based on the user data
+ * 
+ * @param {Object} data 
+ * @param {Object[]} reports 
+ * @returns 
+ */
+export const setReportAttributes = async (data, reports) => {
+    //Does the user have a physical activity report
+    if (data[fieldMapping.reports.physicalActivityReport] && data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] && 
+        (data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] == fieldMapping.reports.unread ||
+            data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] == fieldMapping.reports.viewed ||
+            data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] == fieldMapping.reports.declined 
+        )
+    ) {
+        reports['Physical Activity Report'].enabled = true;
+        reports['Physical Activity Report'].status = data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status];
+        reports['Physical Activity Report'].dateField = 'd_416831581';
+        reports['Physical Activity Report'].surveyDate = data[fieldMapping.Module2.completeTs];
+    }
+    return reports;
+}
+
+/**
+ * Populates the report data from the backend
+ * 
+ * @param {Object[]} reports 
+ */
+export const populateReportData = async (reports) => {
+    let reportData = await retrievePhysicalActivityReport();
+    if (reportData.code === 200) {
+        if (reportData.data && reportData.data[0]) {
+            reports['Physical Activity Report'].data = reportData.data[0];
+        } else {
+            reports['Physical Activity Report'].data = {};
+        }
+    }
+
+    return reports;
+}
+
 export const isBrowserCompatible = () => {
     const userAgent = navigator.userAgent;
     let browserName;
@@ -1181,13 +1339,14 @@ export const isBrowserCompatible = () => {
  */
 
 export const inactivityTime = () => {
+    const activityKey = 'lastMyConnectActivityTimestamp';
+    const warningKey = 'myConnectInactivityWarning';   
     const inactivityTimeout = 1200000; // 20 minutes (show inactivity warning after 20 minutes)
-    const maxResponseTime = 300000; // 5 minutes (after no activity for 20 minutes)
-    const checkInterval = 60000; // 1 minute (check for inactivity every minute)
+    const maxResponseTime = 300000;    // 5 minutes (additional time after warning)
+    const checkInterval = 60000;       // 1 minute checks
 
     let responseTimeout;
     let modal;
-    let lastActivityTimestamp = Date.now();
     let isInactiveModalShown = false;
     let intervalId;
     let loadListener;
@@ -1195,15 +1354,33 @@ export const inactivityTime = () => {
     const modalElement = document.getElementById('connectMainModal');
     if (!modalElement) return;
 
+    // Update the global last activity timestamp in localStorage
+    const updateLastActivity = () => {
+        localStorage.setItem(activityKey, Date.now().toString());
+    };
+
+    // Reset the timer only if the modal is not shown. This represents user activity.
     const resetTimer = () => {
         if (!isInactiveModalShown) {
-            lastActivityTimestamp = Date.now();
+            updateLastActivity();
         }
     };
 
     const checkInactivity = () => {
+        const lastActivity = parseInt(localStorage.getItem(activityKey), 10) || Date.now();
         const now = Date.now();
-        if (!isInactiveModalShown && now - lastActivityTimestamp > inactivityTimeout) {
+
+        const isWarningShownGlobally = localStorage.getItem(warningKey) === 'true';
+
+        // Only show warning if none is currently shown globally (for management with multiple tabs open)
+        // Ensure it's shown in the active tab if a tab is active.
+        if (
+            document.visibilityState === 'visible' &&
+            document.hasFocus() &&
+            !isInactiveModalShown &&
+            !isWarningShownGlobally &&
+            now - lastActivity > inactivityTimeout
+        ) {
             showInactivityWarning();
         }
     };
@@ -1228,6 +1405,9 @@ export const inactivityTime = () => {
         clearInterval(intervalId);
         hideModal();
         detachDocumentEventListeners();
+
+        localStorage.setItem(warningKey, 'false');
+
         await signOut();
     }
 
@@ -1245,7 +1425,12 @@ export const inactivityTime = () => {
         if (continueButton) {
             continueButton.addEventListener('click', () => {
                 clearTimeout(responseTimeout);
-                lastActivityTimestamp = Date.now();
+
+                // Reset activity on continue
+                updateLastActivity();
+
+                // Clear the warning state on continue click
+                localStorage.setItem(warningKey, 'false');
                 hideModal();
             });
         }
@@ -1272,6 +1457,8 @@ export const inactivityTime = () => {
         // Reset the inactivity timer on user activity
         document.addEventListener('mousemove', resetTimer);
         document.addEventListener('keydown', resetTimer);
+
+        window.addEventListener('storage', handleLocalStorageStateChange);
     }
 
     const detachDocumentEventListeners = () => {
@@ -1282,11 +1469,36 @@ export const inactivityTime = () => {
         if (signOutButton) {
             signOutButton.replaceWith(signOutButton.cloneNode(true));
         }
+
+        window.removeEventListener('storage', handleLocalStorageStateChange);
     };
 
-    // Activate the response timeout, show the warning modal, and log out the user if there's no response.
+    const handleLocalStorageStateChange = (event) => {
+        if (event.key === warningKey) {
+            const warningState = localStorage.getItem(warningKey);
+            if (warningState === 'false' && isInactiveModalShown) {
+                // Another tab cleared the warning, hide modal if it's visible
+                hideModal();
+            }
+        }
+
+        if (event.key === activityKey) {
+            const lastActivity = parseInt(localStorage.getItem(activityKey), 10) || Date.now();
+            const now = Date.now();
+            if ((now - lastActivity < inactivityTimeout) && isInactiveModalShown) {
+                // The user became active again in another tab. Hide this modal and clear the warning
+                hideModal();
+                localStorage.setItem(warningKey, 'false');
+            }
+        }
+    };
+
+    // Show inactivity warning modal and start response timeout
     const showInactivityWarning = async () => {
         if (!firebase.auth().currentUser) return;
+
+        // Set the global warning state so other tabs know not to show it
+        localStorage.setItem(warningKey, 'true');
 
         isInactiveModalShown = true;
 
@@ -1298,7 +1510,6 @@ export const inactivityTime = () => {
         modal = new bootstrap.Modal(modalElement);
         showModal();
 
-        // Update modal content
         const header = document.getElementById('connectModalHeader');
         const body = document.getElementById('connectModalBody');
         const footer = document.getElementById('connectModalFooter');
@@ -1310,12 +1521,19 @@ export const inactivityTime = () => {
         }
 
         console.log("initial timeout has been reached!");
-
         attachModalEventListeners(modalElement);
     };
 
-    // Magage the inactivity timer
+    // Start inactivity checks
     intervalId = setInterval(checkInactivity, checkInterval);
+
+    // Update on initial load so we have a baseline timestamp
+    if (!localStorage.getItem(activityKey)) {
+        updateLastActivity();
+    }
+
+    // Reset the warning key on load
+    localStorage.setItem(warningKey, 'false');
 
     // Handle window load event
     if (document.readyState !== 'complete') {
@@ -1330,10 +1548,14 @@ export const inactivityTime = () => {
         attachDocumentEventListeners();
     }
 
+    // Cleanup function to stop checks and clear timeouts.
     return () => {
         if (intervalId) clearInterval(intervalId);
         if (responseTimeout) clearTimeout(responseTimeout);
         if (loadListener) window.removeEventListener('load', loadListener);
+        detachDocumentEventListeners();
+        hideModal();
+        localStorage.setItem(warningKey, 'false');
     };
 };
 
@@ -1504,11 +1726,15 @@ export const validPhoneNumberFormat =
  * @returns {string}
  */
 export function getCleanSearchString(urlSearchStr) {
-return urlSearchStr
-.replaceAll('%25', '%')
-.replaceAll('%26', '&')
-.replaceAll('&amp;', '&')
-.replaceAll('%3D', '=');
+  let prevStr = urlSearchStr;
+  let currStr = decodeURIComponent(urlSearchStr);
+
+  while (prevStr !== currStr) {
+    prevStr = currStr;
+    currStr = decodeURIComponent(currStr);
+  }
+
+  return currStr.replace(/&amp;/g, "&");
 }
 
 /**
@@ -1598,23 +1824,8 @@ export const firebaseSignInRender = async ({ account = {}, displayFlag = true })
   let ui = await getFirebaseUI();
   ui.start("#signInDiv", signInConfig(account.type));
 
-  if (account.type === "magicLink") {
-    const { signInEmail, signInTime } = JSON.parse(window.localStorage.getItem("connectSignIn") || "{}");
-    const timeLimit = 1000 * 60 * 60; // 1 hour time limit
-    const emailInput = document.querySelector('input[class~="firebaseui-id-email"]');
-    await elementIsLoaded('div[class~="firebaseui-id-page-email-link-sign-in-confirmation"]', 1500);
-    if (emailInput !== null && signInEmail && Date.now() - signInTime < timeLimit) {
-      emailInput.value = signInEmail;
-      const submitButton = document.querySelector('button[class~="firebaseui-id-submit"]');
-      submitButton.addEventListener('click', (e) => e.preventDefault());
-      submitButton.click();
+  if (account.type === "email") {
 
-      window.localStorage.removeItem("connectSignIn");
-    }
-  } else if (account.type === "email") {
-    window.localStorage.setItem("signInEmail", account.value);
-    const signInData = { signInEmail: account.value, signInTime: Date.now() };
-    window.localStorage.setItem("connectSignIn", JSON.stringify(signInData));
     document.querySelector('input[class~="firebaseui-id-email"]').value = account.value;
     document.querySelector('label[class~="firebaseui-label"]').remove();
 
@@ -1944,7 +2155,20 @@ export const translateHTML = (source, language) => {
 
     if (sourceElement.dataset.i18n) {
         let keys = sourceElement.dataset.i18n.split('.');
-        let translation = translateText(keys, language);
+        let translation;
+        if (keys.length === 1 && keys[0] === 'date' && sourceElement.dataset.timestamp) {
+            let options;
+            if (sourceElement.dataset.dateOptions) {
+                try {
+                    options = JSON.parse(decodeURIComponent(sourceElement.dataset.dateOptions));
+                } catch (error) {
+                    console.error(error);
+                }
+            }
+            translation = translateDate(sourceElement.dataset.timestamp, language, options);
+        } else {
+            translation = translateText(keys, language);
+        }
         if (translation) {
             if (typeof translation === 'object') {
                 Object.keys(translation).forEach((key) => {
@@ -1972,6 +2196,34 @@ export const translateHTML = (source, language) => {
     } else {
        return sourceElement;
     }
+}
+
+/**
+ * Returns a formatted Date based on the language and options
+ * 
+ * @param {string} timestamp
+ * @param {string} language
+ * @param {Object} options - Same as Intl.DateTimeFormat() constructor
+ */
+export const translateDate = (timestamp, language, options) => {
+    if (!language) {
+        language = appState.getState().language;
+        if (!language) {
+            language = 'en';
+        } else {
+            language = languageAcronyms()[language];
+        }
+    }
+
+    let date;
+    if (typeof timestamp === 'string' && /^[0-9]+$/.test(timestamp)) {
+        date = new Date(parseInt(timestamp, 10));
+    } else if (typeof timestamp === 'number') {
+        date = new Date(timestamp);
+    } else {
+        date = new Date(Date.parse(timestamp));
+    }
+    return date.toLocaleDateString(language, options);
 }
 
 /**
@@ -2195,16 +2447,21 @@ export const emailValidationStatus = {
 export const emailValidationAnalysis = (validation) => {
     if (!validation) return;
 
-    const { verdict, checks, score } = validation
+    const { verdict, checks, score } = validation;
     const { INVALID, VALID, WARNING } = emailValidationStatus;
 
     const isInvalid =
         verdict === INVALID ||
         !checks.domain.has_valid_address_syntax ||
         !checks.domain.has_mx_or_a_record ||
-        score < 0.45;
+        score < 0.01;
 
     if (isInvalid) {
+        // it's for testing with the test email such as *.mailinator
+        if (location.host !== urls.prod) {
+            console.error("Invalid Email", validation);
+            return VALID;
+        }
         return INVALID;
     }
 
@@ -2215,9 +2472,47 @@ export const emailValidationAnalysis = (validation) => {
         checks.additional.has_suspected_bounces ||
         score < 0.8;
 
-    if (isWarning) {
-        return WARNING;
-    }
+    if (isWarning) return WARNING;
 
     return VALID;
 };
+
+export const showErrorAlert = (messageTranslationKey = 'questionnaire.somethingWrong') => {
+    const language = appState.getState().language || 'en';
+
+    // Get the translation. Use a generic fallback.
+    let errorMessage = translateText(messageTranslationKey.split('.'), language);
+    if (!errorMessage) {
+        errorMessage = 'Something went wrong. Please try again. Contact the Connect Support Center at 1-877-505-0253 if you continue to experience this problem.';
+    }
+
+    // Alert doesn't support HTML. Remove markdown links.
+    const plainMessage = errorMessage.replace(/<\/?[^>]+(>|$)/g, '');
+
+    // Display the alert
+    alert(plainMessage);
+};
+
+ /* Checks for each code point whether the given font supports it.
+If not, tries to remove diacritics from said code point.
+If that doesn't work either, replaces the unsupported character with '?'. */
+export function replaceUnsupportedPDFCharacters(string, font) {
+ if (!string) return;
+ const charSet = font.getCharacterSet()
+ const codePoints = []
+ for (const codePointStr of string) {
+     const codePoint = codePointStr.codePointAt(0);
+     if (!charSet.includes(codePoint)) {
+         const withoutDiacriticsStr = codePointStr.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+         const withoutDiacritics = withoutDiacriticsStr.charCodeAt(0);
+         if (charSet.includes(withoutDiacritics)) {
+             codePoints.push(withoutDiacritics);
+         } else {
+             codePoints.push('?'.codePointAt(0));
+         }
+     } else {
+         codePoints.push(codePoint)
+     }
+ }
+ return String.fromCodePoint(...codePoints);
+}
