@@ -130,7 +130,7 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                         </div>
                     </div>
                     <div
-                        style="width: 198px; padding: 24px; border-radius: 3px; border: 1px #A9AEB1 solid; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: inline-flex">
+                        style="width: 246px; padding: 24px; border-radius: 3px; border: 1px #A9AEB1 solid; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: inline-flex">
                         <div data-i18n="reports.physicalActivityCalcHeader" 
                             style="align-self: stretch; color: #606060; font-size: 18px; font-family: Montserrat; font-weight: 700; line-height: 21px; word-wrap: break-word">
                             How did we calculate your activity?</div>
@@ -170,7 +170,7 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                                         activity throughout the week. If you prefer vigorous-intensity aerobic activity
                                         (like running), aim for at least 75 minutes a week.</li>
                                     <li data-i18n="reports.physicalActivityGuidlinesListPoint2"
-                                        style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word">
+                                        style="color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word; margin-top: 12px;">
                                         Aim for at least 2 days a week of muscle-strengthening activity (activities that
                                         make your muscles work harder than usual). For the most health benefits, do
                                         strengthening activities that involve all major muscle groups.</li>
@@ -179,7 +179,7 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                         </div>
                         <div
                             style="padding: 24px; background: #FDBE19; border-radius: 3px; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
-                            <div style="width: 150px"><span data-i18n="reports.physicalActivityModerateHeader" 
+                            <div style="width: 198px"><span data-i18n="reports.physicalActivityModerateHeader" 
                                     style="color: #2E2E2E; font-size: 14px; font-family: Noto Sans; font-weight: 700; line-height: 20px; word-wrap: break-word">What
                                     counts as “moderate” and “vigorous” aerobic activity? </span> <span data-i18n="reports.physicalActivityModerateBody" 
                                     style="color: #2E2E2E; font-size: 14px; font-family: Noto Sans; font-weight: 400; line-height: 20px; word-wrap: break-word">Use
