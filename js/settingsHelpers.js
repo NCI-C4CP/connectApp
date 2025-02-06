@@ -7,6 +7,7 @@ export const showEditButtonsOnUserVerified = () => {
   document.getElementById('changeContactInformationButton').style.display = 'block';
   document.getElementById('changeMailingAddressButton').style.display = 'block';
   document.getElementById('changePhysicalMailingAddressButton').style.display = 'block';
+  document.getElementById('changeAltContactButton').style.display = 'block';
   document.getElementById('changeLoginButton').style.display = 'block';
 };
 
@@ -151,6 +152,7 @@ export const FormTypes = {
   CONTACT: 'contactForm',
   MAILING: 'mailingForm',
   PHYSICAL_MAILING: 'physicalMailingForm',
+  ALT_CONTACT: 'altContactForm',
   LOGIN: 'loginForm',
 };
 

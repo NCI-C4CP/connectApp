@@ -6,6 +6,7 @@ import cId from '../fieldToConceptIdMapping.js';
 const nameElementArray = [];
 const mailingAddressElementArray = [];
 const physicalMailingAddressElementArray = [];
+const altContactElementArray = [];
 const contactInformationElementArray = [];
 const loginElementArray = [];
 
@@ -14,6 +15,7 @@ const btnObj = {
     changeContactInformationButton: null,
     changeMailingAddressButton: null,
     changePhysicalMailingAddressButton: null,
+    changeAltContactButton: null,
     changeLoginButton: null
 };
 
@@ -40,6 +42,7 @@ const formVisBools = {
     isContactInformationFormDisplayed: null,
     isMailingAddressFormDisplayed: null,
     isPhysicalMailingAddressFormDisplayed: null,
+    isAltContactFormDisplayed: null,
     isLoginFormDisplayed: null,
 };
 
@@ -107,6 +110,7 @@ export const renderSettingsPage = async () => {
     formVisBools.isContactInformationFormDisplayed = false;
     formVisBools.isMailingAddressFormDisplayed = false;
     formVisBools.isPhysicalMailingAddressFormDisplayed = false;
+    formVisBools.isAltContactFormDisplayed = false;
     formVisBools.isLoginFormDisplayed = false;
     if (userData[cId.userProfileSubmittedAutogen] === cId.yes) {
       let headerMessage = '';
@@ -152,6 +156,11 @@ export const renderSettingsPage = async () => {
                         ${renderPhysicalMailingAddressData(2)}
                         ${renderChangeMailingAddressGroup(2)}
                     </div>
+                    <div class="userProfileBox" id="altContactDiv" style="display:none">
+                        ${renderAltContactHeadingAndButton()}
+                        ${renderAltContactData()}
+                        ${renderChangeAltContactGroup()}
+                    </div>
                     <div class="userProfileBox" id="signInInformationDiv" style="display:none">
                         ${renderSignInInformationHeadingAndButton()}
                         ${renderSignInInformationData()}
@@ -180,12 +189,14 @@ export const renderSettingsPage = async () => {
       btnObj.changeContactInformationButton = document.getElementById('changeContactInformationButton');
       btnObj.changeMailingAddressButton = document.getElementById('changeMailingAddressButton');
       btnObj.changePhysicalMailingAddressButton = document.getElementById('changePhysicalMailingAddressButton');
+      btnObj.changeAltContactButton = document.getElementById('changeAltContactButton');
       btnObj.changeLoginButton = document.getElementById('changeLoginButton');
       showEditButtonsOnUserVerified();
       handleEditNameSection();
       handleEditContactInformationSection();
       handleEditMailingAddressSection();
       handleEditPhysicalMailingAddressSection();
+      handleEditAltContactSection();
       handleEditSignInInformationSection();
       attachTabEventListeners();
       attachLoginEditFormButtons();
@@ -211,6 +222,7 @@ const buildPageTemplate = () => {
       loadContactInformationElements();
       loadMailingAddressElements();
       loadPhysicalMailingAddressElements();
+      loadAltContactElements();
       loadSignInInformationElements();
       showMajorFormDivs();
       togglePendingVerificationMessage(userData);
@@ -225,6 +237,7 @@ const showMajorFormDivs = () => {
   document.getElementById('mailingAddressDiv').style.display = 'block';
   document.getElementById('signInInformationDiv').style.display = 'block';
   document.getElementById('physicalMailingAddressDiv').style.display = 'block';
+  document.getElementById('altContactDiv').style.display = 'block';
 };
 
 /**
@@ -462,6 +475,11 @@ const loadPhysicalMailingAddressElements = () => {
     physicalMailingAddressElementArray.push(document.getElementById(`changeMailingAddressGroup2`));
   };
 
+const loadAltContactElements = () => {
+    altContactElementArray.push(document.getElementById(`altContactDataDiv`));
+    altContactElementArray.push(document.getElementById(`changeAltContactGroup`));
+  };
+
 const handleEditPhysicalMailingAddressSection = () => {
   btnObj.changePhysicalMailingAddressButton.addEventListener('click', () => {
     successMessageElement = hideSuccessMessage(successMessageElement);
@@ -485,6 +503,33 @@ const handleEditPhysicalMailingAddressSection = () => {
       formVisBools.isPhysicalMailingAddressFormDisplayed = toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed);
       toggleButtonText();
       submitNewMailingAddress(2, addressLine1, addressLine2, city, state, zip, true);
+    }
+  });
+};
+
+const handleEditAltContactSection = () => {
+  btnObj.changeAltContactButton.addEventListener('click', () => {
+    successMessageElement = hideSuccessMessage(successMessageElement);
+    formVisBools.isAltContactFormDisplayed = toggleElementVisibility(altContactElementArray, formVisBools.isAltContactFormDisplayed);
+    if (formVisBools.isAltContactFormDisplayed) {
+      toggleActiveForm(FormTypes.ALT_CONTACT);
+      addEventAddressAutoComplete(3);
+    }
+    toggleButtonText();
+  });
+
+  document.getElementById('changeMailingAddressSubmit2').addEventListener('click', e => {
+    const addressLine1 = document.getElementById('UPAddress2Line1').value.trim();
+    const addressLine2 = document.getElementById('UPAddress2Line2').value.trim();
+    const city = document.getElementById('UPAddress2City').value.trim();
+    const state = document.getElementById('UPAddress2State').value.trim();
+    const zip = document.getElementById('UPAddress2Zip').value.trim();
+
+    const isMailingAddressValid = validateMailingAddress(2, addressLine1, city, state, zip);
+    if (isMailingAddressValid) {
+      formVisBools.isAltContactFormDisplayed = toggleElementVisibility(altContactElementArray, formVisBools.isAltContactFormDisplayed);
+      toggleButtonText();
+    //   submitNewMailingAddress(2, addressLine1, addressLine2, city, state, zip, true);
     }
   });
 };
@@ -672,12 +717,14 @@ const toggleActiveForm = clickedFormType => {
       formVisBools.isContactInformationFormDisplayed = formVisBools.isContactInformationFormDisplayed ? toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed) : false;
       formVisBools.isMailingAddressFormDisplayed = formVisBools.isMailingAddressFormDisplayed ? toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed) : false;
       formVisBools.isPhysicalMailingAddressFormDisplayed = formVisBools.isPhysicalMailingAddressFormDisplayed ? toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed) : false;
+      formVisBools.isAltContactFormDisplayed = formVisBools.isAltContactFormDisplayed ? toggleElementVisibility(altContactElementArray, formVisBools.isAltContactFormDisplayed) : false;
       formVisBools.isLoginFormDisplayed = formVisBools.isLoginFormDisplayed ? toggleElementVisibility(loginElementArray, formVisBools.isLoginFormDisplayed) : false;
       break;
     case FormTypes.CONTACT:
       formVisBools.isNameFormDisplayed = formVisBools.isNameFormDisplayed ? toggleElementVisibility(nameElementArray, formVisBools.isNameFormDisplayed) : false;
       formVisBools.isMailingAddressFormDisplayed = formVisBools.isMailingAddressFormDisplayed ? toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed) : false;
       formVisBools.isPhysicalMailingAddressFormDisplayed = formVisBools.isPhysicalMailingAddressFormDisplayed ? toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed) : false;
+      formVisBools.isAltContactFormDisplayed = formVisBools.isAltContactFormDisplayed ? toggleElementVisibility(altContactElementArray, formVisBools.isAltContactFormDisplayed) : false;
       formVisBools.isLoginFormDisplayed = formVisBools.isLoginFormDisplayed ? toggleElementVisibility(loginElementArray, formVisBools.isLoginFormDisplayed) : false;
       break;
     case FormTypes.MAILING:
@@ -685,18 +732,28 @@ const toggleActiveForm = clickedFormType => {
       formVisBools.isContactInformationFormDisplayed = formVisBools.isContactInformationFormDisplayed ? toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed) : false;
       formVisBools.isLoginFormDisplayed = formVisBools.isLoginFormDisplayed ? toggleElementVisibility(loginElementArray, formVisBools.isLoginFormDisplayed) : false;
       formVisBools.isPhysicalMailingAddressFormDisplayed = formVisBools.isPhysicalMailingAddressFormDisplayed ? toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed) : false;
+      formVisBools.isAltContactFormDisplayed = formVisBools.isAltContactFormDisplayed ? toggleElementVisibility(altContactElementArray, formVisBools.isAltContactFormDisplayed) : false;
       break;
     case FormTypes.PHYSICAL_MAILING:
       formVisBools.isNameFormDisplayed = formVisBools.isNameFormDisplayed ? toggleElementVisibility(nameElementArray, formVisBools.isNameFormDisplayed) : false;
       formVisBools.isContactInformationFormDisplayed = formVisBools.isContactInformationFormDisplayed ? toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed) : false;
       formVisBools.isLoginFormDisplayed = formVisBools.isLoginFormDisplayed ? toggleElementVisibility(loginElementArray, formVisBools.isLoginFormDisplayed) : false;
       formVisBools.isMailingAddressFormDisplayed = formVisBools.isMailingAddressFormDisplayed ? toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed) : false;
+      formVisBools.isAltContactFormDisplayed = formVisBools.isAltContactFormDisplayed ? toggleElementVisibility(altContactElementArray, formVisBools.isAltContactFormDisplayed) : false;
+      break;
+    case FormTypes.ALT_CONTACT:
+      formVisBools.isNameFormDisplayed = formVisBools.isNameFormDisplayed ? toggleElementVisibility(nameElementArray, formVisBools.isNameFormDisplayed) : false;
+      formVisBools.isContactInformationFormDisplayed = formVisBools.isContactInformationFormDisplayed ? toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed) : false;
+      formVisBools.isLoginFormDisplayed = formVisBools.isLoginFormDisplayed ? toggleElementVisibility(loginElementArray, formVisBools.isLoginFormDisplayed) : false;
+      formVisBools.isMailingAddressFormDisplayed = formVisBools.isMailingAddressFormDisplayed ? toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed) : false;
+      formVisBools.isPhysicalMailingAddressFormDisplayed = formVisBools.isPhysicalMailingAddressFormDisplayed ? toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed) : false;
       break;
     case FormTypes.LOGIN:
       formVisBools.isNameFormDisplayed = formVisBools.isNameFormDisplayed ? toggleElementVisibility(nameElementArray, formVisBools.isNameFormDisplayed) : false;
       formVisBools.isContactInformationFormDisplayed = formVisBools.isContactInformationFormDisplayed ? toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed) : false;
       formVisBools.isMailingAddressFormDisplayed = formVisBools.isMailingAddressFormDisplayed ? toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed) : false;
-    formVisBools.isPhysicalMailingAddressFormDisplayed = formVisBools.isPhysicalMailingAddressFormDisplayed ? toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed) : false;
+      formVisBools.isPhysicalMailingAddressFormDisplayed = formVisBools.isPhysicalMailingAddressFormDisplayed ? toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed) : false;
+      formVisBools.isAltContactFormDisplayed = formVisBools.isAltContactFormDisplayed ? toggleElementVisibility(altContactElementArray, formVisBools.isAltContactFormDisplayed) : false;
       break;
     default:
       break;
@@ -712,6 +769,8 @@ export const toggleButtonText = () => {
   btnObj.changeMailingAddressButton.setAttribute('data-i18n',formVisBools.isMailingAddressFormDisplayed ? 'settings.cancel' : 'settings.updateAddress');
   btnObj.changePhysicalMailingAddressButton.textContent = formVisBools.isPhysicalMailingAddressFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateAddress');
   btnObj.changePhysicalMailingAddressButton.setAttribute('data-i18n',formVisBools.isPhysicalMailingAddressFormDisplayed ? 'settings.cancel' : 'settings.updateAddress');
+  btnObj.changeAltContactButton.textContent = formVisBools.isAltContactFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateAltContact');
+  btnObj.changeAltContactButton.setAttribute('data-i18n',formVisBools.isAltContactFormDisplayed ? 'settings.cancel' : 'settings.updateAltContact');
   btnObj.changeLoginButton.textContent = formVisBools.isLoginFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateSignIn');
   btnObj.changeLoginButton.setAttribute('data-i18n', formVisBools.isLoginFormDisplayed ? 'settings.cancel' : 'settings.updateSignIn');
 };
@@ -1401,13 +1460,13 @@ export const renderMailingAddressHeadingAndButton = () => {
 export const renderPhysicalMailingAddressHeadingAndButton = () => {
   return translateHTML(`
       <div class="row">
-          <div class="col-12 col-sm-6">
+          <div class="col-12 col-sm-8">
               <span class="userProfileLabels" data-i18n="settings.physicalMailAddress">
                   Physical Address (Optional)
               </span><br>
               <i data-i18n="settings.physicalMailAddressNote">If different from mailing address</i>
           </div>
-          <div class="col-12 col-sm-6 d-flex justify-content-end">
+          <div class="col-12 col-sm-4 d-flex justify-content-end">
               <button id="changePhysicalMailingAddressButton" class="btn btn-primary save-data consentNextButton px-3" style="float:right; display:none;" data-i18n="settings.updateAddressText">Update Address</button>
           </div>
       </div>
@@ -1445,9 +1504,9 @@ export const renderPhysicalMailingAddressData = (id) => {
                     <div class="userProfileBodyFonts" id="profileMailingAddress${id}">
                         ${!isParticipantDataDestroyed ?
                         `
-                            ${userData[cId.physicalAddress1]}</br>
+                            ${userData[cId.physicalAddress1] ? userData[cId.physicalAddress1]+'</br>' : ''}
                             ${userData[cId.physicalAddress2] ? `${userData[cId.physicalAddress2]}</br>` : ''}
-                            ${userData[cId.physicalCity]} ${userData[cId.physicalState] ? ',':''} ${userData[cId.physicalState]} ${userData[cId.physicalZip]}    
+                            ${(userData[cId.physicalCity] ? userData[cId.physicalCity] : '')+(userData[cId.physicalCity] && userData[cId.physicalState] ? ', ':' ')+(userData[cId.physicalState] ? userData[cId.physicalState]+' ' : '')+(userData[cId.physicalZip] ? userData[cId.physicalZip] : '')}    
                         ` 
                         : translateText('settings.dataDeleted')
                     }
@@ -1543,6 +1602,60 @@ export const renderChangeMailingAddressGroup = (id) => {
         </div>
         `);
 };
+
+export const renderAltContactHeadingAndButton = () => {
+    return translateHTML(`
+        <div class="row">
+            <div class="col-12 col-sm-8">
+                <span class="userProfileLabels" data-i18n="settings.altContact">
+                    Other Contact Information
+                </span><br>
+                <i data-i18n="settings.altContactNote">If different from mailing address</i>
+            </div>
+            <div class="col-12 col-sm-4 d-flex justify-content-end">
+                <button id="changeAltContactButton" class="btn btn-primary save-data consentNextButton px-3" style="float:right; display:none;" data-i18n="settings.updateAltContactText">Update Information</button>
+            </div>
+        </div>
+        `);
+  };
+
+export const renderAltContactData = () => {
+    return translateHTML(`
+        <div class="row userProfileLinePaddings" id="altContactDataDiv"">
+            <div class="col">
+                <b>
+                <div class="userProfileBodyFonts" id="altContact">
+                    ${!isParticipantDataDestroyed ?
+                    `TODO: Render Alternative Contact Information
+                    ` 
+                    : translateText('settings.dataDeleted')
+                }
+                </div>
+                </b>
+                </span>
+            </div>
+        </div>
+    `);
+}
+
+export const renderChangeAltContactGroup = () => {
+    return translateHTML(`
+        <div class="row userProfileLinePaddings" id="changeAltContactGroup" style="display:none;">
+            <div class="col">
+                <b>
+                <div class="userProfileBodyFonts" id="altContact">
+                    ${!isParticipantDataDestroyed ?
+                    `TODO: Render Alternative Contact Form
+                    ` 
+                    : translateText('settings.dataDeleted')
+                }
+                </div>
+                </b>
+                </span>
+            </div>
+        </div>
+    `);
+}
 
 const renderStates = () => {
   let options = '';
