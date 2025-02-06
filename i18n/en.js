@@ -1725,6 +1725,7 @@ const en = {
         "viewed": "Viewed",
         "declined": "Declined",
         "empty": "<p>You don't have any results reports available. We will send you a message when we have a new report ready for you.</p><p>Now is a good time to check and see if you have any surveys or other study activities left to finish. Doing so will ensure you receive reports when they are available.</p><p>If you have any questions, contact the <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Connect Support Center</a>.</p>  ",
+        "withdrawn": "<p>You don’t have any results reports available. You have withdrawn from Connect.</p><p>If you have any questions, contact the <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Connect Support Center</a>.</p>",
         "noReadReports": "You have no viewed Reports.",
         "noUnreadReports": "You have no unread Reports.",
         "noDeclinedReports": "You have no declined Reports.",
