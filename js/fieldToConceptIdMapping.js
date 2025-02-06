@@ -11,6 +11,7 @@ export default
     "consentLastName": 736251808,
     "consentSuffix": 480305327,
     "consentDate":454445267,
+    "consentWithdrawn": 747006172,
     "suffix":506826178,
     "suffixValue": {
         "jr": 612166858,
