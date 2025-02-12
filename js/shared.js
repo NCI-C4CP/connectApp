@@ -715,6 +715,61 @@ export const allStates = {
     "NA": 52
 }
 
+export const statesWithAbbreviations = {
+    Alabama: "AL",
+    Alaska: "AK",
+    Arizona: "AZ",
+    Arkansas: "AR",
+    California: "CA",
+    Colorado: "CO",
+    Connecticut: "CT",
+    Delaware: "DE",
+    "District of Columbia": "DC",
+    Florida: "FL",
+    Georgia: "GA",
+    Hawaii: "HI",
+    Idaho: "ID",
+    Illinois: "IL",
+    Indiana: "IN",
+    Iowa: "IA",
+    Kansas: "KS",
+    Kentucky: "KY",
+    Louisiana: "LA",
+    Maine: "ME",
+    Maryland: "MD",
+    Massachusetts: "MA",
+    Michigan: "MI",
+    Minnesota: "MN",
+    Mississippi: "MS",
+    Missouri: "MO",
+    Montana: "MT",
+    Nebraska: "NE",
+    Nevada: "NV",
+    "New Hampshire": "NH",
+    "New Jersey": "NJ",
+    "New Mexico": "NM",
+    "New York": "NY",
+    "North Carolina": "NC",
+    "North Dakota": "ND",
+    Ohio: "OH",
+    Oklahoma: "OK",
+    Oregon: "OR",
+    Pennsylvania: "PA",
+    "Rhode Island": "RI",
+    "South Carolina": "SC",
+    "South Dakota": "SD",
+    Tennessee: "TN",
+    Texas: "TX",
+    Utah: "UT",
+    Vermont: "VT",
+    Virginia: "VA",
+    Washington: "WA",
+    "West Virginia": "WV",
+    Wisconsin: "WI",
+    Wyoming: "WY",
+    NA: "NA", // Assuming NA should remain NA
+};
+
 export const allCountries = {
     "United States":1,
     "Afghanistan":2,
@@ -972,6 +1027,18 @@ export const BirthMonths = {
     "11": "11 - November",
     "12": "12 - December"
 }
+
+export const swapKeysAndValues = (obj) => {
+    const swapped = {};
+
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            swapped[obj[key]] = key; // Direct swap (no duplicate check)
+        }
+    }
+
+    return swapped;
+};
 
 export const showAnimation = () => {
     if(document.getElementById('loadingAnimation')) document.getElementById('loadingAnimation').style.display = '';
@@ -2409,6 +2476,20 @@ export const getFirebaseUI = async () => {
 export const emailAddressValidation = async (data) => {
     const idToken = appState.getState().idToken;
     const response = await fetch(`${api}?api=emailAddressValidation`, {
+        method: "POST",
+        headers: {
+            Authorization: "Bearer " + idToken
+        },
+        body: JSON.stringify(data)
+    });
+
+    const jsonResponse = await response.json();
+    return jsonResponse;
+}
+
+export const addressValidation = async (data) => {
+    const idToken = appState.getState().idToken;
+    const response = await fetch(`${api}?api=addressValidation`, {
         method: "POST",
         headers: {
             Authorization: "Bearer " + idToken
