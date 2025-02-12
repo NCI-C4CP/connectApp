@@ -1,5 +1,5 @@
 import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, errorMessage, BirthMonths, getAge, getMyData, 
-    hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validNameFormat } from "./shared.js";
+    hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
 import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, requestPINTemplate } from "./pages/healthCareProvider.js";
 import { myToDoList } from "./pages/myToDoList.js";
@@ -450,6 +450,83 @@ const addAnotherEmailField = () => {
     document.getElementById('additionalEmailBtn').innerHTML = '';
 }
 
+const validateAddress = async (focus, addr1Id, addr2Id, cityId, stateId, zipId) => {
+    let hasError = false
+    const result = {}
+    const streetAddress = document.getElementById(addr1Id).value
+    const secondaryAddress = document.getElementById(addr2Id)?.value || ""
+    const ct = document.getElementById(cityId).value
+    const state = document.getElementById(stateId).value
+    const zipCode = document.getElementById(zipId).value
+    const addrValidationPayload = {
+        streetAddress,
+        secondaryAddress,
+        city: ct,
+        state: statesWithAbbreviations[state],
+        zipCode
+    }
+    const _addressValidation = await addressValidation(addrValidationPayload);
+    if (_addressValidation.error) {
+        hasError = true;
+        if (_addressValidation.error.errors.length) {
+            _addressValidation.error.errors.forEach((item) => {
+                if (item.code === "010005") {
+                    errorMessage(
+                        addr1Id,
+                        '<span data-i18n="event.invalidAddress">' +
+                        translateText("event.invalidAddress") +
+                        "</span>",
+                        focus
+                    );
+                    if (focus)
+                        document.getElementById(addr1Id).focus();
+                    focus = false;
+                }
+                if (item.code === "010002") {
+                    errorMessage(
+                        zipId,
+                        '<span data-i18n="event.invalidZip">' +
+                        translateText("event.invalidZip") +
+                        "</span>",
+                        focus
+                    );
+                    if (focus)
+                        document.getElementById(zipId).focus();
+                    focus = false;
+                }
+            });
+        } else {
+            errorMessage(
+                addr1Id,
+                "<span>" + _addressValidation.error.message + "</span>",
+                focus
+            );
+            if (focus) document.getElementById(addr1Id).focus();
+            focus = false;
+        }
+    } else {
+        const { address } = _addressValidation
+        if (
+            streetAddress.toLowerCase() !== address.streetAddress.toLowerCase() ||
+            secondaryAddress.toLowerCase() !== address.secondaryAddress.toLowerCase() ||
+            ct.toLowerCase() !== address.city.toLowerCase() ||
+            statesWithAbbreviations[state].toLowerCase() !== address.state.toLowerCase() ||
+            zipCode !== address.ZIPCode
+        ) {
+            result.original = { ...addrValidationPayload, state }
+            result.suggestion = {
+                ...address,
+                state: swapKeysAndValues(statesWithAbbreviations)[address.state],
+                zipCode: address.ZIPCode
+            }
+        }
+    }
+    return {
+        hasError,
+        result
+    }
+}
+    
 export const addEventUPSubmit = async () => {
     const userProfileForm = document.getElementById('userProfileForm');
     userProfileForm.addEventListener('submit', async e => {
@@ -678,12 +755,14 @@ export const addEventUPSubmit = async () => {
             focus = false;
             hasError = true;
         }*/
+
+        document.getElementById('userProfileSubmitButton').disabled = true
         const emailValidation = await emailAddressValidation({
             emails: {
                 upEmail: email.trim(),
-                upEmail2: email2 ? email2.value.trim() : undefined,
-                upAdditionalEmail2: email3 ? email3.value.trim() : undefined,
-                upAdditionalEmail3: email4 ? email4.value.trim() : undefined,
+                upEmail2: email2 ? email2.value.trim() : null,
+                upAdditionalEmail2: email3 ? email3.value.trim() : null,
+                upAdditionalEmail3: email4 ? email4.value.trim() : null,
             },
         });
         const riskyEmails = []
@@ -765,8 +844,31 @@ export const addEventUPSubmit = async () => {
             
         }
 
-        if(hasError) return false;
-        
+        /* Validate emailAddress/physicalAddress */
+        const uspsSuggestion = {
+            mailAddress: {},
+            physicalAddress: {},
+        }
+        const validateMailAddress = await validateAddress(focus, "UPAddress1Line1", "UPAddress1Line2", "UPAddress1City", "UPAddress1State", "UPAddress1Zip")
+        hasError = validateMailAddress.hasError
+        uspsSuggestion.mailAddress = validateMailAddress.result
+
+        if (document.getElementById('UPAddress2Line1').value &&
+            document.getElementById('UPAddress2City').value &&
+            document.getElementById('UPAddress2State').value &&
+            document.getElementById('UPAddress2Zip').value) {
+
+            const validatePhysicalAddress = await validateAddress(focus, "UPAddress2Line1", "UPAddress2Line2", "UPAddress2City", "UPAddress2State", "UPAddress2Zip")
+            hasError = hasError | validatePhysicalAddress.hasError
+            uspsSuggestion.physicalAddress = validatePhysicalAddress.result
+        }
+        document.getElementById('userProfileSubmitButton').disabled = false
+
+        if (hasError) {
+            showInvalidFormWarning()
+            return false;
+        }
+
         let formData = {};
         formData['399159511'] = document.getElementById('UPFirstName').value.trim();
         formData['231676651'] = document.getElementById('UPMiddleInitial').value.trim();
@@ -940,15 +1042,123 @@ export const addEventUPSubmit = async () => {
 
         formData['117249500'] = ageToday;
 
-        if (riskyEmails.length) {
-            showRiskyEmailWarning(riskyEmails, formData)
-        } else {
-            verifyUserDetails(formData);
-        }
+
+        preVerifyUserDetails(uspsSuggestion, riskyEmails, formData)
     });
 }
 
-const showRiskyEmailWarning = (riskyEmails, formData) => {
+const preVerifyUserDetails = (uspsSuggestion, riskyEmails, formData) => {
+    if (riskyEmails.length) {
+        showRiskyEmailWarning(uspsSuggestion, riskyEmails, formData);
+    } else if (uspsSuggestion.mailAddress.suggestion) {
+        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData);
+    } else if (uspsSuggestion.physicalAddress.suggestion) {
+        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData, true);
+    } else {
+        verifyUserDetails(formData);
+    }
+};
+
+const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, isPhysical) => {
+    if (!document.getElementById('connectMainModal').classList.contains('show')) openModal();
+    const addrSuggestion = !isPhysical ? uspsSuggestion.mailAddress : uspsSuggestion.physicalAddress
+
+    const headerHtml = `
+        <h2 style="color: #333;" data-i18n="event.addressSuggestionTitle">Address Verification</h2>
+    `
+    const bodyHtml = `
+        <div style="margin-bottom: 20px;" data-i18n="event.addressSuggestionDescription">
+            We can’t verify your address but found a close match. Please confirm the correct address or enter a different address.
+        </div>
+        <div style="display: flex; gap: 20px;">
+            <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
+                <div style="margin-bottom: 15px;">
+                    ${addrSuggestion.original.streetAddress} ${addrSuggestion.original.secondaryAddress} <br>
+                    ${addrSuggestion.original.city} ${addrSuggestion.original.state} ${addrSuggestion.original.zipCode} 
+                </div>
+                <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressSuggestionKeepButton" data-i18n="event.addressSuggestionKeepButton">Keep address I entered</button>
+            </div>
+            <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
+                <div style="margin-bottom: 15px;">
+                    ${addrSuggestion.suggestion.streetAddress} ${addrSuggestion.suggestion.secondaryAddress}<br>
+                    ${addrSuggestion.suggestion.city} ${addrSuggestion.suggestion.state} ${addrSuggestion.suggestion.zipCode} 
+                </div>
+                <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressSuggestionUseButton" data-i18n="event.addressSuggestionUseButton">Use suggested address</button>
+            </div>
+        </div>
+    `
+
+    document.getElementById('connectModalHeader').innerHTML = translateHTML(headerHtml)
+    document.getElementById('connectModalBody').innerHTML = translateHTML(bodyHtml);
+    document.getElementById('connectModalFooter').innerHTML = translateHTML(`
+        <div class="d-flex justify-content-between w-100">
+            <button data-i18n="event.navButtonsClose" type="button" title="Go Back" class="btn btn-dark" data-bs-dismiss="modal" id="goBackButton">Go Back</button>
+        </div>
+    `);
+
+    document.getElementById('addressSuggestionKeepButton').addEventListener('click', async () => {
+        if (!isPhysical) {
+            uspsSuggestion.mailAddress = {}
+        } else {
+            uspsSuggestion.physicalAddress = {}
+        }
+
+        document.getElementById('goBackButton').click()
+        preVerifyUserDetails(uspsSuggestion, riskyEmails, formData)
+    })
+
+    document.getElementById('addressSuggestionUseButton').addEventListener('click', () => {
+        if (!isPhysical) {
+            document.getElementById("UPAddress1Line1").value = addrSuggestion.suggestion.streetAddress
+            document.getElementById("UPAddress1Line2").value = addrSuggestion.suggestion.secondaryAddress
+            document.getElementById("UPAddress1City").value = addrSuggestion.suggestion.city
+            document.getElementById("UPAddress1State").value = addrSuggestion.suggestion.state
+            document.getElementById("UPAddress1Zip").value = addrSuggestion.suggestion.zipCode
+
+            formData['521824358'] = addrSuggestion.suggestion.streetAddress
+            formData['442166669'] = addrSuggestion.suggestion.secondaryAddress
+            formData['703385619'] = addrSuggestion.suggestion.city
+            formData['634434746'] = addrSuggestion.suggestion.state
+            formData['892050548'] = addrSuggestion.suggestion.zipCode
+            uspsSuggestion.mailAddress = {}
+        } else {
+            document.getElementById("UPAddress2Line1").value = addrSuggestion.suggestion.streetAddress
+            document.getElementById("UPAddress2Line2").value = addrSuggestion.suggestion.secondaryAddress
+            document.getElementById("UPAddress2City").value = addrSuggestion.suggestion.city
+            document.getElementById("UPAddress2State").value = addrSuggestion.suggestion.state
+            document.getElementById("UPAddress2Zip").value = addrSuggestion.suggestion.zipCode
+
+            formData[fieldMapping.physicalAddress1] = addrSuggestion.suggestion.streetAddress
+            formData[fieldMapping.physicalAddress2] = addrSuggestion.suggestion.secondaryAddress
+            formData[fieldMapping.physicalCity] = addrSuggestion.suggestion.city
+            formData[fieldMapping.physicalState] = addrSuggestion.suggestion.state
+            formData[fieldMapping.physicalZip] = addrSuggestion.suggestion.zipCode
+
+            uspsSuggestion.physicalAddress = {}
+        }
+
+        document.getElementById('goBackButton').click()
+        preVerifyUserDetails(uspsSuggestion, riskyEmails, formData)
+    })
+}
+
+const showInvalidFormWarning = () => {
+    if (!document.getElementById('connectMainModal').classList.contains('show')) openModal();
+    let bodyHtml = `
+        <span data-i18n="event.invalidFormWarning">
+            Please fix the errors in the information you entered before continuing. If you are having problems fixing these errors and can’t submit your profile, please reach out to the <a href="https://myconnect.cancer.gov/support" target="_blank">Connect Support Center</a> for help.
+        </span>
+    `
+    document.getElementById('connectModalBody').innerHTML = translateHTML(bodyHtml);
+    document.getElementById('connectModalFooter').innerHTML = translateHTML(`
+        <div class="d-flex justify-content-between w-100">
+            <button data-i18n="event.navButtonsClose" type="button" title="Go Back" class="btn btn-dark" data-bs-dismiss="modal">Go Back</button>
+        </div>
+    `);
+    document.getElementById('connectModalFooter').style.display = 'block';
+}
+
+const showRiskyEmailWarning = (uspsSuggestion, riskyEmails, formData) => {
     if(!document.getElementById('connectMainModal').classList.contains('show')) openModal();
     let bodyHtml = ''
     const escapeHTML = (str) => {
@@ -975,8 +1185,8 @@ const showRiskyEmailWarning = (riskyEmails, formData) => {
         </div>
     `);
     document.getElementById('connectModalFooter').style.display = 'block';
-    document.getElementById('confirmRiskyEmail').addEventListener('click', async () => {
-        verifyUserDetails(formData);
+    document.getElementById('confirmRiskyEmail').addEventListener('click', () => {
+        preVerifyUserDetails(uspsSuggestion, [], formData);
     })
 }
 
