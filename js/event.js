@@ -494,6 +494,7 @@ const validateAddress = async (focus, addr1Id, addr2Id, cityId, stateId, zipId) 
         zipCode
     }
     const _addressValidation = await addressValidation(addrValidationPayload);
+    console.error('User Profile - Invalid Address', addrValidationPayload, _addressValidation.error)
     if (_addressValidation.error) {
         hasError = true;
         if (_addressValidation.error.errors.length) {
