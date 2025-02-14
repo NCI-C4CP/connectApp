@@ -180,7 +180,7 @@
         "preferredEmail": "Dirección de correo electrónico preferida <span class=\"required\">*</span>",
         "preferredEmailField": {
             "title": "Ingrese una dirección de correo electrónico con este formato: nombre@ejemplo.com.",
-            "placeholder": "abc@mail.com"
+            "placeholder": "nombre@ejemplo.com"
         },
         "confirmPreferredEmail": "Confirme su dirección de correo electrónico preferida<span class=\"required\">*</span>",
         "confirmPreferredEmailField": {
@@ -271,6 +271,34 @@
         "mailAddressCountryRequired": "País <span class=\"required\">*</span>",
         "physicalAddress": "Dirección física (si es diferente de la dirección postal) ",
         "physicalAddressDesc": "Se necesita una dirección física para que Connect pueda enviarle paquetes por FedEx para algunas actividades del estudio. FedEx no hace envíos a apartados postales. ",
+        "otherContactInformation": "Otra información de contacto",
+        "otherContactIntroduction": "Queremos mantenernos en contacto con usted durante el tiempo que participe en el estudio. Por favor, bríndenos más información de contacto que nos ayude a comunicarnos con usted en el futuro.",
+        "altAddressQuestion": "¿Hay alguna otra dirección de correo que utilice?",
+        "whatIsTheAltAddress": "¿Cuál es la dirección?",
+        "altAddressLine1Label": "Línea 1 (calle, apartado postal, ruta rural)",
+        "altAddressLine1Field": {
+            "data-error-required": "Ingrese la primera línea de su dirección postal.",
+            "placeholder": "Ingrese la calle, el apartado postal, la ruta rural"
+        },
+        "altContactQuestion": "A veces nos enteramos de que las personas se han mudado cuando intentamos comunicarnos con ellas. Sería útil que pudiera brindarnos detalles de contacto de alguna persona cercana a usted (como un pariente o un amigo) que esté dispuesta a que nos comuniquemos con ella si no podemos ponernos en contacto con usted. Si no quiere brindarnos estos detalles de contacto adicionales, deje esta sección en blanco.",
+        "altContactFirstName": "Nombre de pila",
+        "altContactFirstNameField": {
+            "placeholder": "Ingrese su nombre de pila",
+            "data-error-validation": "Su nombre de pila debe contener solo letras mayúsculas y minúsculas. No use números ni caracteres especiales."
+        },
+        "altContactLastName": "Apellido",
+        "altContactLastNameField": {
+            "placeholder": "Ingrese su apellido",
+            "data-error-validation": "Su apellido debe contener solo letras mayúsculas y minúsculas. Por favor, no utilice ningún número."
+        },
+        "altContactHowCanWeReach": "¿Cómo podemos comunicarnos con esta persona?",
+        "altContactMobilePhone": "Teléfono celular",
+        "altContactHomePhone": "Teléfono de su casa",
+        "altContactEmail": "Correo electrónico",
+        "altContactEmailField": {
+            "title": "Ingrese una dirección de correo electrónico con este formato: nombre@ejemplo.com.",
+            "placeholder": "Ingrese una dirección de correo electrónico válida"
+        },
     },
     "navbar": {
         "dashboardLink": " Panel",
@@ -692,7 +720,7 @@
         "alreadyHaveAccount": "Nuestros registros muestran que ya tiene otra cuenta con una dirección de correo electrónico o número de teléfono diferente. Intente iniciar sesión de nuevo. Si necesita ayuda para acceder a su cuenta, escriba al Centro de Asistencia de Connect a <a href=\"mailto:ConnectAyuda@norc.org\">ConnectAyuda@norc.org</a> o llame al <span style=\"white-space:nowrap;overflow:hidden\">1-877-775-7004</span>.",
         "bodyConnectSupport": "escriba al Centro de Asistencia de Connect a <a href=\"mailto:ConnectAyuda@norc.org\">ConnectAyuda@norc.org</a> o llame al 1-877-775-7004.",
         "bodyHealthPartners": "Escriba a HealthPartners a <a href=\"mailto:ConnectStudy@healthpartners.com\">ConnectStudy@healthpartners.com</a> o llame al 952-967-5067",
-        "bodyHenryFord": "Escriba a Henry Ford Health System a <a href=\"mailto:ConnectStudy@hfhs.org\">ConnectStudy@hfhs.org</a>",
+        "bodyHenryFord": "Escriba a Henry Ford Health a <a href=\"mailto:ConnectStudy@hfhs.org\">ConnectStudy@hfhs.org</a>",
         "bodyKPColorado": "Escriba a KP Colorado a <a href=\"mailto:Connect-Study-KPCO@kp.org\">Connect-Study-KPCO@kp.org</a> o llame al 303-636-3126",
         "bodyKPGeorgia": "Escriba a KP Georgia a <a href=\"mailto:Connect-Study-KPGA@kp.org\">Connect-Study-KPGA@kp.org</a> o llame al 404-745-5115",
         "bodyKPHawaii": "Escriba a KP Hawaii a <a href=\"mailto:Connect-Study-KPHI@kp.org\">Connect-Study-KPHI@kp.org</a> o llame al 833-417-0846",
@@ -1132,8 +1160,28 @@
         "zipRequired": "Ingrese el campo de código postal de su dirección postal.",
         "submitMailUpdate": "Enviar modificación de dirección postal",
         "submitPhysicalUpdate": "Enviar modificación de dirección postal",
+        "submitAltUpdate": "Enviar modificación de dirección postal alternativa",
         "successMailUpdate": "Se completó el cambio de dirección postal",
         "failMailUpdate": "¡Error al cambiar la dirección postal!",
+        "altAddress": "Dirección alternativa",
+        "altAddressNote": "Para cualquier otra dirección de correo postal que tenga",
+        "altAddressLine1": "Línea 1 (calle, apartado postal, ruta rural)  <span class=\"required\">*</span>",
+        "altAddressLine1Field": {
+            "data-error-required": "Ingrese la primera línea de su dirección postal.",
+            "placeholder": "Ingrese la calle, el apartado postal, la ruta rural"
+        },
+        "altContactHeader": "Contacto alternativo",
+        "altContactNote": "Para ayudarnos ponernos en comunicación con usted si perdemos contacto",
+        "altContactEmail": "Dirección de correo electrónico",
+
+        "altContactFirstNameFieldLabel": "Nombre de pila",
+        "altContactFirstNameField": {
+            "data-error-validation": "Su nombre de pila debe contener solo letras mayúsculas y minúsculas, y puede contener algunos caracteres especiales.",
+            "placeholder": "Ingrese su nombre de pila"
+        },
+        "altContactLastNameFieldLabel": "Apellido",
+        "altContactLastNameFieldValidation": "Su apellido debe contener solo letras mayúsculas y minúsculas, y puede contener algunos caracteres especiales.",
+        "altContactLastNameFieldPlaceholder": "Ingrese su apellido",
         "signInInfo": "Información de inicio de sesión",
         "signInEmail": "Dirección de correo electrónico de inicio de sesión",
         "signInPhone": "Número de teléfono de inicio de sesión",
@@ -1255,7 +1303,7 @@
         "phoneRequired": "Debe ingresar un número de teléfono. Ingrese al menos uno de los siguientes datos: número de teléfono de su casa, número de teléfono celular u otro número de teléfono.",
         "phoneFormat": "Ingrese un número de teléfono con este formato: 999-999-9999.",
         "phoneOnlyNumbers": "El número de teléfono solo puede contener números.",
-        "zipOnlyNumbers": "El código postal solo puede contener números.",
+        "zipOnlyNumbers": "Ingrese un código postal de 5 dígitos con este formato: 12345.",
         "cityOnlyLetters": "El nombre de la ciudad solo puede contener letras.",
         "confirmEmail": "Confirme su dirección de correo electrónico.",
         "emailsDoNotMatch": "Sus direcciones de correo electrónico no coinciden. Vuelva a escribir sus direcciones de correo electrónico.",

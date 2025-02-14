@@ -270,7 +270,34 @@ const en = {
         "mailAddressCountryRequired": "Country <span class=\"required\">*</span>",
         "physicalAddress": "Physical Address (if different from Mailing Address)",
         "physicalAddressDesc":"Physical address is needed so Connect can mail you packages via FedEx for some study activities. FedEx does not deliver to P.O. Boxes.",
-
+        "otherContactInformation": "Other Contact Information",
+        "otherContactIntroduction": "We would like to keep in touch with you during your time in the study. Please share more contact information to help us reach you in the future",
+        "altAddressQuestion": "Are there any other mailing addresses that you use?",
+        "whatIsTheAltAddress": "What is the address?",
+        "altAddressLine1Label": "Line 1 (street, PO box, rural route)",
+        "altAddressLine1Field": {
+            "data-error-required": "Please enter the first line of your mailing address.",
+            "placeholder": "Enter street, PO box, rural route"
+        },
+        "altContactQuestion": "Sometimes we find that people have moved when we try to contact them again. It would be helpful if you could give us contact details of someone close to you (such as a relative or friend) who would be willing for us to contact them if we are unable to reach you. Please leave this section blank if you do not want to share these extra contact details",
+        "altContactFirstName": "First name",
+        "altContactFirstNameField": {
+            "placeholder": "Enter first name",
+            "data-error-validation": "Your first name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters."
+        },
+        "altContactLastName": "Last name",
+        "altContactLastNameField": {
+            "placeholder": "Enter last name",
+            "data-error-validation": "Your last name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters."
+        },
+        "altContactHowCanWeReach": "How can we reach this person?",
+        "altContactMobilePhone": "Mobile phone",
+        "altContactHomePhone": "Home phone",
+        "altContactEmail": "Email",
+        "altContactEmailField": {
+            "title": "Please enter an email address in this format: name@example.com.",
+            "placeholder": "Enter a valid email address"
+        },
     },
     "navbar": {
         "dashboardLink": " Dashboard",
@@ -688,7 +715,7 @@ const en = {
         "alreadyHaveAccount": "Our records show that you already have another account with a different email or phone number. Please try signing in again. Contact the Connect Support Center by emailing <a href = \"mailto:ConnectSupport@norc.org\">ConnectSupport@norc.org</a> or calling <span style=\"white-space:nowrap;overflow:hidden\">1-877-505-0253</span> if you need help accessing your account.",
         "bodyConnectSupport": "the Connect Support Center by emailing <a href = \"mailto:ConnectSupport@norc.org\">ConnectSupport@norc.org</a> or calling 1-877-505-0253",
         "bodyHealthPartners": "HealthPartners by emailing <a href = \"mailto:ConnectStudy@healthpartners.com\">ConnectStudy@healthpartners.com</a> or calling 952-967-5067",
-        "bodyHenryFord": "Henry Ford Health System by emailing <a href = \"mailto:ConnectStudy@hfhs.org\">ConnectStudy@hfhs.org</a>",
+        "bodyHenryFord": "Henry Ford Health by emailing <a href = \"mailto:ConnectStudy@hfhs.org\">ConnectStudy@hfhs.org</a>",
         "bodyKPColorado": "KP Colorado by emailing <a href = \"mailto:Connect-Study-KPCO@kp.org\">Connect-Study-KPCO@kp.org</a> or calling 303-636-3126",
         "bodyKPGeorgia": "KP Georgia by emailing <a href = \"mailto:Connect-Study-KPGA@kp.org\">Connect-Study-KPGA@kp.org</a> or calling 404-745-5115",
         "bodyKPHawaii": "KP Hawaii by emailing <a href = \"mailto:Connect-Study-KPHI@kp.org\">Connect-Study-KPHI@kp.org</a> or calling 833-417-0846",
@@ -1128,8 +1155,27 @@ const en = {
         "zipRequired": "Please enter the zip field of your mailing address.",
         "submitMailUpdate": "Submit Mailing Address Update",
         "submitPhysicalUpdate": "Submit Physical Address Update",
+        "submitAltUpdate": "Submit Alternate Address Update",
         "successMailUpdate": "Mailing Address Change Success!",
         "failMailUpdate": "Mailing Address Change Failed!",
+        "altAddress": "Alternate Address",
+        "altAddressNote": "For any other mailing addresses you have",
+        "altAddressLine1": "Line 1 (street, PO box, rural route)  <span class=\"required\">*</span>",
+        "altAddressLine1Field": {
+            "data-error-required": "Please enter the first line of your mailing address.",
+            "placeholder": "Enter street, PO box, rural route"
+        },
+        "altContactHeader": "Alternate Contact",
+        "altContactNote": "To help us get in touch with you if we lose contact",
+        "altContactEmail": "Email",
+        "altContactFirstNameFieldLabel": "First name",
+        "altContactFirstNameField": {
+            "data-error-validation": "Your first name should contain only uppercase and lowercase letters and can contain some special characters.",
+            "placeholder": "Enter first name"
+        },
+        "altContactLastNameFieldLabel": "Last name",
+        "altContactLastNameFieldValidation": "Your last name should contain only uppercase and lowercase letters and can contain some special characters.",
+        "altContactLastNameFieldPlaceholder": "Enter last name",
         "signInInfo": "Sign In Information",
         "signInEmail": "Sign in Email Address",
         "signInPhone": "Sign in Phone Number",
@@ -1251,7 +1297,7 @@ const en = {
         "phoneRequired": "A phone number is required. Please provide at least one of the following: home phone, mobile phone, or other phone number.",
         "phoneFormat": "Please enter a phone number in this format: 999-999-9999.",
         "phoneOnlyNumbers": "Phone number may only contain numbers.",
-        "zipOnlyNumbers": "Zip code may only contain numbers.",
+        "zipOnlyNumbers": "Please enter a 5 digit zip code in this format: 12345",
         "cityOnlyLetters": "City name may only contain letters.",
         "confirmEmail": "Please confirm your email address.",
         "emailsDoNotMatch": "Your email addresses do not match. Please retype your email addresses.",

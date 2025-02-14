@@ -1,5 +1,5 @@
 import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, errorMessage, BirthMonths, getAge, getMyData, 
-    hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validNameFormat } from "./shared.js";
+    hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
 import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, requestPINTemplate } from "./pages/healthCareProvider.js";
 import { myToDoList } from "./pages/myToDoList.js";
@@ -164,6 +164,34 @@ export const addEventChangeFocus = () => {
     element32.addEventListener('keyup', () => {
         if(element32.value.trim().length === 3){
             element32.nextElementSibling.nextElementSibling.focus()
+        }
+    });
+
+    const altMobile1 = document.getElementById('altContactMobilePhone1');
+    altMobile1.addEventListener('keyup', () => {
+        if (altMobile1.value.trim().length === 3) {
+            altMobile1.nextElementSibling.nextElementSibling.focus()
+        }
+    });
+
+    const altMobile2 = document.getElementById('altContactMobilePhone2');
+    altMobile2.addEventListener('keyup', () => {
+        if (altMobile2.value.trim().length === 3) {
+            altMobile2.nextElementSibling.nextElementSibling.focus()
+        }
+    });
+
+    const altHome1 = document.getElementById('altContactHomePhone1');
+    altHome1.addEventListener('keyup', () => {
+        if (altHome1.value.trim().length === 3) {
+            altHome1.nextElementSibling.nextElementSibling.focus()
+        }
+    });
+
+    const altHome2 = document.getElementById('altContactHomePhone2');
+    altHome2.addEventListener('keyup', () => {
+        if (altHome2.value.trim().length === 3) {
+            altHome2.nextElementSibling.nextElementSibling.focus()
         }
     });
 }
@@ -584,12 +612,16 @@ export const addEventUPSubmit = async () => {
         const phoneNo = `${document.getElementById('UPPhoneNumber11').value}${document.getElementById('UPPhoneNumber12').value}${document.getElementById('UPPhoneNumber13').value}`;
         const phoneNo2 = `${document.getElementById('UPPhoneNumber21').value}${document.getElementById('UPPhoneNumber22').value}${document.getElementById('UPPhoneNumber23').value}`;
         const phoneNo3 = `${document.getElementById('UPPhoneNumber31').value}${document.getElementById('UPPhoneNumber32').value}${document.getElementById('UPPhoneNumber33').value}`;
+        const altContactMobilePhone = `${document.getElementById('altContactMobilePhone1').value}${document.getElementById('altContactMobilePhone2').value}${document.getElementById('altContactMobilePhone3').value}`;
+        const altContactHomePhone = `${document.getElementById('altContactHomePhone1').value}${document.getElementById('altContactHomePhone2').value}${document.getElementById('altContactHomePhone3').value}`;
         const email = document.getElementById('UPEmail').value;
         const email2 = document.getElementById('UPEmail2');
         const email3 = document.getElementById('UPAdditionalEmail2');
         const email4 = document.getElementById('UPAdditionalEmail3');
-        let zip = document.getElementById('UPAddress1Zip').value;
-        let city = document.getElementById('UPAddress1City');
+        const altContactEmail = document.getElementById('altContactEmail')?.value?.trim() || '';
+        const zip = document.getElementById('UPAddress1Zip').value;
+        const altAddressZip = document.getElementById('UPAddress3Zip').value || '';
+        
         if(!email){
             errorMessage('UPEmail', '<span data-i18n="event.enterEmail">'+translateText('event.enterEmail')+'</span>', focus);
             focus = false;
@@ -638,6 +670,24 @@ export const addEventUPSubmit = async () => {
             focus = false;
             hasError = true;
         }
+        if (altContactMobilePhone && altContactMobilePhone.length < 10) {
+            errorMessage('altContactMobilePhone1');
+            errorMessage('altContactMobilePhone2');
+            errorMessage('altContactMobilePhone3');
+            errorMessage('altContactMobilePhone', '<span data-i18n="event.phoneFormat">'+translateText('event.phoneFormat')+'</span>');
+            if(focus) document.getElementById('altContactMobilePhone1').focus();
+            focus = false;
+            hasError = true;
+        }
+        if (altContactHomePhone && altContactHomePhone.length < 10) {
+            errorMessage('altContactHomePhone1');
+            errorMessage('altContactHomePhone2');
+            errorMessage('altContactHomePhone3');
+            errorMessage('altContactHomePhone', '<span data-i18n="event.phoneFormat">'+translateText('event.phoneFormat')+'</span>');
+            if(focus) document.getElementById('altContactHomePhone1').focus();
+            focus = false;
+            hasError = true;
+        }
         if(phoneNo && !/[1-9]{1}[0-9]{9}/.test(phoneNo) ){
             errorMessage('UPPhoneNumber11');
             errorMessage('UPPhoneNumber12');
@@ -665,25 +715,44 @@ export const addEventUPSubmit = async () => {
             focus = false;
             hasError = true;
         }
+        if (altContactMobilePhone && !/[1-9]{1}[0-9]{9}/.test(altContactMobilePhone)) {
+            errorMessage('altContactMobilePhone1');
+            errorMessage('altContactMobilePhone2');
+            errorMessage('altContactMobilePhone3');
+            errorMessage('altContactMobilePhone', '<span data-i18n="event.phoneOnlyNumbers">'+translateText('event.phoneOnlyNumbers')+'</span>');
+            if(focus) document.getElementById('altContactMobilePhone1').focus();
+            focus = false;
+            hasError = true;
+        }
+        if (altContactHomePhone && !/[1-9]{1}[0-9]{9}/.test(altContactHomePhone)) {
+            errorMessage('altContactHomePhone1');
+            errorMessage('altContactHomePhone2');
+            errorMessage('altContactHomePhone3');
+            errorMessage('altContactHomePhone', '<span data-i18n="event.phoneOnlyNumbers">'+translateText('event.phoneOnlyNumbers')+'</span>');
+            if(focus) document.getElementById('altContactHomePhone1').focus();
+            focus = false;
+            hasError = true;
+        }
         if(zip && !/[0-9]{5}/.test(zip) ){
             errorMessage('UPAddress1Zip', '<span data-i18n="event.zipOnlyNumbers">'+translateText('event.zipOnlyNumbers')+'</span>');
             if(focus) document.getElementById('UPAddress1Zip').focus();
             focus = false;
             hasError = true;
         }
-        
-        /*if(city && !/^[a-zA-Z]+$/.test(city) ){
-            errorMessage('UPAddress1City', 'City name may only contain letters.');
-            if(focus) document.getElementById('UPAddress1City').focus();
+        if (altAddressZip && !/[0-9]{5}/.test(altAddressZip)) {
+            errorMessage('UPAddress3Zip', '<span data-i18n="event.zipOnlyNumbers">'+translateText('event.zipOnlyNumbers')+'</span>');
+            if(focus) document.getElementById('UPAddress3Zip').focus();
             focus = false;
             hasError = true;
-        }*/
+        }
+        
         const emailValidation = await emailAddressValidation({
             emails: {
                 upEmail: email.trim(),
                 upEmail2: email2 ? email2.value.trim() : undefined,
                 upAdditionalEmail2: email3 ? email3.value.trim() : undefined,
                 upAdditionalEmail3: email4 ? email4.value.trim() : undefined,
+                altContactEmail: altContactEmail || undefined,
             },
         });
         const riskyEmails = []
@@ -763,6 +832,21 @@ export const addEventUPSubmit = async () => {
             focus = false;
             hasError = true;
             
+        }
+
+        const altContactEmailValidationAnalysis = emailValidationAnalysis(emailValidation.altContactEmail);
+        if (altContactEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(altContactEmail);
+        if (altContactEmailValidationAnalysis === emailValidationStatus.INVALID) {
+            errorMessage(
+                "altContactEmail",
+                '<span data-i18n="settingsHelpers.emailInvalid">' +
+                translateText("settingsHelpers.emailInvalid") +
+                "</span>",
+                focus
+            );
+            if (focus) document.getElementById("altContactEmail").focus();
+            focus = false;
+            hasError = true;
         }
 
         if(hasError) return false;
@@ -917,6 +1001,33 @@ export const addEventUPSubmit = async () => {
         formData[fieldMapping.physicalZip] =
             getFieldValue("UPAddress2Zip");
 
+        // Alternate address (altAddressZip is validated above)
+        const altAddressLine1 = document.getElementById('UPAddress3Line1')?.value?.trim() || "";
+        const altAddressLine2 = document.getElementById('UPAddress3Line2')?.value?.trim() || "";
+        const altAddressCity = document.getElementById('UPAddress3City')?.value?.trim() || "";
+        const altAddressState = document.getElementById('UPAddress3State')?.value || "";
+        const altAddressIsPOBox = document.getElementById("poBoxCheckboxAltAddress")?.checked ? fieldMapping.yes : fieldMapping.no;
+
+        if (altAddressLine1 !== "") formData[fieldMapping.altAddress1] = altAddressLine1;
+        if (altAddressLine2 !== "") formData[fieldMapping.altAddress2] = altAddressLine2;
+        if (altAddressCity !== "") formData[fieldMapping.altCity] = altAddressCity;
+        if (altAddressState) formData[fieldMapping.altState] = altAddressState;
+        if (altAddressZip) formData[fieldMapping.altZip] = altAddressZip;
+
+        // Add P.O. Box status if any address field is filled
+        if (altAddressLine1 || altAddressLine2 || altAddressCity || altAddressState || altAddressZip) {
+            formData[fieldMapping.isPOBoxAltAddress] = altAddressIsPOBox;
+        }
+
+        // Alternate contact (phone and email fields validated above)
+        const altContactFirstName = document.getElementById('altContactFirstName')?.value?.trim() || "";
+        const altContactLastName = document.getElementById('altContactLastName')?.value?.trim() || "";
+        if (altContactFirstName !== "") formData[fieldMapping.altContactFirstName] = altContactFirstName;
+        if (altContactLastName !== "") formData[fieldMapping.altContactLastName] = altContactLastName;
+        if (altContactMobilePhone) formData[fieldMapping.altContactMobilePhone] = altContactMobilePhone;
+        if (altContactHomePhone) formData[fieldMapping.altContactHomePhone] = altContactHomePhone;
+        if (altContactEmail) formData[fieldMapping.altContactEmail] = altContactEmail;
+
         const cancer = document.getElementsByName('cancerHistory');
         Array.from(cancer).forEach(radioBtn => {
             if(radioBtn.checked) formData['452166062'] = parseInt(radioBtn.value);
@@ -934,8 +1045,6 @@ export const addEventUPSubmit = async () => {
         if(document.getElementById('UPCancerType') && document.getElementById('UPCancerType').value) formData['266952173'] = document.getElementById('UPCancerType').value;
         if(document.getElementById('UPCancerDiagnosis') && document.getElementById('UPCancerDiagnosis').value) formData['494982282'] = document.getElementById('UPCancerDiagnosis').value;
 
-
-        
         const ageToday = getAge(`${formData['544150384']}-${formData['564964481']}-${formData['795827569']}`);
 
         formData['117249500'] = ageToday;
@@ -957,6 +1066,16 @@ const showRiskyEmailWarning = (riskyEmails, formData) => {
         return div.innerHTML;
     };
 
+    document.getElementById('connectModalHeader').innerHTML = translateHTML(`
+        <button type="button" class="btn-close" id="modalCloseBtn" aria-label="Close"></button>
+    `);
+
+    // Add header close button listener
+    document.getElementById('modalCloseBtn').addEventListener('click', () => {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('connectMainModal'));
+        modal.hide();
+    });
+
     riskyEmails.forEach(item=>{
         const escapedItem = escapeHTML(item);
         bodyHtml += `
@@ -968,13 +1087,20 @@ const showRiskyEmailWarning = (riskyEmails, formData) => {
         `
     })
     document.getElementById('connectModalBody').innerHTML = translateHTML(bodyHtml);
+
     document.getElementById('connectModalFooter').innerHTML = translateHTML(`
         <div class="d-flex justify-content-between w-100">
-            <button data-i18n="event.navButtonsClose" type="button" title="Close" class="btn btn-dark" data-bs-dismiss="modal">Go Back</button>
-            <button data-i18n="event.navButtonsConfirm" type="button" id="confirmRiskyEmail" title="Confirm details" class="btn btn-primary consentNextButton" data-bs-dismiss="modal">Submit</button>
+            <button data-i18n="event.navButtonsClose" type="button" title="Close" class="btn btn-dark" id="goBackBtn">Go Back</button>
+            <button data-i18n="event.navButtonsConfirm" type="button" id="confirmRiskyEmail" title="Confirm details" class="btn btn-primary consentNextButton">Submit</button>
         </div>
     `);
     document.getElementById('connectModalFooter').style.display = 'block';
+
+    document.getElementById('goBackBtn').addEventListener('click', () => {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('connectMainModal'));
+        modal.hide();
+    });
+
     document.getElementById('confirmRiskyEmail').addEventListener('click', async () => {
         verifyUserDetails(formData);
     })
@@ -982,7 +1108,15 @@ const showRiskyEmailWarning = (riskyEmails, formData) => {
 
 const openModal = () => {
     const modalElement = document.getElementById('connectMainModal');
-    const modal = new bootstrap.Modal(modalElement);
+    modalElement.querySelectorAll('[data-bs-dismiss="modal"]').forEach(el => {
+        el.removeAttribute('data-bs-dismiss');
+    });
+
+    const modal = new bootstrap.Modal(modalElement, {
+        backdrop: 'static',
+        keyboard: false
+    });
+
     modal.show();
 };
 
@@ -1110,11 +1244,21 @@ export const removeAllErrors = () => {
 
 const verifyUserDetails = (formData) => {
     if(!document.getElementById('connectMainModal').classList.contains('show')) openModal();
+
     document.getElementById('connectModalHeader').innerHTML = translateHTML(`
-    <h4 data-i18n="event.reviewProfile">Review your profile details</h4>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <h4 data-i18n="event.reviewProfile">Review your profile details</h4>
+        <button type="button" class="btn-close" id="modalCloseBtn" aria-label="Close"></button>
     `);
+
+    // Add header close button listener
+    document.getElementById('modalCloseBtn').addEventListener('click', () => {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('connectMainModal'));
+        modal.hide();
+    });
+
     const { formerdata } = formData[fieldMapping.userProfileHistory];
+    const hasAltAddress = formData[fieldMapping.altAddress1] || formData[fieldMapping.altAddress2] || formData[fieldMapping.altCity] || formData[fieldMapping.altState] || formData[fieldMapping.altZip];
+
     let bodyHtml = `
         <div class="row">
             <div class="col" data-i18n="event.firstName">First name</div>
@@ -1363,6 +1507,77 @@ const verifyUserDetails = (formData) => {
             <div class="col">${formData[fieldMapping.physicalZip]}</div>
         </div>
 
+        <div class="row">
+            <div class="col"><strong data-i18n="settings.altAddress">Alternate Address</strong></div>
+        </div>
+        
+        <div class="row">
+            <div class="col" data-i18n="event.line1">Line 1 (street, PO box, rural route)</div>
+            <div class="col">${formData[fieldMapping.altAddress1] || ''}</div>
+        </div>
+
+        <div class="row">
+            <div class="col" data-i18n="event.line2">Line 2 (apartment, suite, unit, building)</div>
+            <div class="col">${formData[fieldMapping.altAddress2] || ''}</div>
+        </div>
+
+        <div class="row">
+            <div class="col" data-i18n="event.city">City</div>
+            <div class="col">${formData[fieldMapping.altCity] || ''}</div>
+        </div>
+
+        <div class="row">
+            <div class="col" data-i18n="event.state">State</div>
+            <div class="col">${formData[fieldMapping.altState] || ''}</div>
+        </div>
+
+        <div class="row">
+            <div class="col" data-i18n="event.zip">Zip</div>
+            <div class="col">${formData[fieldMapping.altZip] || ''}</div>
+        </div>
+
+        ${hasAltAddress ? `
+            <div class="row">
+                <div class="col" data-i18n="event.poBox">Mailing address is PO Box</div>
+                <div class="col" data-i18n="settings.${formData[fieldMapping.isPOBoxAltAddress] === fieldMapping.yes ? 'optYes' : 'optNo'}">
+                    ${formData[fieldMapping.isAltPOBox] === fieldMapping.yes ? "Yes" : "No"}
+                </div>
+            </div> 
+        `: ``}
+
+        <div class="row">
+            <div class="col"><strong data-i18n="settings.altContactHeader">Alternate Contact Information</strong></div>
+        </div>
+
+        <div class="row">
+            <div class="col" data-i18n="form.altContactFirstName">First name</div>
+            <div class="col">${formData[fieldMapping.altContactFirstName] || ''}</div>
+        </div>
+    
+        <div class="row">
+            <div class="col" data-i18n="form.altContactLastName">Last name</div>
+            <div class="col">${formData[fieldMapping.altContactLastName] || ''}</div>
+        </div>
+        
+        <!--<div class="row">
+            <div class="col"><strong data-i18n="form.altContactPhoneEmail">Alternative Contact Phone and Email</strong></div>
+        </div>-->
+
+        <div class="row">
+            <div class="col" data-i18n="form.altContactMobilePhone">Mobile phone</div>
+            <div class="col">${formData[fieldMapping.altContactMobilePhone] ? `${formData[fieldMapping.altContactMobilePhone].substr(0, 3)} - ${formData[fieldMapping.altContactMobilePhone].substr(3, 3)} - ${formData[fieldMapping.altContactMobilePhone].substr(6, 4)}` : ''}</div>
+        </div>
+    
+        <div class="row">
+            <div class="col" data-i18n="form.altContactHomePhone">Home phone</div>
+            <div class="col">${formData[fieldMapping.altContactHomePhone] ? `${formData[fieldMapping.altContactHomePhone].substr(0, 3)} - ${formData[fieldMapping.altContactHomePhone].substr(3, 3)} - ${formData[fieldMapping.altContactHomePhone].substr(6, 4)}` : ''}</div>
+        </div>
+    
+        <div class="row">
+            <div class="col" data-i18n="form.altContactEmail">Email</div>
+            <div class="col">${formData[fieldMapping.altContactEmail] || ''}</div>
+        </div>
+
         ${formData['452166062'] ? `
         <div class="row">
             <div class="col" data-i18n="event.invasiveCancer">Have you ever had invasive cancer?</div>
@@ -1395,35 +1610,43 @@ const verifyUserDetails = (formData) => {
 
     document.getElementById('connectModalFooter').innerHTML = translateHTML(`
         <div class="d-flex justify-content-between w-100">
-            <button data-i18n="event.navButtonsClose" type="button" title="Close" class="btn btn-dark" data-bs-dismiss="modal">Go Back</button>
-            <button data-i18n="event.navButtonsConfirm" type="button" id="confirmReview" title="Confirm details" class="btn btn-primary consentNextButton" data-bs-dismiss="modal">Submit</button>
+            <button data-i18n="event.navButtonsClose" type="button" title="Close" class="btn btn-dark" id="goBackBtn">Go Back</button>
+            <button data-i18n="event.navButtonsConfirm" type="button" id="confirmReview" title="Confirm details" class="btn btn-primary consentNextButton">Submit</button>
         </div>
     `);
     document.getElementById('connectModalFooter').style.display = 'block';
 
-    //make sure this is not hidden
-
+    document.getElementById('goBackBtn').addEventListener('click', () => {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('connectMainModal'));
+        modal.hide();
+    });
 
     document.getElementById('confirmReview').addEventListener('click', async () => {
+        const modal = bootstrap.Modal.getInstance(document.getElementById('connectMainModal'));
         dataSavingBtn('save-data');
         formData['699625233'] = 353358909;
         formData['430551721'] = new Date().toISOString();
 
-        const { formerdata } =
-            formData[fieldMapping.userProfileHistory];
+        const { formerdata } = formData[fieldMapping.userProfileHistory];
         formData[fieldMapping.userProfileHistory] = formerdata || [];
-        
-        showAnimation();
-        const response = await storeResponse(formData);
-        if(response.code === 200) {
-            const myData = await getMyData();
-            hideAnimation();
-            if(hasUserData(myData)){
-                myToDoList(myData.data, true);
-            }
-        }
-    })
 
+        showAnimation();
+
+        try {
+            const response = await storeResponse(formData);
+            if (response.code === 200) {
+                modal.hide(); // Close modal after successful response
+                const myData = await getMyData();
+                if (hasUserData(myData)) {
+                    myToDoList(myData.data, true);
+                }
+            }
+        } catch (error) {
+            console.error('Error storing response:', error);
+        } finally {
+            hideAnimation();
+        }
+    });
 }
 
 export const addEventPinAutoUpperCase = () => {

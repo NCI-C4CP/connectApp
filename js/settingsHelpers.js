@@ -7,6 +7,8 @@ export const showEditButtonsOnUserVerified = () => {
   document.getElementById('changeContactInformationButton').style.display = 'block';
   document.getElementById('changeMailingAddressButton').style.display = 'block';
   document.getElementById('changePhysicalMailingAddressButton').style.display = 'block';
+  document.getElementById('changeAltAddressButton').style.display = 'block';
+  document.getElementById('changeAltContactButton').style.display = 'block';
   document.getElementById('changeLoginButton').style.display = 'block';
 };
 
@@ -151,6 +153,8 @@ export const FormTypes = {
   CONTACT: 'contactForm',
   MAILING: 'mailingForm',
   PHYSICAL_MAILING: 'physicalMailingForm',
+  ALT_ADDRESS: 'altAddressForm',
+  ALT_CONTACT: 'altContactForm',
   LOGIN: 'loginForm',
 };
 
@@ -192,8 +196,19 @@ export const formatFirebaseAuthPhoneNumber = (phoneNumber) => {
   };
 };
 
-export const updatePhoneNumberInputFocus = () => {
-  const phoneElementIds = ['mobilePhoneNumber1', 'mobilePhoneNumber2', 'homePhoneNumber1', 'homePhoneNumber2', 'otherPhoneNumber1', 'otherPhoneNumber2'];
+export const updatePhoneNumberInputFocus = (formType) => {
+  
+  let phoneElementIds;
+  if (formType === FormTypes.CONTACT) {
+    phoneElementIds = ['mobilePhoneNumber1', 'mobilePhoneNumber2', 'homePhoneNumber1', 'homePhoneNumber2', 'otherPhoneNumber1', 'otherPhoneNumber2'];
+
+  } else if (formType === FormTypes.ALT_CONTACT) {
+    phoneElementIds = ['altContactMobilePhoneNumber1', 'altContactMobilePhoneNumber2', 'altContactHomePhoneNumber1', 'altContactHomePhoneNumber2'];
+
+  } else {
+    console.error('ERROR: bad formType in updatePhoneNumberInputFocus');
+    return;
+  }
 
   const initFocusHandler = elementId => {
     const element = document.getElementById(elementId);
@@ -366,6 +381,44 @@ export const validateMailingAddress = (id, addressLine1, city, state, zip) => {
   return true;
 };
 
+
+export const validateAltContactInformation = async (altContactMobilePhoneComplete, altContactHomePhoneComplete, altContactEmail) => {
+  removeAllErrors();
+  let hasError = false;
+  let focus = true;
+
+  if (altContactMobilePhoneComplete && !validPhoneNumberFormat.test(altContactMobilePhoneComplete)) {
+    errorMessage('editAltContactMobilePhone', translateText('settingsHelpers.phoneFormat'));
+    if (focus) document.getElementById('editAltContactMobilePhone').focus();
+    focus = false;
+    hasError = true;
+  }
+
+  if (altContactHomePhoneComplete && !validPhoneNumberFormat.test(altContactHomePhoneComplete)) {
+    errorMessage('editAltContactHomePhone', translateText('settingsHelpers.phoneFormat'));
+    if (focus) document.getElementById('editAltContactHomePhone').focus();
+    focus = false;
+    hasError = true;
+  }
+
+  if (altContactEmail) {
+    const emailValidation = await emailAddressValidation({
+      emails: {
+        altContactEmail: altContactEmail || undefined,
+      },
+    });
+
+    if (emailValidationAnalysis(emailValidation.altContactEmail) === emailValidationStatus.INVALID) {
+      errorMessage('newAltContactEmail', translateText('settingsHelpers.emailInvalid'), focus);
+      if (focus) document.getElementById('newAltContactEmail').focus();
+      focus = false;
+      hasError = true;
+    }
+  }
+
+  return !hasError;
+};
+
 export const validateLoginEmail = (email, emailConfirm) => {
   if (email === emailConfirm) {
     if (validEmailFormat.test(email)) {
@@ -409,7 +462,7 @@ export const changeName = async (firstName, lastName, middleName, suffix, prefer
   let { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValues, userData, 'changeName');
   changedUserDataForProfile = handleNameField(firstNameTypes, 'firstName', changedUserDataForProfile, userData);
   changedUserDataForProfile = handleNameField(lastNameTypes, 'lastName', changedUserDataForProfile, userData);
-  const isSuccess = processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'changeName');
+  const isSuccess = await processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'changeName');
   return isSuccess;
 };
 
@@ -446,7 +499,7 @@ export const changeContactInformation = async (mobilePhoneNumberComplete, homePh
   let { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValues, userData, 'changeContactInformation');
   changedUserDataForProfile = handleAllPhoneNoField(changedUserDataForProfile, userData);
   changedUserDataForProfile = handleAllEmailField(changedUserDataForProfile, userData);
-  const isSuccess = processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'changeContactInformation');
+  const isSuccess = await processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'changeContactInformation');
   return isSuccess;
 };
 
@@ -534,30 +587,84 @@ const handleAllEmailField = (changedUserDataForProfile, userData) => {
   return changedUserDataForProfile;
 };
 
+/**
+ * Update the mailing address, physical mailing address, or alternate address in the user profile.
+ * All address changes are tied to user profile history.
+ * @param {number} id - The id of the address to update. 1: mailing, 2: physical, 3: alternate 
+ * @param {string} addressLine1 - The first line of the address
+ * @param {string} addressLine2 - Optional
+ * @param {string} city - The city name
+ * @param {string} state - State selected from dropdown
+ * @param {string} zip - The 5-digit zip code 
+ * @param {Object} userData - The user profile data
+ * @param {boolean} isPOBox - true if the address is a PO Box, false otherwise
+ * @returns {boolean} - true if the update was successful, false otherwise
+ */
+
 export const changeMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, userData, isPOBox) => {
   document.getElementById(`mailingAddressFail${id}`).style.display = 'none';
   document.getElementById(`changeMailingAddressGroup${id}`).style.display = 'none';
 
-  const newValues =
-      id === 1
-          ? {
-                [cId.address1]: addressLine1,
-                [cId.address2]: addressLine2 ?? "",
-                [cId.city]: city,
-                [cId.state]: state,
-                [cId.zip]: zip.toString(),
-                [cId.isPOBox]: isPOBox ? cId.yes: cId.no,
-            }
-          : {
-                [cId.physicalAddress1]: addressLine1,
-                [cId.physicalAddress2]: addressLine2 ?? "",
-                [cId.physicalCity]: city,
-                [cId.physicalState]: state,
-                [cId.physicalZip]: zip.toString(),
-            };
+  let newValues;
+
+  if (id === 1) {
+    newValues = {
+      [cId.address1]: addressLine1,
+      [cId.address2]: addressLine2 ?? "",
+      [cId.city]: city,
+      [cId.state]: state,
+      [cId.zip]: zip.toString(),
+      [cId.isPOBox]: isPOBox ? cId.yes : cId.no,
+    };
+  } else if (id === 2) {
+    newValues = {
+      [cId.physicalAddress1]: addressLine1,
+      [cId.physicalAddress2]: addressLine2 ?? "",
+      [cId.physicalCity]: city,
+      [cId.physicalState]: state,
+      [cId.physicalZip]: zip.toString(),
+    };
+  } else if (id === 3) {
+    newValues = {
+      [cId.altAddress1]: addressLine1,
+      [cId.altAddress2]: addressLine2 ?? "",
+      [cId.altCity]: city,
+      [cId.altState]: state,
+      [cId.altZip]: zip.toString(),
+      [cId.isPOBoxAltAddress]: isPOBox ? cId.yes : cId.no,
+    };
+  }
 
   const { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValues, userData);
-  const isSuccess = processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'mailingAddress');
+  const isSuccess = await processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'mailingAddress');
+  return isSuccess;
+};
+
+/**
+ * Alternate Contact Info (not tied to user profile history)
+ * @param {string} altContactFirstName - the new alternate contact first name
+ * @param {string} altContactLastName - the new alternate contact last name
+ * @param {string} altContactMobilePhone - the new alternate contact mobile phone number
+ * @param {string} altContactHomePhone - the new alternate contact home phone number
+ * @param {string} altContactEmail - the new alternate contact email address
+ * @param {Object} userData - the user profile data
+ * @returns {boolean} - true if the update was successful, false otherwise
+ */
+
+export const changeAltContactInformation = async (altContactFirstName, altContactLastName, altContactMobilePhone, altContactHomePhone, altContactEmail, userData) => {
+  document.getElementById('changeAltContactInformationFail').style.display = 'none';
+  document.getElementById('changeAltContactInformationGroup').style.display = 'none';
+
+  const newValues = {
+    [cId.altContactFirstName]: altContactFirstName,
+    [cId.altContactLastName]: altContactLastName,
+    [cId.altContactMobilePhone]: altContactMobilePhone,
+    [cId.altContactHomePhone]: altContactHomePhone,
+    [cId.altContactEmail]: altContactEmail,
+  };
+
+  let { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValues, userData);
+  const isSuccess = await processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'changeAltContactInformation');
   return isSuccess;
 };
 
@@ -618,7 +725,7 @@ export const addOrUpdateAuthenticationMethod = async (email, phone, userData) =>
 
   document.getElementById('changeLoginGroup').style.display = 'none';
   const { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValuesForFirestore, userData);
-  const isSuccess = processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'loginUpdate');
+  const isSuccess = await processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'loginUpdate');
   return isSuccess;
 };
 
@@ -932,6 +1039,12 @@ const populateUserHistoryMap = (existingData, preferredEmail, newSuffix) => {
     cId.physicalCity,
     cId.physicalState,
     cId.physicalZip,
+    cId.altAddress1,
+    cId.altAddress2,
+    cId.altCity,
+    cId.altState,
+    cId.altZip,
+    cId.isPOBoxAltAddress,
   ];
 
   keys.forEach((key) => {
