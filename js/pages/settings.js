@@ -465,7 +465,7 @@ const handleEditMailingAddressSection = () => {
     toggleButtonText();
   });
 
-  document.getElementById('changeMailingAddressSubmit1').addEventListener('click', async(e) => {
+  document.getElementById('changeMailingAddressSubmit1').addEventListener('click', async (e) => {
     const addressLine1 = document.getElementById('UPAddress1Line1').value.trim();
     const addressLine2 = document.getElementById('UPAddress1Line2').value.trim();
     const city = document.getElementById('UPAddress1City').value.trim();
