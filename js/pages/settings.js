@@ -1,5 +1,5 @@
 import { allStates, escapeHTML, showAnimation, hideAnimation, getMyData, hasUserData, firebaseSignInRender, validEmailFormat, validPhoneNumberFormat, checkAccount, translateHTML, translateText, languageTranslations } from '../shared.js';
-import { attachTabEventListeners, addOrUpdateAuthenticationMethod, changeAltContactInformation, changeContactInformation, changeMailingAddress, changeName, formatFirebaseAuthPhoneNumber, FormTypes, getCheckedRadioButtonValue, handleContactInformationRadioButtonPresets, handleOptionalFieldVisibility, hideOptionalElementsOnShowForm, hideSuccessMessage, openUpdateLoginForm, showAndPushElementToArrayIfExists, showEditButtonsOnUserVerified, suffixList, suffixToTextMap, toggleElementVisibility, togglePendingVerificationMessage, unlinkFirebaseAuthProvider, updatePhoneNumberInputFocus, validateAltContactInformation, validateContactInformation, validateLoginEmail, validateLoginPhone, validateMailingAddress, validateName } from '../settingsHelpers.js';
+import { attachTabEventListeners, addOrUpdateAuthenticationMethod, changeAltContactInformation, changeContactInformation, changeMailingAddress, changeName, formatFirebaseAuthPhoneNumber, FormTypes, getCheckedRadioButtonValue, handleContactInformationRadioButtonPresets, handleOptionalFieldVisibility, hideOptionalElementsOnShowForm, hideSuccessMessage, openUpdateLoginForm, showAndPushElementToArrayIfExists, showEditButtonsOnUserVerified, suffixList, suffixToTextMap, toggleElementVisibility, togglePendingVerificationMessage, unlinkFirebaseAuthProvider, updatePhoneNumberInputFocus, validateAltContactInformation, validateContactInformation, validateLoginEmail, validateLoginPhone, validateMailingAddress, validateName, showMailAddressSuggestionMyProfile } from '../settingsHelpers.js';
 import { addEventAddressAutoComplete } from '../event.js';
 import cId from '../fieldToConceptIdMapping.js';
 
@@ -465,7 +465,7 @@ const handleEditMailingAddressSection = () => {
     toggleButtonText();
   });
 
-  document.getElementById('changeMailingAddressSubmit1').addEventListener('click', e => {
+  document.getElementById('changeMailingAddressSubmit1').addEventListener('click', async (e) => {
     const addressLine1 = document.getElementById('UPAddress1Line1').value.trim();
     const addressLine2 = document.getElementById('UPAddress1Line2').value.trim();
     const city = document.getElementById('UPAddress1City').value.trim();
@@ -473,11 +473,35 @@ const handleEditMailingAddressSection = () => {
     const zip = document.getElementById('UPAddress1Zip').value.trim();
     const isPOBox = document.getElementById('poBoxCheckbox').checked;
 
-    const isMailingAddressValid = validateMailingAddress(1, addressLine1, city, state, zip);
-    if (isMailingAddressValid) {
-      formVisBools.isMailingAddressFormDisplayed = toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed);
-      toggleButtonText();
-      submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isPOBox);
+    const {hasError, uspsSuggestion} = await validateMailingAddress(1, addressLine1, city, state, zip);
+
+    if (!hasError) {
+      const submitNewAddress = (addressLine1, addressLine2, city, state, zip) => {
+        formVisBools.isMailingAddressFormDisplayed = toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed);
+        toggleButtonText();
+        submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isPOBox);
+        document.getElementById(`UPAddress1Line1`).value = "";
+        document.getElementById(`UPAddress1Line2`).value = "";
+        document.getElementById(`UPAddress1City`).value = "";
+        document.getElementById(`UPAddress1State`).value = "";
+        document.getElementById(`UPAddress1Zip`).value = "";
+      }
+      if (uspsSuggestion.suggestion) {
+          showMailAddressSuggestionMyProfile(
+              uspsSuggestion,
+              (streetAddress, secondaryAddress, city, state, zipCode) => {
+                  submitNewAddress(
+                      streetAddress,
+                      secondaryAddress,
+                      city,
+                      state,
+                      zipCode
+                  );
+              }
+          );
+      } else {
+          submitNewAddress(addressLine1, addressLine2, city, state, zip);
+      }
     }
   });
 };
@@ -520,18 +544,51 @@ const handleEditPhysicalMailingAddressSection = () => {
     toggleButtonText();
   });
 
-  document.getElementById('changeMailingAddressSubmit2').addEventListener('click', e => {
+  document.getElementById('changeMailingAddressSubmit2').addEventListener('click', async (e) => {
     const addressLine1 = document.getElementById('UPAddress2Line1').value.trim();
     const addressLine2 = document.getElementById('UPAddress2Line2').value.trim();
     const city = document.getElementById('UPAddress2City').value.trim();
     const state = document.getElementById('UPAddress2State').value.trim();
     const zip = document.getElementById('UPAddress2Zip').value.trim();
 
-    const isMailingAddressValid = validateMailingAddress(2, addressLine1, city, state, zip);
-    if (isMailingAddressValid) {
-      formVisBools.isPhysicalMailingAddressFormDisplayed = toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed);
-      toggleButtonText();
-      submitNewMailingAddress(2, addressLine1, addressLine2, city, state, zip, true);
+    const {hasError, uspsSuggestion} = await validateMailingAddress(2, addressLine1, city, state, zip);
+    
+    if (!hasError) {
+      const submitNewAddress = (addressLine1, addressLine2, city, state, zip) => {
+        formVisBools.isPhysicalMailingAddressFormDisplayed = toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed);
+        toggleButtonText();
+        submitNewMailingAddress(
+            2,
+            addressLine1,
+            addressLine2,
+            city,
+            state,
+            zip,
+            true
+        );
+        document.getElementById(`UPAddress2Line1`).value = "";
+        document.getElementById(`UPAddress2Line2`).value = "";
+        document.getElementById(`UPAddress2City`).value = "";
+        document.getElementById(`UPAddress2State`).value = "";
+        document.getElementById(`UPAddress2Zip`).value = "";
+      }
+      if (uspsSuggestion.suggestion) {
+        showMailAddressSuggestionMyProfile(
+            uspsSuggestion,
+            (streetAddress, secondaryAddress, city, state, zipCode) => {
+                submitNewAddress(
+                    streetAddress,
+                    secondaryAddress,
+                    city,
+                    state,
+                    zipCode
+                );
+            }
+        );
+    } else {
+        submitNewAddress(addressLine1, addressLine2, city, state, zip);
+    }
+
     }
   });
 };

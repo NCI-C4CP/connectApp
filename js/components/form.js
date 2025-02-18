@@ -370,7 +370,7 @@ export const renderUserProfile = async () => {
             </br></br>
             <div class="row">
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary save-data consentNextButton" data-i18n="form.submitText">Submit</button>
+                    <button type="submit" class="btn btn-primary save-data consentNextButton" data-i18n="form.submitText" id="userProfileSubmitButton">Submit</button>
                 </div>
             </div>
         </form>

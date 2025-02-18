@@ -1,4 +1,5 @@
-import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis} from './shared.js';
+import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML
+} from './shared.js';
 import { removeAllErrors } from './event.js';
 import cId from './fieldToConceptIdMapping.js';
 
@@ -339,47 +340,229 @@ export const validateContactInformation = async (mobilePhoneNumberComplete, home
   return true;
 };
 
-export const validateMailingAddress = (id, addressLine1, city, state, zip) => {
+const uspsValidateAddress = async (
+    focus,
+    addr1Id,
+    addr2Id,
+    cityId,
+    stateId,
+    zipId
+) => {
+    let hasError = false;
+    const uspsSuggestion = {};
+    const streetAddress = document.getElementById(addr1Id).value
+    const secondaryAddress = document.getElementById(addr2Id)?.value || ""
+    const ct = document.getElementById(cityId).value
+    const state = document.getElementById(stateId).value
+    const zipCode = document.getElementById(zipId).value
+    const addrValidationPayload = {
+        streetAddress,
+        secondaryAddress,
+        city: ct,
+        state: statesWithAbbreviations[state],
+        zipCode,
+    };
+    const _addressValidation = await addressValidation(addrValidationPayload);
+    if (_addressValidation.error) {
+        console.error('My Profile - Invalid Address:', addrValidationPayload, _addressValidation.error)
+        hasError = true;
+        if (_addressValidation.error.errors.length) {
+            _addressValidation.error.errors.forEach((item) => {
+                if (item.code === "010005") {
+                    errorMessage(
+                        addr1Id,
+                        '<span data-i18n="event.invalidAddress">' +
+                            translateText("event.invalidAddress") +
+                            "</span>"
+                    );
+                    if (focus)
+                        document.getElementById(addr1Id).focus();
+                    focus = false;
+                }
+                if (item.code === "010002") {
+                    errorMessage(
+                        zipId,
+                        '<span data-i18n="event.invalidZip">' +
+                            translateText("event.invalidZip") +
+                            "</span>"
+                    );
+                    if (focus)
+                        document.getElementById(zipId).focus();
+                    focus = false;
+                }
+            });
+        } else {
+            errorMessage(
+                addr1Id,
+                "<span>" + _addressValidation.error.message + "</span>",
+                focus
+            );
+            if (focus) document.getElementById(addr1Id).focus();
+            focus = false;
+        }
+    } else {
+        const { address } = _addressValidation;
+        if (
+            streetAddress.toLowerCase() !==
+                address.streetAddress.toLowerCase() ||
+            secondaryAddress.toLowerCase() !==
+                address.secondaryAddress.toLowerCase() ||
+            ct.toLowerCase() !== address.city.toLowerCase() ||
+            statesWithAbbreviations[state].toLowerCase() !==
+                address.state.toLowerCase() ||
+            zipCode !== address.ZIPCode
+        ) {
+            uspsSuggestion.original = { ...addrValidationPayload, state };
+            uspsSuggestion.suggestion = {
+                ...address,
+                state: swapKeysAndValues(statesWithAbbreviations)[
+                    address.state
+                ],
+                zipCode: address.ZIPCode,
+            };
+        }
+    }
+    return {
+      hasError,
+      uspsSuggestion
+  }
+};
+
+export const validateMailingAddress = async (id, addressLine1, city, state, zip) => {
   removeAllErrors();
   let hasError = false;
   let focus = true;
   const zipRegExp = /[0-9]{5}/;
 
   if (!addressLine1) {
-    errorMessage(`UPAddress${id}Line1`, translateText('settingsHelpers.addressNotEmpty'));
-    if (focus) document.getElementById(`UPAddress${id}Line1`).focus();
-    focus = false;
-    hasError = true;
+      errorMessage(
+          `UPAddress${id}Line1`,
+          '<span data-i18n="settingsHelpers.addressNotEmpty">' +
+              translateText("settingsHelpers.addressNotEmpty") +
+              "</span>"
+      );
+      if (focus) document.getElementById(`UPAddress${id}Line1`).focus();
+      focus = false;
+      hasError = true;
   }
 
   if (!city) {
-    errorMessage(`UPAddress${id}City`, translateText('settingsHelpers.cityNotEmpty'));
-    if (focus) document.getElementById(`UPAddress${id}City`).focus();
-    focus = false;
-    hasError = true;
+      errorMessage(
+          `UPAddress${id}City`,
+          '<span data-i18n="settingsHelpers.cityNotEmpty">' +
+              translateText("settingsHelpers.cityNotEmpty") +
+              "</span>"
+      );
+      if (focus) document.getElementById(`UPAddress${id}City`).focus();
+      focus = false;
+      hasError = true;
   }
 
   if (!state) {
-    errorMessage(`UPAddress${id}State`, translateText('settingsHelpers.stateNotEmpty'));
-    if (focus) document.getElementById(`UPAddress${id}State`).focus();
-    focus = false;
-    hasError = true;
+      errorMessage(
+          `UPAddress${id}State`,
+          '<span data-i18n="settingsHelpers.stateNotEmpty">' +
+              translateText("settingsHelpers.stateNotEmpty") +
+              "</span>"
+      );
+      if (focus) document.getElementById(`UPAddress${id}State`).focus();
+      focus = false;
+      hasError = true;
   }
 
   if (!zip || !zipRegExp.test(zip)) {
-    errorMessage(`UPAddress${id}Zip`, translateText('settingsHelpers.zipNotEmpty'));
-    if (focus) document.getElementById(`UPAddress${id}Zip`).focus();
-    focus = false;
-    hasError = true;
+      errorMessage(
+          `UPAddress${id}Zip`,
+          '<span data-i18n="settingsHelpers.zipNotEmpty">' +
+              translateText("settingsHelpers.zipNotEmpty") +
+              "</span>"
+      );
+      if (focus) document.getElementById(`UPAddress${id}Zip`).focus();
+      focus = false;
+      hasError = true;
   }
 
   if (hasError) {
     console.error('Error(s) found.');
-    return false;
+    return {
+      hasError
+    };
   }
 
-  return true;
+  const {hasError: isInvalid, uspsSuggestion} = await uspsValidateAddress(
+      focus,
+      `UPAddress${id}Line1`,
+      `UPAddress${id}Line2`,
+      `UPAddress${id}City`,
+      `UPAddress${id}State`,
+      `UPAddress${id}Zip`
+  );
+
+  return {
+      hasError: isInvalid,
+      uspsSuggestion,
+  };
 };
+
+const modalElement = document.getElementById("connectMainModal");
+const modal = new bootstrap.Modal(modalElement);
+
+export const showMailAddressSuggestionMyProfile = (uspsSuggestion, submit) => {
+    if (!document.getElementById("connectMainModal").classList.contains("show"))
+        modal.show()
+
+    const headerHtml = `
+      <h2 style="color: #333;" data-i18n="event.addressSuggestionTitle">Address Verification</h2>
+  `;
+    const bodyHtml = `
+      <div style="margin-bottom: 20px;" data-i18n="event.addressSuggestionDescription">
+          We can’t verify your address but found a close match. Please confirm the correct address or enter a different address.
+      </div>
+      <div style="display: flex; gap: 20px;">
+          <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
+              <div style="margin-bottom: 15px;">
+                  ${uspsSuggestion.original.streetAddress} ${uspsSuggestion.original.secondaryAddress} <br>
+                  ${uspsSuggestion.original.city} ${uspsSuggestion.original.state} ${uspsSuggestion.original.zipCode} 
+              </div>
+              <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressSuggestionKeepButton" data-i18n="event.addressSuggestionKeepButton">Keep address I entered</button>
+          </div>
+          <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
+              <div style="margin-bottom: 15px;">
+                  ${uspsSuggestion.suggestion.streetAddress} ${uspsSuggestion.suggestion.secondaryAddress}<br>
+                  ${uspsSuggestion.suggestion.city} ${uspsSuggestion.suggestion.state} ${uspsSuggestion.suggestion.zipCode} 
+              </div>
+              <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressSuggestionUseButton" data-i18n="event.addressSuggestionUseButton">Use suggested address</button>
+          </div>
+      </div>
+  `;
+
+    document.getElementById("connectModalHeader").innerHTML =
+        translateHTML(headerHtml);
+    document.getElementById("connectModalBody").innerHTML =
+        translateHTML(bodyHtml);
+    document.getElementById("connectModalFooter").innerHTML = translateHTML(`
+      <div class="d-flex justify-content-between w-100">
+          <button data-i18n="event.navButtonsClose" type="button" title="Go Back" class="btn btn-dark" data-bs-dismiss="modal" id="goBackButton">Go Back</button>
+      </div>
+  `);
+
+    document
+        .getElementById("addressSuggestionKeepButton")
+        .addEventListener("click", async () => {
+            const { streetAddress, secondaryAddress, city, state, zipCode } =
+                uspsSuggestion.original;
+            submit(streetAddress, secondaryAddress, city, state, zipCode);
+            modal.hide();
+        });
+    document
+        .getElementById("addressSuggestionUseButton")
+        .addEventListener("click", () => {
+            const { streetAddress, secondaryAddress, city, state, zipCode } =
+                uspsSuggestion.suggestion;
+            submit(streetAddress, secondaryAddress, city, state, zipCode);
+            modal.hide();
+        });
+}
 
 
 export const validateAltContactInformation = async (altContactMobilePhoneComplete, altContactHomePhoneComplete, altContactEmail) => {
