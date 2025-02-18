@@ -1,4 +1,4 @@
-import { allStates, showAnimation, hideAnimation, getMyData, hasUserData, firebaseSignInRender, validEmailFormat, validPhoneNumberFormat, checkAccount, translateHTML, translateText, languageTranslations } from '../shared.js';
+import { allStates, escapeHTML, showAnimation, hideAnimation, getMyData, hasUserData, firebaseSignInRender, validEmailFormat, validPhoneNumberFormat, checkAccount, translateHTML, translateText, languageTranslations } from '../shared.js';
 import { attachTabEventListeners, addOrUpdateAuthenticationMethod, changeAltContactInformation, changeContactInformation, changeMailingAddress, changeName, formatFirebaseAuthPhoneNumber, FormTypes, getCheckedRadioButtonValue, handleContactInformationRadioButtonPresets, handleOptionalFieldVisibility, hideOptionalElementsOnShowForm, hideSuccessMessage, openUpdateLoginForm, showAndPushElementToArrayIfExists, showEditButtonsOnUserVerified, suffixList, suffixToTextMap, toggleElementVisibility, togglePendingVerificationMessage, unlinkFirebaseAuthProvider, updatePhoneNumberInputFocus, validateAltContactInformation, validateContactInformation, validateLoginEmail, validateLoginPhone, validateMailingAddress, validateName } from '../settingsHelpers.js';
 import { addEventAddressAutoComplete } from '../event.js';
 import cId from '../fieldToConceptIdMapping.js';
@@ -493,10 +493,10 @@ const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, sta
     const poBoxText = id === 1 || id === 3 ? translateHTML(`<br><br><span data-i18n="event.poBox">Mailing address is PO Box</span>: <span data-i18n="settings.${isPOBox ? 'optYes' : 'optNo'}">${isPOBox ? "Yes" : "No"}</span>`) : '';
 
     if (!addressLine2 || addressLine2 === '') {
-      document.getElementById(`profileMailingAddress${id}`).innerHTML = `${addressLine1}</br>${city}, ${state} ${zip}${poBoxText}`;
+        document.getElementById(`profileMailingAddress${id}`).innerHTML = `${escapeHTML(addressLine1)}</br>${escapeHTML(city)}, ${escapeHTML(state)} ${escapeHTML(zip)}${poBoxText}`;
 
     } else {
-      document.getElementById(`profileMailingAddress${id}`).innerHTML = `${addressLine1}</br>${addressLine2}</br>${city}, ${state} ${zip}${poBoxText}`;
+        document.getElementById(`profileMailingAddress${id}`).innerHTML = `${escapeHTML(addressLine1)}</br>${escapeHTML(addressLine2)}</br>${escapeHTML(city)}, ${escapeHTML(state)} ${escapeHTML(zip)}${poBoxText}`;
     }
 
     successMessageElement = document.getElementById(`mailingAddressSuccess${id}`);

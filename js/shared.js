@@ -2516,3 +2516,16 @@ export function replaceUnsupportedPDFCharacters(string, font) {
  }
  return String.fromCodePoint(...codePoints);
 }
+
+/**
+ * Escape HTML characters (useful for github-advanced-security bot warnings)
+ * @param {string} str - String to escape 
+ * @returns {string} - Escaped string
+ */
+export const escapeHTML = (str) => {
+    return str.replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+};
