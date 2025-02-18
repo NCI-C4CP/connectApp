@@ -886,12 +886,12 @@ const en = {
             "locations": {
                 "Option1": "<span>Option 1: Sanford Health Lab Location</span><br><br><span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; font-weight: 400; line-height: 27px; color: #2E2E2E; margin-top: 20px;\"> To find a Sanford Health Lab Location  and its operating hours, please visit <a href=\"https://www.sanfordhealth.org/locations\" target=\"_blank\">https://www.sanfordhealth.org/locations</a> <br><br>  <span class=\"site-info-underline\">Exact hours may vary by location. Walking in outside of normal business hours may lead to longer wait times.</span> <br><br> <span class=\"site-info-underline\">Note: If you live in the Bismarck region, the Sanford lab team prefers you pre-schedule an appointment. You can do this within your MyChart or by calling the lab directly.</span>",
                 "Option2": "<span>Option 2: Connect Research Lab</span> <br><br> <span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; font-weight: 400; color: #2E2E2E; margin-top: 20px;\">Use the link in the message we send to your MyChart or email to schedule an appointment at one of the below locations. You may also schedule an appointment by calling the Connect team at 605-312-6100. <br><br>  Connect Research Lab appointments are available Monday – Thursday 7:00am – 4:00pm and Friday 7:00am – 2:00pm. If you would like to schedule outside of these hours, please contact the Connect team at 605-312-6100 or ConnectStudy@sanfordhealth.org. </span><span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; line-height: 27px; color: #2E2E2E; margin-top: 20px;\"></span>",
-                "SiouxFallsName": "<span class=\"site-info-underline\">Sioux Falls, SD: Edith Breast Cancer Center</span>",
+                "SiouxFallsName": "<span class=\"site-info-underline\">Sioux Falls, SD: Edith Sanford Breast Center</span>",
                 "SiouxFallsAddress": "1210 W. 18th St <br>Sioux Falls, SD 57104 <br><span class=\"site-info-italic\">Enter Through Door BB</span>",
                 "SiouxFallsParking": "Free valet parking is available near the front entrance of the Edith Breast Cancer Center. Free patient parking is also available in the lot on the corner of S Grange Ave and W 18th Street. Enter through door BB. No parking validation is needed.",
-                "FargoName": "<span class=\"site-info-underline\">Fargo, ND: South University Urgent Care/Orthopedic Walk-In Clinic</span>",
-                "FargoAddress": "1720 University Drive S<br>Fargo, ND 58102<br><span class=\"site-info-italic\">Enter Through Door #8</span>",
-                "FargoParking": "Free patient parking is available in the lot near the Urgent Care entrance—Door #8. No parking validation needed."
+                "FargoName": "<span class=\"site-info-underline\">Fargo, ND: Sanford Amber Valley</span>",
+                "FargoAddress": "4840 23<sup>rd</sup> Ave S<br>Fargo, ND 58104<br><span class=\"site-info-italic\">Enter Through Door 4840. Upon entering, follow the signs to “Sanford Research” on Floor 2.</span>",
+                "FargoParking": "Free patient parking is available in the lot near door 4840. No parking validation needed."
             }
         },
         "marshfield": {
