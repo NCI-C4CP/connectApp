@@ -944,7 +944,7 @@ export const addEventUPSubmit = async () => {
             document.getElementById('UPAddress2Zip').value) {
 
             const validatePhysicalAddress = await validateAddress(focus, "UPAddress2Line1", "UPAddress2Line2", "UPAddress2City", "UPAddress2State", "UPAddress2Zip")
-            hasError = hasError | validatePhysicalAddress.hasError
+            hasError = hasError || validatePhysicalAddress.hasError
             uspsSuggestion.physicalAddress = validatePhysicalAddress.result
         }
         document.getElementById('userProfileSubmitButton').disabled = false
