@@ -454,7 +454,7 @@ export const getMyCollections = async () => {
 
 const allIHCS = {
     531629870: 'HealthPartners',
-    548392715: 'Henry Ford Health System',
+    548392715: 'Henry Ford Health',
     125001209: 'Kaiser Permanente Colorado',
     327912200: 'Kaiser Permanente Georgia',
     300267574: 'Kaiser Permanente Hawaii',
@@ -470,7 +470,7 @@ export const sites = () => {
         return {
             657167265: 'Sanford Health',
             531629870: 'HealthPartners',
-            548392715: 'Henry Ford Health System',
+            548392715: 'Henry Ford Health',
             303349821: 'Marshfield Clinic Health System',
             809703864: 'University of Chicago Medicine',
             125001209: 'Kaiser Permanente Colorado',
@@ -484,7 +484,7 @@ export const sites = () => {
         return {
             657167265: 'Sanford Health',
             531629870: 'HealthPartners',
-            548392715: 'Henry Ford Health System',
+            548392715: 'Henry Ford Health',
             303349821: 'Marshfield Clinic Health System',
             809703864: 'University of Chicago Medicine',
             125001209: 'Kaiser Permanente Colorado',
@@ -2516,3 +2516,16 @@ export function replaceUnsupportedPDFCharacters(string, font) {
  }
  return String.fromCodePoint(...codePoints);
 }
+
+/**
+ * Escape HTML characters (useful for github-advanced-security bot warnings)
+ * @param {string} str - String to escape 
+ * @returns {string} - Escaped string
+ */
+export const escapeHTML = (str) => {
+    return str.replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+};
