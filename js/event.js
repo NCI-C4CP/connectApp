@@ -951,6 +951,66 @@ export const addEventUPSubmit = async () => {
         }
         document.getElementById('userProfileSubmitButton').disabled = false
 
+        // If any alt address field has a value, validate the required fields
+        const altAddressFields = {
+            line1: document.getElementById('UPAddress3Line1')?.value?.trim() || '',
+            line2: document.getElementById('UPAddress3Line2')?.value?.trim() || '',
+            city: document.getElementById('UPAddress3City')?.value?.trim() || '',
+            state: document.getElementById('UPAddress3State')?.value || '',
+            zip: document.getElementById('UPAddress3Zip')?.value?.trim() || ''
+        };
+
+        const hasAltAddressField = Object.values(altAddressFields).some(value => value !== '');
+
+        if (hasAltAddressField) {
+            if (!altAddressFields.line1) {
+                errorMessage(
+                    'UPAddress3Line1',
+                    `<span data-i18n="form.altAddressLine1Field.data-error-required">${translateText('form.altAddressLine1Field.data-error-required')}</span>`,
+                    focus
+                );
+                focus = false;
+                hasError = true;
+            }
+
+            if (!altAddressFields.city) {
+                errorMessage(
+                    'UPAddress3City',
+                    `<span data-i18n="form.altAddressCityField.data-error-required">${translateText('form.altAddressCityField.data-error-required')}</span>`,
+                    focus
+                );
+                focus = false;
+                hasError = true;
+            }
+
+            if (!altAddressFields.state) {
+                errorMessage(
+                    'UPAddress3State',
+                    `<span data-i18n="form.altAddressStateField.data-error-required">${translateText('form.altAddressStateField.data-error-required')}</span>`,
+                    focus
+                );
+                focus = false;
+                hasError = true;
+            }
+
+            if (!altAddressFields.zip) {
+                errorMessage(
+                    'UPAddress3Zip',
+                    `<span data-i18n="form.altAddressZipField.data-error-required">${translateText('form.altAddressZipField.data-error-required')}</span>`,
+                    focus
+                );
+                focus = false;
+                hasError = true;
+            }
+
+            // TODO: Future release: validate with USPS
+            // if (!hasError) {
+            //     const validateAlternateAddress = await validateAddress(focus, "UPAddress3Line1", "UPAddress3Line2", "UPAddress3City", "UPAddress3State", "UPAddress3Zip");
+            //     hasError = hasError || validateAlternateAddress.hasError;
+            //     uspsSuggestion.alternateAddress = validateAlternateAddress.result;
+            // }
+        }
+
         if (hasError) {
             showInvalidFormWarning()
             return false;
@@ -1111,7 +1171,7 @@ export const addEventUPSubmit = async () => {
         const altAddressLine2 = document.getElementById('UPAddress3Line2')?.value?.trim() || "";
         const altAddressCity = document.getElementById('UPAddress3City')?.value?.trim() || "";
         const altAddressState = document.getElementById('UPAddress3State')?.value || "";
-        const altAddressIsPOBox = document.getElementById("poBoxCheckboxAltAddress")?.checked ? fieldMapping.yes : fieldMapping.no;
+        const altAddressPOBoxCheckbox = document.getElementById("poBoxCheckboxAltAddress");
 
         if (altAddressLine1 !== "") formData[fieldMapping.altAddress1] = altAddressLine1;
         if (altAddressLine2 !== "") formData[fieldMapping.altAddress2] = altAddressLine2;
@@ -1121,9 +1181,15 @@ export const addEventUPSubmit = async () => {
 
         // Add P.O. Box status if any address field is filled
         if (altAddressLine1 || altAddressLine2 || altAddressCity || altAddressState || altAddressZip) {
-            formData[fieldMapping.isPOBoxAltAddress] = altAddressIsPOBox;
+            formData[fieldMapping.doesAltAddressExist] = fieldMapping.yes;
+        } else {
+            formData[fieldMapping.doesAltAddressExist] = fieldMapping.no;
         }
 
+        formData[fieldMapping.isPOBoxAltAddress] = altAddressPOBoxCheckbox && altAddressPOBoxCheckbox.checked
+            ? fieldMapping.yes
+            : fieldMapping.no;
+        
         // Alternate contact (phone and email fields validated above)
         const altContactFirstName = document.getElementById('altContactFirstName')?.value?.trim() || "";
         const altContactLastName = document.getElementById('altContactLastName')?.value?.trim() || "";
@@ -1751,7 +1817,7 @@ const verifyUserDetails = (formData) => {
 
         ${hasAltAddress ? `
             <div class="row">
-                <div class="col" data-i18n="event.poBox">Mailing address is PO Box</div>
+                <div class="col" data-i18n="event.poBoxAltAddress">Alternate address is PO Box</div>
                 <div class="col" data-i18n="settings.${formData[fieldMapping.isPOBoxAltAddress] === fieldMapping.yes ? 'optYes' : 'optNo'}">
                     ${formData[fieldMapping.isAltPOBox] === fieldMapping.yes ? "Yes" : "No"}
                 </div>

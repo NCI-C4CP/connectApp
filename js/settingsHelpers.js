@@ -806,13 +806,18 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.physicalZip]: zip.toString(),
     };
   } else if (id === 3) {
+    const doesAltAddressExist = addressLine1 || addressLine2 || city || state || zip
+      ? cId.yes
+      : cId.no;
+    
     newValues = {
+      [cId.doesAltAddressExist]: doesAltAddressExist,
       [cId.altAddress1]: addressLine1,
       [cId.altAddress2]: addressLine2 ?? "",
       [cId.altCity]: city,
       [cId.altState]: state,
       [cId.altZip]: zip.toString(),
-      [cId.isPOBoxAltAddress]: isPOBox ? cId.yes : cId.no,
+      [cId.isPOBoxAltAddress]: isPOBox ? cId.yes : cId.no
     };
   }
 

@@ -52,6 +52,7 @@ export default
     "physicalState":187799450,
     "physicalZip":449168732,
     // Alternate Address
+    "doesAltAddressExist": 646504105,
     "altAddress1": 284580415,
     "altAddress2": 728926441,
     "altCity": 907038282,

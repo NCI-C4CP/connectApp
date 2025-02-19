@@ -470,22 +470,25 @@ const renderAltAddressFields = () => {
                 ${renderMailingAddress('', 3, false)}                    
                 <label>
                     <input type="checkbox" id="poBoxCheckboxAltAddress">
-                    <span  data-i18n="form.isPOBoxChecked">Please check if mailing address is a P.O. Box</span>
+                    <span  data-i18n="form.isPOBoxCheckboxAltAddress">Please check if alternate address is a P.O. Box</span>
                 </label> 
             </div>
         </div>
-        <br><br>`);
+        <br>`);
 }
 
 export const renderAltContactFields = () => {
     return translateHTML(`
+        <div style="font-weight:bold" data-i18n="form.altContactHeader">
+                    Alternate Contact
+                </div>
         <span data-i18n="form.altContactQuestion">Sometimes we find that people have moved when we try to contact them again. It would be helpful if you could give us contact details of someone close to you (such as a relative or friend) who would be willing for us to contact them if we are unable to reach you. Please leave this section blank if you do not want to share these extra contact details.</span>
         <br>
 
         <div class="form-group row">
             <div class="col">
                 <label>
-                    <span data-i18n="form.altContactFirstName">First name</span>
+                    <span data-i18n="form.altContactFirstName">Alternate contact first name</span>
                     <input data-i18n="form.altContactFirstNameField" type="text" class="form-control input-validation" data-validation-pattern="alphabets" id="altContactFirstName" placeholder="Enter first name">
                 </label>
             </div>
@@ -493,7 +496,7 @@ export const renderAltContactFields = () => {
         <div class="form-group row">
             <div class="col">
                 <label>
-                    <span data-i18n="form.altContactLastName">Last name</span>
+                    <span data-i18n="form.altContactLastName">Alternate contact last name</span>
                     <input data-i18n="form.altContactLastNameField" type="text" class="form-control input-validation" data-validation-pattern="alphabets" id="altContactLastName" placeholder="Enter last name">
                 </label><br>
             </div>

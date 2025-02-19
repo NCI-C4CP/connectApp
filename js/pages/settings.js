@@ -514,7 +514,12 @@ const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, sta
   if (isSuccess) {
     await refreshUserDataAfterEdit();
 
-    const poBoxText = id === 1 || id === 3 ? translateHTML(`<br><br><span data-i18n="event.poBox">Mailing address is PO Box</span>: <span data-i18n="settings.${isPOBox ? 'optYes' : 'optNo'}">${isPOBox ? "Yes" : "No"}</span>`) : '';
+    let poBoxText = '';
+    if (id === 1) {
+        poBoxText = translateHTML(`<br><br><span data-i18n="event.poBox">Mailing address is PO Box</span>: <span data-i18n="settings.${isPOBox ? 'optYes' : 'optNo'}">${isPOBox ? "Yes" : "No"}</span>`);
+    } else if (id === 3) {
+        poBoxText = translateHTML(`<br><br><span data-i18n="event.poBoxAltAddress">Alternate address is PO Box</span>: <span data-i18n="settings.${isPOBox ? 'optYes' : 'optNo'}">${isPOBox ? "Yes" : "No"}</span>`);
+    }
 
     if (!addressLine2 || addressLine2 === '') {
         document.getElementById(`profileMailingAddress${id}`).innerHTML = `${escapeHTML(addressLine1)}</br>${escapeHTML(city)}, ${escapeHTML(state)} ${escapeHTML(zip)}${poBoxText}`;
@@ -617,11 +622,44 @@ const handleEditAltAddressSection = () => {
         const altZip = document.getElementById('UPAddress3Zip').value.trim();
         const altAddressIsPOBox = document.getElementById("poBoxCheckboxAltAddress")?.checked;
 
-        const isMailingAddressValid = validateMailingAddress(3, altAddressLine1, altCity, altState, altZip);
-        if (isMailingAddressValid) {
-            formVisBools.isAltAddressFormDisplayed = toggleElementVisibility(altAddressElementArray, formVisBools.isAltAddressFormDisplayed);
-            toggleButtonText();
-            await submitNewMailingAddress(3, altAddressLine1, altAddressLine2, altCity, altState, altZip, altAddressIsPOBox);
+        const { hasError, uspsSuggestion } = await validateMailingAddress(3, altAddressLine1, altCity, altState, altZip);
+
+        if (!hasError) {
+            const submitNewAddress = async (addressLine1, addressLine2, city, state, zip) => {
+                formVisBools.isAltAddressFormDisplayed = toggleElementVisibility(altAddressElementArray, formVisBools.isAltAddressFormDisplayed);
+                toggleButtonText();
+                await submitNewMailingAddress(
+                    3,
+                    addressLine1,
+                    addressLine2,
+                    city,
+                    state,
+                    zip,
+                    altAddressIsPOBox
+                );
+                document.getElementById(`UPAddress3Line1`).value = "";
+                document.getElementById(`UPAddress3Line2`).value = "";
+                document.getElementById(`UPAddress3City`).value = "";
+                document.getElementById(`UPAddress3State`).value = "";
+                document.getElementById(`UPAddress3Zip`).value = "";
+            }
+            if (uspsSuggestion.suggestion) {
+                showMailAddressSuggestionMyProfile(
+                    uspsSuggestion,
+                    (streetAddress, secondaryAddress, city, state, zipCode) => {
+                        submitNewAddress(
+                            streetAddress,
+                            secondaryAddress,
+                            city,
+                            state,
+                            zipCode
+                        );
+                    }
+                );
+            } else {
+                await submitNewAddress(altAddressLine1, altAddressLine2, altCity, altState, altZip);
+            }
+
         }
     });
 };
@@ -1269,7 +1307,7 @@ export const renderContactInformationHeadingAndButton = () => {
                 </span>
             </div>
             <div class="col-12 col-sm-6 d-flex justify-content-end">
-                <button id="changeContactInformationButton" class="btn btn-primary save-data consentNextButton px-3" data-i18n="settings.updateContactText">
+                <button id="changeContactInformationButton" class="btn btn-primary save-data consentNextButton px-3" style="float:right; display:none;" data-i18n="settings.updateContactText">
                     Update Contact Info
                 </button>
             </div>
@@ -1639,7 +1677,7 @@ const renderAltAddressHeadingAndButton = () => {
       <div class="row">
           <div class="col-12 col-sm-6">
               <span class="userProfileLabels" data-i18n="settings.altAddress">
-                  Alternate Address
+                  Alternate Address (Optional)
               </span><br>
               <i data-i18n="settings.altAddressNote">For any other mailing addresses you have</i>
           </div>
@@ -1713,7 +1751,7 @@ const renderAlternateAddressData = (id) => {
             ${userData[cId.altAddress2] ? `${userData[cId.altAddress2]}</br>` : ''}
             ${userData[cId.altCity] || ''}${userData[cId.altState] ? ',' : ''} ${userData[cId.altState] || ''} ${userData[cId.altZip] || ''}<br>
             <br>
-            <span data-i18n="event.poBox">Mailing address is PO Box</span>:
+            <span data-i18n="event.poBoxAltAddress">Alternate address is PO Box</span>:
             <span data-i18n="settings.${userData[cId.isPOBoxAltAddress] === cId.yes ? 'optYes' : 'optNo'}">${userData[cId.isPOBoxAltAddress] === cId.yes ? "Yes" : "No"}</span>
         `;
     }
@@ -1753,7 +1791,7 @@ const renderChangeMailingAddressGroup = (id) => {
         3: `<div class="checkbox">
                 <label>
                     <input type="checkbox" id="poBoxCheckboxAltAddress">
-                    <span data-i18n="form.isPOBoxChecked">Please check if mailing address is a P.O. Box</span>
+                    <span data-i18n="form.isPOBoxCheckboxAltAddress">Please check if alternate address is a P.O. Box</span>
                 </label> 
             </div>
             <br>`
@@ -1855,7 +1893,7 @@ const renderAltContactInformationHeadingAndButton = () => {
                 <i data-i18n="settings.altContactNote">To help us get in touch with you if we lose contact</i>
             </div>
             <div class="col-12 col-sm-6 d-flex justify-content-end">
-                <button id="changeAltContactButton" class="btn btn-primary save-data consentNextButton px-3" data-i18n="settings.updateContactText">
+                <button id="changeAltContactButton" class="btn btn-primary save-data consentNextButton px-3" style="float:right; display:none;" data-i18n="settings.updateContactText">
                     Update Contact Info
                 </button>
             </div>
