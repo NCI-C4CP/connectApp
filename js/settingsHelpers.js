@@ -371,9 +371,7 @@ const uspsValidateAddress = async (
                 if (item.code === "010005") {
                     errorMessage(
                         addr1Id,
-                        '<span data-i18n="event.invalidAddress">' +
-                            translateText("event.invalidAddress") +
-                            "</span>"
+                        '<span data-i18n="event.invalidAddress">' + translateText("event.invalidAddress") + '</span>'
                     );
                     if (focus)
                         document.getElementById(addr1Id).focus();
@@ -394,7 +392,7 @@ const uspsValidateAddress = async (
         } else {
             errorMessage(
                 addr1Id,
-                "<span>" + _addressValidation.error.message + "</span>",
+                '<span data-i18n="event.invalidAddress">' + translateText("event.invalidAddress") + '</span>',
                 focus
             );
             if (focus) document.getElementById(addr1Id).focus();

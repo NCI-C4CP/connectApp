@@ -527,7 +527,9 @@ const validateAddress = async (focus, addr1Id, addr2Id, cityId, stateId, zipId) 
         } else {
             errorMessage(
                 addr1Id,
-                "<span>" + _addressValidation.error.message + "</span>",
+                '<span data-i18n="event.invalidAddress">' +
+                translateText("event.invalidAddress") +
+                "</span>",
                 focus
             );
             if (focus) document.getElementById(addr1Id).focus();
@@ -935,7 +937,7 @@ export const addEventUPSubmit = async () => {
             physicalAddress: {},
         }
         const validateMailAddress = await validateAddress(focus, "UPAddress1Line1", "UPAddress1Line2", "UPAddress1City", "UPAddress1State", "UPAddress1Zip")
-        hasError = validateMailAddress.hasError
+        hasError = hasError || validateMailAddress.hasError
         uspsSuggestion.mailAddress = validateMailAddress.result
 
         if (document.getElementById('UPAddress2Line1').value &&
@@ -1177,7 +1179,7 @@ const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, isPhys
         <h2 style="color: #333;" data-i18n="event.addressSuggestionTitle">Address Verification</h2>
     `
     const bodyHtml = `
-        <div style="margin-bottom: 20px;" data-i18n="event.addressSuggestionDescription">
+        <div style="margin-bottom: 20px;" data-i18n="event.${!isPhysical ? 'addressSuggestionDescription':'addressSuggestionDescriptionPhysical'}">
             We can’t verify your address but found a close match. Please confirm the correct address or enter a different address.
         </div>
         <div style="display: flex; gap: 20px;">
