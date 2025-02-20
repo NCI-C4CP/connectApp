@@ -271,7 +271,7 @@ const en = {
         "physicalAddress": "Physical Address (if different from Mailing Address)",
         "physicalAddressDesc":"Physical address is needed so Connect can mail you packages via FedEx for some study activities. FedEx does not deliver to P.O. Boxes.",
         "otherContactInformation": "Other Contact Information",
-        "otherContactIntroduction": "We would like to keep in touch with you during your time in the study. Please share more contact information to help us reach you in the future",
+        "otherContactIntroduction": "We would like to keep in touch with you during your time in the study. Please share more contact information to help us reach you in the future.",
         "altAddressQuestion": "Are there any other mailing addresses that you use?",
         "whatIsTheAltAddress": "What is the address?",
         "altAddressLine1Label": "Line 1 (street, PO box, rural route)",
@@ -279,13 +279,30 @@ const en = {
             "data-error-required": "Please enter the first line of your mailing address.",
             "placeholder": "Enter street, PO box, rural route"
         },
-        "altContactQuestion": "Sometimes we find that people have moved when we try to contact them again. It would be helpful if you could give us contact details of someone close to you (such as a relative or friend) who would be willing for us to contact them if we are unable to reach you. Please leave this section blank if you do not want to share these extra contact details",
-        "altContactFirstName": "First name",
+        "altAddressLine2Field": {
+            "placeholder": "Enter apartment, suite, unit, building"
+        },
+        "altAddressCityField": {
+            "data-error-required": "Please enter the city field of your alternate address.",
+            "placeholder": "Enter City"
+        },
+        "altAddressStateField": {
+            "data-error-required": "Please select the state field of your alternate address."
+        },
+        "altAddressZipField": {
+            "data-error-validation": "Please enter a 5 digit zip code in this format: 12345.",
+            "title": "5 characters long, numeric-only value.",
+            "data-error-required": "Please enter the zip field of your alternate address."
+        },
+        "isPOBoxCheckboxAltAddress": "Please check if alternate address is a P.O. Box",
+        "altContactHeader": "Alternate Contact",
+        "altContactQuestion": "Sometimes we find that people have moved when we try to contact them again. It would be helpful if you could give us contact details of someone close to you (such as a relative or friend) who would be willing for us to contact them if we are unable to reach you. Please leave this section blank if you do not want to share these extra contact details.",
+        "altContactFirstName": "Alternate contact first name",
         "altContactFirstNameField": {
             "placeholder": "Enter first name",
             "data-error-validation": "Your first name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters."
         },
-        "altContactLastName": "Last name",
+        "altContactLastName": "Alternate Contact Last name",
         "altContactLastNameField": {
             "placeholder": "Enter last name",
             "data-error-validation": "Your last name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters."
@@ -1158,14 +1175,14 @@ const en = {
         "submitAltUpdate": "Submit Alternate Address Update",
         "successMailUpdate": "Mailing Address Change Success!",
         "failMailUpdate": "Mailing Address Change Failed!",
-        "altAddress": "Alternate Address",
+        "altAddress": "Alternate Address (Optional)",
         "altAddressNote": "For any other mailing addresses you have",
         "altAddressLine1": "Line 1 (street, PO box, rural route)  <span class=\"required\">*</span>",
         "altAddressLine1Field": {
             "data-error-required": "Please enter the first line of your mailing address.",
             "placeholder": "Enter street, PO box, rural route"
         },
-        "altContactHeader": "Alternate Contact",
+        "altContactHeader": "Alternate Contact (Optional)",
         "altContactNote": "To help us get in touch with you if we lose contact",
         "altContactEmail": "Email",
         "altContactFirstNameFieldLabel": "First name",
@@ -1368,6 +1385,7 @@ const en = {
         "state": "State",
         "zip": "Zip",
         "poBox": "Mailing address is PO Box",
+        "poBoxAltAddress": "Alternate address is PO Box",
         "invasiveCancer": "Have you ever had invasive cancer?",
         "yearDiagnosed": "What year were you diagnosed?",
         "typeOfCancer": "What type of cancer did you have?",

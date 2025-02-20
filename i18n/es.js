@@ -277,16 +277,33 @@
         "whatIsTheAltAddress": "¿Cuál es la dirección?",
         "altAddressLine1Label": "Línea 1 (calle, apartado postal, ruta rural)",
         "altAddressLine1Field": {
-            "data-error-required": "Ingrese la primera línea de su dirección postal.",
+            "data-error-required": "Ingrese la primera línea de su dirección alternativa.",
             "placeholder": "Ingrese la calle, el apartado postal, la ruta rural"
         },
+        "altAddressLine2Field": {
+            "placeholder": "Ingrese el apartamento, la suite, la unidad, el edificio"
+        },
+        "altAddressCityField": {
+            "data-error-required": "Ingrese el campo de ciudad de su dirección alternativa.",
+            "placeholder": "Ingrese la ciudad"
+        },
+        "altAddressStateField": {
+            "data-error-required": "Seleccione el campo de estado de su dirección alternativa."
+        },
+        "altAddressZipField": {
+            "data-error-validation": "Ingrese un código postal de 5 dígitos con este formato: 12345.",
+            "title": "5 caracteres de longitud, solo valor numérico.",
+            "data-error-required": "Ingrese el campo de código postal de su dirección alternativa."
+        },
+        "isPOBoxCheckboxAltAddress": "Revise si la dirección postal es un apartado postal",
+        "altContactHeader": "Contacto alternativo",
         "altContactQuestion": "A veces nos enteramos de que las personas se han mudado cuando intentamos comunicarnos con ellas. Sería útil que pudiera brindarnos detalles de contacto de alguna persona cercana a usted (como un pariente o un amigo) que esté dispuesta a que nos comuniquemos con ella si no podemos ponernos en contacto con usted. Si no quiere brindarnos estos detalles de contacto adicionales, deje esta sección en blanco.",
-        "altContactFirstName": "Nombre de pila",
+        "altContactFirstName": "Nombre de pila de contacto alternativo",
         "altContactFirstNameField": {
             "placeholder": "Ingrese su nombre de pila",
             "data-error-validation": "Su nombre de pila debe contener solo letras mayúsculas y minúsculas. No use números ni caracteres especiales."
         },
-        "altContactLastName": "Apellido",
+        "altContactLastName": "Apellido de contacto alternativo",
         "altContactLastNameField": {
             "placeholder": "Ingrese su apellido",
             "data-error-validation": "Su apellido debe contener solo letras mayúsculas y minúsculas. Por favor, no utilice ningún número."
@@ -1163,14 +1180,14 @@
         "submitAltUpdate": "Enviar modificación de dirección postal alternativa",
         "successMailUpdate": "Se completó el cambio de dirección postal",
         "failMailUpdate": "¡Error al cambiar la dirección postal!",
-        "altAddress": "Dirección alternativa",
+        "altAddress": "Dirección alternativa (Opcional)",
         "altAddressNote": "Para cualquier otra dirección de correo postal que tenga",
         "altAddressLine1": "Línea 1 (calle, apartado postal, ruta rural)  <span class=\"required\">*</span>",
         "altAddressLine1Field": {
             "data-error-required": "Ingrese la primera línea de su dirección postal.",
             "placeholder": "Ingrese la calle, el apartado postal, la ruta rural"
         },
-        "altContactHeader": "Contacto alternativo",
+        "altContactHeader": "Contacto alternativo (Opcional)",
         "altContactNote": "Para ayudarnos ponernos en comunicación con usted si perdemos contacto",
         "altContactEmail": "Dirección de correo electrónico",
 
@@ -1374,6 +1391,7 @@
         "state": "Estado",
         "zip": "Código postal",
         "poBox": "La dirección postal es PO Box",
+        "poBoxAltAddress": "La dirección alternativa es un apartado postal",
         "invasiveCancer": "¿Ha tenido alguna vez cáncer invasivo?",
         "yearDiagnosed": "¿En qué año se lo diagnosticaron?",
         "typeOfCancer": "¿Qué tipo de cáncer tenía?",
