@@ -2,7 +2,7 @@ importScripts(
 	'https://storage.googleapis.com/workbox-cdn/releases/5.1.2/workbox-sw.js'
 );
 
-const appVersion = 'v25.1.2';
+const appVersion = 'v25.2.1';
 workbox.setConfig({ debug: false });
 const { registerRoute } = workbox.routing;
 const { CacheFirst, NetworkFirst, StaleWhileRevalidate, NetworkOnly } =
