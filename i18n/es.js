@@ -87,8 +87,7 @@
         },
         "middleName": "Segundo nombre",
         "middleNameField": {
-            "data-error-validation": "Su segundo nombre debe contener solo letras mayúsculas y minúsculas. No use números ni caracteres especiales.",
-            "placeholder": "Ingrese su segundo nombre"
+            "data-error-validation": "Su segundo nombre debe contener solo letras mayúsculas y minúsculas. No use números ni caracteres especiales."
         },
         "lastName": "Apellido <span class=\"required\">*</span>",
         "lastNameField": {
@@ -266,7 +265,7 @@
             "title": "5 caracteres de longitud, solo valor numérico.",
             "data-error-required": "Ingrese el campo de código postal de su dirección postal."
         },
-        "isPOBoxChecked": "La dirección postal es PO Box",
+        "isPOBoxChecked": "Revise si la dirección postal es un apartado postal",
         "mailAddressCountry": "País ",
         "mailAddressCountryRequired": "País <span class=\"required\">*</span>",
         "physicalAddress": "Dirección física (si es diferente de la dirección postal) ",

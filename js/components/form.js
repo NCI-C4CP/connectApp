@@ -21,19 +21,19 @@ export const renderUserProfile = async () => {
             <p data-i18n="form.notCorrectMessage">If this is not correct, please contact the <a href="https://norcfedramp.servicenowservices.com/participant" target="_blank">Connect Support Center</a> or call 1-877-505-0253</p>
             <div class="row">
                 <div class="col-md-4">
-                    <label style="margin-left:-15px" data-i18n="form.firstName">First name <span class="required">*</span></label>
+                    <label style="margin-left:-15px" data-i18n="form.firstName">First Name <span class="required">*</span></label>
                     <input data-i18n="form.firstNameField" type="text" value="${myData.data['471168198']}" class="form-control input-validation row" id="UPFirstName" placeholder="Enter first name" disabled style="max-width:215px; background-color:#e6e6e6 !important;">
                 </div>
                 <div class="col-md-4">
-                    <label style="margin-left:-15px" data-i18n="form.middleName">Middle name</label>
+                    <label style="margin-left:-15px" data-i18n="form.middleName">Middle Name</label>
                     <input type="text"  data-i18n="form.middleNameField" value="${
                         myData.data["436680969"] ? myData.data["436680969"] : ""
-                    }" class="form-control input-validation row" data-validation-pattern="alphabets" data-error-validation="Your middle name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters." id="UPMiddleInitial" placeholder="Enter middle name" style="max-width:215px; background-color:#e6e6e6 !important;" disabled>
+                    }" class="form-control input-validation row" data-validation-pattern="alphabets" data-error-validation="Your middle name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters." id="UPMiddleInitial" style="max-width:215px; background-color:#e6e6e6 !important;" disabled>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    <label data-i18n="form.lastName" style="margin-left:-15px">Last name <span class="required">*</span></label>
+                    <label data-i18n="form.lastName" style="margin-left:-15px">Last Name <span class="required">*</span></label>
                     <input data-i18n="form.lastNameField" type="text" value="${myData.data['736251808']}" class="form-control input-validation row" id="UPLastName" placeholder="Enter last name" disabled style="max-width:304px; background-color:#e6e6e6 !important;">
                 </div>
             </div>
@@ -58,7 +58,7 @@ export const renderUserProfile = async () => {
             
             <div class="form-group row">
                 <div class="col-md-4">
-                    <label data-i18n="form.preferredName" class="col-form-label">Preferred first name</label>
+                    <label data-i18n="form.preferredName" class="col-form-label">Preferred First Name</label>
                     <input data-i18n="form.preferredNameField" style="max-width:215px; margin-left:0px;" type="text" class="form-control input-validation" id="UPPreferredName" placeholder="Enter preferred name">
                 </div>
             </div>
@@ -488,7 +488,7 @@ export const renderAltContactFields = () => {
         <div class="form-group row">
             <div class="col">
                 <label>
-                    <span data-i18n="form.altContactFirstName">Alternate contact first name</span>
+                    <span data-i18n="form.altContactFirstName">Alternate Contact First Name</span>
                     <input data-i18n="form.altContactFirstNameField" type="text" class="form-control input-validation" data-validation-pattern="alphabets" id="altContactFirstName" placeholder="Enter first name">
                 </label>
             </div>
@@ -496,7 +496,7 @@ export const renderAltContactFields = () => {
         <div class="form-group row">
             <div class="col">
                 <label>
-                    <span data-i18n="form.altContactLastName">Alternate contact last name</span>
+                    <span data-i18n="form.altContactLastName">Alternate Contact Last Name</span>
                     <input data-i18n="form.altContactLastNameField" type="text" class="form-control input-validation" data-validation-pattern="alphabets" id="altContactLastName" placeholder="Enter last name">
                 </label><br>
             </div>

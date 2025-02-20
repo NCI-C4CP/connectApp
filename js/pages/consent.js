@@ -635,7 +635,7 @@ const consentConsentPage = async () => {
                             <div class="col-md-4 mb-4 pe-md-4">
                                 <div style="min-height: 48px">
                                     <label class="consent-form-label consentSignHeader" data-i18n="consent.consentPageFormFirstName">
-                                        First name<span class="required">*</span>
+                                        First Name<span class="required">*</span>
                                     </label>
                                 </div>
                                 <input type="text" autocomplete="off" id="CSFirstName" class="form-control" placeholder="">
@@ -646,7 +646,7 @@ const consentConsentPage = async () => {
                             <div class="col-md-2 mb-4 px-md-2">
                                 <div style="min-height: 48px">
                                     <label class="consent-form-label consentSignHeader" data-i18n="consent.consentPageFormMiddleName">
-                                        Middle name<span></span>
+                                        Middle Name<span></span>
                                     </label>
                                 </div>
                                 <input type="text" autocomplete="off" id="CSMiddleName" class="form-control" placeholder="">
@@ -655,7 +655,7 @@ const consentConsentPage = async () => {
                             <div class="col-md-4 mb-4 px-md-4">
                                 <div style="min-height: 48px">
                                     <label class="consent-form-label consentSignHeader" data-i18n="consent.consentPageFormLastName">
-                                        Last name<span class="required">*</span>
+                                        Last Name<span class="required">*</span>
                                     </label>
                                 </div>
                                 <input type="text" autocomplete="off" id="CSLastName" class="form-control" placeholder="">

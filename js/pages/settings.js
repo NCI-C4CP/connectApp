@@ -1241,17 +1241,17 @@ export const renderChangeNameGroup = () => {
   return eval('`'+translateHTML(`
       <div class="row userProfileLinePaddings" id="changeNameGroup" style="display:none;">
             <div class="col">
-                <label for="newFirstNameField" class="custom-form-label" data-i18n="settings.firstNameFieldLabel">First name <span class="required">*</span></label>
+                <label for="newFirstNameField" class="custom-form-label" data-i18n="settings.firstNameFieldLabel">First Name <span class="required">*</span></label>
                 <input type="text" value="${userData[cId.fName]}" class="form-control input-validation row ms-1" data-validation-pattern="alphabets" data-error-validation="Your first name should contain only uppercase and lowercase letters and can contain some special characters." id="newFirstNameField" placeholder="Enter first name" style="margin-left:0px; max-width:215px; !important;" data-i18n="settings.firstNameField">
             </div>
             <br>
             <div class="col">
-                <label  data-i18n="settings.middleNameFieldLabel" for="newMiddleNameField" class="custom-form-label">Middle name </label><span data-i18n="settings.optional"> (optional)</span>
+                <label  data-i18n="settings.middleNameFieldLabel" for="newMiddleNameField" class="custom-form-label">Middle Name </label><span data-i18n="settings.optional"> (optional)</span>
                 <input  data-i18n="settings.middleNameField" type="text" value="${userData[cId.mName] ? userData[cId.mName] : ''}" class="form-control input-validation row ms-1" data-validation-pattern="alphabets" data-error-validation="Your middle name should contain only uppercase and lowercase letters and can contain some special characters." id="newMiddleNameField" placeholder="Enter middle name (optional)" style="margin-left:0px; max-width:215px; !important;">
             </div>
             <br>
             <div class="col">
-                <label for="newLastNameField" class="custom-form-label" data-i18n="settings.lastNameFieldLabel">Last name <span class="required">*</span></label>
+                <label for="newLastNameField" class="custom-form-label" data-i18n="settings.lastNameFieldLabel">Last Name <span class="required">*</span></label>
                 <input type="text" value="${userData[cId.lName]}" class="form-control input-validation row  ms-1" data-validation-pattern="alphabets" data-error-validation="${translateText("settings.lastNameFieldValidation")}" id="newLastNameField" placeholder="${translateText("settings.lastNameFieldPlaceholder")}" style="margin-left:0px; max-width:304px; !important;">
             </div>
             <br>
@@ -1747,12 +1747,14 @@ const renderAlternateAddressData = (id) => {
     let address = '';
     if (hasAddressContent) {
         address = `
+            <b>
             ${userData[cId.altAddress1] || ''}</br>
             ${userData[cId.altAddress2] ? `${userData[cId.altAddress2]}</br>` : ''}
             ${userData[cId.altCity] || ''}${userData[cId.altState] ? ',' : ''} ${userData[cId.altState] || ''} ${userData[cId.altZip] || ''}<br>
             <br>
             <span data-i18n="event.poBoxAltAddress">Alternate address is PO Box</span>:
             <span data-i18n="settings.${userData[cId.isPOBoxAltAddress] === cId.yes ? 'optYes' : 'optNo'}">${userData[cId.isPOBoxAltAddress] === cId.yes ? "Yes" : "No"}</span>
+            </b>
         `;
     }
 
@@ -1988,14 +1990,14 @@ const renderChangeAltContactInformationGroup = () => {
             <div class="col">
                 <div class="form-group row">
                     <div class="col">
-                        <label for="newAltContactFirstNameField" class="custom-form-label" data-i18n="settings.altContactFirstNameFieldLabel">First name</label>
+                        <label for="newAltContactFirstNameField" class="custom-form-label" data-i18n="settings.altContactFirstNameFieldLabel">First Name</label>
                         <input type="text" value="${optVars.altContactFirstName || ''}" class="form-control input-validation row ms-1" data-validation-pattern="alphabets" data-error-validation="Your first name should contain only uppercase and lowercase letters and can contain some special characters." id="newAltContactFirstNameField" placeholder="Enter first name" style="margin-left:0px; max-width:215px; !important;" data-i18n="settings.altContactFirstNameField">
                     </div>
                 </div>
                 
                 <div class="form-group row">
                     <div class="col">
-                        <label for="newAltContactLastNameField" class="custom-form-label" data-i18n="settings.altContactLastNameFieldLabel">Last name</label>
+                        <label for="newAltContactLastNameField" class="custom-form-label" data-i18n="settings.altContactLastNameFieldLabel">Last Name</label>
                         <input type="text" value="${optVars.altContactLastName || ''}" class="form-control input-validation row  ms-1" data-validation-pattern="alphabets" data-error-validation="${translateText("settings.altContactLastNameFieldValidation")}" id="newAltContactLastNameField" placeholder="${translateText("settings.altContactLastNameFieldPlaceholder")}" style="margin-left:0px; max-width:304px; !important;" data-i18n="settings.altContactLastNameField">
                     </div>
                 </div>
