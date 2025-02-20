@@ -1540,17 +1540,17 @@ const verifyUserDetails = (formData) => {
 
     let bodyHtml = `
         <div class="row">
-            <div class="col" data-i18n="event.firstName">First name</div>
+            <div class="col" data-i18n="event.firstName">First Name</div>
             <div class="col">${formData['399159511']}</div>
         </div>
         ${formData['231676651'] ? `
         <div class="row">
-            <div class="col" data-i18n="event.middleName">Middle name</div>
+            <div class="col" data-i18n="event.middleName">Middle Name</div>
             <div class="col">${formData['231676651']}</div>
         </div>
         `:``}
         <div class="row">
-            <div class="col" data-i18n="event.lastName">Last name</div>
+            <div class="col" data-i18n="event.lastName">Last Name</div>
             <div class="col">${formData['996038075']}</div>
         </div>
         ${formData['506826178'] ? `
@@ -1829,18 +1829,14 @@ const verifyUserDetails = (formData) => {
         </div>
 
         <div class="row">
-            <div class="col" data-i18n="form.altContactFirstName">First name</div>
+            <div class="col" data-i18n="form.altContactFirstName">First Name</div>
             <div class="col">${formData[fieldMapping.altContactFirstName] || ''}</div>
         </div>
     
         <div class="row">
-            <div class="col" data-i18n="form.altContactLastName">Last name</div>
+            <div class="col" data-i18n="form.altContactLastName">Last Name</div>
             <div class="col">${formData[fieldMapping.altContactLastName] || ''}</div>
         </div>
-        
-        <!--<div class="row">
-            <div class="col"><strong data-i18n="form.altContactPhoneEmail">Alternative Contact Phone and Email</strong></div>
-        </div>-->
 
         <div class="row">
             <div class="col" data-i18n="form.altContactMobilePhone">Mobile phone</div>

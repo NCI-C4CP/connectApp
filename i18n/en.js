@@ -80,21 +80,20 @@ const en = {
         "profileHeader": "My Profile",
         "nameSubheader": "Name",
         "notCorrectMessage": "If this is not correct, please contact the <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Connect Support Center</a> or call 1-877-505-0253",
-        "firstName": "First name <span class=\"required\">*</span>",
+        "firstName": "First Name <span class=\"required\">*</span>",
         "firstNameField": {
             "placeholder": "Enter first name"
         },
-        "middleName": "Middle name",
+        "middleName": "Middle Name",
         "middleNameField": {
-            "data-error-validation": "Your middle name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters.",
-            "placeholder": "Enter middle name"
+            "data-error-validation": "Your middle name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters."
         },
-        "lastName": "Last name <span class=\"required\">*</span>",
+        "lastName": "Last Name <span class=\"required\">*</span>",
         "lastNameField": {
             "placeholder": "Enter last name"
         },
         "suffixList": "Suffix",
-        "preferredName": "Preferred first name",
+        "preferredName": "Preferred First Name",
         "preferredNameField": {
             "placeholder": "Enter preferred name"
         },
@@ -214,14 +213,14 @@ const en = {
         "invasiveCancer": "Have you ever had invasive cancer? <span class=\"required\">*</span>",
         "invasiveCancerMessage": "If you have or once had non-melanoma skin cancer (like basal cell or squamous cell carcinoma), or a condition that raises cancer risk (such as DCIS, or stage 0 breast cancer), please respond “No” to this question. These conditions are not invasive cancer, and you can still join. We are interested in learning how these conditions may affect cancer risk and health outcomes in the future.",
         "submitText": "Submit",
-        "alternateContactFirstNameLabel": "First name ",
-        "alternateContactFirstNameLabelRequired": "First name <span class=\"required\">*</span>",
-        "middleInitial": "Middle initial",
+        "alternateContactFirstNameLabel": "First Name ",
+        "alternateContactFirstNameLabelRequired": "First Name <span class=\"required\">*</span>",
+        "middleInitial": "Middle Initial",
         "middleInitialField": {
             "placeholder": "Enter middle initial"
         },
-        "alternateContactLastName": "Last name ",
-        "alternateContactLastNameRequired": "Last name <span class=\"required\">*</span>",
+        "alternateContactLastName": "Last Name ",
+        "alternateContactLastNameRequired": "Last Name <span class=\"required\">*</span>",
         "alternateContactPhoneNumber": "Phone number ",
         "alternateContactPhoneNumberRequired": "Phone number <span class=\"required\">*</span>",
         "alternateContactPhoneNumberField": {
@@ -297,12 +296,12 @@ const en = {
         "isPOBoxCheckboxAltAddress": "Please check if alternate address is a P.O. Box",
         "altContactHeader": "Alternate Contact",
         "altContactQuestion": "Sometimes we find that people have moved when we try to contact them again. It would be helpful if you could give us contact details of someone close to you (such as a relative or friend) who would be willing for us to contact them if we are unable to reach you. Please leave this section blank if you do not want to share these extra contact details.",
-        "altContactFirstName": "Alternate contact first name",
+        "altContactFirstName": "Alternate Contact First Name",
         "altContactFirstNameField": {
             "placeholder": "Enter first name",
             "data-error-validation": "Your first name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters."
         },
-        "altContactLastName": "Alternate Contact Last name",
+        "altContactLastName": "Alternate Contact Last Name",
         "altContactLastNameField": {
             "placeholder": "Enter last name",
             "data-error-validation": "Your last name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters."
@@ -368,9 +367,9 @@ const en = {
             "title": "Download HIPAA Revocation form",
             "innerHTML": "Download an unsigned copy of the HIPAA Revocation form&nbsp<i class=\"fas fa-file-download\"></i>"
         },
-        "firstName": "First name <span class=\"required\">*</span>",
-        "middleName": "Middle name",
-        "lastName": "Last name<span class=\"required\">*</span>",
+        "firstName": "First Name <span class=\"required\">*</span>",
+        "middleName": "Middle Name",
+        "lastName": "Last Name<span class=\"required\">*</span>",
         "navButtons": "<button class=\"btn btn-primary consentPrevButton w-100 w-sm-auto me-sm-5\" type=\"button\" id=\"backToAgreements\">Back</button><button type=\"submit\" class=\"btn btn-primary save-data consentNextButton w-100 w-sm-auto ms-sm-5\">Sign and Submit</button>"
     },
     "consent": {
@@ -643,9 +642,9 @@ const en = {
         "consentPageBody6": "By clicking “Yes, I agree to join Connect” and typing your name, you confirm the following:",
         "consentPageBody6List": "<li>I have read these forms.</li><li>As  stated  in  the  consent  and  HIPAA  Authorization,  I  will allow  the  use,  storage, and  disclosure  (release) of  my  survey  answers, samples,  and  health  information for the research as described above.</li><li>If I have questions, I can contact the Connect Support Center at <a target=\"_blank\" href=\"https://norcfedramp.servicenowservices.com/recruit\">Cancer.gov/connectstudy/support</a> or by calling 1-866-462-6621</li><li>If I decide to leave the study, I can contact the Connect Support Center at <a target=\"_blank\" href=\"https://norcfedramp.servicenowservices.com/recruit\">Cancer.gov/connectstudy/support</a></li>",
         "consentPageAgree": "Yes, I agree to join Connect",
-        "consentPageFormFirstName": "First name<span class=\"required\">*</span>",
-        "consentPageFormMiddleName": "Middle name<span></span>",
-        "consentPageFormLastName": "Last name<span class=\"required\">*</span>",
+        "consentPageFormFirstName": "First Name<span class=\"required\">*</span>",
+        "consentPageFormMiddleName": "Middle Name<span></span>",
+        "consentPageFormLastName": "Last Name<span class=\"required\">*</span>",
         "consentPageFormSuffixLabel": "Suffix<span></span>",
         "consentPageFormSuffixList": "<option value=\"\">-Select-</option><option value=\"612166858\">Jr.</option><option value=\"255907182\">Sr.</option><option value=\"226924545\">I</option><option value=\"270793412\">II</option><option value=\"959021713\">III</option><option value=\"643664527\">2nd</option><option value=\"537892528\">3rd</option>",
         "consentPageFormLegalName": "Please enter your legal name. If you are a member of Kaiser Permanente, please enter your first and last name exactly as it appears on your Kaiser Permanente ID card.",
@@ -1081,18 +1080,18 @@ const en = {
         "lastName": "Last Name",
         "suffix": "Suffix",
         "preferredFirstName": "Preferred First Name",
-        "firstNameFieldLabel": "First name <span class=\"required\">*</span>",
+        "firstNameFieldLabel": "First Name <span class=\"required\">*</span>",
         "firstNameField": {
             "data-error-validation": "Your first name should contain only uppercase and lowercase letters and can contain some special characters.",
             "placeholder": "Enter first name"
         },
         "optional": " (optional)",
-        "middleNameFieldLabel": "Middle name",
+        "middleNameFieldLabel": "Middle Name",
         "middleNameField": {
             "data-error-validation": "Your middle name should contain only uppercase and lowercase letters and can contain some special characters.",
             "placeholder": "Enter middle name (optional)"
         },
-        "lastNameFieldLabel": "Last name <span class=\"required\">*</span>",
+        "lastNameFieldLabel": "Last Name <span class=\"required\">*</span>",
         "lastNameFieldValidation": "Your last name should contain only uppercase and lowercase letters and can contain some special characters.",
         "lastNameFieldPlaceholder": "Enter last name",
         "suffixFieldLabel": "Suffix",
@@ -1185,12 +1184,12 @@ const en = {
         "altContactHeader": "Alternate Contact (Optional)",
         "altContactNote": "To help us get in touch with you if we lose contact",
         "altContactEmail": "Email",
-        "altContactFirstNameFieldLabel": "First name",
+        "altContactFirstNameFieldLabel": "First Name",
         "altContactFirstNameField": {
             "data-error-validation": "Your first name should contain only uppercase and lowercase letters and can contain some special characters.",
             "placeholder": "Enter first name"
         },
-        "altContactLastNameFieldLabel": "Last name",
+        "altContactLastNameFieldLabel": "Last Name",
         "altContactLastNameFieldValidation": "Your last name should contain only uppercase and lowercase letters and can contain some special characters.",
         "altContactLastNameFieldPlaceholder": "Enter last name",
         "signInInfo": "Sign In Information",
@@ -1353,9 +1352,9 @@ const en = {
         "suffixVIII": "VIII, 8th",
         "suffix2nd": "2nd",
         "suffix3rd": "3rd",
-        "firstName": "First name",
-        "middleName": "Middle name",
-        "lastName": "Last name",
+        "firstName": "First Name",
+        "middleName": "Middle Name",
+        "lastName": "Last Name",
         "suffix": "Suffix",
         "preferredName": "Preferred Name",
         "birthDate": "Date of birth",
