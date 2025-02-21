@@ -1539,3 +1539,21 @@ button.connect-secondary {
         border-width: 0.5px;
     }
 }
+
+.phys-act-rep-cols {
+    flex-direction: row;
+}
+
+.phys-act-rep-sidebar {
+    max-width: 250px;
+}
+
+@media (max-width: 550px) {
+    .phys-act-rep-cols {
+        flex-direction: column-reverse;
+    }
+
+    .phys-act-rep-sidebar {
+        max-width: 100%;
+    }
+}

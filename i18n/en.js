@@ -80,21 +80,20 @@ const en = {
         "profileHeader": "My Profile",
         "nameSubheader": "Name",
         "notCorrectMessage": "If this is not correct, please contact the <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Connect Support Center</a> or call 1-877-505-0253",
-        "firstName": "First name <span class=\"required\">*</span>",
+        "firstName": "First Name <span class=\"required\">*</span>",
         "firstNameField": {
             "placeholder": "Enter first name"
         },
-        "middleName": "Middle name",
+        "middleName": "Middle Name",
         "middleNameField": {
-            "data-error-validation": "Your middle name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters.",
-            "placeholder": "Enter middle name"
+            "data-error-validation": "Your middle name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters."
         },
-        "lastName": "Last name <span class=\"required\">*</span>",
+        "lastName": "Last Name <span class=\"required\">*</span>",
         "lastNameField": {
             "placeholder": "Enter last name"
         },
         "suffixList": "Suffix",
-        "preferredName": "Preferred first name",
+        "preferredName": "Preferred First Name",
         "preferredNameField": {
             "placeholder": "Enter preferred name"
         },
@@ -214,14 +213,14 @@ const en = {
         "invasiveCancer": "Have you ever had invasive cancer? <span class=\"required\">*</span>",
         "invasiveCancerMessage": "If you have or once had non-melanoma skin cancer (like basal cell or squamous cell carcinoma), or a condition that raises cancer risk (such as DCIS, or stage 0 breast cancer), please respond “No” to this question. These conditions are not invasive cancer, and you can still join. We are interested in learning how these conditions may affect cancer risk and health outcomes in the future.",
         "submitText": "Submit",
-        "alternateContactFirstNameLabel": "First name ",
-        "alternateContactFirstNameLabelRequired": "First name <span class=\"required\">*</span>",
-        "middleInitial": "Middle initial",
+        "alternateContactFirstNameLabel": "First Name ",
+        "alternateContactFirstNameLabelRequired": "First Name <span class=\"required\">*</span>",
+        "middleInitial": "Middle Initial",
         "middleInitialField": {
             "placeholder": "Enter middle initial"
         },
-        "alternateContactLastName": "Last name ",
-        "alternateContactLastNameRequired": "Last name <span class=\"required\">*</span>",
+        "alternateContactLastName": "Last Name ",
+        "alternateContactLastNameRequired": "Last Name <span class=\"required\">*</span>",
         "alternateContactPhoneNumber": "Phone number ",
         "alternateContactPhoneNumberRequired": "Phone number <span class=\"required\">*</span>",
         "alternateContactPhoneNumberField": {
@@ -270,7 +269,51 @@ const en = {
         "mailAddressCountryRequired": "Country <span class=\"required\">*</span>",
         "physicalAddress": "Physical Address (if different from Mailing Address)",
         "physicalAddressDesc":"Physical address is needed so Connect can mail you packages via FedEx for some study activities. FedEx does not deliver to P.O. Boxes.",
-
+        "otherContactInformation": "Other Contact Information",
+        "otherContactIntroduction": "We would like to keep in touch with you during your time in the study. Please share more contact information to help us reach you in the future.",
+        "altAddressQuestion": "Are there any other mailing addresses that you use?",
+        "whatIsTheAltAddress": "What is the address?",
+        "altAddressLine1Label": "Line 1 (street, PO box, rural route)",
+        "altAddressLine1Field": {
+            "data-error-required": "Please enter the first line of your mailing address.",
+            "placeholder": "Enter street, PO box, rural route"
+        },
+        "altAddressLine2Field": {
+            "placeholder": "Enter apartment, suite, unit, building"
+        },
+        "altAddressCityField": {
+            "data-error-required": "Please enter the city field of your alternate address.",
+            "placeholder": "Enter City"
+        },
+        "altAddressStateField": {
+            "data-error-required": "Please select the state field of your alternate address."
+        },
+        "altAddressZipField": {
+            "data-error-validation": "Please enter a 5 digit zip code in this format: 12345.",
+            "title": "5 characters long, numeric-only value.",
+            "data-error-required": "Please enter the zip field of your alternate address."
+        },
+        "isPOBoxCheckboxAltAddress": "Please check if alternate address is a P.O. Box",
+        "altContactHeader": "Alternate Contact",
+        "altContactQuestion": "Sometimes we find that people have moved when we try to contact them again. It would be helpful if you could give us contact details of someone close to you (such as a relative or friend) who would be willing for us to contact them if we are unable to reach you. Please leave this section blank if you do not want to share these extra contact details.",
+        "altContactFirstName": "Alternate Contact First Name",
+        "altContactFirstNameField": {
+            "placeholder": "Enter first name",
+            "data-error-validation": "Your first name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters."
+        },
+        "altContactLastName": "Alternate Contact Last Name",
+        "altContactLastNameField": {
+            "placeholder": "Enter last name",
+            "data-error-validation": "Your last name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters."
+        },
+        "altContactHowCanWeReach": "How can we reach this person?",
+        "altContactMobilePhone": "Mobile phone",
+        "altContactHomePhone": "Home phone",
+        "altContactEmail": "Email",
+        "altContactEmailField": {
+            "title": "Please enter an email address in this format: name@example.com.",
+            "placeholder": "Enter a valid email address"
+        },
     },
     "navbar": {
         "dashboardLink": " Dashboard",
@@ -324,9 +367,9 @@ const en = {
             "title": "Download HIPAA Revocation form",
             "innerHTML": "Download an unsigned copy of the HIPAA Revocation form&nbsp<i class=\"fas fa-file-download\"></i>"
         },
-        "firstName": "First name <span class=\"required\">*</span>",
-        "middleName": "Middle name",
-        "lastName": "Last name<span class=\"required\">*</span>",
+        "firstName": "First Name <span class=\"required\">*</span>",
+        "middleName": "Middle Name",
+        "lastName": "Last Name<span class=\"required\">*</span>",
         "navButtons": "<button class=\"btn btn-primary consentPrevButton w-100 w-sm-auto me-sm-5\" type=\"button\" id=\"backToAgreements\">Back</button><button type=\"submit\" class=\"btn btn-primary save-data consentNextButton w-100 w-sm-auto ms-sm-5\">Sign and Submit</button>"
     },
     "consent": {
@@ -599,9 +642,9 @@ const en = {
         "consentPageBody6": "By clicking “Yes, I agree to join Connect” and typing your name, you confirm the following:",
         "consentPageBody6List": "<li>I have read these forms.</li><li>As  stated  in  the  consent  and  HIPAA  Authorization,  I  will allow  the  use,  storage, and  disclosure  (release) of  my  survey  answers, samples,  and  health  information for the research as described above.</li><li>If I have questions, I can contact the Connect Support Center at <a target=\"_blank\" href=\"https://norcfedramp.servicenowservices.com/recruit\">Cancer.gov/connectstudy/support</a> or by calling 1-866-462-6621</li><li>If I decide to leave the study, I can contact the Connect Support Center at <a target=\"_blank\" href=\"https://norcfedramp.servicenowservices.com/recruit\">Cancer.gov/connectstudy/support</a></li>",
         "consentPageAgree": "Yes, I agree to join Connect",
-        "consentPageFormFirstName": "First name<span class=\"required\">*</span>",
-        "consentPageFormMiddleName": "Middle name<span></span>",
-        "consentPageFormLastName": "Last name<span class=\"required\">*</span>",
+        "consentPageFormFirstName": "First Name<span class=\"required\">*</span>",
+        "consentPageFormMiddleName": "Middle Name<span></span>",
+        "consentPageFormLastName": "Last Name<span class=\"required\">*</span>",
         "consentPageFormSuffixLabel": "Suffix<span></span>",
         "consentPageFormSuffixList": "<option value=\"\">-Select-</option><option value=\"612166858\">Jr.</option><option value=\"255907182\">Sr.</option><option value=\"226924545\">I</option><option value=\"270793412\">II</option><option value=\"959021713\">III</option><option value=\"643664527\">2nd</option><option value=\"537892528\">3rd</option>",
         "consentPageFormLegalName": "Please enter your legal name. If you are a member of Kaiser Permanente, please enter your first and last name exactly as it appears on your Kaiser Permanente ID card.",
@@ -688,7 +731,7 @@ const en = {
         "alreadyHaveAccount": "Our records show that you already have another account with a different email or phone number. Please try signing in again. Contact the Connect Support Center by emailing <a href = \"mailto:ConnectSupport@norc.org\">ConnectSupport@norc.org</a> or calling <span style=\"white-space:nowrap;overflow:hidden\">1-877-505-0253</span> if you need help accessing your account.",
         "bodyConnectSupport": "the Connect Support Center by emailing <a href = \"mailto:ConnectSupport@norc.org\">ConnectSupport@norc.org</a> or calling 1-877-505-0253",
         "bodyHealthPartners": "HealthPartners by emailing <a href = \"mailto:ConnectStudy@healthpartners.com\">ConnectStudy@healthpartners.com</a> or calling 952-967-5067",
-        "bodyHenryFord": "Henry Ford Health System by emailing <a href = \"mailto:ConnectStudy@hfhs.org\">ConnectStudy@hfhs.org</a>",
+        "bodyHenryFord": "Henry Ford Health by emailing <a href = \"mailto:ConnectStudy@hfhs.org\">ConnectStudy@hfhs.org</a>",
         "bodyKPColorado": "KP Colorado by emailing <a href = \"mailto:Connect-Study-KPCO@kp.org\">Connect-Study-KPCO@kp.org</a> or calling 303-636-3126",
         "bodyKPGeorgia": "KP Georgia by emailing <a href = \"mailto:Connect-Study-KPGA@kp.org\">Connect-Study-KPGA@kp.org</a> or calling 404-745-5115",
         "bodyKPHawaii": "KP Hawaii by emailing <a href = \"mailto:Connect-Study-KPHI@kp.org\">Connect-Study-KPHI@kp.org</a> or calling 833-417-0846",
@@ -859,12 +902,12 @@ const en = {
             "locations": {
                 "Option1": "<span>Option 1: Sanford Health Lab Location</span><br><br><span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; font-weight: 400; line-height: 27px; color: #2E2E2E; margin-top: 20px;\"> To find a Sanford Health Lab Location  and its operating hours, please visit <a href=\"https://www.sanfordhealth.org/locations\" target=\"_blank\">https://www.sanfordhealth.org/locations</a> <br><br>  <span class=\"site-info-underline\">Exact hours may vary by location. Walking in outside of normal business hours may lead to longer wait times.</span> <br><br> <span class=\"site-info-underline\">Note: If you live in the Bismarck region, the Sanford lab team prefers you pre-schedule an appointment. You can do this within your MyChart or by calling the lab directly.</span>",
                 "Option2": "<span>Option 2: Connect Research Lab</span> <br><br> <span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; font-weight: 400; color: #2E2E2E; margin-top: 20px;\">Use the link in the message we send to your MyChart or email to schedule an appointment at one of the below locations. You may also schedule an appointment by calling the Connect team at 605-312-6100. <br><br>  Connect Research Lab appointments are available Monday – Thursday 7:00am – 4:00pm and Friday 7:00am – 2:00pm. If you would like to schedule outside of these hours, please contact the Connect team at 605-312-6100 or ConnectStudy@sanfordhealth.org. </span><span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; line-height: 27px; color: #2E2E2E; margin-top: 20px;\"></span>",
-                "SiouxFallsName": "<span class=\"site-info-underline\">Sioux Falls, SD: Edith Breast Cancer Center</span>",
+                "SiouxFallsName": "<span class=\"site-info-underline\">Sioux Falls, SD: Edith Sanford Breast Center</span>",
                 "SiouxFallsAddress": "1210 W. 18th St <br>Sioux Falls, SD 57104 <br><span class=\"site-info-italic\">Enter Through Door BB</span>",
                 "SiouxFallsParking": "Free valet parking is available near the front entrance of the Edith Breast Cancer Center. Free patient parking is also available in the lot on the corner of S Grange Ave and W 18th Street. Enter through door BB. No parking validation is needed.",
-                "FargoName": "<span class=\"site-info-underline\">Fargo, ND: South University Urgent Care/Orthopedic Walk-In Clinic</span>",
-                "FargoAddress": "1720 University Drive S<br>Fargo, ND 58102<br><span class=\"site-info-italic\">Enter Through Door #8</span>",
-                "FargoParking": "Free patient parking is available in the lot near the Urgent Care entrance—Door #8. No parking validation needed."
+                "FargoName": "<span class=\"site-info-underline\">Fargo, ND: Sanford Amber Valley</span>",
+                "FargoAddress": "4840 23<sup>rd</sup> Ave S<br>Fargo, ND 58104<br><span class=\"site-info-italic\">Enter Through Door 4840. Upon entering, follow the signs to “Sanford Research” on Floor 2.</span>",
+                "FargoParking": "Free patient parking is available in the lot near door 4840. No parking validation needed."
             }
         },
         "marshfield": {
@@ -1037,18 +1080,18 @@ const en = {
         "lastName": "Last Name",
         "suffix": "Suffix",
         "preferredFirstName": "Preferred First Name",
-        "firstNameFieldLabel": "First name <span class=\"required\">*</span>",
+        "firstNameFieldLabel": "First Name <span class=\"required\">*</span>",
         "firstNameField": {
             "data-error-validation": "Your first name should contain only uppercase and lowercase letters and can contain some special characters.",
             "placeholder": "Enter first name"
         },
         "optional": " (optional)",
-        "middleNameFieldLabel": "Middle name",
+        "middleNameFieldLabel": "Middle Name",
         "middleNameField": {
             "data-error-validation": "Your middle name should contain only uppercase and lowercase letters and can contain some special characters.",
             "placeholder": "Enter middle name (optional)"
         },
-        "lastNameFieldLabel": "Last name <span class=\"required\">*</span>",
+        "lastNameFieldLabel": "Last Name <span class=\"required\">*</span>",
         "lastNameFieldValidation": "Your last name should contain only uppercase and lowercase letters and can contain some special characters.",
         "lastNameFieldPlaceholder": "Enter last name",
         "suffixFieldLabel": "Suffix",
@@ -1128,8 +1171,27 @@ const en = {
         "zipRequired": "Please enter the zip field of your mailing address.",
         "submitMailUpdate": "Submit Mailing Address Update",
         "submitPhysicalUpdate": "Submit Physical Address Update",
+        "submitAltUpdate": "Submit Alternate Address Update",
         "successMailUpdate": "Mailing Address Change Success!",
         "failMailUpdate": "Mailing Address Change Failed!",
+        "altAddress": "Alternate Address (Optional)",
+        "altAddressNote": "For any other mailing addresses you have",
+        "altAddressLine1": "Line 1 (street, PO box, rural route)  <span class=\"required\">*</span>",
+        "altAddressLine1Field": {
+            "data-error-required": "Please enter the first line of your mailing address.",
+            "placeholder": "Enter street, PO box, rural route"
+        },
+        "altContactHeader": "Alternate Contact (Optional)",
+        "altContactNote": "To help us get in touch with you if we lose contact",
+        "altContactEmail": "Email",
+        "altContactFirstNameFieldLabel": "First Name",
+        "altContactFirstNameField": {
+            "data-error-validation": "Your first name should contain only uppercase and lowercase letters and can contain some special characters.",
+            "placeholder": "Enter first name"
+        },
+        "altContactLastNameFieldLabel": "Last Name",
+        "altContactLastNameFieldValidation": "Your last name should contain only uppercase and lowercase letters and can contain some special characters.",
+        "altContactLastNameFieldPlaceholder": "Enter last name",
         "signInInfo": "Sign In Information",
         "signInEmail": "Sign in Email Address",
         "signInPhone": "Sign in Phone Number",
@@ -1251,7 +1313,9 @@ const en = {
         "phoneRequired": "A phone number is required. Please provide at least one of the following: home phone, mobile phone, or other phone number.",
         "phoneFormat": "Please enter a phone number in this format: 999-999-9999.",
         "phoneOnlyNumbers": "Phone number may only contain numbers.",
-        "zipOnlyNumbers": "Zip code may only contain numbers.",
+        "zipOnlyNumbers": "Please enter a 5 digit zip code in this format: 12345",
+        "invalidZip": "Invalid Zip Code",
+        "invalidAddress": "Address not found",
         "cityOnlyLetters": "City name may only contain letters.",
         "confirmEmail": "Please confirm your email address.",
         "emailsDoNotMatch": "Your email addresses do not match. Please retype your email addresses.",
@@ -1265,6 +1329,12 @@ const en = {
         "attention": "ATTENTION",
         "undergoingMaintenance": "We are currently undergoing maintenance, please check back later.",
         "warning": "WARNING",
+        "invalidFormWarning": "Please fix the errors in the information you entered before continuing. If you are having problems fixing these errors and can’t submit your profile, please reach out to the <a href=\"https://myconnect.cancer.gov/support\" target=\"_blank\">Connect Support Center</a> for help.",
+        "addressSuggestionTitle": "Address Verification",
+        "addressSuggestionDescription": "We can’t verify your <b>mailing</b> address but found a close match. Please confirm the correct address or enter a different address.",
+        "addressSuggestionDescriptionPhysical": "We can’t verify your <b>physical</b> address but found a close match. Please confirm the correct address or enter a different address.",
+        "addressSuggestionKeepButton": "Keep address I entered",
+        "addressSuggestionUseButton": "Use suggested address",
         "testingEnvironment": "This is a <b>testing environment</b> where no Personal Identifiable Information (PII) or other sensitive personal information should be used.",
         "goToSite": "If you are a Connect Participant, or would like to join the Connect study, please go to this site to sign up: <a href=\"https://myconnect.cancer.gov\">https://myconnect.cancer.gov</a>",
         "acknowledgement": "For Study Staff: I acknowledge that this is a <b>testing environment</b> and will not use personal information.",
@@ -1282,9 +1352,9 @@ const en = {
         "suffixVIII": "VIII, 8th",
         "suffix2nd": "2nd",
         "suffix3rd": "3rd",
-        "firstName": "First name",
-        "middleName": "Middle name",
-        "lastName": "Last name",
+        "firstName": "First Name",
+        "middleName": "Middle Name",
+        "lastName": "Last Name",
         "suffix": "Suffix",
         "preferredName": "Preferred Name",
         "birthDate": "Date of birth",
@@ -1314,6 +1384,7 @@ const en = {
         "state": "State",
         "zip": "Zip",
         "poBox": "Mailing address is PO Box",
+        "poBoxAltAddress": "Alternate address is PO Box",
         "invasiveCancer": "Have you ever had invasive cancer?",
         "yearDiagnosed": "What year were you diagnosed?",
         "typeOfCancer": "What type of cancer did you have?",
@@ -1726,11 +1797,13 @@ const en = {
         "viewed": "Viewed",
         "declined": "Declined",
         "empty": "<p>You don't have any results reports available. We will send you a message when we have a new report ready for you.</p><p>Now is a good time to check and see if you have any surveys or other study activities left to finish. Doing so will ensure you receive reports when they are available.</p><p>If you have any questions, contact the <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Connect Support Center</a>.</p>  ",
+        "withdrawn": "<p>You don’t have any results reports available. You have withdrawn from Connect.</p><p>If you have any questions, contact the <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Connect Support Center</a>.</p>",
         "noReadReports": "You have no viewed Reports.",
         "noUnreadReports": "You have no unread Reports.",
         "noDeclinedReports": "You have no declined Reports.",
         "generated": "Report generated ",
         "learnMore": "Learn more",
+        "newReport": "You have a new report available!",
         "physicalActivityTitle": "Physical Activity Report",
         "physicalActivityResultsTitle": "Your Recreational Physical Activity Results",
         "physicalActivityDescription": "<p>Engaging in regular physical activity is important for your health. Evidence suggests that higher levels of physical activity <a href=\"https://www.cancer.gov/about-cancer/causes-prevention/risk/obesity/physical-activity-fact-sheet#what-is-known-about-the-relationship-between-physical-activity-and-cancer-risk\" target=\"_blank\">reduce the risk</a> of chronic diseases, including certain cancers. However, there is much more to learn about the relationship between physical activity and cancer risk. Connect is designed to better understand the lifestyle and behavior patterns that may affect cancer risk over the life course. Physical activity is one area of active research interest that we are focusing on.</p><p>We asked questions about how often you engaged in different activities in the first Connect survey. Based on your responses, we put together a report that describes how your activity levels compare to the national physical activity guidelines.</p>",
@@ -1765,14 +1838,14 @@ const en = {
         "physicalActivityModeratePoint1": "Breathing hard but still able to have a conversation easily? That’s moderate-intensity activity.",
         "physicalActivityModeratePoint2": "Only able to say a few words before having to take a breath? That’s vigorous-intensity activity.",
         "physicalActivityConsiderations": "The activity guidelines are for most adults. In general, healthy people who slowly increase their weekly physical activity don’t need to consult their health care provider before engaging in activity.",
-        "physicalActivityConsiderationsWarning": "There are key considerations for certain people, including people with chronic conditions, people with disabilities, people who are pregnant or postpartum, and adults over 65.",
+        "physicalActivityConsiderationsWarning": "There are key considerations if you are pregnant, postpartum, have a chronic health condition, are living with a disability, or are over age 65.",
         "physicalActivityConsiderationsWarningBody": "It’s important for these groups of people to talk to a health care provider before continuing or starting a new exercise program. For more information, please visit <a href=\"https://odphp.health.gov/sites/default/files/2019-10/PAG_ExecutiveSummary.pdf\" target=\"_blank\" style=\"color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word\">this page</a>.",
         "physicalActivityConsiderationsAge": "Adults over 65 need the same amount of physical activity as all adults —but if meeting the guidelines is tough, do what you can! Adults over 65 should aim to mix in activities that improve balance and lower risk of falls. For example, <a href=\"https://www.nccih.nih.gov/health/tai-chi-what-you-need-to-know\" target=\"_blank\" style=\"color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word\">tai chi</a> or swimming.",
         "physicalActivityTipsHeader": "Tips for maintaining or improving your activity",
         "physicalActivityTipsTip1": "Break up activity over the week. Switch things up and get creative! There’s no wrong way to get in your aerobic and muscle strengthening activity.",
         "physicalActivityTipsTip2": "It all adds up. If you don’t meet the guidelines for activity this week, don’t sweat it. Even a little bit of activity can have health benefits.",
         "physicalActivityTipsTip3": "Try adding more movement into your day, like going for a short walk during a lunch break, taking the stairs to your office, or sneaking in some muscle strengthening exercises during commercial breaks. Check out some tips for fitting more activity into your day: <a href=\"https://youtu.be/61p1OIO20wk\" target=\"_blank\" style=\"color: #2973A5; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word\">[YouTube – 1:59]</a><span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word\">.</span>",
-        "physicalActivityTipsTip4": "You can find the right activity for you! The key is to make activity fun and sustainable so you can continue being active over the long term. Use tips like these for getting motivated: <a href=\"https://youtu.be/0i1lCNHaxhs\" style=\"color: #2973A5; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word\">[YouTube – 2:04]</a><span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word\">.</span>",
+        "physicalActivityTipsTip4": "You can find the right activity for you! The key is to make activity fun and sustainable so you can continue being active over the long term. Use tips like these for getting motivated: <a href=\"https://youtu.be/0i1lCNHaxhs\" style=\"color: #2973A5; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word\" target=\"_blank\">[YouTube – 2:04]</a><span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word\">.</span>",
         "physicalActivityTipsTip5": "Use the handy </span><a href=\"https://odphp.health.gov/moveyourway/activity-planner\" target=\"_blank\" style=\"color: #2973A5; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word\">activity planner</a><span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word\"> to create a plan that works for you. Choose the types of activity that are right for your current fitness level and health goals. If you have questions, talk with your health care provider.</span>",
         "physicalActivityVisit": "Visit <a style=\"color: #2973A5; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word\" href=\"https://health.gov/moveyourway\" target=\"_blank\">https://health.gov/moveyourway</a> for more tools, tips, and resources.",
         "physicalActivityBenefits": "Studied benefits of physical activity:",
@@ -1780,12 +1853,12 @@ const en = {
         "physicalActivityBenefitsShort": "<span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 700; line-height: 27px; word-wrap: break-word\">Short term:</span><span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word\"> Reduces stress, lowers blood pressure, sharpens focus, improves sleep, and boosts mood.</span>",
         "physicalActivityNationalHeader": "National Data: How many adults are meeting the physical activity guidelines?",
         "physicalActivityNationalAerobic": "A recent nationwide survey found that about <span style=\"font-weight: 700;\">39% of adults in the U.S.</span> reported engaging in recommended amounts of aerobic physical activity through leisure activities, such as sports, fitness, or recreational activities.¹",
-        "physicalActivityNationalMuscle": "<span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 700; line-height: 27px; word-wrap: break-word\">31%</span> of adults met the guidelines for muscle strengthening activity, with or without meeting the aerobic activity guidelines.²",
-        "physicalActivityNationalFootnote": "1. National Center for Health Statistics. National health and nutrition examination survey. 2020; <a style=\"color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word\" href=\"https://www.cdc.gov/nchs/nhanes/index.htm\" target=\"_blank\">https://www.cdc.gov/nchs/nhanes/index.htm</a>. <br /> 2. National Center for Health Statistics, National Health Interview Survey, 2020; <a style=\"color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word\" target=\"_blank\" href=\"https://www.cdc.gov/nchs/nhis/documentation/2020-nhis.html\">https://www.cdc.gov/nchs/nhis/documentation/2020-nhis.html</a>.",
+        "physicalActivityNationalMuscle": "<span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 700; line-height: 27px; word-wrap: break-word\">31%</span> of adults <a target=\"_blank\" href=\"https://odphp.health.gov/sites/default/files/2019-10/PAG_ExecutiveSummary.pdf\" style=\"color: #2973A5; font-weight: 400; text-decoration: underline;\">met the guidelines</a> for muscle strengthening activity, with or without meeting the aerobic activity guidelines.²",
+        "physicalActivityNationalFootnote": "1. National Center for Health Statistics. National health and nutrition examination survey. 2020; <a style=\"color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word\" href=\"https://www.cdc.gov/nchs/nhanes/\" target=\"_blank\">https://www.cdc.gov/nchs/nhanes/</a>. <br /> 2. National Center for Health Statistics, National Health Interview Survey, 2020; <a style=\"color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word\" target=\"_blank\" href=\"https://www.cdc.gov/nchs/nhis/documentation/2020-nhis.html\">https://www.cdc.gov/nchs/nhis/documentation/2020-nhis.html</a>.",
         "physicalActivityInTouch": "Get in touch",
         "physicalActivityInTouchThanks": "Thanks for reading! We hope you're inspired to move for your health.",
         "physicalActivityInTouchQuestions": "Questions about your report or the resources we shared? Reach out to the <span style=\"color: white; font-size: 18px; font-family: Noto Sans; font-weight: 700; line-height: 27px; word-wrap: break-word\">Connect Support Center</span><span style=\"color: white; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word\"> at </span><a style=\"color: white !important; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word\" href=\"https://MyConnect.cancer.gov/support\" target=\"_blank\">MyConnect.cancer.gov/support</a>",
-        "physicalActivityInTouchProvider": "Questions about your current health or about changing your physical activity plan? Reach out to your health care provider",
+        "physicalActivityInTouchProvider": "Questions about your current health or about changing your physical activity plan? Reach out to your health care provider.",
         "viewReport": "View my report",
         "declineReport": "Decline for now",
         "declineModalBody": "We understand you don’t want to see this report right now. The report will be saved in the “Declined” tab on this page so you can choose to revisit it later if you change your mind.",
