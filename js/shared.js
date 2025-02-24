@@ -454,7 +454,7 @@ export const getMyCollections = async () => {
 
 const allIHCS = {
     531629870: 'HealthPartners',
-    548392715: 'Henry Ford Health System',
+    548392715: 'Henry Ford Health',
     125001209: 'Kaiser Permanente Colorado',
     327912200: 'Kaiser Permanente Georgia',
     300267574: 'Kaiser Permanente Hawaii',
@@ -470,7 +470,7 @@ export const sites = () => {
         return {
             657167265: 'Sanford Health',
             531629870: 'HealthPartners',
-            548392715: 'Henry Ford Health System',
+            548392715: 'Henry Ford Health',
             303349821: 'Marshfield Clinic Health System',
             809703864: 'University of Chicago Medicine',
             125001209: 'Kaiser Permanente Colorado',
@@ -484,7 +484,7 @@ export const sites = () => {
         return {
             657167265: 'Sanford Health',
             531629870: 'HealthPartners',
-            548392715: 'Henry Ford Health System',
+            548392715: 'Henry Ford Health',
             303349821: 'Marshfield Clinic Health System',
             809703864: 'University of Chicago Medicine',
             125001209: 'Kaiser Permanente Colorado',
@@ -714,6 +714,61 @@ export const allStates = {
     "Wyoming":51,
     "NA": 52
 }
+
+export const statesWithAbbreviations = {
+    Alabama: "AL",
+    Alaska: "AK",
+    Arizona: "AZ",
+    Arkansas: "AR",
+    California: "CA",
+    Colorado: "CO",
+    Connecticut: "CT",
+    Delaware: "DE",
+    "District of Columbia": "DC",
+    Florida: "FL",
+    Georgia: "GA",
+    Hawaii: "HI",
+    Idaho: "ID",
+    Illinois: "IL",
+    Indiana: "IN",
+    Iowa: "IA",
+    Kansas: "KS",
+    Kentucky: "KY",
+    Louisiana: "LA",
+    Maine: "ME",
+    Maryland: "MD",
+    Massachusetts: "MA",
+    Michigan: "MI",
+    Minnesota: "MN",
+    Mississippi: "MS",
+    Missouri: "MO",
+    Montana: "MT",
+    Nebraska: "NE",
+    Nevada: "NV",
+    "New Hampshire": "NH",
+    "New Jersey": "NJ",
+    "New Mexico": "NM",
+    "New York": "NY",
+    "North Carolina": "NC",
+    "North Dakota": "ND",
+    Ohio: "OH",
+    Oklahoma: "OK",
+    Oregon: "OR",
+    Pennsylvania: "PA",
+    "Rhode Island": "RI",
+    "South Carolina": "SC",
+    "South Dakota": "SD",
+    Tennessee: "TN",
+    Texas: "TX",
+    Utah: "UT",
+    Vermont: "VT",
+    Virginia: "VA",
+    Washington: "WA",
+    "West Virginia": "WV",
+    Wisconsin: "WI",
+    Wyoming: "WY",
+    NA: "NA", // Assuming NA should remain NA
+};
 
 export const allCountries = {
     "United States":1,
@@ -972,6 +1027,18 @@ export const BirthMonths = {
     "11": "11 - November",
     "12": "12 - December"
 }
+
+export const swapKeysAndValues = (obj) => {
+    const swapped = {};
+
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            swapped[obj[key]] = key; // Direct swap (no duplicate check)
+        }
+    }
+
+    return swapped;
+};
 
 export const showAnimation = () => {
     if(document.getElementById('loadingAnimation')) document.getElementById('loadingAnimation').style.display = '';
@@ -1726,11 +1793,15 @@ export const validPhoneNumberFormat =
  * @returns {string}
  */
 export function getCleanSearchString(urlSearchStr) {
-    return urlSearchStr
-        .replaceAll('%25', '%')
-        .replaceAll('%3D', '=')
-        .replaceAll('&amp;', '&')
-        .replaceAll('%26', '&')
+  let prevStr = urlSearchStr;
+  let currStr = decodeURIComponent(urlSearchStr);
+
+  while (prevStr !== currStr) {
+    prevStr = currStr;
+    currStr = decodeURIComponent(currStr);
+  }
+
+  return currStr.replace(/&amp;/g, "&");
 }
 
 /**
@@ -2416,6 +2487,20 @@ export const emailAddressValidation = async (data) => {
     return jsonResponse;
 }
 
+export const addressValidation = async (data) => {
+    const idToken = appState.getState().idToken;
+    const response = await fetch(`${api}?api=addressValidation`, {
+        method: "POST",
+        headers: {
+            Authorization: "Bearer " + idToken
+        },
+        body: JSON.stringify(data)
+    });
+
+    const jsonResponse = await response.json();
+    return jsonResponse;
+}
+
 /**
  * Create a new Date object with adjusted time
  * @param {number | string | Date} inputTime - Input time to adjust
@@ -2450,7 +2535,7 @@ export const emailValidationAnalysis = (validation) => {
         verdict === INVALID ||
         !checks.domain.has_valid_address_syntax ||
         !checks.domain.has_mx_or_a_record ||
-        score < 0.45;
+        score < 0.01;
 
     if (isInvalid) {
         // it's for testing with the test email such as *.mailinator
@@ -2468,14 +2553,7 @@ export const emailValidationAnalysis = (validation) => {
         checks.additional.has_suspected_bounces ||
         score < 0.8;
 
-        if (isWarning) {
-            // it's for testing with the test email such as *.mailinator
-            if (location.host !== urls.prod) {
-               console.error("Risky Email", validation);
-               return VALID;
-           }
-           return WARNING;
-       }
+    if (isWarning) return WARNING;
 
     return VALID;
 };
@@ -2519,3 +2597,16 @@ export function replaceUnsupportedPDFCharacters(string, font) {
  }
  return String.fromCodePoint(...codePoints);
 }
+
+/**
+ * Escape HTML characters (useful for github-advanced-security bot warnings)
+ * @param {string} str - String to escape 
+ * @returns {string} - Escaped string
+ */
+export const escapeHTML = (str) => {
+    return str.replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+};

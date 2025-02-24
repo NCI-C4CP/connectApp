@@ -80,21 +80,20 @@ const en = {
         "profileHeader": "My Profile",
         "nameSubheader": "Name",
         "notCorrectMessage": "If this is not correct, please contact the <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Connect Support Center</a> or call 1-877-505-0253",
-        "firstName": "First name <span class=\"required\">*</span>",
+        "firstName": "First Name <span class=\"required\">*</span>",
         "firstNameField": {
             "placeholder": "Enter first name"
         },
-        "middleName": "Middle name",
+        "middleName": "Middle Name",
         "middleNameField": {
-            "data-error-validation": "Your middle name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters.",
-            "placeholder": "Enter middle name"
+            "data-error-validation": "Your middle name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters."
         },
-        "lastName": "Last name <span class=\"required\">*</span>",
+        "lastName": "Last Name <span class=\"required\">*</span>",
         "lastNameField": {
             "placeholder": "Enter last name"
         },
         "suffixList": "Suffix",
-        "preferredName": "Preferred first name",
+        "preferredName": "Preferred First Name",
         "preferredNameField": {
             "placeholder": "Enter preferred name"
         },
@@ -214,14 +213,14 @@ const en = {
         "invasiveCancer": "Have you ever had invasive cancer? <span class=\"required\">*</span>",
         "invasiveCancerMessage": "If you have or once had non-melanoma skin cancer (like basal cell or squamous cell carcinoma), or a condition that raises cancer risk (such as DCIS, or stage 0 breast cancer), please respond “No” to this question. These conditions are not invasive cancer, and you can still join. We are interested in learning how these conditions may affect cancer risk and health outcomes in the future.",
         "submitText": "Submit",
-        "alternateContactFirstNameLabel": "First name ",
-        "alternateContactFirstNameLabelRequired": "First name <span class=\"required\">*</span>",
-        "middleInitial": "Middle initial",
+        "alternateContactFirstNameLabel": "First Name ",
+        "alternateContactFirstNameLabelRequired": "First Name <span class=\"required\">*</span>",
+        "middleInitial": "Middle Initial",
         "middleInitialField": {
             "placeholder": "Enter middle initial"
         },
-        "alternateContactLastName": "Last name ",
-        "alternateContactLastNameRequired": "Last name <span class=\"required\">*</span>",
+        "alternateContactLastName": "Last Name ",
+        "alternateContactLastNameRequired": "Last Name <span class=\"required\">*</span>",
         "alternateContactPhoneNumber": "Phone number ",
         "alternateContactPhoneNumberRequired": "Phone number <span class=\"required\">*</span>",
         "alternateContactPhoneNumberField": {
@@ -270,7 +269,51 @@ const en = {
         "mailAddressCountryRequired": "Country <span class=\"required\">*</span>",
         "physicalAddress": "Physical Address (if different from Mailing Address)",
         "physicalAddressDesc":"Physical address is needed so Connect can mail you packages via FedEx for some study activities. FedEx does not deliver to P.O. Boxes.",
-
+        "otherContactInformation": "Other Contact Information",
+        "otherContactIntroduction": "We would like to keep in touch with you during your time in the study. Please share more contact information to help us reach you in the future.",
+        "altAddressQuestion": "Are there any other mailing addresses that you use?",
+        "whatIsTheAltAddress": "What is the address?",
+        "altAddressLine1Label": "Line 1 (street, PO box, rural route)",
+        "altAddressLine1Field": {
+            "data-error-required": "Please enter the first line of your mailing address.",
+            "placeholder": "Enter street, PO box, rural route"
+        },
+        "altAddressLine2Field": {
+            "placeholder": "Enter apartment, suite, unit, building"
+        },
+        "altAddressCityField": {
+            "data-error-required": "Please enter the city field of your alternate address.",
+            "placeholder": "Enter City"
+        },
+        "altAddressStateField": {
+            "data-error-required": "Please select the state field of your alternate address."
+        },
+        "altAddressZipField": {
+            "data-error-validation": "Please enter a 5 digit zip code in this format: 12345.",
+            "title": "5 characters long, numeric-only value.",
+            "data-error-required": "Please enter the zip field of your alternate address."
+        },
+        "isPOBoxCheckboxAltAddress": "Please check if alternate address is a P.O. Box",
+        "altContactHeader": "Alternate Contact",
+        "altContactQuestion": "Sometimes we find that people have moved when we try to contact them again. It would be helpful if you could give us contact details of someone close to you (such as a relative or friend) who would be willing for us to contact them if we are unable to reach you. Please leave this section blank if you do not want to share these extra contact details.",
+        "altContactFirstName": "Alternate Contact First Name",
+        "altContactFirstNameField": {
+            "placeholder": "Enter first name",
+            "data-error-validation": "Your first name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters."
+        },
+        "altContactLastName": "Alternate Contact Last Name",
+        "altContactLastNameField": {
+            "placeholder": "Enter last name",
+            "data-error-validation": "Your last name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters."
+        },
+        "altContactHowCanWeReach": "How can we reach this person?",
+        "altContactMobilePhone": "Mobile phone",
+        "altContactHomePhone": "Home phone",
+        "altContactEmail": "Email",
+        "altContactEmailField": {
+            "title": "Please enter an email address in this format: name@example.com.",
+            "placeholder": "Enter a valid email address"
+        },
     },
     "navbar": {
         "dashboardLink": " Dashboard",
@@ -324,9 +367,9 @@ const en = {
             "title": "Download HIPAA Revocation form",
             "innerHTML": "Download an unsigned copy of the HIPAA Revocation form&nbsp<i class=\"fas fa-file-download\"></i>"
         },
-        "firstName": "First name <span class=\"required\">*</span>",
-        "middleName": "Middle name",
-        "lastName": "Last name<span class=\"required\">*</span>",
+        "firstName": "First Name <span class=\"required\">*</span>",
+        "middleName": "Middle Name",
+        "lastName": "Last Name<span class=\"required\">*</span>",
         "navButtons": "<button class=\"btn btn-primary consentPrevButton w-100 w-sm-auto me-sm-5\" type=\"button\" id=\"backToAgreements\">Back</button><button type=\"submit\" class=\"btn btn-primary save-data consentNextButton w-100 w-sm-auto ms-sm-5\">Sign and Submit</button>"
     },
     "consent": {
@@ -599,9 +642,9 @@ const en = {
         "consentPageBody6": "By clicking “Yes, I agree to join Connect” and typing your name, you confirm the following:",
         "consentPageBody6List": "<li>I have read these forms.</li><li>As  stated  in  the  consent  and  HIPAA  Authorization,  I  will allow  the  use,  storage, and  disclosure  (release) of  my  survey  answers, samples,  and  health  information for the research as described above.</li><li>If I have questions, I can contact the Connect Support Center at <a target=\"_blank\" href=\"https://norcfedramp.servicenowservices.com/recruit\">Cancer.gov/connectstudy/support</a> or by calling 1-866-462-6621</li><li>If I decide to leave the study, I can contact the Connect Support Center at <a target=\"_blank\" href=\"https://norcfedramp.servicenowservices.com/recruit\">Cancer.gov/connectstudy/support</a></li>",
         "consentPageAgree": "Yes, I agree to join Connect",
-        "consentPageFormFirstName": "First name<span class=\"required\">*</span>",
-        "consentPageFormMiddleName": "Middle name<span></span>",
-        "consentPageFormLastName": "Last name<span class=\"required\">*</span>",
+        "consentPageFormFirstName": "First Name<span class=\"required\">*</span>",
+        "consentPageFormMiddleName": "Middle Name<span></span>",
+        "consentPageFormLastName": "Last Name<span class=\"required\">*</span>",
         "consentPageFormSuffixLabel": "Suffix<span></span>",
         "consentPageFormSuffixList": "<option value=\"\">-Select-</option><option value=\"612166858\">Jr.</option><option value=\"255907182\">Sr.</option><option value=\"226924545\">I</option><option value=\"270793412\">II</option><option value=\"959021713\">III</option><option value=\"643664527\">2nd</option><option value=\"537892528\">3rd</option>",
         "consentPageFormLegalName": "Please enter your legal name. If you are a member of Kaiser Permanente, please enter your first and last name exactly as it appears on your Kaiser Permanente ID card.",
@@ -688,7 +731,7 @@ const en = {
         "alreadyHaveAccount": "Our records show that you already have another account with a different email or phone number. Please try signing in again. Contact the Connect Support Center by emailing <a href = \"mailto:ConnectSupport@norc.org\">ConnectSupport@norc.org</a> or calling <span style=\"white-space:nowrap;overflow:hidden\">1-877-505-0253</span> if you need help accessing your account.",
         "bodyConnectSupport": "the Connect Support Center by emailing <a href = \"mailto:ConnectSupport@norc.org\">ConnectSupport@norc.org</a> or calling 1-877-505-0253",
         "bodyHealthPartners": "HealthPartners by emailing <a href = \"mailto:ConnectStudy@healthpartners.com\">ConnectStudy@healthpartners.com</a> or calling 952-967-5067",
-        "bodyHenryFord": "Henry Ford Health System by emailing <a href = \"mailto:ConnectStudy@hfhs.org\">ConnectStudy@hfhs.org</a>",
+        "bodyHenryFord": "Henry Ford Health by emailing <a href = \"mailto:ConnectStudy@hfhs.org\">ConnectStudy@hfhs.org</a>",
         "bodyKPColorado": "KP Colorado by emailing <a href = \"mailto:Connect-Study-KPCO@kp.org\">Connect-Study-KPCO@kp.org</a> or calling 303-636-3126",
         "bodyKPGeorgia": "KP Georgia by emailing <a href = \"mailto:Connect-Study-KPGA@kp.org\">Connect-Study-KPGA@kp.org</a> or calling 404-745-5115",
         "bodyKPHawaii": "KP Hawaii by emailing <a href = \"mailto:Connect-Study-KPHI@kp.org\">Connect-Study-KPHI@kp.org</a> or calling 833-417-0846",
@@ -859,12 +902,12 @@ const en = {
             "locations": {
                 "Option1": "<span>Option 1: Sanford Health Lab Location</span><br><br><span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; font-weight: 400; line-height: 27px; color: #2E2E2E; margin-top: 20px;\"> To find a Sanford Health Lab Location  and its operating hours, please visit <a href=\"https://www.sanfordhealth.org/locations\" target=\"_blank\">https://www.sanfordhealth.org/locations</a> <br><br>  <span class=\"site-info-underline\">Exact hours may vary by location. Walking in outside of normal business hours may lead to longer wait times.</span> <br><br> <span class=\"site-info-underline\">Note: If you live in the Bismarck region, the Sanford lab team prefers you pre-schedule an appointment. You can do this within your MyChart or by calling the lab directly.</span>",
                 "Option2": "<span>Option 2: Connect Research Lab</span> <br><br> <span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; font-weight: 400; color: #2E2E2E; margin-top: 20px;\">Use the link in the message we send to your MyChart or email to schedule an appointment at one of the below locations. You may also schedule an appointment by calling the Connect team at 605-312-6100. <br><br>  Connect Research Lab appointments are available Monday – Thursday 7:00am – 4:00pm and Friday 7:00am – 2:00pm. If you would like to schedule outside of these hours, please contact the Connect team at 605-312-6100 or ConnectStudy@sanfordhealth.org. </span><span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; line-height: 27px; color: #2E2E2E; margin-top: 20px;\"></span>",
-                "SiouxFallsName": "<span class=\"site-info-underline\">Sioux Falls, SD: Edith Breast Cancer Center</span>",
+                "SiouxFallsName": "<span class=\"site-info-underline\">Sioux Falls, SD: Edith Sanford Breast Center</span>",
                 "SiouxFallsAddress": "1210 W. 18th St <br>Sioux Falls, SD 57104 <br><span class=\"site-info-italic\">Enter Through Door BB</span>",
-                "SiouxFallsParking": "Free valet parking is available near the front entrance of the Edith Breast Cancer Center. Free patient parking is also available in the lot on the corner of S Grange Ave and W 18th Street. Enter through door BB. No parking validation is needed.",
-                "FargoName": "<span class=\"site-info-underline\">Fargo, ND: South University Urgent Care/Orthopedic Walk-In Clinic</span>",
-                "FargoAddress": "1720 University Drive S<br>Fargo, ND 58102<br><span class=\"site-info-italic\">Enter Through Door #8</span>",
-                "FargoParking": "Free patient parking is available in the lot near the Urgent Care entrance—Door #8. No parking validation needed."
+                "SiouxFallsParking": "Free valet parking is available near the front entrance of the Edith Sanford Breast Center. Free patient parking is also available in the lot on the corner of S Grange Ave and W 18th Street. Enter through door BB. No parking validation is needed.",
+                "FargoName": "<span class=\"site-info-underline\">Fargo, ND: Sanford Amber Valley</span>",
+                "FargoAddress": "4840 23<sup>rd</sup> Ave S<br>Fargo, ND 58104<br><span class=\"site-info-italic\">Enter Through Door 4840. Upon entering, follow the signs to “Sanford Research” on Floor 2.</span>",
+                "FargoParking": "Free patient parking is available in the lot near door 4840. No parking validation needed."
             }
         },
         "marshfield": {
@@ -886,10 +929,10 @@ const en = {
                 "LakeHallieSchedule": "Monday - Thursday: 7:00 a.m. to 4:00 p.m.<br>Fridays: 8:00 a.m. to 2:00 p.m.",
                 "MinocquaName": "Minocqua Center",
                 "MinocquaAddress": "9576 WI-70 Trunk<br>Minocqua, WI 54548",
-                "MinocquaSchedule": "Wednesdays: 8:00 a.m. to 1:00 p.m.",
+                "MinocquaSchedule": "Tuesdays: 8:00 a.m. to 4:00 p.m. Wednesdays: 8:00 a.m. to 12:00 p.m.",
                 "WestonName": "Weston Center",
                 "WestonAddress": "3400 Ministry Pkwy<br>Weston, WI 54476",
-                "WestonSchedule": "Mondays - Thursdays: 7:00 a.m. to 1:00 p.m. *Please ask about evening and Friday appointment availability if needed",
+                "WestonSchedule": "Tuesday – Thursday: 7:00 a.m. to 1:00 p.m.",
                 "WisconsinRapidsName": "Wisconsin Rapids Center",
                 "WisconsinRapidsAddress": "220 24th St S,<br>Wisconsin Rapids,WI 54494",
                 "WisconsinRapidsSchedule": "Thursdays: 7:00 a.m. to 4:00 p.m.<br>Fridays: 7:00 a.m. to 10:00 a.m."
@@ -897,8 +940,9 @@ const en = {
         },
         "henry_ford": {
             "donatingSamples": "Thank you for being part of the Connect for Cancer Prevention Study. As part of the study, we ask you to donate blood, urine, and saliva samples.",
+            "whenToDonateHeader": "When Should I Donate My Samples?",
             "whenToDonate": "The Connect team will send you an email when it is time to donate your samples. Be sure to check your spam or junk folder. After you receive the email, it is important to donate your samples as soon as you can.<br><br><span class=\"site-info-bold\">Important Notes:</span><br><br><ol><li> If you have had a blood transfusion or donated blood recently:<br> Please wait at least <span class=\"site-info-bold\">eight weeks</span> from your donation or transfusion before donating your samples for Connect.</li><br><li> If you have recently donated plasma:<br> Please wait at least <span class=\"site-info-bold\">four weeks</span> from your plasma donation before donating samples for Connect.</li><br><li>If you have recently donated platelets:<br>Please wait at least <span class=\"site-info-bold\">one week</span> from your platelet donation before donating samples for Connect.</li><br><li> If you have an upcoming colonoscopy:<br> Please be sure that you <span class=\"site-info-bold\">do not</span> donate samples for Connect on the <span class=\"site-info-bold\">same day</span> as your colonoscopy.</li></ol>",
-            "howToDonate": "Connect participants at Henry Ford Health have two options for donating samples. You can choose the most convenient option for you.<br><br><span class=\"site-info-bold\">Option 1:</span> Make an appointment to come into one of our Connect Research Labs to donate your samples.<br><br><span class=\"site-info-bold\">Option 2:</span> A study team member can request a lab order be placed for you. After you receive the order confirmation email, you can donate samples by visiting a <span class=\"site-info-bold site-info-italic\">participating</span> Henry Ford Health Lab Services location during normal hours of operation.<br> * See a list of labs where you can donate Connect samples below.<br><br> The table below includes more information about these options.<br><br> <table style=\"border: 1px solid;padding:10px\"> <tr style=\"border: 1px solid;padding:10px\"> <th style=\"border: 1px solid;padding:10px\"><span class=\"site-info-bold\">Option 1: Connect Research Lab</span> </th> <th style=\"border: 1px solid;padding:10px\"><span class=\"site-info-bold\">Option 2: HFH Lab Services</span></th> </tr> <tr style=\"border: 1px solid;padding:10px\"> <td style=\"border: 1px solid;padding:10px\">Connect team will greet you and walk you through your visit.</td> <td style=\"border: 1px solid;padding:10px\">More hours and more locations, no need to schedule an appointment.</td> </tr> <tr style=\"border: 1px solid;padding:10px\"> <td style=\"border: 1px solid;padding:10px\">The team will draw blood, collect urine, and collect a saliva sample by asking you to swish with mouthwash. </td> <td style=\"border: 1px solid;padding:10px\">Lab staff will collect blood and urine samples at your visit. You will receive a mouthwash collection kit in the mail with instructions on how to complete your saliva sample at home and mail back.</td> </tr> <tr style=\"border: 1px solid;padding:10px\"> <td style=\"border: 1px solid;padding:10px\">Schedule your appointment using the link in the email we send or schedule with Connect staff by calling 855-574-7540.</td> <td style=\"border: 1px solid;padding:10px\">Request a lab order using the link in the email we send. The order will be placed by Connect staff.<span class=\"site-info-bold\"> Please allow up to 48 hours to receive order confirmation via email.</span> Once you receive the confirmation email, visit a participating HFH Lab Services location.<span class=\"site-info-bold\"> Orders expire after 30 days.</span></td> </tr> </table><br>When it is time to donate your samples, we will send you an email with a link to make your selection. Simply click the link to schedule a time that works for you to donate your samples at a Connect Research Lab or to request a lab order be placed so you can donate samples at a participating Henry Ford Health Lab Services location. <br><br> You can donate Connect samples and complete any labs ordered by your provider in the same visit.<br><br><span class=\"site-info-bold\">For questions or assistance with transportation, please call 855-574-7540 or email <a href=\"mailto:ConnectStudy@hfhs.org\">ConnectStudy@hfhs.org</a></span>",
+            "howToDonate": "Connect participants at Henry Ford Health have two options for donating samples. You can choose the most convenient option for you.<br><br><span class=\"site-info-bold\">Option 1:</span> Make an appointment to come into one of our Connect Research Labs to donate your samples.<br><br><span class=\"site-info-bold\">Option 2:</span> A study team member can request a lab order be placed for you. After you receive the order confirmation email, you can donate samples by visiting a <span class=\"site-info-bold site-info-italic\">participating</span> Henry Ford Health Lab Services location during normal hours of operation.<br> * See a list of labs where you can donate Connect samples below.<br><br> The table below includes more information about these options.<br><br> <table style=\"border: 1px solid;padding:10px\"> <tr style=\"border: 1px solid;padding:10px\"> <th style=\"border: 1px solid;padding:10px\"><span class=\"site-info-bold\">Option 1: Connect Research Lab</span> </th> <th style=\"border: 1px solid;padding:10px\"><span class=\"site-info-bold\">Option 2: HFH Lab Services</span></th> </tr> <tr style=\"border: 1px solid;padding:10px\"> <td style=\"border: 1px solid;padding:10px\">Connect team will greet you and walk you through your visit.</td> <td style=\"border: 1px solid;padding:10px\">More hours and more locations, no need to schedule an appointment.</td> </tr> <tr style=\"border: 1px solid;padding:10px\"> <td style=\"border: 1px solid;padding:10px\">The team will draw blood, collect urine, and collect a saliva sample by asking you to swish with mouthwash. </td> <td style=\"border: 1px solid;padding:10px\">Lab staff will collect blood and urine samples at your visit. You will receive a mouthwash collection kit in the mail with instructions on how to complete your saliva sample at home and mail back.</td> </tr> <tr style=\"border: 1px solid;padding:10px\"> <td style=\"border: 1px solid;padding:10px\">Schedule your appointment using the link in the email we send or schedule with Connect staff by calling 855-574-7540.</td> <td style=\"border: 1px solid;padding:10px\">Request a lab order using the link in the email we send. The order will be placed by Connect staff.<span class=\"site-info-bold\"> Please allow up to 48 hours to receive order confirmation via email.</span> Once you receive the confirmation email, visit a participating HFH Lab Services location.<span class=\"site-info-bold\"> Orders expire after 30 days.</span></td> </tr> </table><br>When it is time to donate your samples, we will send you an email with a link to make your selection. Simply click the link to schedule a time that works for you to donate your samples at a Connect Research Lab or to request a lab order be placed so you can donate samples at a <span class=\"site-info-bold\">participating</span> Henry Ford Health Lab Services location. <br><br> You can donate Connect samples and complete any labs ordered by your provider in the same visit.<br><br><span class=\"site-info-bold\">For questions or assistance with transportation, please call 855-574-7540 or email <a href=\"mailto:ConnectStudy@hfhs.org\">ConnectStudy@hfhs.org</a></span>",
             "howLong": "<span class=\"site-info-bold\">For Option 1: Connect Research Lab Appointment</span><br>Please expect to spend about one hour at your appointment to donate your samples and complete a short survey.<br><br><span class=\"site-info-bold\">For Option 2: Henry Ford Health Lab Services Locations</span><br>Wait times to donate samples may vary by location. To better serve HFH patients, Henry Ford Lab Services have started using <span class=\"site-info-bold\">“Save My Spot\".</span><br><br><span class=\"site-info-bold\">“Save My Spot\"</span> is an optional service to reserve your spot in line at one of the participating Henry Ford Health Lab Services locations (see table of locations above). All lab orders must be placed before using “Save My Spot,” including your lab order for Connect.<br><br>To use this optional service, click this link only after receiving order confirmation from Connect staff: <a href= \"https://www.henryford.com/locations/henry-ford-hospital/lab-services\">https://www.henryford.com/locations/henry-ford-hospital/lab-services</a> ",
             "prepareInstructions": "On the day of your visit to donate samples for Connect, you do not need to fast unless told to do so by your provider for any other lab work they’ve ordered. We request you drink plenty of water to keep hydrated but <span class=\"site-info-bold\">stop drinking water one hour before your visit.</span><br><br><span class=\"site-info-bold\">One hour before your visit:</span> Please <span class=\"site-info-bold\">do not</span> eat, drink, chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span class=\"site-info-bold\">Things to bring and remember:</span> We will ask you to complete a short survey on MyConnect after you donate samples. You will need your login method for MyConnect and a personal device to complete the survey. <br><br>You will be asked questions related to:<ul><li>The last time you ate or drank before your appointment, and the time you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul><br><div class=\"consentHeadersFont\" style=\"color:#606060;width:100%\">When Will I Receive My $25 Payment?</div><br>You will receive your $25 gift card after you donate a blood sample and complete <span class=\"site-info-bold\">all four sections</span> of your first Connect survey.<br><br>You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<ol><li>Background and Overall Health</li><li>Medications, Reproductive Health, Exercise, and Sleep</li><li>Smoking, Alcohol, and Sun Exposure</li><li>Where you Live and Work</li>",
             "support": "Call 855-574-7540 (9:00 a.m. – 7:00 p.m. on weekdays. On weekends and after business hours please leave a message with your name and a good time to call you back).",
@@ -909,10 +953,10 @@ const en = {
         "u_chicago": {
             "donatingSamples": "As part of  Connect, we ask you to donate blood, urine, and saliva samples and complete a short survey.",
             "whenToDonate": "The Connect team will send you an email when it is time to donate your samples. Be sure to check your spam or junk folder. After you receive the email, it is important to donate your samples as soon as you can.<br><br><span class=\"site-info-bold\">Note:</span> If you have recently had a blood transfusion or donated blood please wait at least <span class=\"site-info-bold\">eight weeks</span> from your transfusion or donation before donating your samples for Connect. If you have recently donated plasma, please wait at least <span class=\"site-info-bold\">four weeks</span> from your plasma donation before donating samples for Connect. If you have recently donated platelets, please wait at least <span class=\"site-info-bold\">one week</span> from your platelet donation before donating samples for Connect. If you have an upcoming colonoscopy, please be sure that you <span class=\"site-info-bold\">do not</span> donate samples for Connect on the <span class=\"site-info-bold\">same day</span> as your colonoscopy.",
-            "howToDonate": "Connect participants at UChicago have two options for donating samples. You can choose the most convenient option for you. For questions and assistance with transportation, please call UChicago at (773) 834-5804 or email Connect@bsd.uchicago.edu.<br><br> Option 1: Make an appointment to come into one of our Connect Research Labs to donate your samples.<br><br> Option 2: A study team member can request a lab order be placed for you. After you receive the order confirmation email, you can donate samples by visiting a participating UChicago Medicine (UCM) Outpatient Clinical Lab Location during normal hours of operation.<br><br> The table below includes more information about these options.<br><br> <table style=\"border: 1px solid\"><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; padding-left: 10px\" class=\"site-info-bold\">Option 1: Connect Research Lab</td><td style=\"border: 1px solid; padding-left: 10px\" class=\"site-info-bold\">Option 2: UCM Outpatient Clinical Lab Location</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; padding-left: 10px\">Connect team will greet you and walk you through your visit. </td><td style=\"border: 1px solid; padding-left: 10px\">More hours and more locations, no need to schedule an appointment.</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; padding-left: 10px\">The team will draw blood, collect urine, and collect a saliva sample by asking you to swish with mouthwash.  </td><td style=\"border: 1px solid; padding-left: 10px\">Lab staff will collect blood and urine samples at your visit. \nWe will send a mouthwash collection kit and instructions to you to complete your saliva sample at home.\n</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; padding-left: 10px\">Schedule your appointment using the link in the email we send or schedule with Connect staff by calling 773-834-5804.</td><td style=\"border: 1px solid; padding-left: 10px\">Request a lab order using the link in the email we send.  \nThe order will be placed by Connect staff. <span class=\"site-info-bold\">Please allow up to 48 hours to receive order confirmation via email</span>.  Once you receive the confirmation email, visit a participating UCM Outpatient Clinical Lab Location.\nOrders expire after 180 days.\n</td></tr></table>",
-            "howLong": "Option 1: UChicago Connect Research Lab Location<br> Please expect to spend about 30-45 minutes at your appointment to donate your samples. During your appointment, we will ask you to complete a short survey related to the samples we collect.<br><br> Option 2: UCM Outpatient Clinical Lab  Location<br> Wait times to donate samples may vary by location. Please expect to spend about 10-15 minutes at your appointment to donate your blood and urine samples.",
-            "prepareInstructions": "Option 1: UChicago Connect Research Lab Location<br><br>On the day of your visit, you do not need to fast. Please drink plenty of water to keep hydrated, but <span class=\"site-info-bold\">stop drinking water one hour before your visit</span>. Please <span class=\"site-info-bold\">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span class=\"site-info-bold\">Things to bring and remember:</span><br><br><ul><li>Please remember to bring a valid photo ID that is not expired (driver's license, passport, Chicago CityKey, school photo ID, or other photo ID)</li><li>Make sure you know your login information for MyConnect</li><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:<ul><li>The last time you ate or drank before your appointment, and the times you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></li></ul> Option 2: UCM Outpatient Clinical Lab Location<br><br> On the day of your appointment, you do not need to fast. Please drink plenty of water to keep hydrated.<br><br><span class=\"site-info-bold\">Things to bring and remember:</span><br><br><ul><li>Please remember to bring a valid photo ID that is not expired (driver's license, passport, Chicago CityKey, school photo ID, or other photo ID)</li><li>After your appointment:<ul><li>Be sure to check your email for a link to a survey to complete on MyConnect. The survey asks questions about the day you donated samples, so it is important to complete it as soon as you can.</li><li>We will email you when we ship your mouthwash home collection kit. Please use this kit and included instructions to collect your mouthwash sample at home.</li></ul></li></ul>",
-            "whatHappens": "Option 1: UChicago Connect Research Lab Location<br><br> The research team will check you in for your appointment and then collect your samples. At the end of your visit, the research team will check you out of your appointment.<br><br>We will draw a blood sample, collect a urine sample, and collect a saliva sample by asking you to swish with mouthwash.<br><br> <span class=\"site-info-underline\">To save time at your appointment, please complete your first Connect survey on MyConnect before donating samples. If you are not able to complete the survey before your appointment, we will ask you to complete the survey during your appointment.</span><br><br> We will also ask you to complete a short survey about your samples on MyConnect using your mobile phone. You will need your MyConnect login information to complete the survey. If you do not have a mobile phone, we will provide you with a tablet to complete your survey. We strongly encourage you to complete your survey at your appointment. If you choose to complete it after you leave your appointment, it is important to do so as soon as possible.<br><br> Option 2: UCM Outpatient Clinical Services Lab Location<br><br> Lab staff will collect blood and urine samples at your visit. You may donate Connect samples and complete any labs ordered by your provider in the same visit. After your visit, please remember to check your email for a survey to complete on MyConnect. The survey asks questions about the day you donated samples, so please complete it as soon as you can.<br><br><div class=\"consentHeadersFont\" style=\"color:#606060;width:100%\"> When Will I Receive My $25 Payment?</div><br> You will receive your $25 payment after you donate a blood sample and complete all four sections of your first Connect survey.<br><br> You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<br> 1. Background and Overall Health<br>2. Medications, Reproductive Health, Exercise, and Sleep<br>3. Smoking, Alcohol, and Sun Exposure<br>4. Where you Live and Work",
+            "howToDonate": "Connect participants at UChicago have two options for donating samples. You can choose the most convenient option for you. For questions and assistance with transportation, please call UChicago at (773) 834-5804 or email Connect@bsd.uchicago.edu.<br><br> <span class=\"site-info-bold\">Option 1:</span> Make an appointment to come into one of our Connect Research Labs to donate your samples.<br><br> <span class=\"site-info-bold\">Option 2:</span> A study team member can request a lab order be placed for you. After you receive the order confirmation email, you can donate samples by visiting a participating UChicago Medicine (UCM) Outpatient Clinical Lab Location during normal hours of operation.<br><br> The table below includes more information about these options.<br><br> <table style=\"border: 1px solid\"><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; padding-left: 10px\" class=\"site-info-bold\">Option 1: Connect Research Lab</td><td style=\"border: 1px solid; padding-left: 10px\" class=\"site-info-bold\">Option 2: UCM Outpatient Clinical Lab Location</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; padding-left: 10px\">Connect team will greet you and walk you through your visit. </td><td style=\"border: 1px solid; padding-left: 10px\">More hours and more locations, no need to schedule an appointment.</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; padding-left: 10px\">The team will draw blood, collect urine, and collect a saliva sample by asking you to swish with mouthwash.  </td><td style=\"border: 1px solid; padding-left: 10px\">Lab staff will collect blood and urine samples at your visit. \nWe will send a mouthwash collection kit and instructions to you to complete your saliva sample at home.\n</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; padding-left: 10px\">Schedule your appointment using the link in the email we send or schedule with Connect staff by calling 773-834-5804.</td><td style=\"border: 1px solid; padding-left: 10px\">Request a lab order using the link in the email we send.  \nThe order will be placed by Connect staff. <span class=\"site-info-bold\">Please allow up to 48 hours to receive order confirmation via email</span>.  Once you receive the confirmation email, visit a participating UCM Outpatient Clinical Lab Location.\nOrders expire after 180 days.\n</td></tr></table>",
+            "howLong": "<span class=\"site-info-bold\">Option 1: UChicago Connect Research Lab Location</span><br> Please expect to spend about 30-45 minutes at your appointment to donate your samples. During your appointment, we will ask you to complete a short survey related to the samples we collect.<br><br> <span class=\"site-info-bold\">Option 2: UCM Outpatient Clinical Lab  Location</span><br> Wait times to donate samples may vary by location. Please expect to spend about 10-15 minutes at your appointment to donate your blood and urine samples.",
+            "prepareInstructions": "<span class=\"site-info-bold\">Option 1: UChicago Connect Research Lab Location</span><br><br>On the day of your visit, you do not need to fast. Please drink plenty of water to keep hydrated, but <span class=\"site-info-bold\">stop drinking water one hour before your visit</span>. Please <span class=\"site-info-bold\">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span class=\"site-info-bold\">Things to bring and remember:</span><br><br><ul><li>Please remember to bring a valid photo ID that is not expired (driver's license, passport, Chicago CityKey, school photo ID, or other photo ID)</li><li>Make sure you know your login information for MyConnect</li><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:<ul><li>The last time you ate or drank before your appointment, and the times you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></li></ul> <span class=\"site-info-bold\">Option 2: UCM Outpatient Clinical Lab Location</span><br><br> On the day of your appointment, you do not need to fast. Please drink plenty of water to keep hydrated.<br><br><span class=\"site-info-bold\">Things to bring and remember:</span><br><br><ul><li>Please remember to bring a valid photo ID that is not expired (driver's license, passport, Chicago CityKey, school photo ID, or other photo ID)</li><li>After your appointment:<ul><li>Be sure to check your email for a link to a survey to complete on MyConnect. The survey asks questions about the day you donated samples, so it is important to complete it as soon as you can.</li><li>We will email you when we ship your mouthwash home collection kit. Please use this kit and included instructions to collect your mouthwash sample at home.</li></ul></li></ul>",
+            "whatHappens": "<span class=\"site-info-bold\">Option 1: UChicago Connect Research Lab Location</span><br><br> The research team will check you in for your appointment and then collect your samples. At the end of your visit, the research team will check you out of your appointment.<br><br>We will draw a blood sample, collect a urine sample, and collect a saliva sample by asking you to swish with mouthwash.<br><br> <span class=\"site-info-underline\">To save time at your appointment, please complete your first Connect survey on MyConnect before donating samples. If you are not able to complete the survey before your appointment, we will ask you to complete the survey during your appointment.</span><br><br> We will also ask you to complete a short survey about your samples on MyConnect using your mobile phone. You will need your MyConnect login information to complete the survey. If you do not have a mobile phone, we will provide you with a tablet to complete your survey. We strongly encourage you to complete your survey at your appointment. If you choose to complete it after you leave your appointment, it is important to do so as soon as possible.<br><br> <span class=\"site-info-bold\">Option 2: UCM Outpatient Clinical Services Lab Location</span><br><br> Lab staff will collect blood and urine samples at your visit. You may donate Connect samples and complete any labs ordered by your provider in the same visit. After your visit, please remember to check your email for a survey to complete on MyConnect. The survey asks questions about the day you donated samples, so please complete it as soon as you can.<br><br><div class=\"consentHeadersFont\" style=\"color:#606060;width:100%\"> When Will I Receive My $25 Payment?</div><br> You will receive your $25 payment after you donate a blood sample and complete all four sections of your first Connect survey.<br><br> You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<br> 1. Background and Overall Health<br>2. Medications, Reproductive Health, Exercise, and Sleep<br>3. Smoking, Alcohol, and Sun Exposure<br>4. Where you Live and Work",
             "support": "Call 1-877-505-0253 (8:00 a.m.-10:00 p.m. CT on weekdays and 9:00 a.m.-6:00 p.m. CT on weekends)",
             "locationNotes": "<p>UChicago currently offers four locations in Chicagoland. For questions and scheduling please call 773-834-5804 or email connect@bsd.uchicago.edu.</p>",
             "locations": {
@@ -1004,7 +1048,7 @@ const en = {
             "howToDonate": "<p>Contact the BSWH Connect team at 214-865-2427 or by email at <a href=\"mailto:ConnectStudy@bswhealth.org\">ConnectStudy@bswhealth.org</a> to schedule your appointment.</p>",
             "support": "Call 1-877-505-0253 (8:00 a.m. - 10:00 p.m. CT on weekdays and 9:00 a.m. - 6:00 p.m. CT on weekends).",
             "locationNotes": "<div style=\"margin-bottom:2rem;\"><div><span class=\"site-info-bold\">Baylor Scott & White Health and Wellness Center- Dallas</span><p>4500 Spring Ave<br>Dallas, TX 75210<br>Parking Instructions: The site offers free surface level parking.</p></div><div><span class=\"site-info-bold\">Baylor Scott & White Community Care (BCC) - Fort Worth*</span><p>1307 8th Ave, Ste 305<br>Fort Worth, TX 76104<br>Parking Instructions: The site offers free surface level parking.<br><span style=\"font-size:1rem\" class=\"site-info-underline-italic\">*Note: Only patients of Baylor Scott & White Health Community Care - Fort Worth clinic can schedule an appointment at this location.</span></p></div><div><span class=\"site-info-bold\">Baylor Scott & White All Saints Hospital- Fort Worth </span><p>1400 8th Avenue Fort Worth, TX 76104<br>6th Floor, C Building<br>Parking Instructions: Use the patient parking structure by the hospital.</p></div><div><span class=\"site-info-bold\">Baylor Scott & White Community Care (BCC) - Worth Street Clinic*</span><p>4001 Worth St.<br>Dallas, TX 75246<br>Parking Instructions: The site offers free surface level parking.<br><span style=\"font-size:1rem\" class=\"site-info-underline-italic\">*Note: Only patients of Baylor Scott & White Health Community Care - Worth Street clinic can schedule an appointment at this location.</span></p></div><div><span class=\"site-info-bold\">Baylor Scott & White Sammons Cancer Center</span><p>3410 Worth St, Suite 530<br>Dallas, TX 75246<br>Parking Instructions: Drive to the back of the Sammons Cancer Center Building and park in the underground garage. You will get a ticket from the machine as you enter the garage. Please keep the ticket. During your visit, the Connect team will give you a voucher for free parking.</p></div></div>",
-            "howLong": "If you complete your first Connect survey before your appointment, please expect to spend about 45 minutes at your appointment to donate your samples and please expect to spend about 45 minutes at your appointment to donate your samples and complete another short biospecimen sample survey.",
+            "howLong": "If you complete your first Connect survey before your appointment, please expect to spend about 45 minutes at your appointment to donate your samples and complete a short sample survey.",
             "prepareInstructions": "<p>On the day of your appointment, you do not need to fast. Drink plenty of water to keep hydrated, but <span class=\"site-info-bold\">stop drinking water one hour before your appointment.</span></p> <p><span class=\"site-info-bold\">One hour before your appointment:</span> Please <span class=\"site-info-bold\">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.</p> <p class=\"site-info-bold\">Things to bring and remember</p><ul><li>Please remember to bring a valid photo ID that is not expired (driver’s license, passport, school photo ID, or other photo ID)</li><li>Make sure you know your login information for MyConnect</li><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:</li><ul><li>The last time you ate or drank before your appointment, and the times you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></li></ul>",
             "whatHappens": "<p>The research team will check you in for your appointment and then collect your samples. At the end of your visit, the research team will check you out of your appointment.</p><p>We will draw a blood sample, collect a urine sample, and collect a saliva sample by asking you to swish with mouthwash.</p><p>We will also ask you to complete a short survey on MyConnect using your mobile phone. You will need your MyConnect login information to complete the survey. If you do not have a mobile phone, we will provide you with a tablet to complete your survey. We strongly encourage you to complete your survey at your appointment. If you choose to complete it after you leave your appointment, it is important to do so as soon as possible.</p><div class=\"consentHeadersFont\" style=\"color:#606060;width:100%;padding-top:1rem;\">When Will I Receive My $25 Payment?</div><br>You will receive your $25 payment after you donate a blood sample and complete all four sections of your first Connect survey.<br><br>You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<br><br><ol><li class=\"site-list-item-spacing\">Background and Overall Health</li><li class=\"site-list-item-spacing\">Medications, Reproductive Health, Exercise, and Sleep</li><li class=\"site-list-item-spacing\">Smoking, Alcohol, and Sun Exposure</li><li class=\"site-list-item-spacing\">Where you Live and Work</li>"
         }
@@ -1036,18 +1080,18 @@ const en = {
         "lastName": "Last Name",
         "suffix": "Suffix",
         "preferredFirstName": "Preferred First Name",
-        "firstNameFieldLabel": "First name <span class=\"required\">*</span>",
+        "firstNameFieldLabel": "First Name <span class=\"required\">*</span>",
         "firstNameField": {
             "data-error-validation": "Your first name should contain only uppercase and lowercase letters and can contain some special characters.",
             "placeholder": "Enter first name"
         },
         "optional": " (optional)",
-        "middleNameFieldLabel": "Middle name",
+        "middleNameFieldLabel": "Middle Name",
         "middleNameField": {
             "data-error-validation": "Your middle name should contain only uppercase and lowercase letters and can contain some special characters.",
             "placeholder": "Enter middle name (optional)"
         },
-        "lastNameFieldLabel": "Last name <span class=\"required\">*</span>",
+        "lastNameFieldLabel": "Last Name <span class=\"required\">*</span>",
         "lastNameFieldValidation": "Your last name should contain only uppercase and lowercase letters and can contain some special characters.",
         "lastNameFieldPlaceholder": "Enter last name",
         "suffixFieldLabel": "Suffix",
@@ -1127,8 +1171,27 @@ const en = {
         "zipRequired": "Please enter the zip field of your mailing address.",
         "submitMailUpdate": "Submit Mailing Address Update",
         "submitPhysicalUpdate": "Submit Physical Address Update",
+        "submitAltUpdate": "Submit Alternate Address Update",
         "successMailUpdate": "Mailing Address Change Success!",
         "failMailUpdate": "Mailing Address Change Failed!",
+        "altAddress": "Alternate Address (Optional)",
+        "altAddressNote": "For any other mailing addresses you have",
+        "altAddressLine1": "Line 1 (street, PO box, rural route)  <span class=\"required\">*</span>",
+        "altAddressLine1Field": {
+            "data-error-required": "Please enter the first line of your mailing address.",
+            "placeholder": "Enter street, PO box, rural route"
+        },
+        "altContactHeader": "Alternate Contact (Optional)",
+        "altContactNote": "To help us get in touch with you if we lose contact",
+        "altContactEmail": "Email",
+        "altContactFirstNameFieldLabel": "First Name",
+        "altContactFirstNameField": {
+            "data-error-validation": "Your first name should contain only uppercase and lowercase letters and can contain some special characters.",
+            "placeholder": "Enter first name"
+        },
+        "altContactLastNameFieldLabel": "Last Name",
+        "altContactLastNameFieldValidation": "Your last name should contain only uppercase and lowercase letters and can contain some special characters.",
+        "altContactLastNameFieldPlaceholder": "Enter last name",
         "signInInfo": "Sign In Information",
         "signInEmail": "Sign in Email Address",
         "signInPhone": "Sign in Phone Number",
@@ -1250,7 +1313,9 @@ const en = {
         "phoneRequired": "A phone number is required. Please provide at least one of the following: home phone, mobile phone, or other phone number.",
         "phoneFormat": "Please enter a phone number in this format: 999-999-9999.",
         "phoneOnlyNumbers": "Phone number may only contain numbers.",
-        "zipOnlyNumbers": "Zip code may only contain numbers.",
+        "zipOnlyNumbers": "Please enter a 5 digit zip code in this format: 12345",
+        "invalidZip": "Invalid Zip Code",
+        "invalidAddress": "Address not found",
         "cityOnlyLetters": "City name may only contain letters.",
         "confirmEmail": "Please confirm your email address.",
         "emailsDoNotMatch": "Your email addresses do not match. Please retype your email addresses.",
@@ -1264,6 +1329,12 @@ const en = {
         "attention": "ATTENTION",
         "undergoingMaintenance": "We are currently undergoing maintenance, please check back later.",
         "warning": "WARNING",
+        "invalidFormWarning": "Please fix the errors in the information you entered before continuing. If you are having problems fixing these errors and can’t submit your profile, please reach out to the <a href=\"https://myconnect.cancer.gov/support\" target=\"_blank\">Connect Support Center</a> for help.",
+        "addressSuggestionTitle": "Address Verification",
+        "addressSuggestionDescription": "We can’t verify your <b>mailing</b> address but found a close match. Please confirm the correct address or enter a different address.",
+        "addressSuggestionDescriptionPhysical": "We can’t verify your <b>physical</b> address but found a close match. Please confirm the correct address or enter a different address.",
+        "addressSuggestionKeepButton": "Keep address I entered",
+        "addressSuggestionUseButton": "Use suggested address",
         "testingEnvironment": "This is a <b>testing environment</b> where no Personal Identifiable Information (PII) or other sensitive personal information should be used.",
         "goToSite": "If you are a Connect Participant, or would like to join the Connect study, please go to this site to sign up: <a href=\"https://myconnect.cancer.gov\">https://myconnect.cancer.gov</a>",
         "acknowledgement": "For Study Staff: I acknowledge that this is a <b>testing environment</b> and will not use personal information.",
@@ -1281,9 +1352,9 @@ const en = {
         "suffixVIII": "VIII, 8th",
         "suffix2nd": "2nd",
         "suffix3rd": "3rd",
-        "firstName": "First name",
-        "middleName": "Middle name",
-        "lastName": "Last name",
+        "firstName": "First Name",
+        "middleName": "Middle Name",
+        "lastName": "Last Name",
         "suffix": "Suffix",
         "preferredName": "Preferred Name",
         "birthDate": "Date of birth",
@@ -1313,6 +1384,7 @@ const en = {
         "state": "State",
         "zip": "Zip",
         "poBox": "Mailing address is PO Box",
+        "poBoxAltAddress": "Alternate address is PO Box",
         "invasiveCancer": "Have you ever had invasive cancer?",
         "yearDiagnosed": "What year were you diagnosed?",
         "typeOfCancer": "What type of cancer did you have?",

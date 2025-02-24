@@ -150,7 +150,7 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                         body = `<span data-i18n="mytodolist.bodyHealthPartners">HealthPartners by emailing <a href = "mailto:ConnectStudy@healthpartners.com">ConnectStudy@healthpartners.com</a> or calling 952-967-5067</span>`
                     }
                     if (site === fieldMapping.henryFordHealth){
-                        body = `<span data-i18n="mytodolist.bodyHenryFord">Henry Ford Health System by emailing <a href = "mailto:ConnectStudy@hfhs.org">ConnectStudy@hfhs.org</a></span>`
+                        body = `<span data-i18n="mytodolist.bodyHenryFord">Henry Ford Health by emailing <a href = "mailto:ConnectStudy@hfhs.org">ConnectStudy@hfhs.org</a></span>`
                     }
                     if(site === fieldMapping.kaiserPermanenteCO){
                         body = `<span data-i18n="mytodolist.bodyKPColorado">KP Colorado by emailing <a href = "mailto:Connect-Study-KPCO@kp.org">Connect-Study-KPCO@kp.org</a> or calling 303-636-3126</span>`

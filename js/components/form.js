@@ -1,4 +1,4 @@
-import { allStates, allCountries, getMyData, hasUserData, translateHTML, translateText } from "../shared.js";
+import { allStates, allCountries, getMyData, hasUserData, translateHTML } from "../shared.js";
 import { addEventMonthSelection, addEventMonthConfirmationSelection, addEventUPSubmit, addEventCancerFollowUp, addEventChangeFocus, addEventAddressAutoComplete, addEventAdditionalEmail, addEventCheckCanText, addEventFormerName, addMoreFormerName, addEventPhysicalAddressLine } from "../event.js";
 import cId from '../fieldToConceptIdMapping.js';
 import { suffixList, suffixToTextMapDropdown, suffixToTextMap, numberOfDefaultFormerNames } from "../settingsHelpers.js";
@@ -21,19 +21,19 @@ export const renderUserProfile = async () => {
             <p data-i18n="form.notCorrectMessage">If this is not correct, please contact the <a href="https://norcfedramp.servicenowservices.com/participant" target="_blank">Connect Support Center</a> or call 1-877-505-0253</p>
             <div class="row">
                 <div class="col-md-4">
-                    <label style="margin-left:-15px" data-i18n="form.firstName">First name <span class="required">*</span></label>
+                    <label style="margin-left:-15px" data-i18n="form.firstName">First Name <span class="required">*</span></label>
                     <input data-i18n="form.firstNameField" type="text" value="${myData.data['471168198']}" class="form-control input-validation row" id="UPFirstName" placeholder="Enter first name" disabled style="max-width:215px; background-color:#e6e6e6 !important;">
                 </div>
                 <div class="col-md-4">
-                    <label style="margin-left:-15px" data-i18n="form.middleName">Middle name</label>
+                    <label style="margin-left:-15px" data-i18n="form.middleName">Middle Name</label>
                     <input type="text"  data-i18n="form.middleNameField" value="${
                         myData.data["436680969"] ? myData.data["436680969"] : ""
-                    }" class="form-control input-validation row" data-validation-pattern="alphabets" data-error-validation="Your middle name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters." id="UPMiddleInitial" placeholder="Enter middle name" style="max-width:215px; background-color:#e6e6e6 !important;" disabled>
+                    }" class="form-control input-validation row" data-validation-pattern="alphabets" data-error-validation="Your middle name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters." id="UPMiddleInitial" style="max-width:215px; background-color:#e6e6e6 !important;" disabled>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    <label data-i18n="form.lastName" style="margin-left:-15px">Last name <span class="required">*</span></label>
+                    <label data-i18n="form.lastName" style="margin-left:-15px">Last Name <span class="required">*</span></label>
                     <input data-i18n="form.lastNameField" type="text" value="${myData.data['736251808']}" class="form-control input-validation row" id="UPLastName" placeholder="Enter last name" disabled style="max-width:304px; background-color:#e6e6e6 !important;">
                 </div>
             </div>
@@ -58,7 +58,7 @@ export const renderUserProfile = async () => {
             
             <div class="form-group row">
                 <div class="col-md-4">
-                    <label data-i18n="form.preferredName" class="col-form-label">Preferred first name</label>
+                    <label data-i18n="form.preferredName" class="col-form-label">Preferred First Name</label>
                     <input data-i18n="form.preferredNameField" style="max-width:215px; margin-left:0px;" type="text" class="form-control input-validation" id="UPPreferredName" placeholder="Enter preferred name">
                 </div>
             </div>
@@ -342,7 +342,11 @@ export const renderUserProfile = async () => {
                 </div>
                 ${renderMailingAddress('', 2)}
             </div>
-
+            <hr>
+            <!-- Other Address Info -->
+            ${renderAltAddressFields()}
+            <!-- Alt Contact Info -->
+            ${renderAltContactFields()}
             <br><hr>
             <div class="userProfileSubHeaders" data-i18n="form.cancerHistorySubheader">Cancer History</div>
             <div class="form-group row">
@@ -366,7 +370,7 @@ export const renderUserProfile = async () => {
             </br></br>
             <div class="row">
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary save-data consentNextButton" data-i18n="form.submitText">Submit</button>
+                    <button type="submit" class="btn btn-primary save-data consentNextButton" data-i18n="form.submitText" id="userProfileSubmitButton">Submit</button>
                 </div>
             </div>
         </form>
@@ -386,9 +390,11 @@ export const renderUserProfile = async () => {
     addEventAdditionalEmail();
     addEventAddressAutoComplete(1);
     addEventAddressAutoComplete(2);
+    addEventAddressAutoComplete(3);
     addEventCheckCanText();
     addEventUPSubmit();
     addEventPhysicalAddressLine(2);
+    addEventToggleAltAddress();
 
     for (let i = 0; i < numberOfDefaultFormerNames; i++) {
         addMoreFormerName();
@@ -425,40 +431,132 @@ const addEventNameConsistency = (cfn, cln) => {
     });
 }
 
-export const renderAlternateContact = (id, required) => {
+// Show alternate address section if "Yes" (353358909) is selected. Otherwise hide it.
+const addEventToggleAltAddress = () => {
+    const altAddressRadioButtons = document.getElementsByName('altMailingAddress');
+    const altAddressSection = document.getElementById('altAddressSection');
+
+    altAddressRadioButtons.forEach(radio => {
+        radio.addEventListener('change', function () {
+            if (this.value == cId.yes) {
+                altAddressSection.style.display = 'block';
+            } else {
+                altAddressSection.style.display = 'none';
+            }
+        });
+    });
+}
+
+const renderAltAddressFields = () => {
     return translateHTML(`
-        <div class="form-group">
-            <label>
-                <span data-i18n="form.alternateContactFirstNameLabel${required ? 'Required': ''}"> First name </span>
-                <input data-i18n="form.firstNameField" type="text" class="form-control" ${required ? 'required' : ''} id="UPFirstName${id}" placeholder="Enter first name">
-            </label><br>
-            <label>
-                <span data-i18n="form.middleInitial">Middle initial </span>
-                <input data-i18n="form.middleInitialField" type="text" class="form-control" id="UPMiddleInitial${id}" placeholder="Enter middle initial">
-            </label><br>
-            <label>
-                <span data-i18n="form.alternateContactLastName${required ? 'Required': ''}">Last name </span>
-                <input data-i18n="form.lastNameField" type="text" class="form-control" ${required ? 'required' : ''} id="UPLastName${id}" placeholder="Enter last name">
-            </label><br>
-            <label>
-                <span data-i18n="form.alternateContactPhoneNumber${required ? 'Required': ''}">Phone number </span>
-                <input data-i18n="form.alternateContactPhoneNumberField" type="text" class="form-control" id="UPPhoneNumber${id}" ${required ? 'required' : ''} data-val-pattern="[1-9]{1}[0-9]{9}" size="10" maxlength="10" Placeholder="Enter phone number">
-            </label><br>
+        <div class="userProfileSubHeaders" data-i18n="form.otherContactInformation">Other Contact Information</div>
+        <span data-i18n="form.otherContactIntroduction">We would like to keep in touch with you during your time in the study. Please share more contact information to help us reach you in the future.</span>
+        <br>
+
+        <div class="form-group row">
+            <div class="col">
+                <label class="col-form-label" data-i18n="form.altAddressQuestion">Are there any other mailing addresses that you use?</label>
+                <br>
+                <div class="btn-group btn-group-toggle col-md-4" style="margin-left:0px;">
+                    <label><input type="radio" name="altMailingAddress" value="353358909"> <span data-i18n="settings.optYes">Yes</span></label>
+                    <label style = "margin-left:20px;"><input type="radio" name="altMailingAddress" value="104430631"> <span data-i18n="settings.optNo">No</span></label>
+                </div>
+            </div>
         </div>
-        <div style="font-weight:bold" data-i18n="form.mailAddress">Mailing Address</div>
-        ${renderMailingAddress('', id, required, true)}
+
+        <div class="form-group row" id="altAddressSection">
+            <div class="col">
+                <span data-i18n="form.whatIsTheAltAddress">What is the address?</span>
+                ${renderMailingAddress('', 3, false)}                    
+                <label>
+                    <input type="checkbox" id="poBoxCheckboxAltAddress">
+                    <span  data-i18n="form.isPOBoxCheckboxAltAddress">Please check if alternate address is a P.O. Box</span>
+                </label> 
+            </div>
+        </div>
+        <br>`);
+}
+
+export const renderAltContactFields = () => {
+    return translateHTML(`
+        <div style="font-weight:bold" data-i18n="form.altContactHeader">
+                    Alternate Contact
+                </div>
+        <span data-i18n="form.altContactQuestion">Sometimes we find that people have moved when we try to contact them again. It would be helpful if you could give us contact details of someone close to you (such as a relative or friend) who would be willing for us to contact them if we are unable to reach you. Please leave this section blank if you do not want to share these extra contact details.</span>
+        <br>
+
+        <div class="form-group row">
+            <div class="col">
+                <label>
+                    <span data-i18n="form.altContactFirstName">Alternate Contact First Name</span>
+                    <input data-i18n="form.altContactFirstNameField" type="text" class="form-control input-validation" data-validation-pattern="alphabets" id="altContactFirstName" placeholder="Enter first name">
+                </label>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col">
+                <label>
+                    <span data-i18n="form.altContactLastName">Alternate Contact Last Name</span>
+                    <input data-i18n="form.altContactLastNameField" type="text" class="form-control input-validation" data-validation-pattern="alphabets" id="altContactLastName" placeholder="Enter last name">
+                </label><br>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col">
+                <span data-i18n="form.altContactHowCanWeReach">How can we reach this person?</span>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="col">
+                <label class="col-form-label" data-i18n="form.altContactMobilePhone">Mobile phone</label>
+                <br>
+                <div class="btn-group col-md-4" id="altContactMobilePhone" style="margin-left:0px;">
+                    <input data-i18n="settings.onlyNumbersField" type="text" class="form-control num-val" data-val-pattern="[1-9]{1}[0-9]{2}" title="Only numbers are allowed." id="altContactMobilePhone1" data-error-validation="Only numbers are allowed." size="3" maxlength="3" Placeholder="999" style="margin-left:0px"> <span class="hyphen">-</span>
+                    <input data-i18n="settings.onlyNumbersField" type="text" class="form-control num-val" data-val-pattern="[0-9]{3}" title="Only numbers are allowed." id="altContactMobilePhone2" data-error-validation="Only numbers are allowed." size="3" maxlength="3" Placeholder="999"> <span class="hyphen">-</span>
+                    <input data-i18n="settings.onlyNumbersField" type="text" class="form-control num-val" data-val-pattern="[0-9]{4}" title="Only numbers are allowed." id="altContactMobilePhone3" data-error-validation="Only numbers are allowed." size="4" maxlength="4" Placeholder="9999">
+                </div>
+            </div>
+        </div>
+        <div class="form-group row">
+            <div class="col">
+                <label class="col-form-label" data-i18n="form.altContactHomePhone">Home phone</label>
+                <br>
+                <div class="btn-group col-md-4" id="altContactHomePhone" style="margin-left:0px;">
+                    <input data-i18n="settings.onlyNumbersField" type="text" class="form-control num-val" data-val-pattern="[1-9]{1}[0-9]{2}" title="Only numbers are allowed." id="altContactHomePhone1" data-error-validation="Only numbers are allowed." size="3" maxlength="3" Placeholder="999" style="margin-left:0px"> <span class="hyphen">-</span>
+                    <input data-i18n="settings.onlyNumbersField" type="text" class="form-control num-val" data-val-pattern="[0-9]{3}" title="Only numbers are allowed." id="altContactHomePhone2" data-error-validation="Only numbers are allowed." size="3" maxlength="3" Placeholder="999"> <span class="hyphen">-</span>
+                    <input data-i18n="settings.onlyNumbersField" type="text" class="form-control num-val" data-val-pattern="[0-9]{4}" title="Only numbers are allowed." id="altContactHomePhone3" data-error-validation="Only numbers are allowed." size="4" maxlength="4" Placeholder="9999">
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group row" style="padding-top:0; padding-bottom:0;">
+            <div class="col">
+                <label data-i18n="form.altContactEmail" class="col-form-label">Email</label>
+                <input data-i18n="form.altContactEmailField" style="margin-left:0px; max-width:382px;" type="text" class="form-control col-md-4" id="altContactEmail" title="Please enter an email address in this format: name@example.com." Placeholder="Enter a valid email address">
+            </div>
+        </div>
     `);
 }
 
 export const renderMailingAddress = (type, id, required, showCountry) => {
+    let idText;
+    if (id === 1) {
+        idText = 'mail';
+    } else if (id === 2) {
+        idText = 'physical';
+    } else {
+        idText = 'alt';
+    }
     return translateHTML(`
         <div class="form-group row">
             <div class="col">
-                <label class="col-form-label" data-i18n="form.${id === 2 ? 'physical': 'mail'}AddressLine1Label${required ? 'Required': ''}">
-                    Line (street, ${id === 1 ? 'PO box, ': '' }rural route) ${required ? '<span class="required">*</span>': ''}
+                <label class="col-form-label" data-i18n="form.${idText}AddressLine1Label${required ? 'Required': ''}">
+                    Line 1 (street, ${id === 1 || id === 3 ? 'PO box, ': '' }rural route) ${required ? '<span class="required">*</span>': ''}
                 </label>
                 <br>
-                <input data-i18n="form.${id === 2 ? 'physical': 'mail'}AddressLine1Field" style="margin-left:0px; max-width:301px;" type=text id="UPAddress${id}Line1" autocomplete="off" class="form-control ${required ? 'required-field': ''}" data-error-required='Please enter the first line of your mailing address.' placeholder="Enter street, PO box, rural route" maxlength="70">
+                <input data-i18n="form.${idText}AddressLine1Field" style="margin-left:0px; max-width:301px;" type=text id="UPAddress${id}Line1" autocomplete="off" class="form-control ${required ? 'required-field': ''}" data-error-required='Please enter the first line of your mailing address.' placeholder="Enter street, PO box, rural route" maxlength="70">
             </div>
         </div>
         <div class="form-group row">
@@ -488,13 +586,13 @@ export const renderMailingAddress = (type, id, required, showCountry) => {
                 <select style="margin-left:0px; max-width:301px;" class="form-control ${required ? 'required-field': ''}" data-error-required='Please select the state field of your mailing address.' id="UPAddress${id}State" data-i18n="form.mailAddressState">
                     <option class="option-dark-mode" value="" data-i18n="form.selectOption">-- Select --</option>
                     ${renderStates()}
-                </select>
+                </select><br>
             </div>
             <div class="col-lg-2">
                 <label class="col-form-label" id="UPAddress${id}ZipLabel" data-i18n="form.mailAddressZipLabel${required ? 'Required': ''}">
                     Zip ${required ? '<span class="required">*</span>': ''}
                 </label>
-                <input data-i18n="form.mailAddressZipField" style="margin-left:0px; max-width:301px;" type=text id="UPAddress${id}Zip" data-error-validation="Please enter a 5 digit zip code in this format: 12345." data-val-pattern="[0-9]{5}" title="5 characters long, numeric-only value." class="form-control ${required ? 'required-field': ''} num-val" data-error-required='Please enter the zip field of your mailing address.' size="5" maxlength="5" placeholder="99999">
+                <input data-i18n="form.mailAddressZipField" style="margin-left:0px; max-width:301px;" type="text" id="UPAddress${id}Zip" data-error-validation="Please enter a 5 digit zip code in this format: 12345." data-val-pattern="[0-9]{5}" title="5 characters long, numeric-only value." class="form-control ${required ? 'required-field': ''} num-val" data-error-required='Please enter the zip field of your mailing address.' size="5" maxlength="5" placeholder="99999">
             </div>
         </div>
         <div class="form-group row">
