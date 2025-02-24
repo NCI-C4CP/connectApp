@@ -502,65 +502,137 @@ export const validateMailingAddress = async (id, addressLine1, city, state, zip)
   };
 };
 
-const modalElement = document.getElementById("connectMainModal");
-const modal = new bootstrap.Modal(modalElement);
+export const showMailAddressSuggestionMyProfile = (uspsSuggestion, i18nTranslation, submit) => {
+  const modalElement = document.getElementById("connectMainModal");
+  let modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
 
-export const showMailAddressSuggestionMyProfile = (uspsSuggestion, submit) => {
-    if (!document.getElementById("connectMainModal").classList.contains("show"))
-        modal.show()
+  const closeModal = () => {
+    const instance = bootstrap.Modal.getInstance(modalElement);
+    if (instance) instance.hide();
+  };
 
-    const headerHtml = `
-      <h2 style="color: #333;" data-i18n="event.addressSuggestionTitle">Address Verification</h2>
-  `;
-    const bodyHtml = `
-      <div style="margin-bottom: 20px;" data-i18n="event.addressSuggestionDescription">
-          We can’t verify your address but found a close match. Please confirm the correct address or enter a different address.
-      </div>
-      <div style="display: flex; gap: 20px;">
-          <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
-              <div style="margin-bottom: 15px;">
-                  ${uspsSuggestion.original.streetAddress} ${uspsSuggestion.original.secondaryAddress} <br>
-                  ${uspsSuggestion.original.city} ${uspsSuggestion.original.state} ${uspsSuggestion.original.zipCode} 
-              </div>
-              <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressSuggestionKeepButton" data-i18n="event.addressSuggestionKeepButton">Keep address I entered</button>
-          </div>
-          <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
-              <div style="margin-bottom: 15px;">
-                  ${uspsSuggestion.suggestion.streetAddress} ${uspsSuggestion.suggestion.secondaryAddress}<br>
-                  ${uspsSuggestion.suggestion.city} ${uspsSuggestion.suggestion.state} ${uspsSuggestion.suggestion.zipCode} 
-              </div>
-              <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressSuggestionUseButton" data-i18n="event.addressSuggestionUseButton">Use suggested address</button>
-          </div>
-      </div>
-  `;
+  document.getElementById("connectModalHeader").innerHTML = translateHTML(`
+        <h2 style="color: #333;" data-i18n="event.addressSuggestionTitle">Address Verification</h2>
+    `);
 
-    document.getElementById("connectModalHeader").innerHTML =
-        translateHTML(headerHtml);
-    document.getElementById("connectModalBody").innerHTML =
-        translateHTML(bodyHtml);
-    document.getElementById("connectModalFooter").innerHTML = translateHTML(`
-      <div class="d-flex justify-content-between w-100">
-          <button data-i18n="event.navButtonsClose" type="button" title="Go Back" class="btn btn-dark" data-bs-dismiss="modal" id="goBackButton">Go Back</button>
-      </div>
-  `);
+  document.getElementById("connectModalBody").innerHTML = translateHTML(`
+        <div style="margin-bottom: 20px;" data-i18n="${i18nTranslation}">
+            We can’t verify your address but found a close match. Please confirm the correct address or enter a different address.
+        </div>
+        <div style="display: flex; gap: 20px;">
+            <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
+                <div style="margin-bottom: 15px;">
+                    ${uspsSuggestion.original.streetAddress} ${uspsSuggestion.original.secondaryAddress} <br>
+                    ${uspsSuggestion.original.city} ${uspsSuggestion.original.state} ${uspsSuggestion.original.zipCode} 
+                </div>
+                <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressSuggestionKeepButton" data-i18n="event.addressSuggestionKeepButton">Keep address I entered</button>
+            </div>
+            <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
+                <div style="margin-bottom: 15px;">
+                    ${uspsSuggestion.suggestion.streetAddress} ${uspsSuggestion.suggestion.secondaryAddress}<br>
+                    ${uspsSuggestion.suggestion.city} ${uspsSuggestion.suggestion.state} ${uspsSuggestion.suggestion.zipCode} 
+                </div>
+                <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressSuggestionUseButton" data-i18n="event.addressSuggestionUseButton">Use suggested address</button>
+            </div>
+        </div>
+    `);
 
-    document
-        .getElementById("addressSuggestionKeepButton")
-        .addEventListener("click", async () => {
-            const { streetAddress, secondaryAddress, city, state, zipCode } =
-                uspsSuggestion.original;
-            submit(streetAddress, secondaryAddress, city, state, zipCode);
-            modal.hide();
-        });
-    document
-        .getElementById("addressSuggestionUseButton")
-        .addEventListener("click", () => {
-            const { streetAddress, secondaryAddress, city, state, zipCode } =
-                uspsSuggestion.suggestion;
-            submit(streetAddress, secondaryAddress, city, state, zipCode);
-            modal.hide();
-        });
-}
+  document.getElementById("connectModalFooter").innerHTML = translateHTML(`
+        <div class="d-flex justify-content-between w-100">
+            <button data-i18n="event.navButtonsClose" type="button" title="Go Back" class="btn btn-dark" id="goBackButton">Go Back</button>
+        </div>
+    `);
+
+  // Show modal after updating content
+  modalInstance.show();
+
+  // Event listener for Keep Address button
+  document.getElementById("addressSuggestionKeepButton").addEventListener("click", async () => {
+    const { streetAddress, secondaryAddress, city, state, zipCode } = uspsSuggestion.original;
+    await submit(streetAddress, secondaryAddress, city, state, zipCode);
+    closeModal();
+  });
+
+  // Event listener for Use Suggested Address button
+  document.getElementById("addressSuggestionUseButton").addEventListener("click", async () => {
+    const { streetAddress, secondaryAddress, city, state, zipCode } = uspsSuggestion.suggestion;
+    await submit(streetAddress, secondaryAddress, city, state, zipCode);
+    closeModal();
+  });
+
+  // Event listener for Go Back button (delay ensures it exists)
+  setTimeout(() => {
+    const goBackButton = document.getElementById("goBackButton");
+    if (goBackButton) {
+      goBackButton.addEventListener("click", () => {
+        console.log('CLICKED GO BACK BUTTON');
+        closeModal();
+      });
+    }
+  }, 100);
+};
+
+// TODO: remove after testing
+// const modalElement = document.getElementById("connectMainModal");
+// const modal = new bootstrap.Modal(modalElement);
+
+// export const showMailAddressSuggestionMyProfile = (uspsSuggestion, i18nTranslation, submit) => {
+//   console.log('showMailAddressSuggestionMyProfile', uspsSuggestion);
+//   if (!document.getElementById("connectMainModal").classList.contains("show"))
+//     modal.show()
+
+//   const headerHtml = `
+//       <h2 style="color: #333;" data-i18n="event.addressSuggestionTitle">Address Verification</h2>
+//   `;
+//   const bodyHtml = `
+//       <div style="margin-bottom: 20px;" data-i18n="${i18nTranslation}">
+//           We can’t verify your address but found a close match. Please confirm the correct address or enter a different address.
+//       </div>
+//       <div style="display: flex; gap: 20px;">
+//           <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
+//               <div style="margin-bottom: 15px;">
+//                   ${uspsSuggestion.original.streetAddress} ${uspsSuggestion.original.secondaryAddress} <br>
+//                   ${uspsSuggestion.original.city} ${uspsSuggestion.original.state} ${uspsSuggestion.original.zipCode} 
+//               </div>
+//               <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressSuggestionKeepButton" data-i18n="event.addressSuggestionKeepButton">Keep address I entered</button>
+//           </div>
+//           <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
+//               <div style="margin-bottom: 15px;">
+//                   ${uspsSuggestion.suggestion.streetAddress} ${uspsSuggestion.suggestion.secondaryAddress}<br>
+//                   ${uspsSuggestion.suggestion.city} ${uspsSuggestion.suggestion.state} ${uspsSuggestion.suggestion.zipCode} 
+//               </div>
+//               <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressSuggestionUseButton" data-i18n="event.addressSuggestionUseButton">Use suggested address</button>
+//           </div>
+//       </div>
+//   `;
+
+//   document.getElementById("connectModalHeader").innerHTML =
+//     translateHTML(headerHtml);
+//   document.getElementById("connectModalBody").innerHTML =
+//     translateHTML(bodyHtml);
+//   document.getElementById("connectModalFooter").innerHTML = translateHTML(`
+//       <div class="d-flex justify-content-between w-100">
+//           <button data-i18n="event.navButtonsClose" type="button" title="Go Back" class="btn btn-dark" data-bs-dismiss="modal" id="goBackButton">Go Back</button>
+//       </div>
+//   `);
+
+//   document
+//     .getElementById("addressSuggestionKeepButton")
+//     .addEventListener("click", async () => {
+//       const { streetAddress, secondaryAddress, city, state, zipCode } =
+//         uspsSuggestion.original;
+//       submit(streetAddress, secondaryAddress, city, state, zipCode);
+//       modal.hide();
+//     });
+//   document
+//     .getElementById("addressSuggestionUseButton")
+//     .addEventListener("click", () => {
+//       const { streetAddress, secondaryAddress, city, state, zipCode } =
+//         uspsSuggestion.suggestion;
+//       submit(streetAddress, secondaryAddress, city, state, zipCode);
+//       modal.hide();
+//     });
+// }
 
 
 export const validateAltContactInformation = async (altContactMobilePhoneComplete, altContactHomePhoneComplete, altContactEmail) => {

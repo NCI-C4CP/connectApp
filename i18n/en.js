@@ -1333,6 +1333,7 @@ const en = {
         "addressSuggestionTitle": "Address Verification",
         "addressSuggestionDescription": "We can’t verify your <b>mailing</b> address but found a close match. Please confirm the correct address or enter a different address.",
         "addressSuggestionDescriptionPhysical": "We can’t verify your <b>physical</b> address but found a close match. Please confirm the correct address or enter a different address.",
+        "addressSuggestionDescriptionAlternate": "We can’t verify your <b>alternate</b> address but found a close match. Please confirm the correct address or enter a different address.",
         "addressSuggestionKeepButton": "Keep address I entered",
         "addressSuggestionUseButton": "Use suggested address",
         "testingEnvironment": "This is a <b>testing environment</b> where no Personal Identifiable Information (PII) or other sensitive personal information should be used.",
