@@ -390,7 +390,7 @@ const sanford = {
             '<span data-i18n="samples.sanford.locations.SiouxFallsName">Sioux Falls, SD: Edith Sanford Breast Center</span>',
             '<span data-i18n="samples.sanford.locations.SiouxFallsAddress">1210 W. 18th St.<br>Sioux Falls, SD 57104<br><i>Enter Through Door BB</i></span></span>',
             '',
-            '<span data-i18n="samples.sanford.locations.SiouxFallsParking">Free valet parking is available near the front entrance of the Edith Breast Cancer Center. Free patient parking is also available in the lot on the corner of S Grange Ave and W 18th Street. Enter through door BB. No parking validation is needed.</span>'
+            '<span data-i18n="samples.sanford.locations.SiouxFallsParking">Free valet parking is available near the front entrance of the Edith Sanford Breast Center. Free patient parking is also available in the lot on the corner of S Grange Ave and W 18th Street. Enter through door BB. No parking validation is needed.</span>'
         ],
         [
             '<span data-i18n="samples.sanford.locations.FargoName">Fargo, ND: Sanford Amber Valley</span>',
