@@ -1339,6 +1339,7 @@
         "addressSuggestionTitle": "Verificación de dirección",
         "addressSuggestionDescription": "No podemos verificar su dirección <b>postal</b>, pero hemos encontrado una coincidencia cercana. Por favor, confirme la dirección correcta o ingrese una dirección diferente.",
         "addressSuggestionDescriptionPhysical": "No podemos verificar su dirección <b>física</b>, pero hemos encontrado una coincidencia cercana. Por favor, confirme la dirección correcta o ingrese una dirección diferente.",
+        "addressSuggestionDescriptionAlternate": "No podemos verificar su dirección <b>alternativa</b>, pero hemos encontrado una coincidencia cercana. Por favor, confirme la dirección correcta o ingrese una dirección diferente.",
         "addressSuggestionKeepButton": "Mantener dirección ingresada",
         "addressSuggestionUseButton": "Usar dirección sugerida",
         "testingEnvironment": "Este es un <b>entorno de prueba</b> en el que no debe utilizarse información de identificación personal (PII, por sus siglas en inglés) ni otra información personal confidencial.",

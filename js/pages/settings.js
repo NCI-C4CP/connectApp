@@ -489,6 +489,7 @@ const handleEditMailingAddressSection = () => {
       if (uspsSuggestion.suggestion) {
           showMailAddressSuggestionMyProfile(
               uspsSuggestion,
+              'event.addressSuggestionDescription',
               (streetAddress, secondaryAddress, city, state, zipCode) => {
                   submitNewAddress(
                       streetAddress,
@@ -580,6 +581,7 @@ const handleEditPhysicalMailingAddressSection = () => {
       if (uspsSuggestion.suggestion) {
         showMailAddressSuggestionMyProfile(
             uspsSuggestion,
+            'event.addressSuggestionDescriptionPhysical',
             (streetAddress, secondaryAddress, city, state, zipCode) => {
                 submitNewAddress(
                     streetAddress,
@@ -646,6 +648,7 @@ const handleEditAltAddressSection = () => {
             if (uspsSuggestion.suggestion) {
                 showMailAddressSuggestionMyProfile(
                     uspsSuggestion,
+                    'event.addressSuggestionDescriptionAlternate',
                     (streetAddress, secondaryAddress, city, state, zipCode) => {
                         submitNewAddress(
                             streetAddress,
