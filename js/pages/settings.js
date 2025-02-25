@@ -474,8 +474,6 @@ const handleEditMailingAddressSection = () => {
     const isPOBox = document.getElementById('poBoxCheckbox').checked;
 
     const {hasError, uspsSuggestion} = await validateMailingAddress(1, addressLine1, city, state, zip);
-    console.log('hasError', hasError);
-    console.log('uspsSuggestion', uspsSuggestion);
 
     if (!hasError) {
       const submitNewAddress = (addressLine1, addressLine2, city, state, zip) => {
