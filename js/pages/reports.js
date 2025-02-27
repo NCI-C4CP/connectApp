@@ -273,10 +273,12 @@ const initializeReadButtons = () => {
                 let currentTime = new Date();
                 let obj = {
                     [fieldMapping.reports.physicalActivityReport]: {
-                        [fieldMapping.reports.physicalActivity.status]: fieldMapping.reports.declined,
-                        [fieldMapping.reports.physicalActivity.declinedTS]: currentTime.toISOString()
+                        [fieldMapping.reports.physicalActivity.status]: fieldMapping.reports.declined
                     }
                 };
+                if (!myData[fieldMapping.reports.physicalActivityReport] || !myData[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.declinedTS]) {
+                    obj[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.declinedTS] = currentTime.toISOString();
+                }
                 await storeResponse(myData[fieldMapping.reports.physicalActivityReport] ? { [fieldMapping.reports.physicalActivityReport]: Object.assign({}, myData[fieldMapping.reports.physicalActivityReport], obj[fieldMapping.reports.physicalActivityReport]) } : obj);
                 window.location.reload();
             });
@@ -335,6 +337,9 @@ const initializeDeclinedButtons = () => {
                         [fieldMapping.reports.physicalActivity.status]: fieldMapping.reports.viewed
                     }
                 };
+                if (!myData[fieldMapping.reports.physicalActivityReport] || !myData[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.viewedTS]) {
+                    obj[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.viewedTS] = currentTime.toISOString();
+                }
                 await storeResponse(myData[fieldMapping.reports.physicalActivityReport] ? { [fieldMapping.reports.physicalActivityReport]: Object.assign({}, myData[fieldMapping.reports.physicalActivityReport], obj[fieldMapping.reports.physicalActivityReport]) } : obj);
                 window.location.reload();
             });
