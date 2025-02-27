@@ -87,8 +87,7 @@
         },
         "middleName": "Segundo nombre",
         "middleNameField": {
-            "data-error-validation": "Su segundo nombre debe contener solo letras mayúsculas y minúsculas. No use números ni caracteres especiales.",
-            "placeholder": "Ingrese su segundo nombre"
+            "data-error-validation": "Su segundo nombre debe contener solo letras mayúsculas y minúsculas. No use números ni caracteres especiales."
         },
         "lastName": "Apellido <span class=\"required\">*</span>",
         "lastNameField": {
@@ -180,7 +179,7 @@
         "preferredEmail": "Dirección de correo electrónico preferida <span class=\"required\">*</span>",
         "preferredEmailField": {
             "title": "Ingrese una dirección de correo electrónico con este formato: nombre@ejemplo.com.",
-            "placeholder": "abc@mail.com"
+            "placeholder": "nombre@ejemplo.com"
         },
         "confirmPreferredEmail": "Confirme su dirección de correo electrónico preferida<span class=\"required\">*</span>",
         "confirmPreferredEmailField": {
@@ -266,11 +265,56 @@
             "title": "5 caracteres de longitud, solo valor numérico.",
             "data-error-required": "Ingrese el campo de código postal de su dirección postal."
         },
-        "isPOBoxChecked": "La dirección postal es PO Box",
+        "isPOBoxChecked": "Revise si la dirección postal es un apartado postal",
         "mailAddressCountry": "País ",
         "mailAddressCountryRequired": "País <span class=\"required\">*</span>",
         "physicalAddress": "Dirección física (si es diferente de la dirección postal) ",
         "physicalAddressDesc": "Se necesita una dirección física para que Connect pueda enviarle paquetes por FedEx para algunas actividades del estudio. FedEx no hace envíos a apartados postales. ",
+        "otherContactInformation": "Otra información de contacto",
+        "otherContactIntroduction": "Queremos mantenernos en contacto con usted durante el tiempo que participe en el estudio. Por favor, bríndenos más información de contacto que nos ayude a comunicarnos con usted en el futuro.",
+        "altAddressQuestion": "¿Hay alguna otra dirección de correo que utilice?",
+        "whatIsTheAltAddress": "¿Cuál es la dirección?",
+        "altAddressLine1Label": "Línea 1 (calle, apartado postal, ruta rural)",
+        "altAddressLine1Field": {
+            "data-error-required": "Ingrese la primera línea de su dirección alternativa.",
+            "placeholder": "Ingrese la calle, el apartado postal, la ruta rural"
+        },
+        "altAddressLine2Field": {
+            "placeholder": "Ingrese el apartamento, la suite, la unidad, el edificio"
+        },
+        "altAddressCityField": {
+            "data-error-required": "Ingrese el campo de ciudad de su dirección alternativa.",
+            "placeholder": "Ingrese la ciudad"
+        },
+        "altAddressStateField": {
+            "data-error-required": "Seleccione el campo de estado de su dirección alternativa."
+        },
+        "altAddressZipField": {
+            "data-error-validation": "Ingrese un código postal de 5 dígitos con este formato: 12345.",
+            "title": "5 caracteres de longitud, solo valor numérico.",
+            "data-error-required": "Ingrese el campo de código postal de su dirección alternativa."
+        },
+        "isPOBoxCheckboxAltAddress": "Revise si la dirección postal es un apartado postal",
+        "altContactHeader": "Contacto alternativo",
+        "altContactQuestion": "A veces nos enteramos de que las personas se han mudado cuando intentamos comunicarnos con ellas. Sería útil que pudiera brindarnos detalles de contacto de alguna persona cercana a usted (como un pariente o un amigo) que esté dispuesta a que nos comuniquemos con ella si no podemos ponernos en contacto con usted. Si no quiere brindarnos estos detalles de contacto adicionales, deje esta sección en blanco.",
+        "altContactFirstName": "Nombre de pila de contacto alternativo",
+        "altContactFirstNameField": {
+            "placeholder": "Ingrese su nombre de pila",
+            "data-error-validation": "Su nombre de pila debe contener solo letras mayúsculas y minúsculas. No use números ni caracteres especiales."
+        },
+        "altContactLastName": "Apellido de contacto alternativo",
+        "altContactLastNameField": {
+            "placeholder": "Ingrese su apellido",
+            "data-error-validation": "Su apellido debe contener solo letras mayúsculas y minúsculas. Por favor, no utilice ningún número."
+        },
+        "altContactHowCanWeReach": "¿Cómo podemos comunicarnos con esta persona?",
+        "altContactMobilePhone": "Teléfono celular",
+        "altContactHomePhone": "Teléfono de su casa",
+        "altContactEmail": "Correo electrónico",
+        "altContactEmailField": {
+            "title": "Ingrese una dirección de correo electrónico con este formato: nombre@ejemplo.com.",
+            "placeholder": "Ingrese una dirección de correo electrónico válida"
+        },
     },
     "navbar": {
         "dashboardLink": " Panel",
@@ -692,7 +736,7 @@
         "alreadyHaveAccount": "Nuestros registros muestran que ya tiene otra cuenta con una dirección de correo electrónico o número de teléfono diferente. Intente iniciar sesión de nuevo. Si necesita ayuda para acceder a su cuenta, escriba al Centro de Asistencia de Connect a <a href=\"mailto:ConnectAyuda@norc.org\">ConnectAyuda@norc.org</a> o llame al <span style=\"white-space:nowrap;overflow:hidden\">1-877-775-7004</span>.",
         "bodyConnectSupport": "escriba al Centro de Asistencia de Connect a <a href=\"mailto:ConnectAyuda@norc.org\">ConnectAyuda@norc.org</a> o llame al 1-877-775-7004.",
         "bodyHealthPartners": "Escriba a HealthPartners a <a href=\"mailto:ConnectStudy@healthpartners.com\">ConnectStudy@healthpartners.com</a> o llame al 952-967-5067",
-        "bodyHenryFord": "Escriba a Henry Ford Health System a <a href=\"mailto:ConnectStudy@hfhs.org\">ConnectStudy@hfhs.org</a>",
+        "bodyHenryFord": "Escriba a Henry Ford Health a <a href=\"mailto:ConnectStudy@hfhs.org\">ConnectStudy@hfhs.org</a>",
         "bodyKPColorado": "Escriba a KP Colorado a <a href=\"mailto:Connect-Study-KPCO@kp.org\">Connect-Study-KPCO@kp.org</a> o llame al 303-636-3126",
         "bodyKPGeorgia": "Escriba a KP Georgia a <a href=\"mailto:Connect-Study-KPGA@kp.org\">Connect-Study-KPGA@kp.org</a> o llame al 404-745-5115",
         "bodyKPHawaii": "Escriba a KP Hawaii a <a href=\"mailto:Connect-Study-KPHI@kp.org\">Connect-Study-KPHI@kp.org</a> o llame al 833-417-0846",
@@ -863,12 +907,12 @@
             "locations": {
                 "Option1": "<span>Opción 1: Laboratorio de Sanford Health</span><br/><br/><span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; font-weight: 400; line-height: 27px; color: #2E2E2E; margin-top: 20px;\"> Para encontrar un laboratorio de Sanford Health y su horario de atención, visite <a href=\"https://www.sanfordhealth.org/locations\" target=\"_blank\">https://www.sanfordhealth.org/locations</a> <br/><br/> <span class=\"site-info-underline\">El horario exacto puede variar según el laboratorio. Si va fuera del horario de trabajo normal, los tiempos de espera podrían ser más largos.</span> <br/><br/> <span class=\"site-info-underline\"> Nota: Si vive en la región de Bismarck, el equipo del laboratorio de Sanford prefiere que programe una cita antes de ir. Para hacerlo, utilice MyChart o llame directamente al laboratorio.</span>",
                 "Option2": "<span>Opción 2: Laboratorio de investigación de Connect</span> <br/><br/> <span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; font-weight: 400; color: #2E2E2E; margin-top: 20px;\">Use el enlace del mensaje que le enviamos a su MyChart o por correo electrónico para programar una cita en uno de los siguientes laboratorios. Para programar una cita, también puede llamar al equipo de Connect al 605-312-6100. <br/><br/> Las citas para los laboratorios de investigación de Connect están disponibles de lunes a jueves de 7:00 a. m. a 4:00 p. m., y los viernes de 7:00 a. m. a 2:00 p. m. Si desea programar una cita fuera de ese horario, llame al equipo de Connect al 605-312-6100 o escríbale a ConnectStudy@sanfordhealth.org.</span> <span style=\" font-family: 'Noto Sans', sans-serif; font-size: 18px; line-height: 27px; color: #2E2E2E; margin-top: 20px;\"></span>",
-                "SiouxFallsName": "<span class=\"site-info-underline\"> Sioux Falls, SD: Edith Breast Cancer Center</span>",
+                "SiouxFallsName": "<span class=\"site-info-underline\"> Sioux Falls, SD: Edith Sanford Breast Center</span>",
                 "SiouxFallsAddress": "Dirección e indicaciones <br>1210 W. 18th St <br>Sioux Falls, SD 57104 <br><span class=\"site-info-italic\">Entre por la puerta BB</span>",
-                "SiouxFallsParking": "Hay servicio de estacionamiento gratuito cerca de la entrada del frente del Edith Breast Cancer Center. Los pacientes también pueden estacionar gratis en el estacionamiento de la esquina de S Grange Ave y W 18th Street. Entre por la puerta BB. No se necesita ninguna validación de estacionamiento.",
-                "FargoName": "<span class=\"site-info-underline\"> Fargo, ND: Clínica Ambulatoria Ortopédica y de Emergencias de South University</span>",
-                "FargoAddress": "1720 University Drive S<br/>Fargo, ND 58102<br/><span class=\"site-info-italic\">Entre por la puerta #8</span>",
-                "FargoParking": "Hay estacionamiento gratis para pacientes en el estacionamiento cercano a la entrada de urgencias, puerta n.º 8. No se necesita validación de estacionamiento."
+                "SiouxFallsParking": "Hay servicio de estacionamiento gratuito cerca de la entrada del frente del Edith Sanford Breast Center. Los pacientes también pueden estacionar gratis en el estacionamiento de la esquina de S Grange Ave y W 18th Street. Entre por la puerta BB. No se necesita ninguna validación de estacionamiento.",
+                "FargoName": "<span class=\"site-info-underline\"> Fargo, ND: Sanford Amber Valley</span>",
+                "FargoAddress": "4840 23<sup>rd</sup> Ave S<br/>Fargo, ND 58104<br/><span class=\"site-info-italic\">Entre por la puerta 4840. Al entrar, siga los letreros hacia “Sanford Research” en el piso 2.</span>",
+                "FargoParking": "Hay estacionamiento gratis para pacientes en el estacionamiento cercano a la puerta 4840. No se necesita validación de estacionamiento."
             }
         },
         "marshfield": {
@@ -1132,8 +1176,28 @@
         "zipRequired": "Ingrese el campo de código postal de su dirección postal.",
         "submitMailUpdate": "Enviar modificación de dirección postal",
         "submitPhysicalUpdate": "Enviar modificación de dirección postal",
+        "submitAltUpdate": "Enviar modificación de dirección postal alternativa",
         "successMailUpdate": "Se completó el cambio de dirección postal",
         "failMailUpdate": "¡Error al cambiar la dirección postal!",
+        "altAddress": "Dirección alternativa (Opcional)",
+        "altAddressNote": "Para cualquier otra dirección de correo postal que tenga",
+        "altAddressLine1": "Línea 1 (calle, apartado postal, ruta rural)  <span class=\"required\">*</span>",
+        "altAddressLine1Field": {
+            "data-error-required": "Ingrese la primera línea de su dirección postal.",
+            "placeholder": "Ingrese la calle, el apartado postal, la ruta rural"
+        },
+        "altContactHeader": "Contacto alternativo (Opcional)",
+        "altContactNote": "Para ayudarnos ponernos en comunicación con usted si perdemos contacto",
+        "altContactEmail": "Dirección de correo electrónico",
+
+        "altContactFirstNameFieldLabel": "Nombre de pila",
+        "altContactFirstNameField": {
+            "data-error-validation": "Su nombre de pila debe contener solo letras mayúsculas y minúsculas, y puede contener algunos caracteres especiales.",
+            "placeholder": "Ingrese su nombre de pila"
+        },
+        "altContactLastNameFieldLabel": "Apellido",
+        "altContactLastNameFieldValidation": "Su apellido debe contener solo letras mayúsculas y minúsculas, y puede contener algunos caracteres especiales.",
+        "altContactLastNameFieldPlaceholder": "Ingrese su apellido",
         "signInInfo": "Información de inicio de sesión",
         "signInEmail": "Dirección de correo electrónico de inicio de sesión",
         "signInPhone": "Número de teléfono de inicio de sesión",
@@ -1255,7 +1319,9 @@
         "phoneRequired": "Debe ingresar un número de teléfono. Ingrese al menos uno de los siguientes datos: número de teléfono de su casa, número de teléfono celular u otro número de teléfono.",
         "phoneFormat": "Ingrese un número de teléfono con este formato: 999-999-9999.",
         "phoneOnlyNumbers": "El número de teléfono solo puede contener números.",
-        "zipOnlyNumbers": "El código postal solo puede contener números.",
+        "zipOnlyNumbers": "Ingrese un código postal de 5 dígitos con este formato: 12345.",
+        "invalidZip": "Código postal no válido",
+        "invalidAddress": "Dirección no encontrada",
         "cityOnlyLetters": "El nombre de la ciudad solo puede contener letras.",
         "confirmEmail": "Confirme su dirección de correo electrónico.",
         "emailsDoNotMatch": "Sus direcciones de correo electrónico no coinciden. Vuelva a escribir sus direcciones de correo electrónico.",
@@ -1269,6 +1335,13 @@
         "attention": "ATENCIÓN",
         "undergoingMaintenance": "La página está en mantenimiento en este momento; por favor, intente de nuevo más tarde.",
         "warning": "ADVERTENCIA",
+        "invalidFormWarning": "Por favor, corrija los errores en la información que ingresó antes de continuar. Si tiene problemas para corregir estos errores y no puede enviar su perfil, póngase en contacto con el <a href=\"https://myconnect.cancer.gov/support\" target=\"_blank\">Centro de Asistencia de Connect</a> para obtener ayuda.",
+        "addressSuggestionTitle": "Verificación de dirección",
+        "addressSuggestionDescription": "No podemos verificar su dirección <b>postal</b>, pero hemos encontrado una coincidencia cercana. Por favor, confirme la dirección correcta o ingrese una dirección diferente.",
+        "addressSuggestionDescriptionPhysical": "No podemos verificar su dirección <b>física</b>, pero hemos encontrado una coincidencia cercana. Por favor, confirme la dirección correcta o ingrese una dirección diferente.",
+        "addressSuggestionDescriptionAlternate": "No podemos verificar su dirección <b>alternativa</b>, pero hemos encontrado una coincidencia cercana. Por favor, confirme la dirección correcta o ingrese una dirección diferente.",
+        "addressSuggestionKeepButton": "Mantener dirección ingresada",
+        "addressSuggestionUseButton": "Usar dirección sugerida",
         "testingEnvironment": "Este es un <b>entorno de prueba</b> en el que no debe utilizarse información de identificación personal (PII, por sus siglas en inglés) ni otra información personal confidencial.",
         "goToSite": "Si participa en Connect o desea comenzar a participar en el estudio Connect, vaya a este sitio para inscribirse: <a href=\"https://myconnect.cancer.gov\">https://myconnect.cancer.gov</a>",
         "acknowledgement": "Para el personal del estudio: Reconozco que este es un <b>entorno de prueba</b> y no utilizaré información personal.",
@@ -1318,6 +1391,7 @@
         "state": "Estado",
         "zip": "Código postal",
         "poBox": "La dirección postal es PO Box",
+        "poBoxAltAddress": "La dirección alternativa es un apartado postal",
         "invasiveCancer": "¿Ha tenido alguna vez cáncer invasivo?",
         "yearDiagnosed": "¿En qué año se lo diagnosticaron?",
         "typeOfCancer": "¿Qué tipo de cáncer tenía?",
@@ -1730,16 +1804,18 @@
         "viewed": "Vistos",
         "declined": "Rechazados",
         "empty": "<p>No tiene ningún informe de resultados disponible. Le enviaremos un mensaje cuando tengamos un nuevo informe listo para usted.</p><p>Ahora es un buen momento para revisar si tiene encuestas u otras actividades de estudio pendientes. Al hacerlo, se asegurará de recibir los informes cuando estén disponibles.</p><p>Si tiene alguna pregunta, contacte el <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Centro de Asistencia de Connect</a>.</p>",
+        "withdrawn": "<p>No tiene ningún informe de resultados disponible. Se ha retirado de Connect.</p><p>Si tiene alguna pregunta, contacte el <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Centro de Asistencia de Connect</a>.</p>",
         "noReadReports": "No tiene informes leídos.",
         "noUnreadReports": "No tiene informes sin leer.",
         "noDeclinedReports": "No tiene informes rechazados.",
         "generated": "Informe generado el ",
         "learnMore": "Más información",
+        "newReport": "Usted tiene un nuevo informe de resultados disponible!",
         "physicalActivityTitle": "Informe de actividad física",
         "physicalActivityResultsTitle": "Sus resultados de actividad física recreativa ",
-        "physicalActivityDescription": "<p>Practicar actividad física con regularidad es importante para su salud. La evidencia muestra que hacer más actividad física <a href=\"https://www.cancer.gov/about-cancer/causes-prevention/risk/obesity/physical-activity-fact-sheet#what-is-known-about-the-relationship-between-physical-activity-and-cancer-risk\" target_\"blank\">reduce el riesgo</a> de padecer enfermedades crónicas, incluidos ciertos tipos de cáncer. Sin embargo, hay mucho más por descubrir sobre la relación entre la actividad física y el riesgo de cáncer. Connect se diseñó para entender mejor el estilo de vida y los patrones de comportamiento que podrían afectar el riesgo de cáncer a lo largo de la vida. La actividad física es un área de interés para la investigación activa en la que estamos enfocándonos.</p><p>En la primera encuesta de Connect, le hicimos preguntas sobre la frecuencia con la que hacía diferentes actividades. En función de sus respuestas, armamos un informe que compara sus niveles de actividad con las pautas nacionales de actividad física.</p>",
+        "physicalActivityDescription": "<p>Practicar actividad física con regularidad es importante para su salud. La evidencia muestra que hacer más actividad física <a href=\"https://www.cancer.gov/espanol/cancer/causas-prevencion/riesgo/obesidad/actividad-fisica-hoja-informativa#que-se-sabe-sobre-la-relacion-entre-la-actividad-fisica-y-el-riesgo-de-cancer\" target=\"_blank\">reduce el riesgo</a> de padecer enfermedades crónicas, incluidos ciertos tipos de cáncer. Sin embargo, hay mucho más por descubrir sobre la relación entre la actividad física y el riesgo de cáncer. Connect se diseñó para entender mejor el estilo de vida y los patrones de comportamiento que podrían afectar el riesgo de cáncer a lo largo de la vida. La actividad física es un área de interés para la investigación activa en la que estamos enfocándonos.</p><p>En la primera encuesta de Connect, le hicimos preguntas sobre la frecuencia con la que hacía diferentes actividades. En función de sus respuestas, armamos un informe que compara sus niveles de actividad con las pautas nacionales de actividad física.</p>",
         "physicalActivityConsentTitle": "Consentimiento informado: su informe de actividad física",
-        "physicalActivityConsentBody": "<p>Su informe de actividad física incluye:<ol><li>información sobre sus niveles de actividad en función de sus respuestas a la encuesta;</li><li>herramientas y recursos que le ayudan a enterarse de más detalles sobre su actividad física; y </li><li>sugerencias para mejorar o mantener su actividad. </li></ol></p><p>Este documento es de carácter informativo y no reemplaza la orientación clínica ni las recomendaciones de su proveedor de atención médica. Le recomendamos que hable con su proveedor si tiene dudas sobre su actividad física o inquietudes de salud que puedan afectar su capacidad para hacer actividades.</p><p>¡Gracias por ser participante de Connect! Su participación contribuirá a hacer avanzar la investigación sobre actividad física y prevención de enfermedades. En el futuro, nuestros descubrimientos podrían contribuir a orientar las recomendaciones futuras en torno a la actividad física y la salud. Esperamos que este informe le resulte útil para su salud y su camino al bienestar.</p><p>Para ver o descargar una copia de su informe, haga clic en “Ver mi informe”. Si no quiere ver su informe en este momento, haga clic en “Rechazar por ahora”. Si rechaza el informe, siempre tiene la oportunidad de regresar más tarde a esta página y verlo, si así lo desea. Si tiene alguna duda, comuníquese con el <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Centro de Asistencia de Connect</a></p>",
+        "physicalActivityConsentBody": "<p>Su informe de actividad física incluye:<ol><li>información sobre sus niveles de actividad en función de sus respuestas a la encuesta;</li><li>herramientas y recursos que le ayudan a enterarse de más detalles sobre su actividad física; y </li><li>sugerencias para mejorar o mantener su actividad. </li></ol></p><p>Este documento es de carácter informativo y no reemplaza la orientación clínica ni las recomendaciones de su proveedor de atención médica. Le recomendamos que hable con su proveedor si tiene dudas sobre su actividad física o inquietudes de salud que puedan afectar su capacidad para hacer actividades.</p><p>¡Gracias por ser participante de Connect! Su participación contribuirá a hacer avanzar la investigación sobre actividad física y prevención de enfermedades. En el futuro, nuestros descubrimientos podrían contribuir a orientar las recomendaciones futuras en torno a la actividad física y la salud. Esperamos que este informe le resulte útil para su salud y su camino al bienestar.</p><p>Para ver o descargar una copia de su informe, haga clic en “Ver mi informe”. Si no quiere ver su informe en este momento, haga clic en “Rechazar por ahora”. Si rechaza el informe, siempre tiene la oportunidad de regresar más tarde a esta página y verlo, si así lo desea. Si tiene alguna duda, comuníquese con el <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Centro de Asistencia de Connect</a>.</p>",
         "physicalActivityIntroStart": "Este informe se basa en sus respuestas a preguntas sobre su actividad física recreativa de la primera encuesta de Connect que completó en ",
         "physicalActivityIntroOf": " de ",
         "physicalActivityIntroEnd": ". Compara su actividad con las <a href=\"https://odphp.health.gov/sites/default/files/2019-10/PAG_ExecutiveSummary.pdf\" target=\"_blank\">pautas nacionales de actividad física</a> e incluye consejos para mejorar o mantener su actividad física. Para leer el informe entero, haga clic en el botón de abajo o desplácese hacia abajo. ",
@@ -1769,26 +1845,26 @@
         "physicalActivityModeratePoint1": "¿Respira con intensidad pero todavía puede mantener una conversación con facilidad? Eso es actividad de intensidad moderada.",
         "physicalActivityModeratePoint2": "¿Solo puede decir unas pocas palabras antes de tener que respirar otra vez? Eso es actividad vigorosa.",
         "physicalActivityConsiderations": "Las pautas de actividad sirven para la mayoría de las personas adultas. En general, las personas saludables que aumentan su actividad física semanal de a poco no necesitan consultar a su proveedor de atención médica antes de comenzar a practicar una actividad.",
-        "physicalActivityConsiderationsWarning": "Hay consideraciones clave para ciertas personas, entre ellas las que tienen afecciones crónicas o discapacidades, las personas embarazadas o que dieron a luz hace poco y los adultos de más de 65 años.",
-        "physicalActivityConsiderationsWarningBody": "Es importante que esos grupos de personas hablen con un proveedor de atención médica antes de seguir o iniciar un nuevo programa de ejercicios. Para enterarse de más detalles, visite <a href=\"https://odphp.health.gov/sites/default/files/2019-10/PAG_ExecutiveSummary.pdf\" style=\"color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word\">esta página.</a>",
-        "physicalActivityConsiderationsAge": "Los adultos de más de 65 años necesitan la misma cantidad de actividad física que los demás adultos, pero si le cuesta cumplir con las pautas, ¡haga lo que pueda! Los adultos de más de 65 años deben incorporar actividades que mejoren el equilibrio y reduzcan el riesgo de sufrir caídas. Por ejemplo, <a target_\"blank\" href=\"https://www.nccih.nih.gov/health/tai-chi-what-you-need-to-know\" style=\"color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word\">tai chi</a> o natación.",
+        "physicalActivityConsiderationsWarning": "Existen consideraciones clave si usted está embarazada, en el posparto, padece de una enfermedad crónica, vive con una discapacidad o tiene más de 65 años.",
+        "physicalActivityConsiderationsWarningBody": "Es importante que esos grupos de personas hablen con un proveedor de atención médica antes de seguir o iniciar un nuevo programa de ejercicios. Para enterarse de más detalles, visite <a target=\"_blank\" href=\"https://odphp.health.gov/sites/default/files/2019-10/PAG_ExecutiveSummary.pdf\" style=\"color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word\">esta página.</a>",
+        "physicalActivityConsiderationsAge": "Los adultos de más de 65 años necesitan la misma cantidad de actividad física que los demás adultos, pero si le cuesta cumplir con las pautas, ¡haga lo que pueda! Los adultos de más de 65 años deben incorporar actividades que mejoren el equilibrio y reduzcan el riesgo de sufrir caídas. Por ejemplo, <a target=\"_blank\" href=\"https://www.nccih.nih.gov/health/tai-chi-what-you-need-to-know\" style=\"color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word\">tai chi</a> o natación.",
         "physicalActivityTipsHeader": "Consejos para mantener y mejorar su actividad",
         "physicalActivityTipsTip1": "Divida la actividad a lo largo de la semana. ¡Cambie actividades y sea creativo! No hay forma incorrecta de comenzar a hacer actividad aeróbica y de fortalecimiento muscular.",
         "physicalActivityTipsTip2": "Todo suma. Si esta semana no cumple con las pautas de actividad, no se preocupe. Hacer aunque sea un poco de actividad tiene beneficios para la salud.",
         "physicalActivityTipsTip3": "Intente mantenerse más tiempo en movimiento durante el día, como dar un paseo corto durante la pausa para almorzar, subir por escalera a su oficina, o incorporar algunos ejercicios de fortalecimiento muscular durante los anuncios comerciales. Vea algunos consejos para incorporar más actividad a su día: <a target=\"_blank\" href=\"https://www.youtube.com/watch?v=sZKkYGudHEk\" style=\"color: #2973A5; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word\">[YouTube – 1:59]</a><span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word\">.</span>",
         "physicalActivityTipsTip4": "¡Puede encontrar la actividad adecuada para usted! La clave es que la actividad le resulte divertida y sostenible para poder mantenerse activo a largo plazo. Siga consejos como estos para motivarse: <a target=\"_blank\" href=\"https://www.youtube.com/watch?v=zr6V1f2kxFs\" style=\"color: #2973A5; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word\">[YouTube – 2:04]</a><span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word\">.</span>",
         "physicalActivityTipsTip5": "Pruebe esta útil </span><a target=\"_blank\" href=\"https://odphp.health.gov/espanol/moveyourway/activity-planner\" style=\"color: #2973A5; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word\">agenda de actividades </a><span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word\"></span>para crear un plan que le funcione. Elija los tipos de actividad adecuados para su estado físico actual y sus metas de salud. Si tiene alguna duda, hable con su proveedor de atención médica.",
-        "physicalActivityVisit": "Visite <a style=\"color: #2973A5; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word\" href=\"https://health.gov/moveyourway\" target=\"_blank\">https://health.gov/moveyourway</a> donde encontrará herramientas, consejos y recursos.",
+        "physicalActivityVisit": "Visite <a style=\"color: #2973A5; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word; word-break: break-all;\" href=\"https://odphp.health.gov/espanol/moveyourway\" target=\"_blank\">https://odphp.health.gov/espanol/moveyourway</a> donde encontrará herramientas, consejos y recursos.",
         "physicalActivityBenefits": "Ventajas estudiadas de la actividad física",
-        "physicalActivityBenefitsLong": "<span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 700; line-height: 27px; word-wrap: break-word\">A largo plazo: </span><span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word\"> contribuye a prevenir <a target=\"_blank\" href=\"https://www.cancer.gov/about-cancer/causes-prevention/risk/obesity/physical-activity-fact-sheet\" style=\"color: #2973A5; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word\">ciertos tipos de cáncer</a>; reduce el riesgo de demencia, enfermedades cardíacas y diabetes tipo 2; mejora la salud de los huesos; y ayuda a reducir la angustia y la depresión.</span>",
+        "physicalActivityBenefitsLong": "<span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 700; line-height: 27px; word-wrap: break-word\">A largo plazo: </span><span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word\"> contribuye a prevenir <a target=\"_blank\" href=\"https://www.cancer.gov/espanol/cancer/causas-prevencion/riesgo/obesidad/actividad-fisica-hoja-informativa\" style=\"color: #2973A5; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word\">ciertos tipos de cáncer</a>; reduce el riesgo de demencia, enfermedades cardíacas y diabetes tipo 2; mejora la salud de los huesos; y ayuda a reducir la angustia y la depresión.</span>",
         "physicalActivityBenefitsShort": "<span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 700; line-height: 27px; word-wrap: break-word\">A corto plazo: </span><span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word\"> reduce el estrés, baja la presión arterial y mejora la concentración, el sueño y el humor.</span>",
         "physicalActivityNationalHeader": "Datos nacionales: ¿Cuántos adultos están cumpliendo con las pautas de actividad física?",
         "physicalActivityNationalAerobic": "Según una encuesta nacional reciente, alrededor de un <span style=\"font-weight: 700;\">39% de los adultos estadounidenses</span> está haciendo la cantidad recomendada de actividad física aeróbica mediante actividades de ocio, como practicar deportes, ir al gimnasio o hacer actividades recreativas¹.",
-        "physicalActivityNationalMuscle": "El <span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 700; line-height: 27px; word-wrap: break-word\">31%</span> de los adultos cumplió con las pautas de actividad de fortalecimiento muscular, con o sin cumplir con las pautas de actividad aeróbica².",
-        "physicalActivityNationalFootnote": "1. Centro Nacional de Estadísticas de Salud. Encuesta nacional de salud y nutrición. 2020;  <a style=\"color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word\" href=\"https://www.cdc.gov/nchs/nhanes/index.htm\">https://www.cdc.gov/nchs/nhanes/index.htm</a>. <br />2. Centro Nacional de Estadísticas de Salud. Encuesta Nacional de Salud, 2020;  <a style=\"color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word\" href=\"https://www.cdc.gov/nchs/nhis/documentation/2020-nhis.html\">https://www.cdc.gov/nchs/nhis/documentation/2020-nhis.html</a>.",
+        "physicalActivityNationalMuscle": "El <span style=\"color: #2E2E2E; font-size: 18px; font-family: Noto Sans; font-weight: 700; line-height: 27px; word-wrap: break-word\">31%</span> de los adultos <a target=\"_blank\" href=\"https://odphp.health.gov/sites/default/files/2019-10/PAG_ExecutiveSummary.pdf\" style=\"color: #2973A5; font-weight: 400; text-decoration: underline;\">cumplió con las pautas de actividad</a> de fortalecimiento muscular, con o sin cumplir con las pautas de actividad aeróbica².",
+        "physicalActivityNationalFootnote": "1. Centro Nacional de Estadísticas de Salud. Encuesta nacional de salud y nutrición. 2020;  <a target=\"_blank\" style=\"color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word\" href=\"https://www.cdc.gov/nchs/nhanes/\">https://www.cdc.gov/nchs/nhanes/</a>. <br />2. Centro Nacional de Estadísticas de Salud. Encuesta Nacional de Salud, 2020;  <a target=\"_blank\" style=\"color: #2973A5; font-size: 14px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 20px; word-wrap: break-word\" href=\"https://www.cdc.gov/nchs/nhis/documentation/2020-nhis.html\">https://www.cdc.gov/nchs/nhis/documentation/2020-nhis.html</a>.",
         "physicalActivityInTouch": "Póngase en contacto",
         "physicalActivityInTouchThanks": "¡Gracias por leer! Esperamos que se inspire para hacer actividades que mejoren su salud.",
-        "physicalActivityInTouchQuestions": "¿Tiene alguna duda sobre su informe o los recursos que le ofrecimos? Comuníquese con el <span style=\"color: white; font-size: 18px; font-family: Noto Sans; font-weight: 700; line-height: 27px; word-wrap: break-word\"> Centro de Asistencia de Connect </span><span style=\"color: white; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word\"> desde </span><a style=\"color: white !important; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word\" href=\"https://MyConnect.cancer.gov/support\" target=\"_blank\">MyConnect.cancer.gov/support</a>",
+        "physicalActivityInTouchQuestions": "¿Tiene alguna duda sobre su informe o los recursos que le ofrecimos? Comuníquese con el <span style=\"color: white; font-size: 18px; font-family: Noto Sans; font-weight: 700; line-height: 27px; word-wrap: break-word\"> Centro de Asistencia de Connect </span><span style=\"color: white; font-size: 18px; font-family: Noto Sans; font-weight: 400; line-height: 27px; word-wrap: break-word\"> desde </span><a style=\"color: white !important; font-size: 18px; font-family: Noto Sans; font-weight: 400; text-decoration: underline; line-height: 27px; word-wrap: break-word\" href=\"https://MyConnect.cancer.gov/support\" target=\"_blank\">MyConnect.cancer.gov/support</a>.",
         "physicalActivityInTouchProvider": "¿Tiene alguna duda sobre su salud actual o sobre cómo modificar su plan de actividad física? Hable con su proveedor de atención médica.",
         "viewReport": "Ver mi informe",
         "declineReport": "Rechazar por ahora",
