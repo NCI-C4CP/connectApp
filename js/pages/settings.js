@@ -1,5 +1,5 @@
 import { allStates, escapeHTML, showAnimation, hideAnimation, getMyData, hasUserData, firebaseSignInRender, validEmailFormat, validPhoneNumberFormat, checkAccount, translateHTML, translateText, languageTranslations } from '../shared.js';
-import { attachTabEventListeners, addOrUpdateAuthenticationMethod, changeAltContactInformation, changeContactInformation, changeMailingAddress, changeName, formatFirebaseAuthPhoneNumber, FormTypes, getCheckedRadioButtonValue, handleContactInformationRadioButtonPresets, handleOptionalFieldVisibility, hideOptionalElementsOnShowForm, hideSuccessMessage, openUpdateLoginForm, showAndPushElementToArrayIfExists, showEditButtonsOnUserVerified, suffixList, suffixToTextMap, toggleElementVisibility, togglePendingVerificationMessage, unlinkFirebaseAuthProvider, updatePhoneNumberInputFocus, validateAltContactInformation, validateContactInformation, validateLoginEmail, validateLoginPhone, validateMailingAddress, validateName, showMailAddressSuggestionMyProfile } from '../settingsHelpers.js';
+import { attachTabEventListeners, addOrUpdateAuthenticationMethod, changeAltContactInformation, changeContactInformation, changeMailingAddress, changeName, formatFirebaseAuthPhoneNumber, FormTypes, getCheckedRadioButtonValue, handleContactInformationRadioButtonPresets, handleOptionalFieldVisibility, hideOptionalElementsOnShowForm, hideSuccessMessage, openUpdateLoginForm, showAndPushElementToArrayIfExists, showEditButtonsOnUserVerified, suffixList, suffixToTextMap, toggleElementVisibility, togglePendingVerificationMessage, unlinkFirebaseAuthProvider, updatePhoneNumberInputFocus, validateAltContactInformation, validateContactInformation, validateLoginEmail, validateLoginPhone, validateMailingAddress, validateName, showMailAddressSuggestionMyProfile, showRiskyEmailWarningMyProfile } from '../settingsHelpers.js';
 import { addEventAddressAutoComplete } from '../event.js';
 import cId from '../fieldToConceptIdMapping.js';
 
@@ -406,11 +406,18 @@ const handleEditContactInformationSection = () => {
     
     optVars.preferredLanguage = document.getElementById('newpreferredLanguage').value.toLowerCase().trim();
 
-    const isContactInformationValid = await validateContactInformation(optVars.mobilePhoneNumberComplete, optVars.homePhoneNumberComplete, preferredEmail, optVars.otherPhoneNumberComplete, optVars.additionalEmail1, optVars.additionalEmail2);
-    if (isContactInformationValid) {
-      formVisBools.isContactInformationFormDisplayed = toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed);
-      toggleButtonText();
-      submitNewContactInformation(preferredEmail);
+    const _validateContactInformation = await validateContactInformation(optVars.mobilePhoneNumberComplete, optVars.homePhoneNumberComplete, preferredEmail, optVars.otherPhoneNumberComplete, optVars.additionalEmail1, optVars.additionalEmail2);
+    if (!_validateContactInformation.hasError) {
+        const submit = () => {
+            formVisBools.isContactInformationFormDisplayed = toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed);
+            toggleButtonText();
+            submitNewContactInformation(preferredEmail);
+        }
+        if (_validateContactInformation.riskyEmails.length > 0) {
+            showRiskyEmailWarningMyProfile(_validateContactInformation.riskyEmails, submit)
+            return
+        }
+        submit();
     }
   });
 };
@@ -710,11 +717,26 @@ const handleEditAltContactSection = () => {
 
         optVars.altContactEmail = document.getElementById('newAltContactEmail')?.value?.toLowerCase().trim();
 
-        const isContactInformationValid = await validateAltContactInformation(optVars.altContactMobilePhoneNumberComplete, optVars.altContactHomePhoneNumberComplete, optVars.altContactEmail);
-        if (isContactInformationValid) {
-            formVisBools.isAltContactInfoFormDisplayed = toggleElementVisibility(altContactElementArray, formVisBools.isAltContactInfoFormDisplayed);
-            toggleButtonText();
-            await submitNewAltContactInformation();
+        const _validateContactInformation = await validateAltContactInformation(
+            optVars.altContactMobilePhoneNumberComplete,
+            optVars.altContactHomePhoneNumberComplete,
+            optVars.altContactEmail
+        );
+        if (!_validateContactInformation.hasError) {
+            const submit = () => {
+                formVisBools.isAltContactInfoFormDisplayed =
+                    toggleElementVisibility(
+                        altContactElementArray,
+                        formVisBools.isAltContactInfoFormDisplayed
+                    );
+                toggleButtonText();
+                submitNewAltContactInformation();
+            };
+            if (_validateContactInformation.riskyEmails.length > 0) {
+                showRiskyEmailWarningMyProfile(_validateContactInformation.riskyEmails, submit);
+                return;
+            }
+            submit();
         }
     });
 };
