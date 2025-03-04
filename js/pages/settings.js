@@ -406,19 +406,19 @@ const handleEditContactInformationSection = () => {
     
     optVars.preferredLanguage = document.getElementById('newpreferredLanguage').value.toLowerCase().trim();
 
-    const _validateContactInformation = await validateContactInformation(optVars.mobilePhoneNumberComplete, optVars.homePhoneNumberComplete, preferredEmail, optVars.otherPhoneNumberComplete, optVars.additionalEmail1, optVars.additionalEmail2);
-    if (!_validateContactInformation.hasError) {
-        const submit = () => {
-            formVisBools.isContactInformationFormDisplayed = toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed);
-            toggleButtonText();
-            submitNewContactInformation(preferredEmail);
-        }
-        if (_validateContactInformation.riskyEmails.length > 0) {
-            showRiskyEmailWarningMyProfile(_validateContactInformation.riskyEmails, submit)
-            return
-        }
-        submit();
-    }
+      const { hasError, riskyEmails } = await validateContactInformation(optVars.mobilePhoneNumberComplete, optVars.homePhoneNumberComplete, preferredEmail, optVars.otherPhoneNumberComplete, optVars.additionalEmail1, optVars.additionalEmail2);
+      if (!hasError) {
+          const submit = () => {
+              formVisBools.isContactInformationFormDisplayed = toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed);
+              toggleButtonText();
+              submitNewContactInformation(preferredEmail);
+          }
+          if (riskyEmails.length > 0) {
+              showRiskyEmailWarningMyProfile(riskyEmails, submit)
+              return
+          }
+          submit();
+      }
   });
 };
 
@@ -717,12 +717,12 @@ const handleEditAltContactSection = () => {
 
         optVars.altContactEmail = document.getElementById('newAltContactEmail')?.value?.toLowerCase().trim();
 
-        const _validateContactInformation = await validateAltContactInformation(
+        const { hasError, riskyEmails } = await validateAltContactInformation(
             optVars.altContactMobilePhoneNumberComplete,
             optVars.altContactHomePhoneNumberComplete,
             optVars.altContactEmail
         );
-        if (!_validateContactInformation.hasError) {
+        if (!hasError) {
             const submit = () => {
                 formVisBools.isAltContactInfoFormDisplayed =
                     toggleElementVisibility(
@@ -732,8 +732,8 @@ const handleEditAltContactSection = () => {
                 toggleButtonText();
                 submitNewAltContactInformation();
             };
-            if (_validateContactInformation.riskyEmails.length > 0) {
-                showRiskyEmailWarningMyProfile(_validateContactInformation.riskyEmails, submit);
+            if (riskyEmails.length > 0) {
+                showRiskyEmailWarningMyProfile(riskyEmails, submit);
                 return;
             }
             submit();
