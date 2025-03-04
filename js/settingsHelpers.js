@@ -272,6 +272,7 @@ export const validateContactInformation = async (mobilePhoneNumberComplete, home
   removeAllErrors();
   let hasError = false;
   let focus = true;
+  const riskyEmails = []
 
   if (!mobilePhoneNumberComplete && !homePhoneNumberComplete && !otherPhoneNumberComplete) {
     errorMessage('editMobilePhone', translateText('settingsHelpers.phoneRequired'));
@@ -306,26 +307,32 @@ export const validateContactInformation = async (mobilePhoneNumberComplete, home
   const emailValidation = await emailAddressValidation({
       emails: {
           upEmail: preferredEmail,
-          upEmail2: additionalEmail1 ? additionalEmail1 : undefined,
-          upAdditionalEmail2: additionalEmail2 ? additionalEmail2 : undefined,
+          upEmail2: additionalEmail1 ? additionalEmail1 : null,
+          upAdditionalEmail2: additionalEmail2 ? additionalEmail2 : null,
       },
   });
 
-  if (emailValidationAnalysis(emailValidation.upEmail) === emailValidationStatus.INVALID) {
+  const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail)
+  if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(preferredEmail)
+  if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
     errorMessage('newPreferredEmail', translateText('settingsHelpers.emailInvalid'), focus);
     if (focus) document.getElementById('newPreferredEmail').focus();
     focus = false;
     hasError = true;
   }
 
-  if (emailValidationAnalysis(emailValidation.upEmail2) === emailValidationStatus.INVALID) {
+  const upEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail2)
+  if (upEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(additionalEmail1)
+  if (upEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
     errorMessage('newadditionalEmail1', translateText('settingsHelpers.emailInvalid'), focus);
     if (focus) document.getElementById('newadditionalEmail1').focus();
     focus = false;
     hasError = true;
   }
 
-  if (emailValidationAnalysis(emailValidation.upAdditionalEmail2) === emailValidationStatus.INVALID) {
+  const upAdditionalEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail2)
+  if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(additionalEmail2)
+  if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
     errorMessage('newadditionalEmail2', translateText('settingsHelpers.emailInvalid'), focus);
     if (focus) document.getElementById('newadditionalEmail2').focus();
     focus = false;
@@ -334,10 +341,12 @@ export const validateContactInformation = async (mobilePhoneNumberComplete, home
 
   if (hasError) {
     console.error('Error(s) found.');
-    return false;
   }
 
-  return true;
+  return {
+    hasError,
+    riskyEmails
+  };
 };
 
 const uspsValidateAddress = async (
@@ -502,6 +511,62 @@ export const validateMailingAddress = async (id, addressLine1, city, state, zip)
   };
 };
 
+export const showRiskyEmailWarningMyProfile = (riskyEmails, onSubmit) => {
+    const modalElement = document.getElementById("connectMainModal");
+    let modalInstance =
+        bootstrap.Modal.getInstance(modalElement) ||
+        new bootstrap.Modal(modalElement);
+
+    const closeModal = () => {
+        const modal = bootstrap.Modal.getInstance(
+            document.getElementById("connectMainModal")
+        );
+        modal.hide();
+    };
+
+    let bodyHtml = "";
+    const escapeHTML = (str) => {
+        const div = document.createElement("div");
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+    };
+
+    riskyEmails.forEach((item) => {
+        const escapedItem = escapeHTML(item);
+        bodyHtml += `
+          <div class="row">${escapedItem}</div>
+          <div class="row">
+              <i style="color:red" data-i18n="settingsHelpers.emailWarning">This email address may be invalid. Please double check your entry before continuing.</i>
+          </div>
+      </div>
+      `;
+    });
+    document.getElementById("connectModalBody").innerHTML =
+        translateHTML(bodyHtml);
+
+    document.getElementById("connectModalFooter").innerHTML = translateHTML(`
+      <div class="d-flex justify-content-between w-100">
+          <button data-i18n="event.navButtonsClose" type="button" title="Close" class="btn btn-dark" id="goBackBtn">Go Back</button>
+          <button data-i18n="event.navButtonsConfirm" type="button" id="confirmRiskyEmail" title="Confirm details" class="btn btn-primary consentNextButton">Submit</button>
+      </div>
+  `);
+    document.getElementById("connectModalFooter").style.display = "block";
+
+    modalInstance.show();
+
+    document
+        .getElementById("confirmRiskyEmail")
+        .addEventListener("click", () => {
+            onSubmit();
+            closeModal();
+        });
+
+    // Add header close button listener
+    document.getElementById("goBackBtn").addEventListener("click", () => {
+        closeModal();
+    });
+}
+
 export const showMailAddressSuggestionMyProfile = (uspsSuggestion, i18nTranslation, submit) => {
   const modalElement = document.getElementById("connectMainModal");
   let modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
@@ -572,7 +637,7 @@ export const validateAltContactInformation = async (altContactMobilePhoneComplet
   removeAllErrors();
   let hasError = false;
   let focus = true;
-
+  const riskyEmails = []
   if (altContactMobilePhoneComplete && !validPhoneNumberFormat.test(altContactMobilePhoneComplete)) {
     errorMessage('editAltContactMobilePhone', translateText('settingsHelpers.phoneFormat'));
     if (focus) document.getElementById('editAltContactMobilePhone').focus();
@@ -594,7 +659,9 @@ export const validateAltContactInformation = async (altContactMobilePhoneComplet
       },
     });
 
-    if (emailValidationAnalysis(emailValidation.altContactEmail) === emailValidationStatus.INVALID) {
+    const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.altContactEmail)
+    if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(altContactEmail)
+    if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
       errorMessage('newAltContactEmail', translateText('settingsHelpers.emailInvalid'), focus);
       if (focus) document.getElementById('newAltContactEmail').focus();
       focus = false;
@@ -602,7 +669,14 @@ export const validateAltContactInformation = async (altContactMobilePhoneComplet
     }
   }
 
-  return !hasError;
+  if (hasError) {
+    console.error('Error(s) found.');
+  }
+
+  return {
+    hasError,
+    riskyEmails
+  };
 };
 
 export const validateLoginEmail = (email, emailConfirm) => {
