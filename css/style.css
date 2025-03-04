@@ -1557,3 +1557,8 @@ button.connect-secondary {
         max-width: 100%;
     }
 }
+
+span.my-samples-indent-text {
+    display:inline-block;
+    margin-left: 20px;
+}
