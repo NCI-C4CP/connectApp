@@ -337,9 +337,9 @@ const health_partners = {
         ],
         [
             '<span data-i18n="samples.health_partners.locations.BrooklynCenterName">HealthPartners Clinic Brooklyn Center</span>',
-            '<span data-i18n="samples.health_partners.locations.BrooklynCenterAddress">6845 Lee Ave N <br>Brooklyn Center, MN 55429 <br><br> Upon entering the building, go down the hallway located on the right side of the building and follow the sign that says “Lab”. On your left, please check -in at the laboratory front desk.</span>',
+            '<span data-i18n="samples.health_partners.locations.BrooklynCenterAddress">6845 Lee Ave N <br>Brooklyn Center, MN 55429 <br><br> Upon entering the building, go down the hallway located on the right side of the building and follow the sign that says “Lab”. On your left, please check-in at the laboratory front desk.</span>',
             '',
-            '<span data-i18n="samples.health_partners.locations.BrooklynCenterParking">"Free parking is available on -site at the front of the building.<br><br><div class=\"messagesSubHeader\">Scheduling Information</div><br>Self-scheduling is not currently available for the Brooklyn Center location. For questions and scheduling, please call 952-967-5067.</span>',
+            '<span data-i18n="samples.health_partners.locations.BrooklynCenterParking">"Free parking is available on-site at the front of the building.<br><br><div class=\"messagesSubHeader\">Scheduling Information</div><br>Self-scheduling is not currently available for the Brooklyn Center location. For questions and scheduling, please call 952-967-5067.</span>',
         ]
     ]
 };

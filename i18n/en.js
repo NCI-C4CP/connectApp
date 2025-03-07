@@ -889,8 +889,8 @@ const en = {
                 "NicolletMinneapolisAddress": "2001 Blaisdell Ave <br>Minneapolis, MN 55404 <br><br>Upon entering the building, go to the left and take the stairs or elevator down to the lower-level lobby. In the lower level-lobby, please check in at the laboratory front desk.",
                 "NicolletMinneapolisParking": "Parking is free and available at the front entrance or across the street.<br><br><div class=\"messagesSubHeader\">Scheduling Information</div><br>Self-scheduling is not currently available for the Minneapolis location. For questions and scheduling, please call 952-967-5067. ",
                 "BrooklynCenterName": "HealthPartners Clinic Brooklyn Center",
-                "BrooklynCenterAddress": "6845 Lee Ave N <br>Brooklyn Center, MN 55429 <br><br> Upon entering the building, go down the hallway located on the right side of the building and follow the sign that says “Lab”. On your left, please check -in at the laboratory front desk.",
-                "BrooklynCenterParking": "Free parking is available on -site at the front of the building.<br><br><div class=\"messagesSubHeader\">Scheduling Information</div><br>Self-scheduling is not currently available for the Brooklyn Center location. For questions and scheduling, please call 952-967-5067."
+                "BrooklynCenterAddress": "6845 Lee Ave N <br>Brooklyn Center, MN 55429 <br><br> Upon entering the building, go down the hallway located on the right side of the building and follow the sign that says “Lab”. On your left, please check-in at the laboratory front desk.",
+                "BrooklynCenterParking": "Free parking is available on-site at the front of the building.<br><br><div class=\"messagesSubHeader\">Scheduling Information</div><br>Self-scheduling is not currently available for the Brooklyn Center location. For questions and scheduling, please call 952-967-5067."
             }
         },
         "sanford": {
