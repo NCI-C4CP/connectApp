@@ -1240,8 +1240,6 @@ const preVerifyUserDetails = (uspsSuggestion, riskyEmails, formData) => {
 };
 
 const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, type) => {
-    console.log("🚀 ~ preVerifyUserDetails ~ uspsSuggestion:", uspsSuggestion)
-
 
     if (!document.getElementById('connectMainModal').classList.contains('show')) openModal();
 
@@ -1252,10 +1250,10 @@ const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, type) 
             : uspsSuggestion.alternateAddress
 
     const dataI18nString = type === 'mail'
-    ? 'addressSuggestionDescription'
-    : type === 'physical'
-        ? 'addressSuggestionDescriptionPhysical'
-        : 'addressSuggestionDescriptionAlternate'
+        ? 'addressSuggestionDescription'
+        : type === 'physical'
+            ? 'addressSuggestionDescriptionPhysical'
+            : 'addressSuggestionDescriptionAlternate'
 
     const headerHtml = `
         <h2 style="color: #333;" data-i18n="event.addressSuggestionTitle">Address Verification</h2>
@@ -1312,11 +1310,11 @@ const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, type) 
                 document.getElementById("UPAddress1State").value = addrSuggestion.suggestion.state
                 document.getElementById("UPAddress1Zip").value = addrSuggestion.suggestion.zipCode
 
-                formData['521824358'] = addrSuggestion.suggestion.streetAddress
-                formData['442166669'] = addrSuggestion.suggestion.secondaryAddress
-                formData['703385619'] = addrSuggestion.suggestion.city
-                formData['634434746'] = addrSuggestion.suggestion.state
-                formData['892050548'] = addrSuggestion.suggestion.zipCode
+                formData[fieldMapping.address1] = addrSuggestion.suggestion.streetAddress
+                formData[fieldMapping.address2] = addrSuggestion.suggestion.secondaryAddress
+                formData[fieldMapping.city] = addrSuggestion.suggestion.city
+                formData[fieldMapping.state] = addrSuggestion.suggestion.state
+                formData[fieldMapping.zip] = addrSuggestion.suggestion.zipCode
                 uspsSuggestion.mailAddress = {}
                 break;
             }
