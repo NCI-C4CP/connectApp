@@ -935,6 +935,7 @@ export const addEventUPSubmit = async () => {
         const uspsSuggestion = {
             mailAddress: {},
             physicalAddress: {},
+            alternateAddress: {},
         }
         const validateMailAddress = await validateAddress(focus, "UPAddress1Line1", "UPAddress1Line2", "UPAddress1City", "UPAddress1State", "UPAddress1Zip")
         hasError = hasError || validateMailAddress.hasError
@@ -1003,12 +1004,11 @@ export const addEventUPSubmit = async () => {
                 hasError = true;
             }
 
-            // TODO: Future release: validate with USPS
-            // if (!hasError) {
-            //     const validateAlternateAddress = await validateAddress(focus, "UPAddress3Line1", "UPAddress3Line2", "UPAddress3City", "UPAddress3State", "UPAddress3Zip");
-            //     hasError = hasError || validateAlternateAddress.hasError;
-            //     uspsSuggestion.alternateAddress = validateAlternateAddress.result;
-            // }
+            if (!hasError) {
+                const validateAlternateAddress = await validateAddress(focus, "UPAddress3Line1", "UPAddress3Line2", "UPAddress3City", "UPAddress3State", "UPAddress3Zip");
+                hasError = hasError || validateAlternateAddress.hasError;
+                uspsSuggestion.alternateAddress = validateAlternateAddress.result;
+            }
         }
 
         if (hasError) {
@@ -1229,23 +1229,39 @@ const preVerifyUserDetails = (uspsSuggestion, riskyEmails, formData) => {
     if (riskyEmails.length) {
         showRiskyEmailWarning(uspsSuggestion, riskyEmails, formData);
     } else if (uspsSuggestion.mailAddress.suggestion) {
-        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData);
+        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData, 'mail');
     } else if (uspsSuggestion.physicalAddress.suggestion) {
-        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData, true);
+        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData, 'physical');
+    } else if (uspsSuggestion.alternateAddress.suggestion) {
+        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData, 'alternate');
     } else {
         verifyUserDetails(formData);
     }
 };
 
-const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, isPhysical) => {
+const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, type) => {
+    console.log("🚀 ~ preVerifyUserDetails ~ uspsSuggestion:", uspsSuggestion)
+
+
     if (!document.getElementById('connectMainModal').classList.contains('show')) openModal();
-    const addrSuggestion = !isPhysical ? uspsSuggestion.mailAddress : uspsSuggestion.physicalAddress
+
+    const addrSuggestion = type === 'mail'
+        ? uspsSuggestion.mailAddress
+        : type === 'physical'
+            ? uspsSuggestion.physicalAddress
+            : uspsSuggestion.alternateAddress
+
+    const dataI18nString = type === 'mail'
+    ? 'addressSuggestionDescription'
+    : type === 'physical'
+        ? 'addressSuggestionDescriptionPhysical'
+        : 'addressSuggestionDescriptionAlternate'
 
     const headerHtml = `
         <h2 style="color: #333;" data-i18n="event.addressSuggestionTitle">Address Verification</h2>
     `
     const bodyHtml = `
-        <div style="margin-bottom: 20px;" data-i18n="event.${!isPhysical ? 'addressSuggestionDescription':'addressSuggestionDescriptionPhysical'}">
+        <div style="margin-bottom: 20px;" data-i18n="event.${dataI18nString}">
             We can’t verify your address but found a close match. Please confirm the correct address or enter a different address.
         </div>
         <div style="display: flex; gap: 20px;">
@@ -1275,10 +1291,12 @@ const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, isPhys
     `);
 
     document.getElementById('addressSuggestionKeepButton').addEventListener('click', async () => {
-        if (!isPhysical) {
+        if (type === 'mail') {
             uspsSuggestion.mailAddress = {}
-        } else {
+        } else if (type === 'physical') {
             uspsSuggestion.physicalAddress = {}
+        } else {
+            uspsSuggestion.alternateAddress = {}
         }
 
         document.getElementById('goBackButton').click()
@@ -1286,33 +1304,52 @@ const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, isPhys
     })
 
     document.getElementById('addressSuggestionUseButton').addEventListener('click', () => {
-        if (!isPhysical) {
-            document.getElementById("UPAddress1Line1").value = addrSuggestion.suggestion.streetAddress
-            document.getElementById("UPAddress1Line2").value = addrSuggestion.suggestion.secondaryAddress
-            document.getElementById("UPAddress1City").value = addrSuggestion.suggestion.city
-            document.getElementById("UPAddress1State").value = addrSuggestion.suggestion.state
-            document.getElementById("UPAddress1Zip").value = addrSuggestion.suggestion.zipCode
+        switch (type) {
+            case 'mail': {
+                document.getElementById("UPAddress1Line1").value = addrSuggestion.suggestion.streetAddress
+                document.getElementById("UPAddress1Line2").value = addrSuggestion.suggestion.secondaryAddress
+                document.getElementById("UPAddress1City").value = addrSuggestion.suggestion.city
+                document.getElementById("UPAddress1State").value = addrSuggestion.suggestion.state
+                document.getElementById("UPAddress1Zip").value = addrSuggestion.suggestion.zipCode
 
-            formData['521824358'] = addrSuggestion.suggestion.streetAddress
-            formData['442166669'] = addrSuggestion.suggestion.secondaryAddress
-            formData['703385619'] = addrSuggestion.suggestion.city
-            formData['634434746'] = addrSuggestion.suggestion.state
-            formData['892050548'] = addrSuggestion.suggestion.zipCode
-            uspsSuggestion.mailAddress = {}
-        } else {
-            document.getElementById("UPAddress2Line1").value = addrSuggestion.suggestion.streetAddress
-            document.getElementById("UPAddress2Line2").value = addrSuggestion.suggestion.secondaryAddress
-            document.getElementById("UPAddress2City").value = addrSuggestion.suggestion.city
-            document.getElementById("UPAddress2State").value = addrSuggestion.suggestion.state
-            document.getElementById("UPAddress2Zip").value = addrSuggestion.suggestion.zipCode
+                formData['521824358'] = addrSuggestion.suggestion.streetAddress
+                formData['442166669'] = addrSuggestion.suggestion.secondaryAddress
+                formData['703385619'] = addrSuggestion.suggestion.city
+                formData['634434746'] = addrSuggestion.suggestion.state
+                formData['892050548'] = addrSuggestion.suggestion.zipCode
+                uspsSuggestion.mailAddress = {}
+                break;
+            }
+            case 'physical': {
+                document.getElementById("UPAddress2Line1").value = addrSuggestion.suggestion.streetAddress
+                document.getElementById("UPAddress2Line2").value = addrSuggestion.suggestion.secondaryAddress
+                document.getElementById("UPAddress2City").value = addrSuggestion.suggestion.city
+                document.getElementById("UPAddress2State").value = addrSuggestion.suggestion.state
+                document.getElementById("UPAddress2Zip").value = addrSuggestion.suggestion.zipCode
 
-            formData[fieldMapping.physicalAddress1] = addrSuggestion.suggestion.streetAddress
-            formData[fieldMapping.physicalAddress2] = addrSuggestion.suggestion.secondaryAddress
-            formData[fieldMapping.physicalCity] = addrSuggestion.suggestion.city
-            formData[fieldMapping.physicalState] = addrSuggestion.suggestion.state
-            formData[fieldMapping.physicalZip] = addrSuggestion.suggestion.zipCode
+                formData[fieldMapping.physicalAddress1] = addrSuggestion.suggestion.streetAddress
+                formData[fieldMapping.physicalAddress2] = addrSuggestion.suggestion.secondaryAddress
+                formData[fieldMapping.physicalCity] = addrSuggestion.suggestion.city
+                formData[fieldMapping.physicalState] = addrSuggestion.suggestion.state
+                formData[fieldMapping.physicalZip] = addrSuggestion.suggestion.zipCode
+                uspsSuggestion.physicalAddress = {}
+                break;
+            }
+            default: {
+                document.getElementById("UPAddress3Line1").value = addrSuggestion.alternateAddress.streetAddress
+                document.getElementById("UPAddress3Line2").value = addrSuggestion.alternateAddress.secondaryAddress
+                document.getElementById("UPAddress3City").value = addrSuggestion.alternateAddress.city
+                document.getElementById("UPAddress3State").value = addrSuggestion.alternateAddress.state
+                document.getElementById("UPAddress3Zip").value = addrSuggestion.alternateAddress.zipCode
 
-            uspsSuggestion.physicalAddress = {}
+                formData[fieldMapping.altAddress1] = addrSuggestion.alternateAddress.streetAddress
+                formData[fieldMapping.altAddress2] = addrSuggestion.alternateAddress.secondaryAddress
+                formData[fieldMapping.altCity] = addrSuggestion.alternateAddress.city
+                formData[fieldMapping.altState] = addrSuggestion.alternateAddress.state
+                formData[fieldMapping.altZip] = addrSuggestion.alternateAddress.zipCode
+                uspsSuggestion.alternateAddress = {}
+                break;
+            }
         }
 
         document.getElementById('goBackButton').click()
