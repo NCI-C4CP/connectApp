@@ -140,9 +140,8 @@ export const renderSamplesPage = async () => {
                         <div class="messagesBodyFont" style="width:100%">
                             <div>
                             ${
-                                site.contact
-                                    ? site.contact
-                                    : '<a href="https://myconnect.cancer.gov/support" target="_blank">MyConnect.cancer.gov/support</a> <br><br> <a data-i18n="samples.emailSupport" href="mailto: ConnectSupport@norc.org">ConnectSupport@norc.org</a> <br>'
+                                site.contact ||
+                                '<a href="https://myconnect.cancer.gov/support" target="_blank">MyConnect.cancer.gov/support</a> <br><br> <a data-i18n="samples.emailSupport" href="mailto: ConnectSupport@norc.org">ConnectSupport@norc.org</a> <br>'
                             }
                                 <br>
                                 ${site.support}
