@@ -1290,7 +1290,7 @@ export const questionnaireModules = () => {
                 es: 'moduleMenstrualStageSpanish.txt'
             }, 
             moduleId:"MenstrualCycle", 
-            enabled:true
+            enabled:false
         },
         'Mouthwash': {
             path: {
@@ -1298,7 +1298,7 @@ export const questionnaireModules = () => {
                 es: 'moduleMouthwashSpanish.txt'
             }, 
             moduleId:"Mouthwash", 
-            enabled:true
+            enabled:false
         },
         'PROMIS': {
             path: {

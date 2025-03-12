@@ -415,6 +415,11 @@ async function buildDynamicEndScreen(module, response, question) {
         await resetParticipantSurvey(module);
         await resetSurveyData(fieldMapping[module].conceptId, fieldMapping[module].endQuestions);
     }
+    else {
+        let responseDiv = document.createElement('div');
+        responseDiv.classList.add('response');
+        fieldset.appendChild(responseDiv);
+    }
 }
 
 export const blockParticipant = () => {
