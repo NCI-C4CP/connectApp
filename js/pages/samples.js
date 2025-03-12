@@ -59,7 +59,7 @@ export const renderSamplesPage = async () => {
                             </div>
                         </div>          
                     </div>
-                    <div class="row" style="width:100%">
+                    <div class="row" style="width:100%;">
                         <div class="consentHeadersFont" style="color:#606060;width:100%">
                             <div data-i18n="samples.whereToDonate">
                                 Where Do I Donate My Samples?
@@ -67,7 +67,7 @@ export const renderSamplesPage = async () => {
                         </div>
 
                         ${site.locationNotes ? `
-                        <div class="row" style="width:100%;">
+                        <div class="row" style="width:100%; padding-top:0;">
                             <div class="messagesBodyFont">
                                 ${site.locationNotes}
                             </div>
