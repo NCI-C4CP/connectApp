@@ -1,7 +1,7 @@
 import { getParameters, userLoggedIn, getMyData, hasUserData, getMyCollections, showAnimation, hideAnimation, storeResponse, isBrowserCompatible, inactivityTime, urls, appState, processAuthWithFirebaseAdmin, showErrorAlert, successResponse, logDDRumError, translateHTML, translateText, languageAcronyms, toggleNavbarMobileView } from "./js/shared.js";
 import { userNavBar, homeNavBar, languageSelector, signOutNavBarTemplate } from "./js/components/navbar.js";
 import { homePage, joinNowBtn, whereAmIInDashboard, renderHomeAboutPage, renderHomeExpectationsPage, renderHomePrivacyPage } from "./js/pages/homePage.js";
-import { addEventPinAutoUpperCase, addEventRequestPINForm, addEventRetrieveNotifications, toggleCurrentPage, toggleCurrentPageNoUser, addEventToggleSubmit, addEventLanguageSelection, environmentWarningModal } from "./js/event.js";
+import { addEventPinAutoUpperCase, addEventRequestPINForm, addEventRetrieveNotifications, toggleCurrentPage, toggleCurrentPageNoUser, addEventToggleSubmit, addEventLanguageSelection } from "./js/event.js";
 import { requestPINTemplate } from "./js/pages/healthCareProvider.js";
 import { myToDoList } from "./js/pages/myToDoList.js";
 import {renderNotificationsPage} from "./js/pages/notifications.js"
@@ -16,7 +16,6 @@ import { firebaseConfig as devFirebaseConfig } from "./dev/config.js";
 import { firebaseConfig as stageFirebaseConfig } from "./stage/config.js";
 import { firebaseConfig as prodFirebaseConfig } from "./prod/config.js";
 import conceptIdMap from "./js/fieldToConceptIdMapping.js";
-import fieldToConceptIdMapping from "./js/fieldToConceptIdMapping.js";
 
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker
@@ -189,65 +188,11 @@ window.onload = async () => {
 }
 
 const handleVerifyEmail = (auth, actionCode) => {
-    auth.applyActionCode(actionCode).then(function(resp) {
+    auth.applyActionCode(actionCode).then(function() {
         window.location.hash = '#verified';
         location.reload();
     }).catch(function(error) {
         console.log(error);
-    });
-}
-
-const handleResetPassword = (auth, actionCode) => {
-    auth.verifyPasswordResetCode(actionCode).then(function(email) {
-        document.getElementById('root').innerHTML = `
-            <h2>Reset password</h2> for <strong>${email}</strong>
-            <form id="resetPasswordForm" method="POST">
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Enter new password</label>
-                    <input type="password" id="resetPassword" pattern="[A-Za-z0-9@_]{6,}" title="Strong passwords have at least 6 characters and a mix of letters and numbers" class="form-control col-sm-4">
-                    <i class="fas fa-eye show-text" id="showPassword" title="Show password"></i>
-                </div>
-                </br>
-                <button type="submit" class="btn btn-primary mb-3">Update password</button>
-            </form>
-        `;
-        const form = document.getElementById('resetPasswordForm');
-
-        const show = document.getElementById('showPassword');
-        show.addEventListener('click', () => {
-            const element = document.getElementById('resetPassword');
-            if(element.type === 'password') {
-                element.type = 'text';
-                show.classList = ['fas fa-eye-slash show-text'];
-                show.title = "Hide password";
-            }
-            else {
-                element.type = 'password';
-                show.classList = ['fas fa-eye show-text'];
-                show.title = "Show password";
-            }
-        });
-
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            const newPassword = document.getElementById('resetPassword').value;
-            if(!newPassword) return;
-            if(newPassword.trim() === '') return;
-            // Save the new password.
-            auth.confirmPasswordReset(actionCode, newPassword).then(function(resp) {
-                document.getElementById('root').innerHTML = `
-                    Password reset successfully! Please <a href="#sign_in">sign in</a> again to continue.
-                `;
-                auth.signInWithEmailAndPassword(accountEmail, newPassword);
-            }).catch(function(error) {
-                // Error occurred during confirmation. The code might have expired or the
-                // password is too weak.
-            });
-        })
-        
-    }).catch(function(error) {
-      // Invalid or expired action code. Ask user to try to reset the password
-      // again.
     });
 }
 
@@ -261,20 +206,13 @@ const router = async () => {
         const mode = parameters['mode'];
         const actionCode = parameters['oobCode'];
         switch (mode) {
-            case 'resetPassword':
-                handleResetPassword(auth, actionCode);
-            break;
-            //   case 'recoverEmail':
-            // Display email recovery handler and UI.
-            // handleRecoverEmail(auth, actionCode, lang);
-            // break;
             case 'verifyEmail':
                 handleVerifyEmail(auth, actionCode);
             break;
             default:
             // Error: invalid mode.
         }
-        if(['resetPassword', 'verifyEmail'].includes(parameters['mode'])) return;
+        if(['verifyEmail'].includes(parameters['mode'])) return;
     }
 
     let loggedIn = await userLoggedIn();
