@@ -2065,10 +2065,19 @@ export const addEventRequestPINForm = () => {
  */
 const storeParameters = async () => {
     const utm = {};
+    const acceptedParams = {
+        utm_source: ['hfh', 'uc', 'hp'],
+        utm_medium: ['sms', 'email', 'mychart'],
+        utm_campaign: ['altruism-personal', 'altruism-general', 'cancer-personal', 'cancer-general', 'research-personal', 'research-general']
+    }
 
-    if (sessionStorage.getItem('utmSource')) utm[fieldMapping.utm.source] = sessionStorage.getItem('utmSource');
-    if (sessionStorage.getItem('utmMedium')) utm[fieldMapping.utm.medium] = sessionStorage.getItem('utmMedium');
-    if (sessionStorage.getItem('utmCampaign')) utm[fieldMapping.utm.campaign] = sessionStorage.getItem('utmCampaign');
+    const utmSource = sessionStorage.getItem('utmSource').toLowerCase();
+    const utmMedium = sessionStorage.getItem('utmMedium').toLowerCase();
+    const utmCampaign = sessionStorage.getItem('utmCampaign').toLowerCase();
+
+    if (utmSource && acceptedParams.utm_source.includes(utmSource)) utm[fieldMapping.utm.source] = utmSource;
+    if (utmMedium && acceptedParams.utm_medium.includes(utmMedium)) utm[fieldMapping.utm.medium] = utmMedium;
+    if (utmCampaign && acceptedParams.utm_campaign.includes(utmCampaign)) utm[fieldMapping.utm.campaign] = utmCampaign;
 
     if (Object.keys(utm).length) storeResponse(utm);
 }
