@@ -825,80 +825,80 @@ export const addEventUPSubmit = async () => {
             focus = false;
             hasError = true;
         }
-        
-
-        document.getElementById('userProfileSubmitButton').disabled = true
-        const emailValidation = await emailAddressValidation({
-            emails: {
-                upEmail: email.trim(),
-                upEmail2: email2 ? email2.value.trim() : null,
-                upAdditionalEmail2: email3 ? email3.value.trim() : null,
-                upAdditionalEmail3: email4 ? email4.value.trim() : null,
-                altContactEmail: altContactEmail || null,
-            },
-        });
+          
         const riskyEmails = []
-        const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail)
-        if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email)
-        if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
-            errorMessage(
-                "UPEmail",
-                '<span data-i18n="settingsHelpers.emailInvalid">' +
-                    translateText("settingsHelpers.emailInvalid") +
-                    "</span>",
-                focus
-            );
-            // Clear the "Confirm Preferred Email" field here
-            document.getElementById('confirmUPEmail').value = '';
-            if (focus) document.getElementById("UPEmail").focus();
-            focus = false;
-            hasError = true;
-        }
-
-        const upEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail2)
-        if (upEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email2.value)
-        if (upEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
-            errorMessage(
-                "UPEmail2",
-                '<span data-i18n="settingsHelpers.emailInvalid">' +
-                    translateText("settingsHelpers.emailInvalid") +
-                    "</span>",
-                focus
-            );
-            if (focus) document.getElementById("UPEmail2").focus();
-            focus = false;
-            hasError = true;
-        }
-
-        const upAdditionalEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail2)
-        if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email3.value)
-        if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
-            errorMessage(
-                "UPAdditionalEmail2",
-                '<span data-i18n="settingsHelpers.emailInvalid">' +
-                    translateText("settingsHelpers.emailInvalid") +
-                    "</span>",
-                focus
-            );
-            if (focus) document.getElementById("UPAdditionalEmail2").focus();
-            focus = false;
-            hasError = true;
-        }
+        document.getElementById('userProfileSubmitButton').disabled = true
+        // const emailValidation = await emailAddressValidation({
+        //     emails: {
+        //         upEmail: email.trim(),
+        //         upEmail2: email2 ? email2.value.trim() : null,
+        //         upAdditionalEmail2: email3 ? email3.value.trim() : null,
+        //         upAdditionalEmail3: email4 ? email4.value.trim() : null,
+        //         altContactEmail: altContactEmail || null,
+        //     },
+        // });
         
-        const upAdditionalEmail3ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail3)
-        if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email4.value)
-        if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.INVALID) {
-            errorMessage(
-                "UPAdditionalEmail3",
-                '<span data-i18n="settingsHelpers.emailInvalid">' +
-                    translateText("settingsHelpers.emailInvalid") +
-                    "</span>",
-                focus
-            );
-            if (focus) document.getElementById("UPAdditionalEmail3").focus();
-            focus = false;
-            hasError = true;
-        }
+        // const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail)
+        // if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email)
+        // if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
+        //     errorMessage(
+        //         "UPEmail",
+        //         '<span data-i18n="settingsHelpers.emailInvalid">' +
+        //             translateText("settingsHelpers.emailInvalid") +
+        //             "</span>",
+        //         focus
+        //     );
+        //     // Clear the "Confirm Preferred Email" field here
+        //     document.getElementById('confirmUPEmail').value = '';
+        //     if (focus) document.getElementById("UPEmail").focus();
+        //     focus = false;
+        //     hasError = true;
+        // }
+
+        // const upEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail2)
+        // if (upEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email2.value)
+        // if (upEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
+        //     errorMessage(
+        //         "UPEmail2",
+        //         '<span data-i18n="settingsHelpers.emailInvalid">' +
+        //             translateText("settingsHelpers.emailInvalid") +
+        //             "</span>",
+        //         focus
+        //     );
+        //     if (focus) document.getElementById("UPEmail2").focus();
+        //     focus = false;
+        //     hasError = true;
+        // }
+
+        // const upAdditionalEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail2)
+        // if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email3.value)
+        // if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
+        //     errorMessage(
+        //         "UPAdditionalEmail2",
+        //         '<span data-i18n="settingsHelpers.emailInvalid">' +
+        //             translateText("settingsHelpers.emailInvalid") +
+        //             "</span>",
+        //         focus
+        //     );
+        //     if (focus) document.getElementById("UPAdditionalEmail2").focus();
+        //     focus = false;
+        //     hasError = true;
+        // }
+        
+        // const upAdditionalEmail3ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail3)
+        // if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email4.value)
+        // if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.INVALID) {
+        //     errorMessage(
+        //         "UPAdditionalEmail3",
+        //         '<span data-i18n="settingsHelpers.emailInvalid">' +
+        //             translateText("settingsHelpers.emailInvalid") +
+        //             "</span>",
+        //         focus
+        //     );
+        //     if (focus) document.getElementById("UPAdditionalEmail3").focus();
+        //     focus = false;
+        //     hasError = true;
+        // }
 
         const confirmedEmail = document.getElementById('confirmUPEmail').value;
         if(!confirmedEmail){
@@ -916,20 +916,20 @@ export const addEventUPSubmit = async () => {
             
         }
 
-        const altContactEmailValidationAnalysis = emailValidationAnalysis(emailValidation.altContactEmail);
-        if (altContactEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(altContactEmail);
-        if (altContactEmailValidationAnalysis === emailValidationStatus.INVALID) {
-            errorMessage(
-                "altContactEmail",
-                '<span data-i18n="settingsHelpers.emailInvalid">' +
-                translateText("settingsHelpers.emailInvalid") +
-                "</span>",
-                focus
-            );
-            if (focus) document.getElementById("altContactEmail").focus();
-            focus = false;
-            hasError = true;
-        }
+        // const altContactEmailValidationAnalysis = emailValidationAnalysis(emailValidation.altContactEmail);
+        // if (altContactEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(altContactEmail);
+        // if (altContactEmailValidationAnalysis === emailValidationStatus.INVALID) {
+        //     errorMessage(
+        //         "altContactEmail",
+        //         '<span data-i18n="settingsHelpers.emailInvalid">' +
+        //         translateText("settingsHelpers.emailInvalid") +
+        //         "</span>",
+        //         focus
+        //     );
+        //     if (focus) document.getElementById("altContactEmail").focus();
+        //     focus = false;
+        //     hasError = true;
+        // }
 
         /* Validate emailAddress/physicalAddress */
         const uspsSuggestion = {
