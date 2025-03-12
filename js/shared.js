@@ -261,7 +261,7 @@ export const storeResponseQuest = async (formData) => {
     });
 
     if (Object.keys(completedData).length > 0) {
-        await completeSurvey(completedData, moduleId);
+        return await completeSurvey(completedData, moduleId);
     }
 
     transformedData = await clientFilterData(transformedData);
@@ -307,13 +307,16 @@ const completeSurvey = async (data, moduleId) => {
         [fieldMapping[moduleName].completeTs]: data["COMPLETED_TS"],
     }
 
+    // Return the response on failure.
+    // The success response reloads the page, but the error response needs to be handled in Quest.
+    let submitSurveyResponse;
     try {
-        const submitSurveyResponse = await storeResponse(formData);
+        submitSurveyResponse = await storeResponse(formData);
 
         if (submitSurveyResponse.code === 200) {
             location.reload();
         } else {
-            throw new Error(`Submit Survey Error: Failed to submit survey. Code: ${submitSurveyResponse.code}, Message: ${submitSurveyResponse.message}` );
+            throw new Error(`Submit Survey Error: Failed to submit survey. Code: ${submitSurveyResponse.code}, Message: ${submitSurveyResponse.message}`);
         }
     } catch (error) {
         logDDRumError(error, 'SubmitSurveyError', {
@@ -321,6 +324,8 @@ const completeSurvey = async (data, moduleId) => {
             timestamp: new Date().toISOString(),
             questionnaire: moduleId,
         });
+
+        return submitSurveyResponse;
     }
 }
 
@@ -2131,7 +2136,7 @@ export const updateStartSurveyParticipantData = async (sha, path, connectId, mod
 
         return moduleText;
     } catch (error) {
-        throw error;
+        throw new Error('Error: updateStartSurveyParticipantData():', error);
     }
 }
 
