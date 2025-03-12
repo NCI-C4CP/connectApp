@@ -237,7 +237,13 @@ export const storeResponseTree = async (questName) => {
     await storeResponse(formData);
 }
 
-//Attempting to store tree on push
+/**
+ * Processes and stores questionnaire response data in the appropriate format for the backend.
+ * It separates completion status data from regular response data, processes them separately,
+ * and ensures proper storage of both types of data.
+ * @param {object} formData - The raw form data object containing questionnaire responses with keys in the format "moduleId.conceptId".
+ * @returns {Promise<object>} - The response from the storeResponse API call.
+ */
 export const storeResponseQuest = async (formData) => {
     
     let keys = Object.keys(formData);
@@ -263,8 +269,6 @@ export const storeResponseQuest = async (formData) => {
     if (Object.keys(completedData).length > 0) {
         await completeSurvey(completedData, moduleId);
     }
-
-    transformedData = await clientFilterData(transformedData);
 
     if(Object.keys(transformedData[moduleId]).length > 0) {
         return await storeResponse(transformedData);
@@ -537,13 +541,13 @@ export const dateTime = () => {
 }
 
 export const getIdToken = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
             unsubscribe();
             if (user && !user.isAnonymous) {
                 user.getIdToken().then((idToken) => {
                     resolve(idToken);
-            }, (error) => {
+            }, () => {
                 resolve(null);
             });
             } else {
@@ -554,7 +558,7 @@ export const getIdToken = () => {
 };
 
 export const userLoggedIn = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
             unsubscribe();
             if (user && !user.isAnonymous) {
@@ -1286,7 +1290,7 @@ export const questionnaireModules = () => {
                 es: 'moduleMenstrualStageSpanish.txt'
             }, 
             moduleId:"MenstrualCycle", 
-            enabled:false
+            enabled:true
         },
         'Mouthwash': {
             path: {
@@ -1294,7 +1298,7 @@ export const questionnaireModules = () => {
                 es: 'moduleMouthwashSpanish.txt'
             }, 
             moduleId:"Mouthwash", 
-            enabled:false
+            enabled:true
         },
         'PROMIS': {
             path: {
@@ -1628,7 +1632,7 @@ export const inactivityTime = () => {
 
 export const renderSyndicate = (url, element, page) => {
     const mainContent = document.getElementById(element);
-    const isCompatible = isBrowserCompatible();
+
     fetch(url)
     .then(response => response.body)
     .then(rb =>{
@@ -1701,47 +1705,6 @@ export const renderSyndicate = (url, element, page) => {
     hideAnimation();
 
     });
-}
-
-export const addEventReturnToDashboard = () => {
-    document.getElementById('returnToDashboard').addEventListener('click', () => {
-        location.reload();
-    });
-}
-
-const resetMenstrualCycleSurvey = async () => {
-
-    let formData = {
-        "459098666":    972455046,
-        "844088537":    null
-    }
-
-    await storeResponse(formData);
-}
-
-const removeMenstrualCycleData = () => {
-
-    localforage.removeItem("D_912367929");
-    localforage.removeItem("D_912367929.treeJSON");
-
-    let clearedData = {"D_912367929": {
-        "treeJSON":     null,
-        "D_951357171":  null,
-        "D_593467240":  null
-    }};
-    
-    return clearedData;
-}
-
-const clientFilterData = async (formData) => {
-
-    if(formData["D_912367929"]?.["D_951357171"] == 104430631) {
-        formData = removeMenstrualCycleData();
-
-        await resetMenstrualCycleSurvey();
-    }
-    
-    return formData;
 }
 
 export function fragment(strings, ...values) {

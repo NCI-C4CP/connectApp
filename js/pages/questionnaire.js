@@ -1,4 +1,4 @@
-import { getModuleSHA, getModuleText, getMyData, getShaFromGitHubCommitData, hasUserData, getAppSettings, getMySurveys, logDDRumError, questionnaireModules, storeResponseQuest, storeResponseTree, showAnimation, hideAnimation, addEventReturnToDashboard, fetchDataWithRetry, updateStartSurveyParticipantData, translateHTML, translateText, getSelectedLanguage } from "../shared.js";
+import { getModuleSHA, getModuleText, getMyData, getShaFromGitHubCommitData, hasUserData, getAppSettings, getMySurveys, logDDRumError, questionnaireModules, storeResponseQuest, storeResponseTree, storeResponse, showAnimation, hideAnimation, fetchDataWithRetry, updateStartSurveyParticipantData, translateHTML, translateText, getSelectedLanguage } from "../shared.js";
 import fieldMapping from '../fieldToConceptIdMapping.js'; 
 import { socialSecurityTemplate } from "./ssn.js";
 
@@ -261,8 +261,7 @@ async function startModule(moduleId) {
             lang: lang,                                                                             // Participant's preferred language.
             questVersion: questVersion,                                                             // Quest version number, for loading stylesheets from the CDN.
             retrieve: () => getMySurveys([fieldMapping[moduleId].conceptId], true),                 // Retrieve the module data from Firestore.
-            showProgressBarInQuest: isQuest2,                                                       // Show the progress bar.
-            soccer: () => externalListeners(lang),                                                  // @deprecated. Retain until Quest2 migration is complete. External listeners for soccer questions.                                                                      // Existing treeJSON for the module. Tracks the participant's progress through the module.
+            showProgressBarInQuest: isQuest2,                                                       // Show the progress bar.                                                                    // Existing treeJSON for the module. Tracks the participant's progress through the module.
             store: storeResponseQuest,                                                              // Store the participant's responses in Firestore.
             surveyDataPrefetch: modules[fieldMapping[moduleId].conceptId],                          // Prefetched survey data from Firestore: existing responses to continue mid-survey where the participant left off.
             text: moduleText,                                                                       // Markdown text for the module.
@@ -325,135 +324,6 @@ const getActiveQuestionID = () => {
     return activeQuestion?.id;
 }
 
-// @deprecated. This function is used in Quest versions pre-2.0. Retain until migration is complete.
-function externalListeners(language){
-    
-    const work3 = document.getElementById("D_627122657");
-    const work3b = document.getElementById("D_796828094");
-
-    const work7 = document.getElementById("D_118061122");
-    const work7b = document.getElementById("D_518387017");
-
-    const occuptn1 = document.getElementById("D_761310265");
-    const occuptn2 = document.getElementById("D_279637054");
-
-    const menstrualCycle = document.getElementById("D_951357171");
-
-    let module1 = modules[fieldMapping.Module1.conceptId];
-
-    let title3 = module1?.['D_627122657'] ?? '';
-    let task3 = module1?.['D_796828094'] ?? '';
-    let title7 = module1?.['D_118061122'] ?? '';
-    let task7 = module1?.['D_518387017'] ?? '';
-    
-    if (work3){
-        if (work3b) {
-            work3.addEventListener("submit", (e) => {
-                e.preventDefault();
-                
-                title3 = e.target[1].value;
-            });
-
-            work3b.addEventListener("submit", async (e) => {
-                e.preventDefault();
-    
-                task3 = e.target[1].value;
-                const soccerResults = await buildSoccerResults(title3, task3, language);
-    
-                buildHTML(soccerResults, occuptn1);
-            });
-        }
-        else {
-            work3.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                
-                title3 = e.target[1].value;
-                const soccerResults = await buildSoccerResults(title3, '', language);
-    
-                buildHTML(soccerResults, occuptn1);
-            });
-        }
-    }
-
-    if (work7){
-        if (work7b) {
-            work7.addEventListener("submit", (e) => {
-                e.preventDefault();
-                
-                title7 = e.target[1].value;
-            });
-
-            work7b.addEventListener("submit", async (e) => {
-                e.preventDefault();
-    
-                task7 = e.target[1].value;
-                const soccerResults = await buildSoccerResults(title7, task7, language);
-    
-                buildHTML(soccerResults, occuptn2);
-            });
-        }
-        else {
-            work7.addEventListener("submit", async (e) => {
-                e.preventDefault();
-                
-                title7 = e.target[1].value;
-                const soccerResults = await buildSoccerResults(title7, '', language);
-    
-                buildHTML(soccerResults, occuptn2);
-            });
-        }
-    }
-
-    if (menstrualCycle) {
-        menstrualCycle.addEventListener("submit", async (e) => {
-            if(e.target.value == 104430631) {
-                let rootElement = document.getElementById('root');
-                rootElement.innerHTML = translateHTML(`
-                
-                <div class="row" style="margin-top:50px">
-                    <div class = "col-md-1">
-                    </div>
-                    <div class = "col-md-10">
-                        ${!isQuest2 ? `<div class="progress">
-                            <div id="questProgBar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                <span class="visually-hidden" id="progressText">0% Complete</span>
-                            </div>
-                        </div>` : ''}
-                    </div>
-                    <div class = "col-md-1">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class = "col-md-1">
-                    </div>
-                    <div class = "col-md-10" id="questionnaireRoot">
-                        <span data-i18n="questionnaire.nextMenstrual">Thank you. When your next menstrual period starts, please return to complete this survey.</span>
-                        <br>
-                        <br>
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-5 col-md-3 col-sm-3">
-                                </div>
-                                <div class="col-lg-6 col-md-6 col-sm-6">
-                                </div>
-                                <div class="col-lg-1 col-md-3 col-sm-3">
-                                    <button type="button" id="returnToDashboard" class="next" data-i18n="questionnaire.okButton">OK</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class = "col-md-1">
-                    </div>
-                </div>
-                
-                `);
-
-                addEventReturnToDashboard();
-            }         
-        });
-    }
-}
-
 /**
  * Build the HTML for the SOCcer results and insert them in the Quest div.
  * @param {Array} soccerResults - The array of SOCcer results, returned from the API.
@@ -505,45 +375,46 @@ function buildSoccerHTML(soccerResults, question) {
     fieldset.appendChild(notaDiv);
 }
 
-//BUILDING SOCCER 
-// @deprecated. This function is used in Quest versions pre-2.0. Retain until migration is complete.
-function buildHTML(soccerResults, question) {
-    let fieldset = question.querySelector('fieldset');
-    let responseElement = fieldset.querySelector("div[class='response']");
+/**
+ * Builds and displays a dynamic end screen for specific survey modules when a participant's response indicates the module needs to be ended.
+ * This function resets survey data in Firestore to allow the participant to restart the survey in the future.
+ * @param {string} module - The module identifier (e.g., "MenstrualCycle", "Mouthwash").
+ * @param {number} response - The participant's response value to check against the module's end response value.
+ * @param {HTMLElement} question - The active question DOM element to modify.
+ * @returns {Promise<void>} - A promise that resolves when the end screen is built and all data is reset.
+ */
+async function buildDynamicEndScreen(module, response, question) {
     
-    // Ensure responseElement exists
-    if (!responseElement) {
-        responseElement = document.createElement("div");
-        responseElement.classList.add("response");
-        fieldset.insertBefore(responseElement, fieldset.firstChild);
+    const resetParticipantSurvey = async (module) => {
+        let formData = {
+            [fieldMapping[module].statusFlag]:  972455046,
+            [fieldMapping[module].startTs]:     null
+        }
+
+        await storeResponse(formData);
     }
 
-    responseElement.innerHTML = translateHTML('<span data-i18n="questionnaire.identifyOccupation">Please identify the occupation category that best describes this job.</span>');
-  
-    soccerResults.forEach((soc, indx) => {
-      let resp = document.createElement("input");
-      resp.type = "radio";
-      resp.id = `${question.id}_${indx}`;
-      resp.value = soc.code;
-      resp.name = "SOCcerResults";
-      resp.onclick = quest.rbAndCbClick;
-      let label = document.createElement("label");
-      label.setAttribute("for", `${question.id}_${indx}`);
-      label.innerText = soc.label;
-      responseElement.append(resp, label);
-    });
-    let resp = document.createElement("input");
-    resp.type = "radio";
-    resp.id = `${question.id}_NOTA`;
-    resp.value = "NONE_OF_THE_ABOVE";
-    resp.name = "SOCcerResults";
-    resp.onclick = quest.rbAndCbClick;
-    let label = document.createElement("label");
-    label.setAttribute("for", `${question.id}_NOTA`);
-    label.setAttribute("data-i18n", 'questionnaire.noneAbove');
-    label.innerText = translateText('questionnaire.noneAbove');
-  
-    responseElement.append(resp, label);
+    const resetSurveyData = async (module, questions) => {
+        let formData = {}
+        formData[`${module}.treeJSON`] = null;
+
+        questions.forEach(question => {
+            formData[`${module}.${question}`] = null;
+        });
+
+        await storeResponseQuest(formData);
+    }
+
+    let fieldset = question.querySelector('fieldset');
+
+    if (response == fieldMapping[module].endResponse) {
+        fieldset.innerHTML = translateHTML(`<span data-i18n=${fieldMapping[module].endSpan}></span><br aria-hidden="true">`);
+        question.querySelector('.py-0').style.display = "none";
+        question.querySelector('.py-0').setAttribute('aria-hidden', 'true');
+
+        await resetParticipantSurvey(module);
+        await resetSurveyData(fieldMapping[module].conceptId, fieldMapping[module].endQuestions);
+    }
 }
 
 export const blockParticipant = () => {
@@ -602,6 +473,18 @@ const fetchAsyncQuestion = async (func, args) => {
                 const activeQuestion = document.querySelector('form.question.active');
                 buildSoccerHTML(results, activeQuestion);
             },
+            resetMenstrualCycle: async (args) => {
+                const [response] = args;
+                const question = document.querySelector('form.question.active');
+
+                await buildDynamicEndScreen("MenstrualCycle", response, question);
+            },
+            resetMouthwash: async (args) => {
+                const [response] = args;
+                const question = document.querySelector('form.question.active');
+
+                await buildDynamicEndScreen("Mouthwash", response, question);
+            }
         }
 
         if (!asyncFunctions[func]) {
