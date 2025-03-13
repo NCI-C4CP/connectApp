@@ -829,31 +829,26 @@ export const addEventUPSubmit = async () => {
         
         if (email && !validEmailFormat.test(email)) {
             errorMessage('UPEmail', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
-            if (focus) document.getElementById('UPPhoneNumber11').focus();
             focus = false;
             hasError = true;
         }
         if (email2 && email2.value && !validEmailFormat.test(email2.value)) {
             errorMessage('UPEmail2', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
-            if (focus) document.getElementById('UPPhoneNumber21').focus();
             focus = false;
             hasError = true;
         }
         if (email3 && email3.value && !validEmailFormat.test(email3.value)) {
             errorMessage('UPAdditionalEmail2', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
-            if (focus) document.getElementById('UPAdditionalEmail2').focus();
             focus = false;
             hasError = true;
         }
         if (email4 && email4.value && !validEmailFormat.test(email4.value)) {
             errorMessage('UPAdditionalEmail3', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
-            if (focus) document.getElementById('UPAdditionalEmail3').focus();
             focus = false;
             hasError = true;
         }
         if (altContactEmail && !validEmailFormat.test(altContactEmail)) {
             errorMessage('altContactEmail', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
-            if (focus) document.getElementById('altContactEmail').focus();
             focus = false;
             hasError = true;
         }
@@ -861,14 +856,12 @@ export const addEventUPSubmit = async () => {
         const confirmedEmail = document.getElementById('confirmUPEmail').value;
         if (!confirmedEmail) {
             errorMessage('confirmUPEmail', '<span data-i18n="event.confirmEmail">'+translateText('event.confirmEmail')+'</span>', focus);
-            if (focus) document.getElementById('confirmUPEmail').focus();
             focus = false;
             hasError = true;
             
         }
         else if (confirmedEmail !== document.getElementById('UPEmail').value) {
             errorMessage('confirmUPEmail', '<span data-i18n="event.emailsDoNotMatch">'+translateText('event.emailsDoNotMatch')+'</span>', focus);
-            if (focus) document.getElementById('confirmUPEmail').focus();
             focus = false;
             hasError = true;
             

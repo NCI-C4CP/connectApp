@@ -306,21 +306,18 @@ export const validateContactInformation = async (mobilePhoneNumberComplete, home
 
   if (!preferredEmail || !validEmailFormat.test(preferredEmail)) {
     errorMessage('newPreferredEmail', translateText('settingsHelpers.emailFormat'), focus);
-    if (focus) document.getElementById('newPreferredEmail').focus();
     focus = false;
     hasError = true;
   }
 
   if (additionalEmail1 && !validEmailFormat.test(additionalEmail1)) {
     errorMessage('newadditionalEmail1', translateText('settingsHelpers.emailFormat'), focus);
-    if (focus) document.getElementById('newadditionalEmail1').focus();
     focus = false;
     hasError = true;
   }
 
   if (additionalEmail2 && !validEmailFormat.test(additionalEmail2)) {
     errorMessage('newadditionalEmail2', translateText('settingsHelpers.emailFormat'), focus);
-    if (focus) document.getElementById('newadditionalEmail2').focus();
     focus = false;
     hasError = true;
   }
@@ -677,7 +674,6 @@ export const validateAltContactInformation = async (altContactMobilePhoneComplet
 
   if (!altContactEmail || !validEmailFormat.test(altContactEmail)) {
     errorMessage('newAltContactEmail', translateText('settingsHelpers.emailInvalid'), focus);
-    if (focus) document.getElementById('newAltContactEmail').focus();
     focus = false;
     hasError = true;
   }
