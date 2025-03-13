@@ -1362,17 +1362,17 @@ const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, type) 
                 break;
             }
             default: {
-                document.getElementById("UPAddress3Line1").value = addrSuggestion.alternateAddress.streetAddress
-                document.getElementById("UPAddress3Line2").value = addrSuggestion.alternateAddress.secondaryAddress
-                document.getElementById("UPAddress3City").value = addrSuggestion.alternateAddress.city
-                document.getElementById("UPAddress3State").value = addrSuggestion.alternateAddress.state
-                document.getElementById("UPAddress3Zip").value = addrSuggestion.alternateAddress.zipCode
+                document.getElementById("UPAddress3Line1").value = addrSuggestion.suggestion.streetAddress
+                document.getElementById("UPAddress3Line2").value = addrSuggestion.suggestion.secondaryAddress
+                document.getElementById("UPAddress3City").value = addrSuggestion.suggestion.city
+                document.getElementById("UPAddress3State").value = addrSuggestion.suggestion.state
+                document.getElementById("UPAddress3Zip").value = addrSuggestion.suggestion.zipCode
 
-                formData[fieldMapping.altAddress1] = addrSuggestion.alternateAddress.streetAddress
-                formData[fieldMapping.altAddress2] = addrSuggestion.alternateAddress.secondaryAddress
-                formData[fieldMapping.altCity] = addrSuggestion.alternateAddress.city
-                formData[fieldMapping.altState] = addrSuggestion.alternateAddress.state
-                formData[fieldMapping.altZip] = addrSuggestion.alternateAddress.zipCode
+                formData[fieldMapping.altAddress1] = addrSuggestion.suggestion.streetAddress
+                formData[fieldMapping.altAddress2] = addrSuggestion.suggestion.secondaryAddress
+                formData[fieldMapping.altCity] = addrSuggestion.suggestion.city
+                formData[fieldMapping.altState] = addrSuggestion.suggestion.state
+                formData[fieldMapping.altZip] = addrSuggestion.suggestion.zipCode
                 uspsSuggestion.alternateAddress = {}
                 break;
             }
