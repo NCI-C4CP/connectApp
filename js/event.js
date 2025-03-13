@@ -875,93 +875,93 @@ export const addEventUPSubmit = async () => {
         }
 
         document.getElementById('userProfileSubmitButton').disabled = true
-        if (!hasError) {
-            const emailValidation = await emailAddressValidation({
-                emails: {
-                    upEmail: email.trim(),
-                    upEmail2: email2 ? email2.value.trim() : null,
-                    upAdditionalEmail2: email3 ? email3.value.trim() : null,
-                    upAdditionalEmail3: email4 ? email4.value.trim() : null,
-                    altContactEmail: altContactEmail || null,
-                },
-            });
-            const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail)
-            if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email)
-            if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
-                errorMessage(
-                    "UPEmail",
-                    '<span data-i18n="settingsHelpers.emailInvalid">' +
-                        translateText("settingsHelpers.emailInvalid") +
-                        "</span>",
-                    focus
-                );
-                // Clear the "Confirm Preferred Email" field here
-                document.getElementById('confirmUPEmail').value = '';
-                if (focus) document.getElementById("UPEmail").focus();
-                focus = false;
-                hasError = true;
-            }
+        // if (!hasError) {
+        //     const emailValidation = await emailAddressValidation({
+        //         emails: {
+        //             upEmail: email.trim(),
+        //             upEmail2: email2 ? email2.value.trim() : null,
+        //             upAdditionalEmail2: email3 ? email3.value.trim() : null,
+        //             upAdditionalEmail3: email4 ? email4.value.trim() : null,
+        //             altContactEmail: altContactEmail || null,
+        //         },
+        //     });
+        //     const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail)
+        //     if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email)
+        //     if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
+        //         errorMessage(
+        //             "UPEmail",
+        //             '<span data-i18n="settingsHelpers.emailInvalid">' +
+        //                 translateText("settingsHelpers.emailInvalid") +
+        //                 "</span>",
+        //             focus
+        //         );
+        //         // Clear the "Confirm Preferred Email" field here
+        //         document.getElementById('confirmUPEmail').value = '';
+        //         if (focus) document.getElementById("UPEmail").focus();
+        //         focus = false;
+        //         hasError = true;
+        //     }
     
-            const upEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail2)
-            if (upEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email2.value)
-            if (upEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
-                errorMessage(
-                    "UPEmail2",
-                    '<span data-i18n="settingsHelpers.emailInvalid">' +
-                        translateText("settingsHelpers.emailInvalid") +
-                        "</span>",
-                    focus
-                );
-                if (focus) document.getElementById("UPEmail2").focus();
-                focus = false;
-                hasError = true;
-            }
+        //     const upEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail2)
+        //     if (upEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email2.value)
+        //     if (upEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
+        //         errorMessage(
+        //             "UPEmail2",
+        //             '<span data-i18n="settingsHelpers.emailInvalid">' +
+        //                 translateText("settingsHelpers.emailInvalid") +
+        //                 "</span>",
+        //             focus
+        //         );
+        //         if (focus) document.getElementById("UPEmail2").focus();
+        //         focus = false;
+        //         hasError = true;
+        //     }
     
-            const upAdditionalEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail2)
-            if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email3.value)
-            if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
-                errorMessage(
-                    "UPAdditionalEmail2",
-                    '<span data-i18n="settingsHelpers.emailInvalid">' +
-                        translateText("settingsHelpers.emailInvalid") +
-                        "</span>",
-                    focus
-                );
-                if (focus) document.getElementById("UPAdditionalEmail2").focus();
-                focus = false;
-                hasError = true;
-            }
+        //     const upAdditionalEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail2)
+        //     if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email3.value)
+        //     if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
+        //         errorMessage(
+        //             "UPAdditionalEmail2",
+        //             '<span data-i18n="settingsHelpers.emailInvalid">' +
+        //                 translateText("settingsHelpers.emailInvalid") +
+        //                 "</span>",
+        //             focus
+        //         );
+        //         if (focus) document.getElementById("UPAdditionalEmail2").focus();
+        //         focus = false;
+        //         hasError = true;
+        //     }
             
-            const upAdditionalEmail3ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail3)
-            if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email4.value)
-            if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.INVALID) {
-                errorMessage(
-                    "UPAdditionalEmail3",
-                    '<span data-i18n="settingsHelpers.emailInvalid">' +
-                        translateText("settingsHelpers.emailInvalid") +
-                        "</span>",
-                    focus
-                );
-                if (focus) document.getElementById("UPAdditionalEmail3").focus();
-                focus = false;
-                hasError = true;
-            }
+        //     const upAdditionalEmail3ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail3)
+        //     if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email4.value)
+        //     if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.INVALID) {
+        //         errorMessage(
+        //             "UPAdditionalEmail3",
+        //             '<span data-i18n="settingsHelpers.emailInvalid">' +
+        //                 translateText("settingsHelpers.emailInvalid") +
+        //                 "</span>",
+        //             focus
+        //         );
+        //         if (focus) document.getElementById("UPAdditionalEmail3").focus();
+        //         focus = false;
+        //         hasError = true;
+        //     }
     
-            const altContactEmailValidationAnalysis = emailValidationAnalysis(emailValidation.altContactEmail);
-            if (altContactEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(altContactEmail);
-            if (altContactEmailValidationAnalysis === emailValidationStatus.INVALID) {
-                errorMessage(
-                    "altContactEmail",
-                    '<span data-i18n="settingsHelpers.emailInvalid">' +
-                    translateText("settingsHelpers.emailInvalid") +
-                    "</span>",
-                    focus
-                );
-                if (focus) document.getElementById("altContactEmail").focus();
-                focus = false;
-                hasError = true;
-            }
-        }
+        //     const altContactEmailValidationAnalysis = emailValidationAnalysis(emailValidation.altContactEmail);
+        //     if (altContactEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(altContactEmail);
+        //     if (altContactEmailValidationAnalysis === emailValidationStatus.INVALID) {
+        //         errorMessage(
+        //             "altContactEmail",
+        //             '<span data-i18n="settingsHelpers.emailInvalid">' +
+        //             translateText("settingsHelpers.emailInvalid") +
+        //             "</span>",
+        //             focus
+        //         );
+        //         if (focus) document.getElementById("altContactEmail").focus();
+        //         focus = false;
+        //         hasError = true;
+        //     }
+        // }
         
         /* Validate emailAddress/physicalAddress */
         const uspsSuggestion = {
@@ -2100,10 +2100,19 @@ export const addEventRequestPINForm = () => {
  */
 const storeParameters = async () => {
     const utm = {};
+    const acceptedParams = {
+        utm_source: ['hfh', 'uc', 'hp'],
+        utm_medium: ['sms', 'email', 'mychart'],
+        utm_campaign: ['altruism-personal', 'altruism-general', 'cancer-personal', 'cancer-general', 'research-personal', 'research-general']
+    }
 
-    if (sessionStorage.getItem('utmSource')) utm[fieldMapping.utm.source] = sessionStorage.getItem('utmSource');
-    if (sessionStorage.getItem('utmMedium')) utm[fieldMapping.utm.medium] = sessionStorage.getItem('utmMedium');
-    if (sessionStorage.getItem('utmCampaign')) utm[fieldMapping.utm.campaign] = sessionStorage.getItem('utmCampaign');
+    const utmSource = sessionStorage.getItem('utmSource').toLowerCase();
+    const utmMedium = sessionStorage.getItem('utmMedium').toLowerCase();
+    const utmCampaign = sessionStorage.getItem('utmCampaign').toLowerCase();
+
+    if (utmSource && acceptedParams.utm_source.includes(utmSource)) utm[fieldMapping.utm.source] = utmSource;
+    if (utmMedium && acceptedParams.utm_medium.includes(utmMedium)) utm[fieldMapping.utm.medium] = utmMedium;
+    if (utmCampaign && acceptedParams.utm_campaign.includes(utmCampaign)) utm[fieldMapping.utm.campaign] = utmCampaign;
 
     if (Object.keys(utm).length) storeResponse(utm);
 }

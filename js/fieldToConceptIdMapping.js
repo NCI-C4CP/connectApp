@@ -237,7 +237,10 @@ export default
         "completeTs":       "217640691",  
         "statusFlag":       "459098666", 
         "standaloneSurvey": true,
-        "version":          "901199566"
+        "version":          "901199566",
+        "endResponse":      104430631,
+        "endSpan":          "questionnaire.endMenstrual",
+        "endQuestions":     ["D_951357171"]
     },
 
     "ClinicalBiospecimen": {
@@ -255,7 +258,10 @@ export default
         "completeTs":       "195145666",  
         "statusFlag":       "547363263", 
         "standaloneSurvey": true,
-        "version":          "850585325"
+        "version":          "850585325",
+        "endResponse":      141992510,
+        "endSpan":          "questionnaire.endMouthwash",
+        "endQuestions":     ["D_667908442"]
     },
 
     "PROMIS": {
@@ -304,6 +310,22 @@ export default
                     func: "soccer",
                     args: ["D_118061122", "D_518387017"],
                 }
+            },
+        },
+        "MenstrualCycle": {
+            asyncQuestions: {
+                "[END]": {
+                    func: "resetMenstrualCycle",
+                    args: ["D_951357171"],
+                },
+            },
+        },
+        "Mouthwash": {
+            asyncQuestions: {
+                "[END]": {
+                    func: "resetMouthwash",
+                    args: ["D_667908442"],
+                },
             },
         },
     },
