@@ -322,42 +322,42 @@ export const validateContactInformation = async (mobilePhoneNumberComplete, home
     hasError = true;
   }
 
-  if (!hasError) {
-    const emailValidation = await emailAddressValidation({
-      emails: {
-          upEmail: preferredEmail,
-          upEmail2: additionalEmail1 ? additionalEmail1 : null,
-          upAdditionalEmail2: additionalEmail2 ? additionalEmail2 : null,
-      },
-    });
+  // if (!hasError) {
+  //   const emailValidation = await emailAddressValidation({
+  //     emails: {
+  //         upEmail: preferredEmail,
+  //         upEmail2: additionalEmail1 ? additionalEmail1 : null,
+  //         upAdditionalEmail2: additionalEmail2 ? additionalEmail2 : null,
+  //     },
+  //   });
 
-    const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail)
-    if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(preferredEmail)
-    if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
-      errorMessage('newPreferredEmail', translateText('settingsHelpers.emailInvalid'), focus);
-      if (focus) document.getElementById('newPreferredEmail').focus();
-      focus = false;
-      hasError = true;
-    }
+  //   const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail)
+  //   if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(preferredEmail)
+  //   if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
+  //     errorMessage('newPreferredEmail', translateText('settingsHelpers.emailInvalid'), focus);
+  //     if (focus) document.getElementById('newPreferredEmail').focus();
+  //     focus = false;
+  //     hasError = true;
+  //   }
 
-    const upEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail2)
-    if (upEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(additionalEmail1)
-    if (upEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
-      errorMessage('newadditionalEmail1', translateText('settingsHelpers.emailInvalid'), focus);
-      if (focus) document.getElementById('newadditionalEmail1').focus();
-      focus = false;
-      hasError = true;
-    }
+  //   const upEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail2)
+  //   if (upEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(additionalEmail1)
+  //   if (upEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
+  //     errorMessage('newadditionalEmail1', translateText('settingsHelpers.emailInvalid'), focus);
+  //     if (focus) document.getElementById('newadditionalEmail1').focus();
+  //     focus = false;
+  //     hasError = true;
+  //   }
 
-    const upAdditionalEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail2)
-    if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(additionalEmail2)
-    if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
-      errorMessage('newadditionalEmail2', translateText('settingsHelpers.emailInvalid'), focus);
-      if (focus) document.getElementById('newadditionalEmail2').focus();
-      focus = false;
-      hasError = true;
-    }
-  }
+  //   const upAdditionalEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail2)
+  //   if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(additionalEmail2)
+  //   if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
+  //     errorMessage('newadditionalEmail2', translateText('settingsHelpers.emailInvalid'), focus);
+  //     if (focus) document.getElementById('newadditionalEmail2').focus();
+  //     focus = false;
+  //     hasError = true;
+  //   }
+  // }
 
   if (hasError) {
     console.error('Error(s) found.');
@@ -678,22 +678,22 @@ export const validateAltContactInformation = async (altContactMobilePhoneComplet
     hasError = true;
   }
 
-  if (!hasError) {
-    const emailValidation = await emailAddressValidation({
-      emails: {
-        altContactEmail: altContactEmail || undefined,
-      },
-    });
+  // if (!hasError) {
+  //   const emailValidation = await emailAddressValidation({
+  //     emails: {
+  //       altContactEmail: altContactEmail || undefined,
+  //     },
+  //   });
 
-    const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.altContactEmail)
-    if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(altContactEmail)
-    if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
-      errorMessage('newAltContactEmail', translateText('settingsHelpers.emailInvalid'), focus);
-      if (focus) document.getElementById('newAltContactEmail').focus();
-      focus = false;
-      hasError = true;
-    }
-  }
+  //   const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.altContactEmail)
+  //   if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(altContactEmail)
+  //   if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
+  //     errorMessage('newAltContactEmail', translateText('settingsHelpers.emailInvalid'), focus);
+  //     if (focus) document.getElementById('newAltContactEmail').focus();
+  //     focus = false;
+  //     hasError = true;
+  //   }
+  // }
 
   if (hasError) {
     console.error('Error(s) found.');
