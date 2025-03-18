@@ -955,7 +955,7 @@ export const addEventUPSubmit = async () => {
         //         hasError = true;
         //     }
         // }
-        
+
         /* Validate emailAddress/physicalAddress */
         const uspsSuggestion = {
             mailAddress: {},
