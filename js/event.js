@@ -494,8 +494,8 @@ const validateAddress = async (focus, addr1Id, addr2Id, cityId, stateId, zipId) 
         zipCode
     }
     const _addressValidation = await addressValidation(addrValidationPayload);
-    console.error('User Profile - Invalid Address', addrValidationPayload, _addressValidation.error)
     if (_addressValidation.error) {
+        console.error('User Profile - Invalid Address', addrValidationPayload, _addressValidation.error)
         hasError = true;
         if (_addressValidation.error.errors.length) {
             _addressValidation.error.errors.forEach((item) => {
@@ -583,6 +583,7 @@ export const addEventUPSubmit = async () => {
                         );
                         focus = false;
                         hasError = true;
+                        console.error('User Profile - Invalid Name', element.id);
                     }
                 }
                 if(validationPattern && validationPattern === 'year') {
@@ -596,6 +597,7 @@ export const addEventUPSubmit = async () => {
                         );
                         focus = false;
                         hasError = true;
+                        console.error('User Profile - Invalid Year', element.id);
                     }
                     else {
                         if(element.value.length > 4) {
@@ -608,6 +610,7 @@ export const addEventUPSubmit = async () => {
                             );
                             focus = false;
                             hasError = true;
+                            console.error('User Profile - Invalid Year', element.id);
                         }
                         else if (parseInt(element.value) > new Date().getFullYear()) {
                             errorMessage(
@@ -619,6 +622,7 @@ export const addEventUPSubmit = async () => {
                             );
                             focus = false;
                             hasError = true;
+                            console.error('User Profile - Invalid Year', element.id);
                         }
                     }
                 }
@@ -633,6 +637,7 @@ export const addEventUPSubmit = async () => {
                         );
                         focus = false;
                         hasError = true;
+                        console.error('User Profile - Invalid Pattern', element.id);
                     }
                 }
             }
@@ -649,6 +654,7 @@ export const addEventUPSubmit = async () => {
                 );
                 focus = false;
                 hasError = true;
+                console.error('User Profile - Required Field Value', element.id);
             }
             if(element.type === 'checkbox' && element.checked === false && element.hidden === false){
                 errorMessage(
@@ -660,6 +666,7 @@ export const addEventUPSubmit = async () => {
                 );
                 focus = false;
                 hasError = true;
+                console.error('User Profile - Required Checked Input', element.id);
             }    
         });
         Array.from(confirmationFields).forEach(element => {
@@ -676,6 +683,7 @@ export const addEventUPSubmit = async () => {
                 );
                 focus = false;
                 hasError = true;
+                console.error('User Profile - Confirmation Field Value', element.id);
             }
         });
         
@@ -683,6 +691,7 @@ export const addEventUPSubmit = async () => {
             errorMessage('UPCancerBtnGroup', '<span data-i18n="event.provideResponse">'+translateText('event.provideResponse')+'</span>', focus);
             focus = false;
             hasError = true;
+            console.error('User Profile - Required Checked Input', 'UPCancerBtnGroup');
         }
         let radioChecked = false;
         Array.from(radios).forEach(element => {
@@ -706,6 +715,7 @@ export const addEventUPSubmit = async () => {
             errorMessage('UPEmail', '<span data-i18n="event.enterEmail">'+translateText('event.enterEmail')+'</span>', focus);
             focus = false;
             hasError = true;
+            console.error('User Profile - Required Field Value', 'UPEmail');
         }
         if(!phoneNo && !phoneNo2 && !phoneNo3){
             errorMessage('UPPhoneNumber11');
@@ -722,6 +732,7 @@ export const addEventUPSubmit = async () => {
             errorMessage('mainMobilePhone3', '<span data-i18n="event.phoneRequired">'+translateText('event.phoneRequired')+'</span>');
             focus = false;
             hasError = true;
+            console.error('User Profile - Required Field Value', 'UPPhoneNumbers');
         }
         if(phoneNo && phoneNo.length < 10 ){
             errorMessage('UPPhoneNumber11');
@@ -731,6 +742,7 @@ export const addEventUPSubmit = async () => {
             if(focus) document.getElementById('UPPhoneNumber11').focus();
             focus = false;
             hasError = true;
+            console.error('User Profile - Invalid Phone Length', 'UPPhoneNumber1');
         }
         if(phoneNo2 && phoneNo2.length < 10 ){
             errorMessage('UPPhoneNumber21');
@@ -740,6 +752,7 @@ export const addEventUPSubmit = async () => {
             if(focus) document.getElementById('UPPhoneNumber21').focus();
             focus = false;
             hasError = true;
+            console.error('User Profile - Invalid Phone Length', 'UPPhoneNumber2');
         }
         if(phoneNo3 && phoneNo3.length < 10 ){
             errorMessage('UPPhoneNumber31');
@@ -749,6 +762,7 @@ export const addEventUPSubmit = async () => {
             if(focus) document.getElementById('UPPhoneNumber31').focus();
             focus = false;
             hasError = true;
+            console.error('User Profile - Invalid Phone Length', 'UPPhoneNumber3');
         }
         if (altContactMobilePhone && altContactMobilePhone.length < 10) {
             errorMessage('altContactMobilePhone1');
@@ -758,6 +772,7 @@ export const addEventUPSubmit = async () => {
             if(focus) document.getElementById('altContactMobilePhone1').focus();
             focus = false;
             hasError = true;
+            console.error('User Profile - Invalid Phone Length', 'altContactMobilePhone');
         }
         if (altContactHomePhone && altContactHomePhone.length < 10) {
             errorMessage('altContactHomePhone1');
@@ -767,6 +782,7 @@ export const addEventUPSubmit = async () => {
             if(focus) document.getElementById('altContactHomePhone1').focus();
             focus = false;
             hasError = true;
+            console.error('User Profile - Invalid Phone Length', 'altContactHomePhone');
         }
         if(phoneNo && !/[1-9]{1}[0-9]{9}/.test(phoneNo) ){
             errorMessage('UPPhoneNumber11');
@@ -776,6 +792,7 @@ export const addEventUPSubmit = async () => {
             if(focus) document.getElementById('UPPhoneNumber11').focus();
             focus = false;
             hasError = true;
+            console.error('User Profile - Invalid Phone Number', 'UPPhoneNumber1');
         }
         if(phoneNo2 && !/[1-9]{1}[0-9]{9}/.test(phoneNo2) ){
             errorMessage('UPPhoneNumber21');
@@ -785,6 +802,7 @@ export const addEventUPSubmit = async () => {
             if(focus) document.getElementById('UPPhoneNumber21').focus();
             focus = false;
             hasError = true;
+            console.error('User Profile - Invalid Phone Number', 'UPPhoneNumber2');
         }
         if(phoneNo3 && !/[1-9]{1}[0-9]{9}/.test(phoneNo3) ){
             errorMessage('UPPhoneNumber31');
@@ -794,6 +812,7 @@ export const addEventUPSubmit = async () => {
             if(focus) document.getElementById('UPPhoneNumber31').focus();
             focus = false;
             hasError = true;
+            console.error('User Profile - Invalid Phone Number', 'UPPhoneNumber3');
         }
         if (altContactMobilePhone && !/[1-9]{1}[0-9]{9}/.test(altContactMobilePhone)) {
             errorMessage('altContactMobilePhone1');
@@ -803,6 +822,7 @@ export const addEventUPSubmit = async () => {
             if(focus) document.getElementById('altContactMobilePhone1').focus();
             focus = false;
             hasError = true;
+            console.error('User Profile - Invalid Phone Number', 'altContactMobilePhone');
         }
         if (altContactHomePhone && !/[1-9]{1}[0-9]{9}/.test(altContactHomePhone)) {
             errorMessage('altContactHomePhone1');
@@ -812,18 +832,22 @@ export const addEventUPSubmit = async () => {
             if(focus) document.getElementById('altContactHomePhone1').focus();
             focus = false;
             hasError = true;
+            console.error('User Profile - Invalid Phone Number', 'altContactHomePhone');
         }
         if(zip && !/[0-9]{5}/.test(zip) ){
             errorMessage('UPAddress1Zip', '<span data-i18n="event.zipOnlyNumbers">'+translateText('event.zipOnlyNumbers')+'</span>');
             if(focus) document.getElementById('UPAddress1Zip').focus();
             focus = false;
             hasError = true;
+            console.error('User Profile - Invalid Zip Code', 'UPAddress1Zip');
+
         }
         if (altAddressZip && !/[0-9]{5}/.test(altAddressZip)) {
             errorMessage('UPAddress3Zip', '<span data-i18n="event.zipOnlyNumbers">'+translateText('event.zipOnlyNumbers')+'</span>');
             if(focus) document.getElementById('UPAddress3Zip').focus();
             focus = false;
             hasError = true;
+            console.error('User Profile - Invalid Zip Code', 'UPAddress3Zip');
         }
           
         const riskyEmails = []
@@ -906,6 +930,7 @@ export const addEventUPSubmit = async () => {
             if(focus) document.getElementById('confirmUPEmail').focus();
             focus = false;
             hasError = true;
+            console.error('User Profile - Required Field Value', 'confirmUPEmail');
             
         }
         else if(confirmedEmail !== document.getElementById('UPEmail').value){
@@ -913,7 +938,7 @@ export const addEventUPSubmit = async () => {
             if(focus) document.getElementById('confirmUPEmail').focus();
             focus = false;
             hasError = true;
-            
+            console.error('User Profile - Confirmation Field Value', 'confirmUPEmail');
         }
 
         // const altContactEmailValidationAnalysis = emailValidationAnalysis(emailValidation.altContactEmail);
@@ -971,6 +996,7 @@ export const addEventUPSubmit = async () => {
                 );
                 focus = false;
                 hasError = true;
+                console.error('User Profile - Required Field Value', 'UPAddress3Line1');
             }
 
             if (!altAddressFields.city) {
@@ -981,6 +1007,7 @@ export const addEventUPSubmit = async () => {
                 );
                 focus = false;
                 hasError = true;
+                console.error('User Profile - Required Field Value', 'UPAddress3City');
             }
 
             if (!altAddressFields.state) {
@@ -991,6 +1018,7 @@ export const addEventUPSubmit = async () => {
                 );
                 focus = false;
                 hasError = true;
+                console.error('User Profile - Required Field Value', 'UPAddress3State');
             }
 
             if (!altAddressFields.zip) {
@@ -1001,6 +1029,7 @@ export const addEventUPSubmit = async () => {
                 );
                 focus = false;
                 hasError = true;
+                console.error('User Profile - Required Field Value', 'UPAddress3Zip');
             }
 
             // TODO: Future release: validate with USPS
