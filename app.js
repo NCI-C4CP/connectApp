@@ -17,6 +17,8 @@ import { firebaseConfig as stageFirebaseConfig } from "./stage/config.js";
 import { firebaseConfig as prodFirebaseConfig } from "./prod/config.js";
 import conceptIdMap from "./js/fieldToConceptIdMapping.js";
 
+let appVersion;
+
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker
       .register("./serviceWorker.js")
@@ -40,6 +42,7 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.addEventListener("message", (event) => {
       if (event.data.action === "sendAppVersion") {
         document.getElementById("appVersion").textContent = event.data.payload;
+        appVersion = event.data.payload;
       }
     });
   }
@@ -116,13 +119,13 @@ window.onload = async () => {
         script.src = `https://maps.googleapis.com/maps/api/js?key=${prodFirebaseConfig.apiKey}&libraries=places&callback=Function.prototype`
         !firebase.apps.length ? firebase.initializeApp(prodFirebaseConfig) : firebase.app();
 
-        window.DD_RUM && window.DD_RUM.init({ ...datadogConfig, env: 'prod' });
+        window.DD_RUM && window.DD_RUM.init({ ...datadogConfig, env: 'prod', version: appVersion });
     }
     else if(location.host === urls.stage) {
         script.src = `https://maps.googleapis.com/maps/api/js?key=${stageFirebaseConfig.apiKey}&libraries=places&callback=Function.prototype`
         !firebase.apps.length ? firebase.initializeApp(stageFirebaseConfig) : firebase.app();
 
-        window.DD_RUM && window.DD_RUM.init({ ...datadogConfig, env: 'stage' });
+        window.DD_RUM && window.DD_RUM.init({ ...datadogConfig, env: 'stage', version: appVersion });
     }
     else if (isLocalDev) {
         const { firebaseConfig: localDevFirebaseConfig } = await import("./local-dev/config.js");
@@ -134,7 +137,7 @@ window.onload = async () => {
     } else {
         script.src = `https://maps.googleapis.com/maps/api/js?key=${devFirebaseConfig.apiKey}&libraries=places&callback=Function.prototype`
         !firebase.apps.length ? firebase.initializeApp(devFirebaseConfig) : firebase.app();
-        !isLocalDev && window.DD_RUM && window.DD_RUM.init({ ...datadogConfig, env: 'dev' });
+        !isLocalDev && window.DD_RUM && window.DD_RUM.init({ ...datadogConfig, env: 'dev', version: appVersion });
     }
 
     !isLocalDev && window.DD_RUM && window.DD_RUM.startSessionReplayRecording();
