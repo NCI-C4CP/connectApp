@@ -654,7 +654,7 @@ export const addEventUPSubmit = async () => {
                 );
                 focus = false;
                 hasError = true;
-                console.error('User Profile - Required Field Value', element.id);
+                console.error('User Profile - Required Field Value (Element)', element.id);
             }
             if(element.type === 'checkbox' && element.checked === false && element.hidden === false){
                 errorMessage(
