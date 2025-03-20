@@ -442,6 +442,21 @@ const addEventToggleAltAddress = () => {
                 altAddressSection.style.display = 'block';
             } else {
                 altAddressSection.style.display = 'none';
+
+                const line1 = document.getElementById('UPAddress3Line1');
+                const line2 = document.getElementById('UPAddress3Line2');
+                const city = document.getElementById('UPAddress3City');
+                const state = document.getElementById('UPAddress3State');
+                const zip = document.getElementById('UPAddress3Zip');
+
+                if (line1) line1.value = '';
+                if (line2) line2.value = '';
+                if (city) city.value = '';
+                if (state) state.value = '';
+                if (zip) zip.value = '';
+
+                const poBox = document.getElementById('poBoxCheckboxAltAddress');
+                if (poBox) poBox.checked = false;
             }
         });
     });
