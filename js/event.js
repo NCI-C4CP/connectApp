@@ -1008,6 +1008,7 @@ export const addEventUPSubmit = async () => {
                 focus = false;
                 hasError = true;
                 console.error('User Profile - Required Field Value', 'UPAddress3City');
+                console.error('User Profile - UPAddress3Line1', `|${altAddressFields.line1}|`);
             }
 
             if (!altAddressFields.state) {
@@ -1019,6 +1020,7 @@ export const addEventUPSubmit = async () => {
                 focus = false;
                 hasError = true;
                 console.error('User Profile - Required Field Value', 'UPAddress3State');
+                console.error('User Profile - UPAddress3Line1', `|${altAddressFields.line1}|`);
             }
 
             if (!altAddressFields.zip) {
@@ -1030,6 +1032,7 @@ export const addEventUPSubmit = async () => {
                 focus = false;
                 hasError = true;
                 console.error('User Profile - Required Field Value', 'UPAddress3Zip');
+                console.error('User Profile - UPAddress3Line1', `|${altAddressFields.line1}|`);
             }
 
             // TODO: Future release: validate with USPS
