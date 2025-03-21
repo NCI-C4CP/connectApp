@@ -1363,13 +1363,17 @@ const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, type) 
             }
             default: {
                 document.getElementById("UPAddress3Line1").value = addrSuggestion.suggestion.streetAddress
-                document.getElementById("UPAddress3Line2").value = addrSuggestion.suggestion.secondaryAddress
+                if (addrSuggestion.suggestion.secondaryAddress !== "") {
+                    document.getElementById("UPAddress3Line2").value = addrSuggestion.suggestion.secondaryAddress
+                }
                 document.getElementById("UPAddress3City").value = addrSuggestion.suggestion.city
                 document.getElementById("UPAddress3State").value = addrSuggestion.suggestion.state
                 document.getElementById("UPAddress3Zip").value = addrSuggestion.suggestion.zipCode
 
                 formData[fieldMapping.altAddress1] = addrSuggestion.suggestion.streetAddress
-                formData[fieldMapping.altAddress2] = addrSuggestion.suggestion.secondaryAddress
+                if (addrSuggestion.suggestion.secondaryAddress !== "") {
+                    formData[fieldMapping.altAddress2] = addrSuggestion.suggestion.secondaryAddress
+                } 
                 formData[fieldMapping.altCity] = addrSuggestion.suggestion.city
                 formData[fieldMapping.altState] = addrSuggestion.suggestion.state
                 formData[fieldMapping.altZip] = addrSuggestion.suggestion.zipCode
