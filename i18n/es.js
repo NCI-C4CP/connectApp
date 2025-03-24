@@ -1326,6 +1326,7 @@
         "zipOnlyNumbers": "Ingrese un código postal de 5 dígitos con este formato: 12345.",
         "invalidZip": "Código postal no válido",
         "invalidAddress": "Dirección no encontrada",
+        "invalidCity": "Ciudad no válida",
         "cityOnlyLetters": "El nombre de la ciudad solo puede contener letras.",
         "confirmEmail": "Confirme su dirección de correo electrónico.",
         "emailsDoNotMatch": "Sus direcciones de correo electrónico no coinciden. Vuelva a escribir sus direcciones de correo electrónico.",
