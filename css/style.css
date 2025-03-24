@@ -1101,12 +1101,19 @@ consentNextButton:hover{
     font-size:18px;
 }
 
-.messagesHeaderFont{
+.messagesHeaderFont,
+.messagesSubHeader               {
     font-family: 'Montserrat', sans-serif;
     font-weight: bold;
-    font-size:23px;
     line-height:25px;
     color: #6B6B6B;
+}
+.messagesHeaderFont {
+    font-size: 1.4375rem;
+}
+
+.messagesSubHeader {
+    font-size: 1.3125rem;
 }
 
 .messagesBodyFont{
@@ -1395,8 +1402,9 @@ button.connect-secondary {
     margin-bottom: 1rem;
 }
 
-#donateMySamplesTable tbody tr td {
-    padding: 0.5rem;
+#donateMySamplesTable tbody tr td,
+#donateMySamplesTable tbody tr th {
+    padding: 0.6rem;
 }
 
 .messagesHeaderFont .samples-page-text {
@@ -1556,4 +1564,9 @@ button.connect-secondary {
     .phys-act-rep-sidebar {
         max-width: 100%;
     }
+}
+
+span.my-samples-indent-text {
+    display:inline-block;
+    margin-left: 20px;
 }
