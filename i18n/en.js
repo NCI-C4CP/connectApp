@@ -1320,6 +1320,7 @@ const en = {
         "zipOnlyNumbers": "Please enter a 5 digit zip code in this format: 12345",
         "invalidZip": "Invalid Zip Code",
         "invalidAddress": "Address not found",
+        "invalidCity": "Invalid City",
         "cityOnlyLetters": "City name may only contain letters.",
         "confirmEmail": "Please confirm your email address.",
         "emailsDoNotMatch": "Your email addresses do not match. Please retype your email addresses.",
