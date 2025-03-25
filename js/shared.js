@@ -151,12 +151,20 @@ export const sendEmailLink = () => {
     const signInEmail = wrapperDiv.getAttribute("data-account-value");
     const continueUrl = window.location.href;
 
+    const continueUrlWithoutHash = continueUrl.endsWith("#")
+            ? continueUrl.slice(0, -1)
+            : continueUrl;
+
     fetch(`${api}?api=sendEmailLink`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: signInEmail, continueUrl , preferredLanguage}),
+        body: JSON.stringify({ 
+            email: signInEmail, 
+            continueUrl: continueUrlWithoutHash, 
+            preferredLanguage
+        })
     }).then(() => {
         signInFlowRender(signInEmail);
     });
