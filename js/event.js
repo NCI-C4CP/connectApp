@@ -523,6 +523,18 @@ const validateAddress = async (focus, addr1Id, addr2Id, cityId, stateId, zipId) 
                         document.getElementById(zipId).focus();
                     focus = false;
                 }
+                if (item.code === "010004") {
+                    errorMessage(
+                        cityId,
+                        '<span data-i18n="event.invalidCity">' +
+                        translateText("event.invalidCity") +
+                        "</span>",
+                        focus
+                    );
+                    if (focus)
+                        document.getElementById(zipId).focus();
+                    focus = false;
+                }
             });
         } else {
             errorMessage(
