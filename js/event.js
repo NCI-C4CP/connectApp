@@ -2147,9 +2147,9 @@ const storeParameters = async () => {
         utm_campaign: ['altruism-personal', 'altruism-general', 'cancer-personal', 'cancer-general', 'research-personal', 'research-general']
     }
 
-    const utmSource = sessionStorage.getItem('utmSource').toLowerCase();
-    const utmMedium = sessionStorage.getItem('utmMedium').toLowerCase();
-    const utmCampaign = sessionStorage.getItem('utmCampaign').toLowerCase();
+    const utmSource = sessionStorage.getItem('utmSource')?.toLowerCase() || '';
+    const utmMedium = sessionStorage.getItem('utmMedium')?.toLowerCase() || '';
+    const utmCampaign = sessionStorage.getItem('utmCampaign')?.toLowerCase() || '';
 
     if (utmSource && acceptedParams.utm_source.includes(utmSource)) utm[fieldMapping.utm.source] = utmSource;
     if (utmMedium && acceptedParams.utm_medium.includes(utmMedium)) utm[fieldMapping.utm.medium] = utmMedium;
