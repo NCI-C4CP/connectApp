@@ -151,12 +151,20 @@ export const sendEmailLink = () => {
     const signInEmail = wrapperDiv.getAttribute("data-account-value");
     const continueUrl = window.location.href;
 
+    const continueUrlWithoutHash = continueUrl.endsWith("#")
+            ? continueUrl.slice(0, -1)
+            : continueUrl;
+
     fetch(`${api}?api=sendEmailLink`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: signInEmail, continueUrl , preferredLanguage}),
+        body: JSON.stringify({ 
+            email: signInEmail, 
+            continueUrl: continueUrlWithoutHash, 
+            preferredLanguage
+        })
     }).then(() => {
         signInFlowRender(signInEmail);
     });
@@ -237,7 +245,13 @@ export const storeResponseTree = async (questName) => {
     await storeResponse(formData);
 }
 
-//Attempting to store tree on push
+/**
+ * Processes and stores questionnaire response data in the appropriate format for the backend.
+ * It separates completion status data from regular response data, processes them separately,
+ * and ensures proper storage of both types of data.
+ * @param {object} formData - The raw form data object containing questionnaire responses with keys in the format "moduleId.conceptId".
+ * @returns {Promise<object>} - The response from the storeResponse API call.
+ */
 export const storeResponseQuest = async (formData) => {
     
     let keys = Object.keys(formData);
@@ -261,10 +275,8 @@ export const storeResponseQuest = async (formData) => {
     });
 
     if (Object.keys(completedData).length > 0) {
-        await completeSurvey(completedData, moduleId);
+        return await completeSurvey(completedData, moduleId);
     }
-
-    transformedData = await clientFilterData(transformedData);
 
     if(Object.keys(transformedData[moduleId]).length > 0) {
         return await storeResponse(transformedData);
@@ -307,13 +319,16 @@ const completeSurvey = async (data, moduleId) => {
         [fieldMapping[moduleName].completeTs]: data["COMPLETED_TS"],
     }
 
+    // Return the response on failure.
+    // The success response reloads the page, but the error response needs to be handled in Quest.
+    let submitSurveyResponse;
     try {
-        const submitSurveyResponse = await storeResponse(formData);
+        submitSurveyResponse = await storeResponse(formData);
 
         if (submitSurveyResponse.code === 200) {
             location.reload();
         } else {
-            throw new Error(`Submit Survey Error: Failed to submit survey. Code: ${submitSurveyResponse.code}, Message: ${submitSurveyResponse.message}` );
+            throw new Error(`Submit Survey Error: Failed to submit survey. Code: ${submitSurveyResponse.code}, Message: ${submitSurveyResponse.message}`);
         }
     } catch (error) {
         logDDRumError(error, 'SubmitSurveyError', {
@@ -321,6 +336,8 @@ const completeSurvey = async (data, moduleId) => {
             timestamp: new Date().toISOString(),
             questionnaire: moduleId,
         });
+
+        return submitSurveyResponse;
     }
 }
 
@@ -537,13 +554,13 @@ export const dateTime = () => {
 }
 
 export const getIdToken = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
             unsubscribe();
             if (user && !user.isAnonymous) {
                 user.getIdToken().then((idToken) => {
                     resolve(idToken);
-            }, (error) => {
+            }, () => {
                 resolve(null);
             });
             } else {
@@ -554,7 +571,7 @@ export const getIdToken = () => {
 };
 
 export const userLoggedIn = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
             unsubscribe();
             if (user && !user.isAnonymous) {
@@ -1628,7 +1645,7 @@ export const inactivityTime = () => {
 
 export const renderSyndicate = (url, element, page) => {
     const mainContent = document.getElementById(element);
-    const isCompatible = isBrowserCompatible();
+
     fetch(url)
     .then(response => response.body)
     .then(rb =>{
@@ -1701,47 +1718,6 @@ export const renderSyndicate = (url, element, page) => {
     hideAnimation();
 
     });
-}
-
-export const addEventReturnToDashboard = () => {
-    document.getElementById('returnToDashboard').addEventListener('click', () => {
-        location.reload();
-    });
-}
-
-const resetMenstrualCycleSurvey = async () => {
-
-    let formData = {
-        "459098666":    972455046,
-        "844088537":    null
-    }
-
-    await storeResponse(formData);
-}
-
-const removeMenstrualCycleData = () => {
-
-    localforage.removeItem("D_912367929");
-    localforage.removeItem("D_912367929.treeJSON");
-
-    let clearedData = {"D_912367929": {
-        "treeJSON":     null,
-        "D_951357171":  null,
-        "D_593467240":  null
-    }};
-    
-    return clearedData;
-}
-
-const clientFilterData = async (formData) => {
-
-    if(formData["D_912367929"]?.["D_951357171"] == 104430631) {
-        formData = removeMenstrualCycleData();
-
-        await resetMenstrualCycleSurvey();
-    }
-    
-    return formData;
 }
 
 export function fragment(strings, ...values) {
@@ -2131,7 +2107,7 @@ export const updateStartSurveyParticipantData = async (sha, path, connectId, mod
 
         return moduleText;
     } catch (error) {
-        throw error;
+        throw new Error('Error: updateStartSurveyParticipantData():', error);
     }
 }
 

@@ -495,7 +495,7 @@ export const renderHomePrivacyPage = () => {
                   <li class="list-style">Maintain tight security controls. Our information systems, including MyConnect, are watched closely by security experts.</li>
                   <li class="list-style">Remove information that can identify you, including your name, date of birth, and social security number (if you shared it), from your survey answers and samples before we share them with researchers. This information is replaced with a unique number (a code) to protect your identity.</li>
                   <li class="list-style">Limit and keep track of who can access the information and samples you share. Only approved researchers who agree to our privacy rules will be allowed to use study information and samples for valid scientific reasons.</li>
-                  <li class="list-style">Maintain our <a href="https://grants.nih.gov/policy/humansubjects/coc.htm">Certificate of Confidentiality</a> from the United States government. This will help protect against any legal requests (such as a court order) to give out information that could identify you.</li>
+                  <li class="list-style">Maintain our <a href="https://grants.nih.gov/policy-and-compliance/policy-topics/human-subjects/coc">Certificate of Confidentiality</a> from the United States government. This will help protect against any legal requests (such as a court order) to give out information that could identify you.</li>
                 </ul>
                 <p>If you have questions about our privacy safeguards, please <a href="https://norcfedramp.servicenowservices.com/recruit">contact us</a>.</p>
                 <!-- End Contents -->
