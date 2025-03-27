@@ -1174,7 +1174,7 @@ export const addEventUPSubmit = async () => {
 
         // Mailing address
         formData['521824358'] = document.getElementById('UPAddress1Line1').value;
-        if(document.getElementById('UPAddress1Line2').value) formData['442166669'] = document.getElementById('UPAddress1Line2').value;
+        if(document.getElementById('UPAddress1Line2').value !== "") formData['442166669'] = document.getElementById('UPAddress1Line2').value;
         formData['703385619'] = document.getElementById('UPAddress1City').value;
         formData['634434746'] = document.getElementById('UPAddress1State').value;
         formData['892050548'] = document.getElementById('UPAddress1Zip').value;
@@ -1187,24 +1187,18 @@ export const addEventUPSubmit = async () => {
             fieldMapping.no
 
         // Physical address info is saved regardless of whether PO Box is checked
-        const getFieldValue = (id) =>
-            document.getElementById(id)?.value || "";
+        const physicalAddressLine1 = document.getElementById('UPAddress2Line1')?.value?.trim() || "";
+        const physicalAddressLine2 = document.getElementById('UPAddress2Line2')?.value?.trim() || "";
+        const physicalAddressCity = document.getElementById('UPAddress2City')?.value?.trim() || "";
+        const physicalAddressState = document.getElementById('UPAddress2State')?.value || "";
+        const physicalAddressZip = document.getElementById('UPAddress2Zip')?.value || "";
 
         // Update formData with physical address details
-        formData[fieldMapping.physicalAddress1] = getFieldValue(
-            "UPAddress2Line1"
-        );
-        formData[fieldMapping.physicalAddress2] = getFieldValue(
-            "UPAddress2Line2"
-        );
-        formData[fieldMapping.physicalCity] = getFieldValue(
-            "UPAddress2City"
-        );
-        formData[fieldMapping.physicalState] = getFieldValue(
-            "UPAddress2State"
-        );
-        formData[fieldMapping.physicalZip] =
-            getFieldValue("UPAddress2Zip");
+        if (physicalAddressLine1 !== "")  formData[fieldMapping.physicalAddress1] = physicalAddressLine1
+        if (physicalAddressLine2 !== "")  formData[fieldMapping.physicalAddress2] = physicalAddressLine2
+        if (physicalAddressCity !== "")  formData[fieldMapping.physicalCity] = physicalAddressCity
+        if (physicalAddressState !== "")  formData[fieldMapping.physicalState] = physicalAddressState
+        if (physicalAddressZip !== "")  formData[fieldMapping.physicalZip] = physicalAddressZip
 
         // Alternate address (altAddressZip is validated above)
         const altAddressLine1 = document.getElementById('UPAddress3Line1')?.value?.trim() || "";
@@ -1351,7 +1345,9 @@ const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, type) 
                 document.getElementById("UPAddress1Zip").value = addrSuggestion.suggestion.zipCode
 
                 formData[fieldMapping.address1] = addrSuggestion.suggestion.streetAddress
-                formData[fieldMapping.address2] = addrSuggestion.suggestion.secondaryAddress
+                if (addrSuggestion.suggestion.secondaryAddress !== "") {
+                    formData[fieldMapping.address2] = addrSuggestion.suggestion.secondaryAddress
+                } 
                 formData[fieldMapping.city] = addrSuggestion.suggestion.city
                 formData[fieldMapping.state] = addrSuggestion.suggestion.state
                 formData[fieldMapping.zip] = addrSuggestion.suggestion.zipCode
@@ -1366,7 +1362,9 @@ const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, type) 
                 document.getElementById("UPAddress2Zip").value = addrSuggestion.suggestion.zipCode
 
                 formData[fieldMapping.physicalAddress1] = addrSuggestion.suggestion.streetAddress
-                formData[fieldMapping.physicalAddress2] = addrSuggestion.suggestion.secondaryAddress
+                if (addrSuggestion.suggestion.secondaryAddress !== "") {
+                    formData[fieldMapping.physicalAddress2] = addrSuggestion.suggestion.secondaryAddress
+                } 
                 formData[fieldMapping.physicalCity] = addrSuggestion.suggestion.city
                 formData[fieldMapping.physicalState] = addrSuggestion.suggestion.state
                 formData[fieldMapping.physicalZip] = addrSuggestion.suggestion.zipCode
@@ -1375,9 +1373,7 @@ const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, type) 
             }
             default: {
                 document.getElementById("UPAddress3Line1").value = addrSuggestion.suggestion.streetAddress
-                if (addrSuggestion.suggestion.secondaryAddress !== "") {
-                    document.getElementById("UPAddress3Line2").value = addrSuggestion.suggestion.secondaryAddress
-                }
+                document.getElementById("UPAddress3Line2").value = addrSuggestion.suggestion.secondaryAddress
                 document.getElementById("UPAddress3City").value = addrSuggestion.suggestion.city
                 document.getElementById("UPAddress3State").value = addrSuggestion.suggestion.state
                 document.getElementById("UPAddress3Zip").value = addrSuggestion.suggestion.zipCode
