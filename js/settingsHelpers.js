@@ -305,19 +305,19 @@ export const validateContactInformation = async (mobilePhoneNumberComplete, home
   }
 
   if (!preferredEmail || !validEmailFormat.test(preferredEmail)) {
-    errorMessage('newPreferredEmail', translateText('settingsHelpers.emailFormat'), focus);
+    errorMessage('newPreferredEmail', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
     focus = false;
     hasError = true;
   }
 
   if (additionalEmail1 && !validEmailFormat.test(additionalEmail1)) {
-    errorMessage('newadditionalEmail1', translateText('settingsHelpers.emailFormat'), focus);
+    errorMessage('newadditionalEmail1', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
     focus = false;
     hasError = true;
   }
 
   if (additionalEmail2 && !validEmailFormat.test(additionalEmail2)) {
-    errorMessage('newadditionalEmail2', translateText('settingsHelpers.emailFormat'), focus);
+    errorMessage('newadditionalEmail2', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
     focus = false;
     hasError = true;
   }
@@ -685,7 +685,7 @@ export const validateAltContactInformation = async (altContactMobilePhoneComplet
   }
 
   if (!altContactEmail || !validEmailFormat.test(altContactEmail)) {
-    errorMessage('newAltContactEmail', translateText('settingsHelpers.emailInvalid'), focus);
+    errorMessage('newAltContactEmail', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
     focus = false;
     hasError = true;
   }
