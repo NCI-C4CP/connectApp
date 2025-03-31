@@ -1,4 +1,4 @@
-import { todaysDate, storeResponse, dataSavingBtn, dateTime, errorMessageConsent, siteAcronyms, getMyData, hasUserData, isMobile, openNewTab, languageSuffix, getSelectedLanguage, translateHTML, translateText} from "../shared.js";
+import { todaysDate, storeResponse, dataSavingBtn, dateTime, errorMessageConsent, siteAcronyms, getMyData, hasUserData, isMobile, openNewTab, languageSuffix, getSelectedLanguage, translateHTML, translateText, validNameFormat} from "../shared.js";
 import { renderUserProfile } from "../components/form.js";
 import { removeAllErrors } from "../event.js";
 import { downloadSignedPdf } from "./agreements.js";
@@ -1018,13 +1018,19 @@ const consentSubmit = async e => {
             focus = false;
             hasError = true;
         }
-        if(/[0-9,\.<>:;!@#\$%\^&\*\+=\[\]\{\}\\\|]/.test(CSFirstName.value)) {
+        if(!validNameFormat.test(CSFirstName.value)) {
             const msg = '<span data-i18n="consent.firstNameCheck">'+translateText('consent.firstNameCheck')+'</span>';
             errorMessageConsent('CSFirstName', msg, focus)
             focus = false;
             hasError = true;
         }
-        if(/[0-9,\.<>:;!@#\$%\^&\*\+=\[\]\{\}\\\|]/.test(CSLastName.value)) {
+        if(CSMiddleName.value && !validNameFormat.test(CSMiddleName.value)) {
+            const msg = '<span data-i18n="consent.middleNameCheck">'+translateText('consent.middleNameCheck')+'</span>';
+            errorMessageConsent('CSMiddleName', msg, focus)
+            focus = false;
+            hasError = true;
+        }
+        if(!validNameFormat.test(CSLastName.value)) {
             const msg = '<span data-i18n="consent.lastNameCheck">'+translateText('consent.lastNameCheck')+'</span>';
             errorMessageConsent('CSLastName', msg, focus)
             focus = false;

@@ -386,6 +386,7 @@ const en = {
         "firstNameRequired": "A first name is required",
         "lastNameRequired": "A last name is required",
         "firstNameCheck": "Your first name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters.",
+        "middleNameCheck": "Your middle name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters.",
         "lastNameCheck": "Your last name should contain only uppercase and lowercase letters. Please do not use any numbers.",
         "progressText": " of 9 ",
         "welcomePageHeader": "<b>Welcome</b>",
