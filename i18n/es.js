@@ -387,6 +387,7 @@
         "firstNameRequired": "Debe ingresar un nombre de pila",
         "lastNameRequired": "Debe ingresar un apellido",
         "firstNameCheck": "Su nombre de pila debe contener solo letras mayúsculas y minúsculas. No use números ni caracteres especiales.",
+        "middleNameCheck": "Su segundo nombre debe contener solo letras mayúsculas y minúsculas. No use números ni caracteres especiales.",
         "lastNameCheck": "Su apellido debe contener solo letras mayúsculas y minúsculas. Por favor, no utilice ningún número.",
         "progressText": " de 9 ",
         "welcomePageHeader": "<b>Le damos la bienvenida</b>",
