@@ -1448,7 +1448,10 @@
         "errorPhoneFormat": "Error: El formato del número de teléfono no es válido. Ingrese un número de teléfono con este formato: 999-999-9999",
         "errorPhonesDoNotMatch": "Error: Los números de teléfono no coinciden. Verifique que los números de teléfono coincidan y, a continuación, vuelva a enviar el formulario.",
         "mobileVerificationCode": "Ingrese el código de verificación que le enviamos a su dispositivo móvil.",
-        "makeChangesToUpdate": "Esta es la información que ya tenemos. Si quería modificar su información actual, haga un cambio e inténtelo de nuevo."
+        "makeChangesToUpdate": "Esta es la información que ya tenemos. Si quería modificar su información actual, haga un cambio e inténtelo de nuevo.",
+        "clearButtonText": "Eliminar",
+         "confirmationHeader": "Confirmación",
+         "confirmationText": "¿Está seguro de que desea eliminar esta dirección?",
     },
     "shared": {
         "signIn": "Iniciar sesión",

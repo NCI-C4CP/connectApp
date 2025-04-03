@@ -598,6 +598,53 @@ export const showRiskyEmailWarningMyProfile = (riskyEmails, onSubmit) => {
         closeModal();
     });
 }
+export const showClearAddressConfirmation = (onSubmit) => {
+    const modalElement = document.getElementById("connectMainModal");
+    let modalInstance =
+        bootstrap.Modal.getInstance(modalElement) ||
+        new bootstrap.Modal(modalElement);
+
+    const closeModal = () => {
+        const modal = bootstrap.Modal.getInstance(
+            document.getElementById("connectMainModal")
+        );
+        modal.hide();
+    };
+
+    let bodyHtml = `
+        <div class="row">
+              <i data-i18n="settingsHelpers.confirmationText">Are you sure you want to clear data?</i>
+        </div>
+    `;
+    document.getElementById("connectModalHeader").innerHTML = translateHTML(`
+      <h2 style="color: #333;" data-i18n="settingsHelpers.confirmationHeader">Confirmation</h2>
+  `);
+
+    document.getElementById("connectModalBody").innerHTML =
+        translateHTML(bodyHtml);
+
+    document.getElementById("connectModalFooter").innerHTML = translateHTML(`
+      <div class="d-flex justify-content-between w-100">
+          <button data-i18n="event.navButtonsClose" type="button" title="Close" class="btn btn-dark" id="goBackBtn">Go Back</button>
+          <button data-i18n="event.navButtonsConfirm" type="button" id="confirmClearData" title="Confirm details" class="btn btn-primary consentNextButton">Submit</button>
+      </div>
+  `);
+    document.getElementById("connectModalFooter").style.display = "block";
+
+    modalInstance.show();
+
+    document
+        .getElementById("confirmClearData")
+        .addEventListener("click", () => {
+            onSubmit?.();
+            closeModal();
+        });
+
+    // Add header close button listener
+    document.getElementById("goBackBtn").addEventListener("click", () => {
+        closeModal();
+    });
+}
 
 export const showMailAddressSuggestionMyProfile = (uspsSuggestion, i18nTranslation, submit) => {
   const modalElement = document.getElementById("connectMainModal");
