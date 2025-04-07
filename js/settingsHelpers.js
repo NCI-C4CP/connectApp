@@ -1,4 +1,4 @@
-import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML
+import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML, closeModal
 } from './shared.js';
 import { removeAllErrors } from './event.js';
 import cId from './fieldToConceptIdMapping.js';
@@ -598,11 +598,52 @@ export const showRiskyEmailWarningMyProfile = (riskyEmails, onSubmit) => {
         closeModal();
     });
 }
+export const showClearAddressConfirmation = (onSubmit) => {
+    const modalElement = document.getElementById("connectMainModal");
+    let modalInstance =
+        bootstrap.Modal.getInstance(modalElement) ||
+        new bootstrap.Modal(modalElement);
+
+    let bodyHtml = `
+        <div class="row">
+              <i data-i18n="settingsHelpers.confirmationText">Are you sure you want to clear data?</i>
+        </div>
+    `;
+    document.getElementById("connectModalHeader").innerHTML = translateHTML(`
+      <h2 style="color: #333;" data-i18n="settingsHelpers.confirmationHeader">Confirmation</h2>
+  `);
+
+    document.getElementById("connectModalBody").innerHTML =
+        translateHTML(bodyHtml);
+
+    document.getElementById("connectModalFooter").innerHTML = translateHTML(`
+      <div class="d-flex justify-content-between w-100">
+          <button data-i18n="event.navButtonsClose" type="button" title="Close" class="btn btn-dark" id="goBackBtn">Go Back</button>
+          <button data-i18n="event.navButtonsConfirm" type="button" id="confirmClearData" title="Confirm details" class="btn btn-primary consentNextButton">Submit</button>
+      </div>
+  `);
+    document.getElementById("connectModalFooter").style.display = "block";
+
+    modalInstance.show();
+
+    document
+        .getElementById("confirmClearData")
+        .addEventListener("click", () => {
+            onSubmit?.();
+            closeModal();
+        });
+
+    // Add header close button listener
+    document.getElementById("goBackBtn").addEventListener("click", () => {
+        closeModal();
+    });
+}
 
 export const showMailAddressSuggestionMyProfile = (uspsSuggestion, i18nTranslation, submit) => {
   const modalElement = document.getElementById("connectMainModal");
   let modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
 
+  // TODO: Need to refactor
   const closeModal = () => {
     const instance = bootstrap.Modal.getInstance(modalElement);
     if (instance) instance.hide();

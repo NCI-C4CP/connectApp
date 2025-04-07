@@ -1443,7 +1443,11 @@ const en = {
         "errorPhoneFormat": "Error: The phone number format is not valid. Please enter a phone number in this format: 999-999-9999",
         "errorPhonesDoNotMatch": "Error - the phone numbers do not match. Please make sure the phone numbers match, then resubmit the form.",
         "mobileVerificationCode": "Please enter the verification code that was sent to your mobile device.",
-        "makeChangesToUpdate": "This is the information we already have. If you meant to update your existing information, please make a change and try again."
+        "makeChangesToUpdate": "This is the information we already have. If you meant to update your existing information, please make a change and try again.",
+         "clearButtonText": "Clear",
+         "confirmationHeader": "Confirmation",
+         "confirmationText": "Are you sure you want to delete this address?",
+
     },
     "shared": {
         "signIn": "Sign In",
