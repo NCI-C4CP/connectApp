@@ -35,7 +35,8 @@ export const addEventAddressAutoComplete = (id, country) => {
     const UPAddressState = document.getElementById(`UPAddress${id}State`);
     const UPAddressZip = document.getElementById(`UPAddress${id}Zip`);
     if(!UPAddressLine1) return;
-    UPAddressLine1.addEventListener('focus', () => {
+
+    const googlePlacesInitiation = () => {
         autocomplete = new google.maps.places.Autocomplete(document.getElementById(`UPAddress${id}Line1`), {types: ['geocode']});
         autocomplete.setFields(['address_component']);
         let addressLine1 = '';
@@ -76,7 +77,10 @@ export const addEventAddressAutoComplete = (id, country) => {
                 autocomplete.setBounds(circle.getBounds());
             });
         }
-    });
+        UPAddressLine1.removeEventListener('focus', googlePlacesInitiation)     
+    }
+
+    UPAddressLine1.addEventListener('focus', googlePlacesInitiation)      
 }
 
 const getDaysTemplate = (month) => {
