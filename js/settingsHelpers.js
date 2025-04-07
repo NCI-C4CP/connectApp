@@ -1,4 +1,4 @@
-import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML
+import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML, closeModal
 } from './shared.js';
 import { removeAllErrors } from './event.js';
 import cId from './fieldToConceptIdMapping.js';
@@ -604,13 +604,6 @@ export const showClearAddressConfirmation = (onSubmit) => {
         bootstrap.Modal.getInstance(modalElement) ||
         new bootstrap.Modal(modalElement);
 
-    const closeModal = () => {
-        const modal = bootstrap.Modal.getInstance(
-            document.getElementById("connectMainModal")
-        );
-        modal.hide();
-    };
-
     let bodyHtml = `
         <div class="row">
               <i data-i18n="settingsHelpers.confirmationText">Are you sure you want to clear data?</i>
@@ -650,6 +643,7 @@ export const showMailAddressSuggestionMyProfile = (uspsSuggestion, i18nTranslati
   const modalElement = document.getElementById("connectMainModal");
   let modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
 
+  // TODO: Need to refactor
   const closeModal = () => {
     const instance = bootstrap.Modal.getInstance(modalElement);
     if (instance) instance.hide();
