@@ -1808,12 +1808,10 @@ const verifyUserDetails = (formData) => {
             <div class="col">${formData['521824358']}</div>
         </div>
 
-        ${formData['442166669'] ? `
         <div class="row">
             <div class="col" data-i18n="event.line2">Line 2 (apartment, suite, unit, building)</div>
-            <div class="col">${formData['442166669']}</div>
+            <div class="col">${formData['442166669'] || ''}</div>
         </div>
-        `:``}
 
         <div class="row">
             <div class="col" data-i18n="event.city">City</div>
@@ -1847,7 +1845,7 @@ const verifyUserDetails = (formData) => {
  
         <div class="row">
             <div class="col" data-i18n="event.line2">Line 2 (apartment, suite, unit, building)</div>
-            <div class="col">${formData[fieldMapping.physicalAddress2]}</div>
+            <div class="col">${formData[fieldMapping.physicalAddress2] || ''}</div>
         </div>
 
         <div class="row">
