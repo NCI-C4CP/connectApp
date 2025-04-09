@@ -462,34 +462,34 @@
         "consentPageBody3": "Si tiene problemas para ver el formulario de consentimiento en la ventana de la parte inferior de esta pantalla, puede desplazarse hacia abajo y seleccionar la opción de descargar una copia sin firmar.",
         "consentPageWait": "Espere, por favor...",
         "consentIframeHFHS": {
-            "src": "./forms/consent/HFHS_Consent_V0.03_Span.html"
+            "src": "./forms/consent/HFHS_Consent_V0.04_Span.html"
         },
         "consentIframeHP": {
-            "src": "./forms/consent/HP_Consent_V0.05_Span.html"
+            "src": "./forms/consent/HP_Consent_V0.06_Span.html"
         },
         "consentIframeKPCO": {
-            "src": "./forms/consent/KPCO_Consent_V0.04_Span.html"
+            "src": "./forms/consent/KPCO_Consent_V0.05_Span.html"
         },
         "consentIframeKPGA": {
-            "src": "./forms/consent/KPGA_Consent_V0.04_Span.html"
+            "src": "./forms/consent/KPGA_Consent_V0.05_Span.html"
         },
         "consentIframeKPHI": {
-            "src": "./forms/consent/KPHI_Consent_V0.03_Span.html"
+            "src": "./forms/consent/KPHI_Consent_V0.04_Span.html"
         },
         "consentIframeKPNW": {
-            "src": "./forms/consent/KPNW_Consent_V0.03_Span.html"
+            "src": "./forms/consent/KPNW_Consent_V0.04_Span.html"
         },
         "consentIframeMarshfield": {
-            "src": "./forms/consent/Marshfield_Consent_V0.03_Span.html"
+            "src": "./forms/consent/Marshfield_Consent_V0.04_Span.html"
         },
         "consentIframeSanford": {
-            "src": "./forms/consent/Sanford_Consent_V0.03_Span.html"
+            "src": "./forms/consent/Sanford_Consent_V0.04_Span.html"
         },
         "consentIframeUChicago": {
-            "src": "./forms/consent/UChicago_Consent_V0.05_Span.html"
+            "src": "./forms/consent/UChicago_Consent_V0.06_Span.html"
         },
         "consentIframeBSWH": {
-            "src": "./forms/consent/BSWH_Consent_V0.02_Span.html"
+            "src": "./forms/consent/BSWH_Consent_V0.03_Span.html"
         },
         "consentIframeNCI": {
             "src": "./forms/consent/NCI_Consent_V0.05_Span.html"
@@ -497,52 +497,52 @@
         "consentUnsignedHFHS": {
             "title": "Descargar el formulario de consentimiento",
             "innerHTML": " Descargue una copia sin firmar del formulario de consentimiento informado&nbsp;<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/HFHS_Consent_V0.03_Span.pdf"
+            "href": "./forms/consent/HFHS_Consent_V0.04_Span.pdf"
         },
         "consentUnsignedHP": {
             "title": "Descargar el formulario de consentimiento",
             "innerHTML": " Descargue una copia sin firmar del formulario de consentimiento informado&nbsp;<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/HP_Consent_V0.05_Span.pdf"
+            "href": "./forms/consent/HP_Consent_V0.06_Span.pdf"
         },
         "consentUnsignedKPCO": {
             "title": "Descargar el formulario de consentimiento",
             "innerHTML": " Descargue una copia sin firmar del formulario de consentimiento informado&nbsp;<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/KPCO_Consent_V0.04_Span.pdf"
+            "href": "./forms/consent/KPCO_Consent_V0.05_Span.pdf"
         },
         "consentUnsignedKPGA": {
             "title": "Descargar el formulario de consentimiento",
             "innerHTML": " Descargue una copia sin firmar del formulario de consentimiento informado&nbsp;<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/KPGA_Consent_V0.04_Span.pdf"
+            "href": "./forms/consent/KPGA_Consent_V0.05_Span.pdf"
         },
         "consentUnsignedKPHI": {
             "title": "Descargar el formulario de consentimiento",
             "innerHTML": " Descargue una copia sin firmar del formulario de consentimiento informado&nbsp;<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/KPHI_Consent_V0.03_Span.pdf"
+            "href": "./forms/consent/KPHI_Consent_V0.04_Span.pdf"
         },
         "consentUnsignedKPNW": {
             "title": "Descargar el formulario de consentimiento",
             "innerHTML": " Descargue una copia sin firmar del formulario de consentimiento informado&nbsp;<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/KPNW_Consent_V0.03_Span.pdf"
+            "href": "./forms/consent/KPNW_Consent_V0.04_Span.pdf"
         },
         "consentUnsignedMarshfield": {
             "title": "Descargar el formulario de consentimiento",
             "innerHTML": " Descargue una copia sin firmar del formulario de consentimiento informado&nbsp;<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/Marshfield_Consent_V0.03_Span.pdf"
+            "href": "./forms/consent/Marshfield_Consent_V0.04_Span.pdf"
         },
         "consentUnsignedSanford": {
             "title": "Descargar el formulario de consentimiento",
             "innerHTML": " Descargue una copia sin firmar del formulario de consentimiento informado&nbsp;<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/Sanford_Consent_V0.03_Span.pdf"
+            "href": "./forms/consent/Sanford_Consent_V0.04_Span.pdf"
         },
         "consentUnsignedUChicago": {
             "title": "Descargar el formulario de consentimiento",
             "innerHTML": " Descargue una copia sin firmar del formulario de consentimiento informado&nbsp;<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/UChicago_Consent_V0.05_Span.pdf"
+            "href": "./forms/consent/UChicago_Consent_V0.06_Span.pdf"
         },
         "consentUnsignedBSWH": {
             "title": "Descargar el formulario de consentimiento",
             "innerHTML": " Descargue una copia sin firmar del formulario de consentimiento informado&nbsp;<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/BSWH_Consent_V0.02_Span.pdf"
+            "href": "./forms/consent/BSWH_Consent_V0.03_Span.pdf"
         },
         "consentUnsignedNCI": {
             "title": "Descargar el formulario de consentimiento",
