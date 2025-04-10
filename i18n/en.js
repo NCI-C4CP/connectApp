@@ -462,34 +462,34 @@ const en = {
         "consentPageBody3": "If you have trouble viewing the consent form in the window at the bottom of this screen, you can download an unsigned copy by scrolling down and selecting that option below.",
         "consentPageWait": "Please wait...",
         "consentIframeHFHS": {
-            "src": "./forms/consent/HFHS_Consent_V0.03.html"
+            "src": "./forms/consent/HFHS_Consent_V0.04.html"
         },
         "consentIframeHP": {
-            "src": "./forms/consent/HP_Consent_V0.05.html"
+            "src": "./forms/consent/HP_Consent_V0.06.html"
         },
         "consentIframeKPCO": {
-            "src": "./forms/consent/KPCO_Consent_V0.04.html"
+            "src": "./forms/consent/KPCO_Consent_V0.05.html"
         },
         "consentIframeKPGA": {
-            "src": "./forms/consent/KPGA_Consent_V0.04.html"
+            "src": "./forms/consent/KPGA_Consent_V0.05.html"
         },
         "consentIframeKPHI": {
-            "src": "./forms/consent/KPHI_Consent_V0.03.html"
+            "src": "./forms/consent/KPHI_Consent_V0.04.html"
         },
         "consentIframeKPNW": {
-            "src": "./forms/consent/KPNW_Consent_V0.03.html"
+            "src": "./forms/consent/KPNW_Consent_V0.04.html"
         },
         "consentIframeMarshfield": {
-            "src": "./forms/consent/Marshfield_Consent_V0.03.html"
+            "src": "./forms/consent/Marshfield_Consent_V0.04.html"
         },
         "consentIframeSanford": {
-            "src": "./forms/consent/Sanford_Consent_V0.03.html"
+            "src": "./forms/consent/Sanford_Consent_V0.04.html"
         },
         "consentIframeUChicago": {
-            "src": "./forms/consent/UChicago_Consent_V0.05.html"
+            "src": "./forms/consent/UChicago_Consent_V0.06.html"
         },
         "consentIframeBSWH": {
-            "src": "./forms/consent/BSWH_Consent_V0.02.html"
+            "src": "./forms/consent/BSWH_Consent_V0.03.html"
         },
         "consentIframeNCI": {
             "src": "./forms/consent/NCI_Consent_V0.05.html"
@@ -497,52 +497,52 @@ const en = {
         "consentUnsignedHFHS": {
             "title": "Download consent form",
             "innerHTML": " Download an unsigned copy of the informed consent form&nbsp<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/HFHS_Consent_V0.03.pdf"
+            "href": "./forms/consent/HFHS_Consent_V0.04.pdf"
         },
         "consentUnsignedHP": {
             "title": "Download consent form",
             "innerHTML": " Download an unsigned copy of the informed consent form&nbsp<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/HP_Consent_V0.05.pdf"
+            "href": "./forms/consent/HP_Consent_V0.06.pdf"
         },
         "consentUnsignedKPCO": {
             "title": "Download consent form",
             "innerHTML": " Download an unsigned copy of the informed consent form&nbsp<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/KPCO_Consent_V0.04.pdf"
+            "href": "./forms/consent/KPCO_Consent_V0.05.pdf"
         },
         "consentUnsignedKPGA": {
             "title": "Download consent form",
             "innerHTML": " Download an unsigned copy of the informed consent form&nbsp<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/KPGA_Consent_V0.04.pdf"
+            "href": "./forms/consent/KPGA_Consent_V0.05.pdf"
         },
         "consentUnsignedKPHI": {
             "title": "Download consent form",
             "innerHTML": " Download an unsigned copy of the informed consent form&nbsp<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/KPHI_Consent_V0.03.pdf"
+            "href": "./forms/consent/KPHI_Consent_V0.04.pdf"
         },
         "consentUnsignedKPNW": {
             "title": "Download consent form",
             "innerHTML": " Download an unsigned copy of the informed consent form&nbsp<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/KPNW_Consent_V0.03.pdf"
+            "href": "./forms/consent/KPNW_Consent_V0.04.pdf"
         },
         "consentUnsignedMarshfield": {
             "title": "Download consent form",
             "innerHTML": " Download an unsigned copy of the informed consent form&nbsp<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/Marshfield_Consent_V0.03.pdf"
+            "href": "./forms/consent/Marshfield_Consent_V0.04.pdf"
         },
         "consentUnsignedSanford": {
             "title": "Download consent form",
             "innerHTML": " Download an unsigned copy of the informed consent form&nbsp<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/Sanford_Consent_V0.03.pdf"
+            "href": "./forms/consent/Sanford_Consent_V0.04.pdf"
         },
         "consentUnsignedUChicago": {
             "title": "Download consent form",
             "innerHTML": " Download an unsigned copy of the informed consent form&nbsp<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/UChicago_Consent_V0.05.pdf"
+            "href": "./forms/consent/UChicago_Consent_V0.06.pdf"
         },
         "consentUnsignedBSWH": {
             "title": "Download consent form",
             "innerHTML": " Download an unsigned copy of the informed consent form&nbsp<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/BSWH_Consent_V0.02.pdf"
+            "href": "./forms/consent/BSWH_Consent_V0.03.pdf"
         },
         "consentUnsignedNCI": {
             "title": "Download consent form",

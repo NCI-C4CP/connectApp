@@ -100,11 +100,19 @@ const siteToConsentSignPosMap = {
             "Eng": {nameX:90,nameY:402,signatureX:110,signatureY:322,dateX:90,dateY:362},
             "Span": {nameX:105,nameY:392,signatureX:105,signatureY:312,dateX:105,dateY:352}
         },
+        "V0.06": {
+            "Eng": {nameX:90,nameY:402,signatureX:110,signatureY:322,dateX:90,dateY:362},
+            "Span": {nameX:105,nameY:392,signatureX:105,signatureY:312,dateX:105,dateY:352}
+        },
         "default": {nameX:90,nameY:420,signatureX:110,signatureY:340,dateX:90,dateY:380},
     },
     
     "HFHS":{
         "V0.03":  {
+            "Eng": {nameX:90,nameY:410,signatureX:110,signatureY:330,dateX:90,dateY:370},
+            "Span": {nameX:105,nameY:410,signatureX:105,signatureY:330,dateX:105,dateY:370}
+        },
+        "V0.04":  {
             "Eng": {nameX:90,nameY:410,signatureX:110,signatureY:330,dateX:90,dateY:370},
             "Span": {nameX:105,nameY:410,signatureX:105,signatureY:330,dateX:105,dateY:370}
         },
@@ -116,16 +124,22 @@ const siteToConsentSignPosMap = {
             "Eng": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355},
             "Span": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355},
         },
+        "V0.05": {
+            "Eng": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355},
+            "Span": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355},
+        },
         "V0.03": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355},
         "default": {nameX:110,nameY:400,signatureX:110,signatureY:320,dateX:110,dateY:360},
     },
     "KPGA": {
+        "V0.05": {nameX:110,nameY:375,signatureX:110,signatureY:295,dateX:110,dateY:335},
         "V0.04": {nameX:110,nameY:375,signatureX:110,signatureY:295,dateX:110,dateY:335},
         "V0.03": {nameX:110,nameY:375,signatureX:110,signatureY:295,dateX:110,dateY:335},
         "default": {nameX:110,nameY:400,signatureX:110,signatureY:320,dateX:110,dateY:360},
     },
     "KPHI": {
         "V0.03": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355},
+        "V0.04": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355},
         "default": {nameX:110,nameY:370,signatureX:110,signatureY:290,dateX:110,dateY:330},
     },
     "KPNW": {
@@ -145,6 +159,10 @@ const siteToConsentSignPosMap = {
             "Eng": {nameX:110,nameY:405,signatureX:115,signatureY:325,dateX:110,dateY:365},
             "Span": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355}
         },
+        "V0.04": {
+            "Eng": {nameX:110,nameY:405,signatureX:115,signatureY:325,dateX:110,dateY:365},
+            "Span": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355}
+        },
         "default": {nameX:110,nameY:420,signatureX:115,signatureY:345,dateX:110,dateY:380},
     },
     "Sanford": {
@@ -152,14 +170,23 @@ const siteToConsentSignPosMap = {
             "Eng": {nameX:120,nameY:730,signatureX:120,signatureY:655,dateX:120,dateY:690},
             "Span": {nameX:120,nameY:200,signatureX:120,signatureY:125,dateX:120,dateY:160}
         },
+        "V0.04": {
+            "Eng": {nameX:120,nameY:730,signatureX:120,signatureY:655,dateX:120,dateY:690},
+            "Span": {nameX:120,nameY:200,signatureX:120,signatureY:125,dateX:120,dateY:160}
+        },
         "default": {nameX:120,nameY:407,signatureX:120,signatureY:330,dateX:120,dateY:367},
     },
     "UChicago": {
         "V0.05": {nameX:110,nameY:410,signatureX:115,signatureY:330,dateX:110,dateY:370},
+        "V0.06": {nameX:110,nameY:410,signatureX:115,signatureY:330,dateX:110,dateY:370},
         "default": {nameX:110,nameY:380,signatureX:115,signatureY:305,dateX:110,dateY:342},
     },
     "BSWH": {
         "V0.02": {
+            "Eng": { nameX: 105, nameY: 407, signatureX: 105, signatureY: 329, dateX: 105, dateY: 367 },
+            "Span": { nameX: 105, nameY: 407, signatureX: 105, signatureY: 329, dateX: 105, dateY: 367 }
+        },
+        "V0.03": {
             "Eng": { nameX: 105, nameY: 407, signatureX: 105, signatureY: 329, dateX: 105, dateY: 367 },
             "Span": { nameX: 105, nameY: 407, signatureX: 105, signatureY: 329, dateX: 105, dateY: 367 }
         },
