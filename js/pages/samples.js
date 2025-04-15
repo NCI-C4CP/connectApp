@@ -632,14 +632,14 @@ const bswh = {
                             </p>
                         </div>
                         <div>
-                            <span class=\"site-info-bold\">Baylor Scott & White - N. Garland Clinic</span>
+                            <span class="site-info-bold">Baylor Scott & White - N. Garland Clinic</span>
                             <p>7217 Telecom Pkwy, Suite 100<br>
                                 Garland, TX 75044<br>
                                 Parking Instructions: The site offers free surface level parking.
                             </p>
                         </div>
                         <div>
-                            <span class=\"site-info-bold\">Baylor Scott & White Medical Center - Irving</span>
+                            <span class="site-info-bold">Baylor Scott & White Medical Center - Irving</span>
                             <p>1901 N. MacArthur Blvd, Suite 207<br>
                                 Irving, TX 75061<br>
                                 Parking Instructions: The site offers free surface level parking.<br>
