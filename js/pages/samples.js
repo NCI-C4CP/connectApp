@@ -519,8 +519,8 @@ const u_chicago = {
             '',
         ],
         [
-            '<span data-i18n="samples.u_chicago.locations.DuchossoisName"><span class="site-info-underline">UChicago, Duchossois Center for Advanced Medicine (DCAM) in Hyde Park</span></span>',
-            '<span data-i18n="samples.u_chicago.locations.DuchossoisAddress">University of Chicago Medicine <br>Duchossois Center for Advanced Medicine (DCAM) #2101 </br>5758 S. Maryland Avenue <br>Chicago, IL 60637</br><br>After entering the DCAM building from the main entrance, look for us at the top of the stairs on the 2nd floor.</br></p></span>',
+            '<span data-i18n="samples.u_chicago.locations.DuchossoisName"><span class="site-info-underline">UChicago Duchossois Center for Advanced Medicine (DCAM) Research Clinic in Hyde Park</span></span>',
+            '<span data-i18n="samples.u_chicago.locations.DuchossoisAddress">University of Chicago Medicine <br>Duchossois Center for Advanced Medicine (DCAM) #2A </br>5758 S. Maryland Avenue <br>Chicago, IL 60637</br><br>After entering the DCAM building from the main entrance, look for us at the top of the stairs on the 2nd floor.</br></p></span>',
             '',
             '<span data-i18n="samples.u_chicago.locations.DuchossoisParking">The University of Chicago Medicine offers valet and self-parking. We will validate your parking pass. Please show your self-parking ticket to research staff.</span>',
         ],
@@ -535,6 +535,12 @@ const u_chicago = {
             '',
             '',
             '',
+        ],
+        [
+            '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsName" class="site-info-underline">UChicago, Duchossois Center for Advanced Medicine (DCAM) Outpatient Labs </span>',
+            '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsAddress">University of Chicago Medicine<br> Duchossois Center for Advanced Medicine (DCAM), 3F or 4F<br> 5758 S. Maryland Avenue<br> Chicago, IL 60637<br></span>',
+            '',
+            '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsParking">The University of Chicago Medicine offers valet and self-parking. The outpatient labs are located on both the 3<sup>rd</sup> and 4<sup>th</sup> floors.</span>',            
         ],
         [
             '<span data-i18n="samples.u_chicago.locations.RiverEastName"><span class="site-info-underline"><a href="https://www.uchicagomedicine.org/find-a-location/uchicago-medicine-river-east" target="_blank">UChicago Medicine River East</a></span></span>',
