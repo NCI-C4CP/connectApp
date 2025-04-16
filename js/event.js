@@ -974,13 +974,16 @@ export const addEventUPSubmit = async () => {
 
         /* Validate emailAddress/physicalAddress */
         const uspsSuggestion = {
+            isMailAddressValid: true,
+            isPhysicalAddressValid: true,
+            isAlternateAddressValid: true,
             mailAddress: {},
             physicalAddress: {},
             alternateAddress: {},
         }
         if (!hasError) {
             const validateMailAddress = await validateAddress(focus, "UPAddress1Line1", "UPAddress1Line2", "UPAddress1City", "UPAddress1State", "UPAddress1Zip")
-            hasError = hasError || validateMailAddress.hasError
+            uspsSuggestion.isMailAddressValid = !validateMailAddress.hasError
             uspsSuggestion.mailAddress = validateMailAddress.result
 
             if (document.getElementById('UPAddress2Line1').value &&
@@ -989,7 +992,7 @@ export const addEventUPSubmit = async () => {
                 document.getElementById('UPAddress2Zip').value) {
 
                 const validatePhysicalAddress = await validateAddress(focus, "UPAddress2Line1", "UPAddress2Line2", "UPAddress2City", "UPAddress2State", "UPAddress2Zip")
-                hasError = hasError || validatePhysicalAddress.hasError
+                uspsSuggestion.isPhysicalAddressValid = !validatePhysicalAddress.hasError
                 uspsSuggestion.physicalAddress = validatePhysicalAddress.result
             }
         }
@@ -1050,7 +1053,7 @@ export const addEventUPSubmit = async () => {
 
             if (!hasError) {
                 const validateAlternateAddress = await validateAddress(focus, "UPAddress3Line1", "UPAddress3Line2", "UPAddress3City", "UPAddress3State", "UPAddress3Zip");
-                hasError = hasError || validateAlternateAddress.hasError;
+                uspsSuggestion.isAlternateAddressValid = !validateAlternateAddress.hasError
                 uspsSuggestion.alternateAddress = validateAlternateAddress.result;
             }
         }
@@ -1266,16 +1269,83 @@ export const addEventUPSubmit = async () => {
 const preVerifyUserDetails = (uspsSuggestion, riskyEmails, formData) => {
     if (riskyEmails.length) {
         showRiskyEmailWarning(uspsSuggestion, riskyEmails, formData);
+    } else if (!uspsSuggestion.isMailAddressValid) {
+        showInvalidAddressWarning(uspsSuggestion, formData, "mail");
+    } else if (!uspsSuggestion.isPhysicalAddressValid) {
+        showInvalidAddressWarning(uspsSuggestion, formData, "physical");
+    } else if (!uspsSuggestion.isAlternateAddressValid) {
+        showInvalidAddressWarning(uspsSuggestion, formData, "alternate");
     } else if (uspsSuggestion.mailAddress.suggestion) {
-        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData, 'mail');
+        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData, "mail");
     } else if (uspsSuggestion.physicalAddress.suggestion) {
-        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData, 'physical');
+        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData, "physical");
     } else if (uspsSuggestion.alternateAddress.suggestion) {
-        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData, 'alternate');
+        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData, "alternate");
     } else {
         verifyUserDetails(formData);
     }
 };
+
+const showInvalidAddressWarning = (uspsSuggestion, formData, type) => {
+    if (!document.getElementById('connectMainModal').classList.contains('show')) openModal();
+    let addressHtml = ``;
+    if (type === "mail") {
+        addressHtml += `
+            <span data-i18n="event.l1">Line 1</span>: ${document.getElementById("UPAddress1Line1").value} </br>
+            <span data-i18n="event.l2">Line 2</span>: ${document.getElementById("UPAddress1Line2").value} </br>
+            <span data-i18n="event.city">City</span>: ${document.getElementById("UPAddress1City").value} </br>
+            <span data-i18n="event.state">State</span>: ${document.getElementById("UPAddress1State").value} </br>
+            <span data-i18n="event.zip">Zip</span>: ${document.getElementById("UPAddress1Zip").value} </br>
+        `;
+    }
+    if (type === "physical") {
+        addressHtml += `
+            <span data-i18n="event.l1">Line 1</span>: ${document.getElementById("UPAddress2Line1").value} </br>
+            <span data-i18n="event.l2">Line 2</span>: ${document.getElementById("UPAddress2Line2").value} </br>
+            <span data-i18n="event.city">City</span>: ${document.getElementById("UPAddress2City").value} </br>
+            <span data-i18n="event.state">State</span>: ${document.getElementById("UPAddress2State").value} </br>
+            <span data-i18n="event.zip">Zip</span>: ${document.getElementById("UPAddress2Zip").value} </br>
+        `;
+    }
+    if (type === "alternate") {
+        addressHtml += `
+            <span data-i18n="event.l1">Line 1</span>: ${document.getElementById("UPAddress3Line1").value} </br>
+            <span data-i18n="event.l2">Line 2</span>: ${document.getElementById("UPAddress3Line2").value} </br>
+            <span data-i18n="event.city">City</span>: ${document.getElementById("UPAddress3City").value} </br>
+            <span data-i18n="event.state">State</span>: ${document.getElementById("UPAddress3State").value} </br>
+            <span data-i18n="event.zip">Zip</span>: ${document.getElementById("UPAddress3Zip").value} </br>
+        `;
+    }
+
+    let bodyHtml = `
+        <span data-i18n="event.invalidAddressDescription">
+            The address you entered may not be valid. Please check your entry below. If the address is not correct, please click ‘Go Back’ and correct the address. If the address is correct, please click ‘Continue with Address’. We are only able to send Connect communications and packages to valid addresses.
+        </span>
+        <div style="display: flex; justify-content: center; margin-top: 15px;"><div>${addressHtml}</div></div>
+    `
+    document.getElementById('connectModalHeader').style.display = 'none';
+    document.getElementById('connectModalBody').innerHTML = translateHTML(bodyHtml);
+    document.getElementById('connectModalFooter').innerHTML = translateHTML(`
+        <div class="d-flex justify-content-between w-100">
+            <button data-i18n="event.navButtonsClose" type="button" title="Go Back" class="btn btn-dark" data-bs-dismiss="modal">Go Back</button>
+        </div>
+        <p style="margin-top: 20px; font-size: 12px" data-i18n="event.invalidAddressFooter">
+            If you are having problems fixing these errors and can’t submit your profile, please reach out to the <a href="https://myconnect.cancer.gov/support" target="_blank">Connect Support Center</a>  for help or <a id="continueBtn" style="cursor: pointer;">continue with address</a> as shown.
+        </p>
+    `);
+    document.getElementById('connectModalFooter').style.display = 'block';
+
+    document.getElementById('continueBtn').addEventListener('click', () => {
+        if (type === 'mail') {
+            uspsSuggestion.isMailAddressValid = true
+        } else if (type === 'physical') {
+            uspsSuggestion.isPhysicalAddressValid = true
+        } else {
+            uspsSuggestion.isAlternateAddressValid = true
+        }
+        preVerifyUserDetails(uspsSuggestion, [], formData)
+    })
+}
 
 const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, type) => {
 
@@ -1406,6 +1476,10 @@ const showInvalidFormWarning = () => {
             Please fix the errors in the information you entered before continuing. If you are having problems fixing these errors and can’t submit your profile, please reach out to the <a href="https://myconnect.cancer.gov/support" target="_blank">Connect Support Center</a> for help.
         </span>
     `
+    document.getElementById('connectModalHeader').innerHTML = translateHTML(`
+        <h4 data-i18n="event.reviewProfile">Review your profile details</h4>
+        <button type="button" class="btn-close" id="modalCloseBtn" aria-label="Close" data-bs-dismiss="modal"></button>
+    `);
     document.getElementById('connectModalBody').innerHTML = translateHTML(bodyHtml);
     document.getElementById('connectModalFooter').innerHTML = translateHTML(`
         <div class="d-flex justify-content-between w-100">
@@ -1444,8 +1518,8 @@ const showRiskyEmailWarning = (uspsSuggestion, riskyEmails, formData) => {
         </div>
         `
     })
+    document.getElementById('connectModalHeader').style.display = 'none';
     document.getElementById('connectModalBody').innerHTML = translateHTML(bodyHtml);
-
     document.getElementById('connectModalFooter').innerHTML = translateHTML(`
         <div class="d-flex justify-content-between w-100">
             <button data-i18n="event.navButtonsClose" type="button" title="Close" class="btn btn-dark" id="goBackBtn">Go Back</button>
@@ -1840,7 +1914,7 @@ const verifyUserDetails = (formData) => {
 
         <div class="row">
             <div class="col" data-i18n="event.physicalLine1">Line 1 (street, rural route)</div>
-            <div class="col">${formData[fieldMapping.physicalAddress1]}</div>
+            <div class="col">${formData[fieldMapping.physicalAddress1] || ''}</div>
         </div>
  
         <div class="row">
@@ -1850,17 +1924,17 @@ const verifyUserDetails = (formData) => {
 
         <div class="row">
             <div class="col" data-i18n="event.city">City</div>
-            <div class="col">${formData[fieldMapping.physicalCity]}</div>
+            <div class="col">${formData[fieldMapping.physicalCity] || ''}</div>
         </div>
 
         <div class="row">
             <div class="col" data-i18n="event.state">State</div>
-            <div class="col">${formData[fieldMapping.physicalState]}</div>
+            <div class="col">${formData[fieldMapping.physicalState] || ''}</div>
         </div>
 
         <div class="row">
             <div class="col" data-i18n="event.zip">Zip</div>
-            <div class="col">${formData[fieldMapping.physicalZip]}</div>
+            <div class="col">${formData[fieldMapping.physicalZip] || ''}</div>
         </div>
 
         <div class="row">

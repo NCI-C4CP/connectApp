@@ -1388,6 +1388,8 @@ const en = {
         "physicalLine1": "Line 1 (street, rural route)",
         "line1": "Line 1 (street, PO box, rural route)",
         "line2": "Line 2 (apartment, suite, unit, building)",
+        "l1": "Line 1",
+        "l2": "Line 2",
         "city": "City",
         "state": "State",
         "zip": "Zip",
@@ -1413,7 +1415,9 @@ const en = {
         },
         "today": "Today",
         "old": "Old",
-        "noNotifications": "No notifications found!"
+        "noNotifications": "No notifications found!",
+        "invalidAddressDescription": "The address you entered may not be valid. Please check your entry below. If the address is not correct, please click ‘Go Back’ and correct the address. If the address is correct, please click ‘Continue with Address’. We are only able to send Connect communications and packages to valid addresses.",
+        "invalidAddressFooter": "If you are having problems fixing these errors and can’t submit your profile, please reach out to the <a href=\"https://myconnect.cancer.gov/support\" target=\"_blank\">Connect Support Center</a>  for help or <a id=\"continueBtn\" style=\"cursor: pointer;\">continue with address</a> as shown." 
     },
     "settingsHelpers": {
         "suffixJr": "Jr.",

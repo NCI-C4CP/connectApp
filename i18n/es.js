@@ -1393,6 +1393,8 @@
         "physicalLine1": "Línea 1 (calle, ruta rural)",
         "line1": "Línea 1 (calle, apartado postal, ruta rural)",
         "line2": "Línea 2 (apartamento, suite, unidad, edificio)",
+        "l1": "Línea 1",
+        "l2": "Línea 2",
         "city": "Ciudad",
         "state": "Estado",
         "zip": "Código postal",
@@ -1418,7 +1420,9 @@
         },
         "today": "Hoy",
         "old": "Anteriores",
-        "noNotifications": "¡No se encontró ninguna notificación!"
+        "noNotifications": "¡No se encontró ninguna notificación!",
+        "invalidAddressDescription": "La dirección que ingresó quizá no sea válida. Por favor compruebe lo que ingresó abajo. Si la dirección no es correcta, haga clic en 'Regresar' y corrija la dirección. Si la dirección es correcta, haga clic en 'Continuar con la dirección'. Solo podemos enviar comunicaciones y paquetes de Connect a direcciones validas.",
+        "invalidAddressFooter": "Si está teniendo problemas arreglando estos errores y no puede entregar su perfil, por favor póngase en contacto en el <a href=\"https://myconnect.cancer.gov/support\" target=\"_blank\">Centro de Asistencia de Connect</a> for help or <a id=\"continueBtn\" style=\"cursor: pointer;\">continuar con la dirección</a> as shown." 
     },
     "settingsHelpers": {
         "suffixJr": "Jr.",
