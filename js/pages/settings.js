@@ -1781,7 +1781,7 @@ export const renderPhysicalMailingAddressData = (id) => {
                 </div>
                 <div class="row">
                     <div class="col-md-4"">
-                        <button class="btn btn-primary save-data consentNextButton px-3" id="clearPhysicalAddrBtn" data-i18n="settingsHelpers.clearButtonText">Clear</button>
+                        <button class="btn btn-primary save-data consentNextButton px-3" id="clearPhysicalAddrBtn" data-i18n="settingsHelpers.clearButtonText" style="display:none">Clear</button>
                     </div>
                 </div>
             </div>
@@ -1823,7 +1823,7 @@ const renderAlternateAddressData = (id) => {
                 </div>
                 <div class="row">
                     <div class="col-md-4"">
-                        <button class="btn btn-primary save-data consentNextButton px-3" id="clearAlternateAddrBtn" data-i18n="settingsHelpers.clearButtonText">Clear</button>
+                        <button class="btn btn-primary save-data consentNextButton px-3" id="clearAlternateAddrBtn" data-i18n="settingsHelpers.clearButtonText" style="display:none">Clear</button>
                     </div>
                 </div>
             </div>
