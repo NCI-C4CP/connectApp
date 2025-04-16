@@ -11,6 +11,8 @@ export const showEditButtonsOnUserVerified = () => {
   document.getElementById('changeAltAddressButton').style.display = 'block';
   document.getElementById('changeAltContactButton').style.display = 'block';
   document.getElementById('changeLoginButton').style.display = 'block';
+  document.getElementById('clearPhysicalAddrBtn').style.display = 'block';
+  document.getElementById('clearAlternateAddrBtn').style.display = 'block';
 };
 
 export const toggleElementVisibility = (elementArray, isFormdisplayed) => {
