@@ -795,6 +795,7 @@ const en = {
         "mainBodyExperience2024Description": "Questions about your experience with Connect and your preferences for completing study activities, using MyConnect, and getting messages.",
         "mainBodyCancerScreeningHistoryHeader": "Cancer Screening History Survey",
         "mainBodyCancerScreeningHistoryDescription": "Questions about past tests you may have had to screen for cancer. These are tests that look for cancer in people without symptoms.",
+        "surveysCompleted": "You've finished all available Connect surveys. We will reach out to you when there are new surveys and study activities to complete. Thank you for your contributions to the study!",
     },
     "notifications": {
         "read": "Read",
