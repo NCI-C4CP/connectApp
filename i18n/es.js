@@ -799,6 +799,7 @@
         "mainBodyExperience2024Description": "Preguntas acerca de su experiencia con Connect, y sus preferencias para realizar actividades del estudio, utilizar MyConnect, y recibir mensajes.",
         "mainBodyCancerScreeningHistoryHeader":"Encuesta sobre historial de exámenes de detección de cáncer",
         "mainBodyCancerScreeningHistoryDescription": "Preguntas sobre pruebas anteriores para detectar el cáncer. Se trata de pruebas que buscan cáncer en personas sin síntomas.",
+        "surveysCompleted": "Ha completado todas las encuestas de Connect disponibles. Nos comunicaremos con usted cuando haya nuevas encuestas y actividades de estudio para completar. ¡Gracias por sus contribuciones al estudio!",
     },
     "notifications": {
         "read": "Leídos",
