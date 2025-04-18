@@ -1330,7 +1330,7 @@ const showInvalidAddressWarning = (uspsSuggestion, formData, type) => {
             <button data-i18n="event.navButtonsClose" type="button" title="Go Back" class="btn btn-dark" data-bs-dismiss="modal">Go Back</button>
         </div>
         <p style="margin-top: 20px; font-size: 12px" data-i18n="event.invalidAddressFooter">
-            If you are having problems fixing these errors and can’t submit your profile, please reach out to the <a href="https://myconnect.cancer.gov/support" target="_blank">Connect Support Center</a>  for help or <a id="continueBtn" style="cursor: pointer;">continue with address</a> as shown.
+            If you are having problems fixing these errors and can’t submit your profile, please reach out to the <a href="https://myconnect.cancer.gov/support" target="_blank">Connect Support Center</a>  for help or <a id="continueBtn" style="cursor: pointer; text-decoration: underline">Continue with Address</a> as shown.
         </p>
     `);
     document.getElementById('connectModalFooter').style.display = 'block';
