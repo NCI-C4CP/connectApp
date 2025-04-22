@@ -40,7 +40,7 @@ export default {
     HIPAA: "V0.01",
   },
   NCI: {
-    Consent: "V0.05",
+    Consent: "V0.06",
     HIPAA: "V0.02",
   },
   Revocation: "V1.0",
