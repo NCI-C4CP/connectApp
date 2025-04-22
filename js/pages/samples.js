@@ -336,13 +336,13 @@ const health_partners = {
         ],
         [
             '<span data-i18n="samples.health_partners.locations.BrooklynCenterName">HealthPartners Clinic Brooklyn Center</span>',
-            '<span data-i18n="samples.health_partners.locations.BrooklynCenterAddress">6845 Lee Ave N <br>Brooklyn Center, MN 55429 <br><br> Upon entering the building, go down the hallway located on the right side of the building and follow the sign that says “Lab”. On your left, please check-in at the laboratory front desk.</span>',
+            '<span data-i18n="samples.health_partners.locations.BrooklynCenterAddress">6845 Lee Ave N <br>Brooklyn Center, MN 55429 <br><br> Upon entering the building, go down the hallway located on the right side of the building and follow the sign that says “Lab”. On your left, please check in at the laboratory front desk.</span>',
             '',
             '<span data-i18n="samples.health_partners.locations.BrooklynCenterParking">"Free parking is available on-site at the front of the building.<br><br><div class=\"messagesSubHeader\">Scheduling Information</div><br>Self-scheduling is not currently available for the Brooklyn Center location. For questions and scheduling, please call 952-967-5067.</span>',
         ],
         [
             '<span data-i18n="samples.health_partners.locations.ClinicalStillwaterName">HealthPartners Clinic Stillwater</span>',
-            '<span data-i18n="samples.health_partners.locations.ClinicalStillwaterAddress">1500 Curve Crest Blvd<br>Stillwater, MN 55082 <br><br>Enter through “Entrance 1 – TRIA entrance”. Upon entering the building, please check-in at the front desk of the clinic. You will be handed a lab slip to then check-in at the lab desk to your right down the hall.</span>',
+            '<span data-i18n="samples.health_partners.locations.ClinicalStillwaterAddress">1500 Curve Crest Blvd<br>Stillwater, MN 55082 <br><br>Enter through “Entrance 1 – TRIA entrance”. Upon entering the building, please check in at the front desk of the clinic. You will be handed a lab slip to then check in at the lab desk to your right down the hall.</span>',
             '',
             '<span data-i18n="samples.health_partners.locations.ClinicalStillwaterParking">"Free parking is available on-site at the front of the building.<br><br><div class="messagesSubHeader">Scheduling Information</div><br>Self-scheduling is not currently available for the Stillwater location. For questions and scheduling, please call 952-967-5067.</span>',
         ],
@@ -519,7 +519,7 @@ const u_chicago = {
             '',
         ],
         [
-            '<span data-i18n="samples.u_chicago.locations.DuchossoisName"><span class="site-info-underline">UChicago Duchossois Center for Advanced Medicine (DCAM) Research Clinic in Hyde Park</span></span>',
+            '<a data-i18n="samples.u_chicago.locations.DuchossoisName" class="site-info-underline" href="https://www.uchicagomedicine.org/find-a-location/uchicago-medicine-duchossois-center-for-advanced-medicine-hyde-park" target="_blank">UChicago Duchossois Center for Advanced Medicine (DCAM) Research Clinic in Hyde Park</a>',
             '<span data-i18n="samples.u_chicago.locations.DuchossoisAddress">University of Chicago Medicine <br>Duchossois Center for Advanced Medicine (DCAM) #2A </br>5758 S. Maryland Avenue <br>Chicago, IL 60637</br><br>After entering the DCAM building from the main entrance, look for us at the top of the stairs on the 2nd floor.</br></p></span>',
             '',
             '<span data-i18n="samples.u_chicago.locations.DuchossoisParking">The University of Chicago Medicine offers valet and self-parking. We will validate your parking pass. Please show your self-parking ticket to research staff.</span>',
@@ -785,14 +785,19 @@ const renderLocations = (site) => {
                         ${location[1]}
                     </div>
                 </div>`
-            } else if (site === u_chicago && !location[1]){
-                template += `<div class="row" style="width:100%">
-                <div style="width:100%">
-                    <div class="messagesBodyFont">
-                        ${location[1]}
-                    </div>
-                </div>
-            </div>`
+            } else if (site === u_chicago){
+                if (location[1]) {
+                    template += `<div class="row" style="width:100%">
+                                    <div style="width:100%">
+                                        <div class="messagesSubHeader" data-i18n="samples.directionsText">
+                                            Address and Directions
+                                        </div>
+                                        <div class="messagesBodyFont">
+                                            ${location[1]}
+                                        </div>
+                                    </div>
+                                </div>`
+                }
             } else {
                 template += `<div class="row" style="width:100%">
                 <div style="width:100%">
