@@ -213,9 +213,6 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                 }
 
                 template += `
-                    <div class="alert alert-warning" id="notesOnLanguage" style="margin-top:10px;" data-i18n="mytodolist.notesOnLanguage">
-                        If you'd like to take this survey in another language, simply click the button at the top of the page to switch to your preferred language before you start. Once you start this survey in one language, you'll need to finish it in that language.
-                    </div>
                     <ul class="nav nav-tabs" role="tablist" style="border-bottom:none; margin-top:20px">
                         <li class="nav-item" style=:padding-left:10px>
                             <button class=" nav-link navbar-btn survey-Active-Nav" id="surveysToDoTab" role="tab" aria-selected="true" aria-controls="todoPanel" data-i18n="mytodolist.toDoButton">To Do</button>
@@ -679,6 +676,12 @@ const checkForNewSurveys = async (data, collections) => {
         template += `
             <div class="alert alert-warning" id="verificationMessage" style="margin-top:10px;" data-i18n="mytodolist.surveysCompleted">
                 You've finished all available Connect surveys. We will reach out to you when there are new surveys and study activities to complete. Thank you for your contributions to the study!
+            </div>
+        `;
+    } else {
+        template += `
+            <div class="alert alert-warning" id="notesOnLanguage" style="margin-top:10px;" data-i18n="mytodolist.notesOnLanguage">
+                If you'd like to take this survey in another language, simply click the button at the top of the page to switch to your preferred language before you start. Once you start this survey in one language, you'll need to finish it in that language.
             </div>
         `;
     }
