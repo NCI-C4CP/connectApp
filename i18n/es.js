@@ -492,7 +492,7 @@
             "src": "./forms/consent/BSWH_Consent_V0.03_Span.html"
         },
         "consentIframeNCI": {
-            "src": "./forms/consent/NCI_Consent_V0.05_Span.html"
+            "src": "./forms/consent/NCI_Consent_V0.06_Span.html"
         },
         "consentUnsignedHFHS": {
             "title": "Descargar el formulario de consentimiento",
@@ -547,7 +547,7 @@
         "consentUnsignedNCI": {
             "title": "Descargar el formulario de consentimiento",
             "innerHTML": " Descargue una copia sin firmar del formulario de consentimiento informado&nbsp;<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/NCI_Consent_V0.05_Span.pdf"
+            "href": "./forms/consent/NCI_Consent_V0.06_Span.pdf"
         },
         "consentPageConsentFormLink": {
             "title": "Descargar el formulario de consentimiento",

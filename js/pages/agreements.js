@@ -151,6 +151,10 @@ const siteToConsentSignPosMap = {
             "Eng": {nameX:90,nameY:407,signatureX:110,signatureY:330,dateX:90,dateY:370},
             "Span": {nameX:105,nameY:407,signatureX:105,signatureY:330,dateX:105,dateY:370}
         },
+        "V0.06": {
+            "Eng": {nameX:90,nameY:407,signatureX:110,signatureY:330,dateX:90,dateY:370},
+            "Span": {nameX:105,nameY:407,signatureX:105,signatureY:330,dateX:105,dateY:370}
+        },
         "default": {nameX:90,nameY:410,signatureX:110,signatureY:335,dateX:90,dateY:375},
     },
     "Marshfield": {

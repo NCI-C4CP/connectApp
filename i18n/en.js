@@ -491,7 +491,7 @@ const en = {
             "src": "./forms/consent/BSWH_Consent_V0.03.html"
         },
         "consentIframeNCI": {
-            "src": "./forms/consent/NCI_Consent_V0.05.html"
+            "src": "./forms/consent/NCI_Consent_V0.06.html"
         },
         "consentUnsignedHFHS": {
             "title": "Download consent form",
@@ -546,7 +546,7 @@ const en = {
         "consentUnsignedNCI": {
             "title": "Download consent form",
             "innerHTML": " Download an unsigned copy of the informed consent form&nbsp<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/NCI_Consent_V0.05.pdf"
+            "href": "./forms/consent/NCI_Consent_V0.06.pdf"
         },
         "hipaaIframeHFHS": {
             "src": "./forms/HIPAA/HFHS_HIPAA_V0.02.html"
