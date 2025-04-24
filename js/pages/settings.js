@@ -519,7 +519,7 @@ const handleEditMailingAddressSection = () => {
 const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, isPOBox = false) => {
   const isSuccess = await changeMailingAddress(id, addressLine1, addressLine2, city, state, zip, userData, isPOBox).catch(function (error) {
     document.getElementById(`mailingAddressFail${id}`).style.display = 'block';
-    document.getElementById(`mailingAddressError${id}`).innerHTML = error.message;
+    document.getElementById(`mailingAddressError${id}`).innerHTML = translateText('settings.failMailUpdate');
   });
   if (isSuccess) {
     await refreshUserDataAfterEdit();
