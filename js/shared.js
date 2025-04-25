@@ -2586,3 +2586,10 @@ export const escapeHTML = (str) => {
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#39;');
 };
+
+export const closeModal = () => {
+    const modal = bootstrap.Modal.getInstance(
+        document.getElementById("connectMainModal")
+    );
+    modal.hide();
+};

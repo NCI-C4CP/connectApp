@@ -2,7 +2,6 @@
 temp
 .DS_Store
 .hintrc
-.eslintrc.js
 eslint.config.mjs
 connectApp-translation
 node_modules/

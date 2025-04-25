@@ -1,5 +1,5 @@
 import { allStates, escapeHTML, showAnimation, hideAnimation, getMyData, hasUserData, firebaseSignInRender, validEmailFormat, validPhoneNumberFormat, checkAccount, translateHTML, translateText, languageTranslations } from '../shared.js';
-import { attachTabEventListeners, addOrUpdateAuthenticationMethod, changeAltContactInformation, changeContactInformation, changeMailingAddress, changeName, formatFirebaseAuthPhoneNumber, FormTypes, getCheckedRadioButtonValue, handleContactInformationRadioButtonPresets, handleOptionalFieldVisibility, hideOptionalElementsOnShowForm, hideSuccessMessage, openUpdateLoginForm, showAndPushElementToArrayIfExists, showEditButtonsOnUserVerified, suffixList, suffixToTextMap, toggleElementVisibility, togglePendingVerificationMessage, unlinkFirebaseAuthProvider, updatePhoneNumberInputFocus, validateAltContactInformation, validateContactInformation, validateLoginEmail, validateLoginPhone, validateMailingAddress, validateName, showMailAddressSuggestionMyProfile, showRiskyEmailWarningMyProfile } from '../settingsHelpers.js';
+import { attachTabEventListeners, addOrUpdateAuthenticationMethod, changeAltContactInformation, changeContactInformation, changeMailingAddress, changeName, formatFirebaseAuthPhoneNumber, FormTypes, getCheckedRadioButtonValue, handleContactInformationRadioButtonPresets, handleOptionalFieldVisibility, hideOptionalElementsOnShowForm, hideSuccessMessage, openUpdateLoginForm, showAndPushElementToArrayIfExists, showEditButtonsOnUserVerified, suffixList, suffixToTextMap, toggleElementVisibility, togglePendingVerificationMessage, unlinkFirebaseAuthProvider, updatePhoneNumberInputFocus, validateAltContactInformation, validateContactInformation, validateLoginEmail, validateLoginPhone, validateMailingAddress, validateName, showMailAddressSuggestionMyProfile, showRiskyEmailWarningMyProfile, showClearAddressConfirmation } from '../settingsHelpers.js';
 import { addEventAddressAutoComplete } from '../event.js';
 import cId from '../fieldToConceptIdMapping.js';
 
@@ -225,6 +225,8 @@ export const renderSettingsPage = async () => {
       handleEditAltAddressSection();
       handleEditAltContactSection();
       handleEditSignInInformationSection();
+      handleClearPhysicalAddress();
+      handleClearAlternateAddress();
       attachTabEventListeners();
       attachLoginEditFormButtons();
     }
@@ -517,7 +519,7 @@ const handleEditMailingAddressSection = () => {
 const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, isPOBox = false) => {
   const isSuccess = await changeMailingAddress(id, addressLine1, addressLine2, city, state, zip, userData, isPOBox).catch(function (error) {
     document.getElementById(`mailingAddressFail${id}`).style.display = 'block';
-    document.getElementById(`mailingAddressError${id}`).innerHTML = error.message;
+    document.getElementById(`mailingAddressError${id}`).innerHTML = translateText('settings.failMailUpdate');
   });
   if (isSuccess) {
     await refreshUserDataAfterEdit();
@@ -534,6 +536,10 @@ const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, sta
 
     } else {
         document.getElementById(`profileMailingAddress${id}`).innerHTML = `${escapeHTML(addressLine1)}</br>${escapeHTML(addressLine2)}</br>${escapeHTML(city)}, ${escapeHTML(state)} ${escapeHTML(zip)}${poBoxText}`;
+    }
+
+    if (addressLine1 === ""){
+        document.getElementById(`profileMailingAddress${id}`).innerHTML = ""
     }
 
     successMessageElement = document.getElementById(`mailingAddressSuccess${id}`);
@@ -606,6 +612,22 @@ const handleEditPhysicalMailingAddressSection = () => {
     }
   });
 };
+
+const handleClearPhysicalAddress = () => {
+    document.getElementById('clearPhysicalAddrBtn').addEventListener('click', async (e) => {
+        showClearAddressConfirmation(() => {
+            submitNewMailingAddress(2, "", "", "", "", "")
+        })
+    })
+}
+
+const handleClearAlternateAddress = () => {
+    document.getElementById('clearAlternateAddrBtn').addEventListener('click', async (e) => {
+        showClearAddressConfirmation(() => {
+            submitNewMailingAddress(3, "", "", "", "", "")
+        })
+    })
+}
 
 const loadAltAddressElements = () => {
     altAddressElementArray.push(document.getElementById(`currentMailingAddressDiv3`));
@@ -1740,21 +1762,27 @@ export const renderMailingAddressData = (id) => {
 
 export const renderPhysicalMailingAddressData = (id) => {
   return translateHTML(`
-            <div class="row userProfileLinePaddings" id="currentMailingAddressDiv${id}">
-                <div class="col">
-                    <b>
-                    <div class="userProfileBodyFonts" id="profileMailingAddress${id}">
-                        ${!isParticipantDataDestroyed ?
-                            `
-                                ${userData[cId.physicalAddress1] || ''}</br>
-                                ${userData[cId.physicalAddress2] ? `${userData[cId.physicalAddress2]}</br>` : ''}
-                                ${userData[cId.physicalCity] || ''}${userData[cId.physicalState] ? ',':''} ${userData[cId.physicalState] || ''} ${userData[cId.physicalZip] || ''}    
-                            ` 
-                            : translateText('settings.dataDeleted')
-                        }
+            <div id="currentMailingAddressDiv${id}">
+                <div class="row userProfileLinePaddings">
+                    <div class="col">
+                        <div class="userProfileBodyFonts" id="profileMailingAddress${id}">
+                            <b>
+                            ${!isParticipantDataDestroyed ?
+                                `
+                                    ${userData[cId.physicalAddress1] || ''}</br>
+                                    ${userData[cId.physicalAddress2] ? `${userData[cId.physicalAddress2]}</br>` : ''}
+                                    ${userData[cId.physicalCity] || ''}${userData[cId.physicalState] ? ',':''} ${userData[cId.physicalState] || ''} ${userData[cId.physicalZip] || ''}    
+                                ` 
+                                : translateText('settings.dataDeleted')
+                            }
+                            </b>
+                        </div>
                     </div>
-                    </b>
-                    </span>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"">
+                        <button class="btn btn-primary save-data consentNextButton px-3" id="clearPhysicalAddrBtn" data-i18n="settingsHelpers.clearButtonText" style="display:none">Clear</button>
+                    </div>
                 </div>
             </div>
         `);
@@ -1784,10 +1812,18 @@ const renderAlternateAddressData = (id) => {
     }
 
     return translateHTML(`
-            <div class="row userProfileLinePaddings" id="currentMailingAddressDiv${id}">
-                <div class="col">
-                    <div class="userProfileBodyFonts" id="profileMailingAddress${id}">
-                        ${!isParticipantDataDestroyed ? address : translateText('settings.dataDeleted')}
+            <div id="currentMailingAddressDiv${id}">
+                <div class="row userProfileLinePaddings">
+                    <div class="col">
+                        <div class="userProfileBodyFonts" id="profileMailingAddress${id}">
+                            ${!isParticipantDataDestroyed ? address : translateText('settings.dataDeleted')}
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"">
+                        <button class="btn btn-primary save-data consentNextButton px-3" id="clearAlternateAddrBtn" data-i18n="settingsHelpers.clearButtonText" style="display:none">Clear</button>
                     </div>
                 </div>
             </div>
