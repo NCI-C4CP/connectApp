@@ -736,12 +736,12 @@ export const validateAltContactInformation = async (altContactMobilePhoneComplet
   if (!hasError) {
     const emailValidation = await emailAddressValidation({
       emails: {
-        altContactEmail: altContactEmail || undefined,
+        altContactEmail: altContactEmail,
       },
     });
 
-    const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.altContactEmail)
-    if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(altContactEmail)
+    const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.altContactEmail);
+    if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(altContactEmail);
     if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
       errorMessage('newAltContactEmail', translateText('settingsHelpers.emailInvalid'), focus);
       if (focus) document.getElementById('newAltContactEmail').focus();
