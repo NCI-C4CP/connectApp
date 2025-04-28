@@ -899,7 +899,7 @@ const en = {
                 "ClinicalStillwaterAddress": "1500 Curve Crest Blvd W<br>Stillwater, MN 55082 <br><br>Enter through “Entrance 1 – TRIA entrance”. Upon entering the building, please check in at the front desk of the clinic. You will be handed a lab slip to then check in at the lab desk to your right down the hall.",
                 "ClinicalStillwaterParking": "Free parking is available on-site at the front of the building.<br><br><div class=\"messagesSubHeader\">Scheduling Information</div><br>Self-scheduling is not currently available for the Stillwater location. For questions and scheduling, please call 952-967-5067.",
                 "NewRichmondClinicName": "New Richmond Clinic, Westfields Hospital & Clinic",
-                "NewRichmondClinicAddress": "535 Hospital Rd<br>New Richmond, WI 54017 <br>Upon entering the building by the rotunda entrance, check in with the information desk. Ask for the “Connect Study at the Clinic lab” and you will be guided through the double doors to your right to check in at the “clinic lab”.",
+                "NewRichmondClinicAddress": "535 Hospital Rd<br>New Richmond, WI 54017 <br><br> Upon entering the building by the rotunda entrance, check in with the information desk. Ask for the “Connect Study at the Clinic lab” and you will be guided through the double doors to your right to check in at the “clinic lab”.",
                 "NewRichmondClinicParking": "Free parking is available on-site at the front of the building.<br><br><div class=\"messagesSubHeader\">Scheduling Information</div><br>Self-scheduling is not currently available for the New Richmond location. For questions and scheduling, please call 952-967-5067."
 
             }
