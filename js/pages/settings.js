@@ -209,7 +209,7 @@ export const renderSettingsPage = async () => {
      * Create the buttons, add the event listeners, push the elements to the arrays for visibility toggling
      * If the user profile has not been verified, then hide the profile and edit functionality, show the pending verification message
      */
-    if (userData[cId.verification] == cId.verified) {
+    if (userData[cId.verification] == cId.verified && userData[cId.consentWithdrawn] !== cId.yes) {
       btnObj.changeNameButton = document.getElementById('changeNameButton');
       btnObj.changeContactInformationButton = document.getElementById('changeContactInformationButton');
       btnObj.changeMailingAddressButton = document.getElementById('changeMailingAddressButton');

@@ -239,7 +239,7 @@ export const renderAgreements = async () => {
     showAnimation();
     const myData = await getMyData();
     let template = '';
-    if(hasUserData(myData) && myData.data['919254129'] !== undefined && myData.data['919254129'] === 353358909){
+    if(hasUserData(myData) && myData.data['919254129'] !== undefined && myData.data['919254129'] === fieldMapping.yes){
         template += translateHTML(`
             <div class="row justify-content-center">
                 <div class="col-lg-8">    
@@ -249,7 +249,7 @@ export const renderAgreements = async () => {
                         </div>
                     </div>
 
-                    ${((((myData.data.hasOwnProperty('773707518') && myData.data['773707518'] == 353358909)  || (myData.data['747006172'] && myData.data['747006172'] == 353358909)) && (!myData.data['153713899'] || myData.data['153713899'] == 104430631) || (myData.data.hasOwnProperty('831041022') && myData.data['831041022'] == 353358909 && (!myData.data['359404406'] || myData.data['359404406'] == 104430631)))) ?`
+                    ${((((myData.data.hasOwnProperty(fieldMapping.revokeHipaa) && myData.data[fieldMapping.revokeHipaa] == fieldMapping.yes)  || (myData.data[fieldMapping.consentWithdrawn] && myData.data[fieldMapping.consentWithdrawn] == fieldMapping.yes)) && (!myData.data[fieldMapping.hipaaRevocationSigned] || myData.data[fieldMapping.hipaaRevocationSigned] == 104430631) || (myData.data.hasOwnProperty('831041022') && myData.data['831041022'] == fieldMapping.yes && (!myData.data['359404406'] || myData.data['359404406'] == 104430631)))) ?`
                     <div class="row">
                         <div class="userProfileBox w-100">
                             <div class="row">
@@ -260,7 +260,7 @@ export const renderAgreements = async () => {
                                 <br>
                                 </div>
                             </div>
-                            ${(myData.data.hasOwnProperty('831041022') && myData.data['831041022'] == 353358909 && (!myData.data['359404406'] || myData.data['359404406'] == 104430631)) ?`
+                            ${(myData.data.hasOwnProperty('831041022') && myData.data['831041022'] == fieldMapping.yes && (!myData.data['359404406'] || myData.data['359404406'] == 104430631)) ?`
                                 <div class="row">
                                     <div class="col px-2">
                                         <div class="row"  style="border:1px solid lightgrey; border-radius:5px;">
@@ -283,7 +283,7 @@ export const renderAgreements = async () => {
                                     </div>
                                 </div>
                             `:''}
-                            ${(((myData.data.hasOwnProperty('773707518') && myData.data['773707518'] == 353358909) || (myData.data['747006172'] && myData.data['747006172'] == 353358909)) && (!myData.data['153713899'] || myData.data['153713899'] == 104430631)) ?`
+                            ${(((myData.data.hasOwnProperty(fieldMapping.revokeHipaa) && myData.data[fieldMapping.revokeHipaa] == fieldMapping.yes) || (myData.data[fieldMapping.consentWithdrawn] && myData.data[fieldMapping.consentWithdrawn] == fieldMapping.yes)) && (!myData.data[fieldMapping.hipaaRevocationSigned] || myData.data[fieldMapping.hipaaRevocationSigned] == 104430631)) ?`
                                 <div class="row">
                                     <div class="col px-2">
                                         <div class="row"  style="border:1px solid lightgrey; border-radius:5px;">
@@ -555,7 +555,7 @@ const renderSignDataDestroy = async () =>{
         const selectedLanguage = appState.getState().language;
         const langSuffix = languageSuffix()[selectedLanguage];
         let formData = {};
-        formData['359404406'] = 353358909;
+        formData['359404406'] = fieldMapping.yes;
         formData['119449326'] = dateTime();      
         formData['883668444'] = 704529432;
         formData['304438543'] = `Data_Destruction_${consentVersions['DataDestruction']}${(langSuffix ? '_'+langSuffix : '')}`;  
@@ -601,7 +601,7 @@ const renderSignHIPAARevoke = async () =>{
         let formData = {};
         const selectedLanguage = appState.getState().language;
         const langSuffix = languageSuffix()[selectedLanguage];
-        formData['153713899'] = 353358909;
+        formData[fieldMapping.hipaaRevocationSigned] = fieldMapping.yes;
         formData['613641698'] = dateTime();
         formData['577794331'] = 121454001;
         formData['407743866'] = `HIPAA_Revocation_${consentVersions['Revocation']}${(langSuffix ? '_'+langSuffix : '')}`;  
