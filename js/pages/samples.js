@@ -519,7 +519,7 @@ const u_chicago = {
             '',
         ],
         [
-            '<a data-i18n="samples.u_chicago.locations.DuchossoisName" class="site-info-underline" href="https://www.uchicagomedicine.org/find-a-location/uchicago-medicine-duchossois-center-for-advanced-medicine-hyde-park" target="_blank">UChicago Duchossois Center for Advanced Medicine (DCAM) Research Clinic in Hyde Park</a>',
+            '<span data-i18n="samples.u_chicago.locations.DuchossoisName" class="site-info-underline">UChicago Duchossois Center for Advanced Medicine (DCAM) Research Clinic in Hyde Park</span>',
             '<span data-i18n="samples.u_chicago.locations.DuchossoisAddress">University of Chicago Medicine <br>Duchossois Center for Advanced Medicine (DCAM) #2A </br>5758 S. Maryland Avenue <br>Chicago, IL 60637</br><br>After entering the DCAM building from the main entrance, look for us at the top of the stairs on the 2nd floor.</br></p></span>',
             '',
             '<span data-i18n="samples.u_chicago.locations.DuchossoisParking">The University of Chicago Medicine offers valet and self-parking. We will validate your parking pass. Please show your self-parking ticket to research staff.</span>',
