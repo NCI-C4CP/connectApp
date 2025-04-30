@@ -1612,8 +1612,8 @@ export const environmentWarningModal = () => {
         </br>
 
         <div class="col-md-4 mx-auto text-center">
-            <label style="text-align:center;">Enter staff access code</label>
-            <input type="text" style="text-align:center; margin:0 auto;" class="form-control input-validation row" id="testingAccessCode" name="testingAccessCode">
+            <label for="testingAccessCode" style="text-align:center;">Enter staff access code</label>
+            <input type="text" id="testingAccessCode" style="text-align:center; margin:0 auto;" class="form-control input-validation row" name="testingAccessCode">
         </div>
     `;
 
