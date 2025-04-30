@@ -1335,6 +1335,9 @@ const processUserDataUpdate = async (changedUserDataForProfile, changedUserDataF
   } else {
     document.getElementById(`${type}Fail`).style.display = 'block';
     document.getElementById(`${type}Error`).innerHTML = translateText('settingsHelpers.makeChangesToUpdate');
+    if (type === 'changeAltContactInformation') {
+      document.getElementById(`${type}Error`).setAttribute('data-i18n', 'settingsHelpers.makeChangesToUpdate');
+    }
     return false;
   }
 };
