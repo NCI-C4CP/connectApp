@@ -1,4 +1,4 @@
-import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML
+import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML, closeModal
 } from './shared.js';
 import { removeAllErrors } from './event.js';
 import cId from './fieldToConceptIdMapping.js';
@@ -11,6 +11,8 @@ export const showEditButtonsOnUserVerified = () => {
   document.getElementById('changeAltAddressButton').style.display = 'block';
   document.getElementById('changeAltContactButton').style.display = 'block';
   document.getElementById('changeLoginButton').style.display = 'block';
+  document.getElementById('clearPhysicalAddrBtn').style.display = 'block';
+  document.getElementById('clearAlternateAddrBtn').style.display = 'block';
 };
 
 export const toggleElementVisibility = (elementArray, isFormdisplayed) => {
@@ -305,59 +307,59 @@ export const validateContactInformation = async (mobilePhoneNumberComplete, home
   }
 
   if (!preferredEmail || !validEmailFormat.test(preferredEmail)) {
-    errorMessage('newPreferredEmail', translateText('settingsHelpers.emailFormat'), focus);
+    errorMessage('newPreferredEmail', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
     focus = false;
     hasError = true;
   }
 
   if (additionalEmail1 && !validEmailFormat.test(additionalEmail1)) {
-    errorMessage('newadditionalEmail1', translateText('settingsHelpers.emailFormat'), focus);
+    errorMessage('newadditionalEmail1', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
     focus = false;
     hasError = true;
   }
 
   if (additionalEmail2 && !validEmailFormat.test(additionalEmail2)) {
-    errorMessage('newadditionalEmail2', translateText('settingsHelpers.emailFormat'), focus);
+    errorMessage('newadditionalEmail2', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
     focus = false;
     hasError = true;
   }
 
-  // if (!hasError) {
-  //   const emailValidation = await emailAddressValidation({
-  //     emails: {
-  //         upEmail: preferredEmail,
-  //         upEmail2: additionalEmail1 ? additionalEmail1 : null,
-  //         upAdditionalEmail2: additionalEmail2 ? additionalEmail2 : null,
-  //     },
-  //   });
+  if (!hasError) {
+    const emailValidation = await emailAddressValidation({
+      emails: {
+          upEmail: preferredEmail,
+          upEmail2: additionalEmail1 ? additionalEmail1 : null,
+          upAdditionalEmail2: additionalEmail2 ? additionalEmail2 : null,
+      },
+    });
 
-  //   const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail)
-  //   if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(preferredEmail)
-  //   if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
-  //     errorMessage('newPreferredEmail', translateText('settingsHelpers.emailInvalid'), focus);
-  //     if (focus) document.getElementById('newPreferredEmail').focus();
-  //     focus = false;
-  //     hasError = true;
-  //   }
+    const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail)
+    if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(preferredEmail)
+    if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
+      errorMessage('newPreferredEmail', translateText('settingsHelpers.emailInvalid'), focus);
+      if (focus) document.getElementById('newPreferredEmail').focus();
+      focus = false;
+      hasError = true;
+    }
 
-  //   const upEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail2)
-  //   if (upEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(additionalEmail1)
-  //   if (upEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
-  //     errorMessage('newadditionalEmail1', translateText('settingsHelpers.emailInvalid'), focus);
-  //     if (focus) document.getElementById('newadditionalEmail1').focus();
-  //     focus = false;
-  //     hasError = true;
-  //   }
+    const upEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail2)
+    if (upEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(additionalEmail1)
+    if (upEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
+      errorMessage('newadditionalEmail1', translateText('settingsHelpers.emailInvalid'), focus);
+      if (focus) document.getElementById('newadditionalEmail1').focus();
+      focus = false;
+      hasError = true;
+    }
 
-  //   const upAdditionalEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail2)
-  //   if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(additionalEmail2)
-  //   if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
-  //     errorMessage('newadditionalEmail2', translateText('settingsHelpers.emailInvalid'), focus);
-  //     if (focus) document.getElementById('newadditionalEmail2').focus();
-  //     focus = false;
-  //     hasError = true;
-  //   }
-  // }
+    const upAdditionalEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail2)
+    if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(additionalEmail2)
+    if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
+      errorMessage('newadditionalEmail2', translateText('settingsHelpers.emailInvalid'), focus);
+      if (focus) document.getElementById('newadditionalEmail2').focus();
+      focus = false;
+      hasError = true;
+    }
+  }
 
   if (hasError) {
     console.error('Error(s) found.');
@@ -598,11 +600,52 @@ export const showRiskyEmailWarningMyProfile = (riskyEmails, onSubmit) => {
         closeModal();
     });
 }
+export const showClearAddressConfirmation = (onSubmit) => {
+    const modalElement = document.getElementById("connectMainModal");
+    let modalInstance =
+        bootstrap.Modal.getInstance(modalElement) ||
+        new bootstrap.Modal(modalElement);
+
+    let bodyHtml = `
+        <div class="row">
+              <i data-i18n="settingsHelpers.confirmationText">Are you sure you want to clear data?</i>
+        </div>
+    `;
+    document.getElementById("connectModalHeader").innerHTML = translateHTML(`
+      <h2 style="color: #333;" data-i18n="settingsHelpers.confirmationHeader">Confirmation</h2>
+  `);
+
+    document.getElementById("connectModalBody").innerHTML =
+        translateHTML(bodyHtml);
+
+    document.getElementById("connectModalFooter").innerHTML = translateHTML(`
+      <div class="d-flex justify-content-between w-100">
+          <button data-i18n="event.navButtonsClose" type="button" title="Close" class="btn btn-dark" id="goBackBtn">Go Back</button>
+          <button data-i18n="event.navButtonsConfirm" type="button" id="confirmClearData" title="Confirm details" class="btn btn-primary consentNextButton">Submit</button>
+      </div>
+  `);
+    document.getElementById("connectModalFooter").style.display = "block";
+
+    modalInstance.show();
+
+    document
+        .getElementById("confirmClearData")
+        .addEventListener("click", () => {
+            onSubmit?.();
+            closeModal();
+        });
+
+    // Add header close button listener
+    document.getElementById("goBackBtn").addEventListener("click", () => {
+        closeModal();
+    });
+}
 
 export const showMailAddressSuggestionMyProfile = (uspsSuggestion, i18nTranslation, submit) => {
   const modalElement = document.getElementById("connectMainModal");
   let modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
 
+  // TODO: Need to refactor
   const closeModal = () => {
     const instance = bootstrap.Modal.getInstance(modalElement);
     if (instance) instance.hide();
@@ -685,7 +728,7 @@ export const validateAltContactInformation = async (altContactMobilePhoneComplet
   }
 
   if (!altContactEmail || !validEmailFormat.test(altContactEmail)) {
-    errorMessage('newAltContactEmail', translateText('settingsHelpers.emailInvalid'), focus);
+    errorMessage('newAltContactEmail', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
     focus = false;
     hasError = true;
   }
