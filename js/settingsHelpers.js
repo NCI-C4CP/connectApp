@@ -733,22 +733,22 @@ export const validateAltContactInformation = async (altContactMobilePhoneComplet
     hasError = true;
   }
 
-  // if (!hasError) {
-  //   const emailValidation = await emailAddressValidation({
-  //     emails: {
-  //       altContactEmail: altContactEmail || undefined,
-  //     },
-  //   });
+  if (!hasError) {
+    const emailValidation = await emailAddressValidation({
+      emails: {
+        altContactEmail: altContactEmail,
+      },
+    });
 
-  //   const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.altContactEmail)
-  //   if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(altContactEmail)
-  //   if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
-  //     errorMessage('newAltContactEmail', translateText('settingsHelpers.emailInvalid'), focus);
-  //     if (focus) document.getElementById('newAltContactEmail').focus();
-  //     focus = false;
-  //     hasError = true;
-  //   }
-  // }
+    const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.altContactEmail);
+    if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(altContactEmail);
+    if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
+      errorMessage('newAltContactEmail', translateText('settingsHelpers.emailInvalid'), focus);
+      if (focus) document.getElementById('newAltContactEmail').focus();
+      focus = false;
+      hasError = true;
+    }
+  }
 
   if (hasError) {
     console.error('Error(s) found.');
@@ -1335,6 +1335,9 @@ const processUserDataUpdate = async (changedUserDataForProfile, changedUserDataF
   } else {
     document.getElementById(`${type}Fail`).style.display = 'block';
     document.getElementById(`${type}Error`).innerHTML = translateText('settingsHelpers.makeChangesToUpdate');
+    if (type === 'changeAltContactInformation') {
+      document.getElementById(`${type}Error`).setAttribute('data-i18n', 'settingsHelpers.makeChangesToUpdate');
+    }
     return false;
   }
 };

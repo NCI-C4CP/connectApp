@@ -2496,9 +2496,9 @@ export const getAdjustedTime = (inputTime, days = 0, hours = 0, minutes = 0) => 
 
 
 export const emailValidationStatus = {
-    VALID: "valid",
-    INVALID: "invalid",
-    WARNING: "warning",
+    VALID: "Valid",
+    INVALID: "Invalid",
+    WARNING: "Warning",
 };
 
 export const emailValidationAnalysis = (validation) => {
