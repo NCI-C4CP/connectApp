@@ -305,13 +305,13 @@ const handleEditNameSection = () => {
     const firstNameField = document.getElementById('newFirstNameField');
     const lastNameField = document.getElementById('newLastNameField');
     const middleNameField = document.getElementById('newMiddleNameField');
-    optVars.suffix = document.getElementById('newSuffixNameField').value.trim();
-    optVars.preferredFirstName = document.getElementById('newPreferredFirstNameField').value.trim();
+    optVars.suffix = escapeHTML(document.getElementById('newSuffixNameField').value.trim());
+    optVars.preferredFirstName = escapeHTML(document.getElementById('newPreferredFirstNameField').value.trim());
     const isNameValid = validateName(firstNameField, lastNameField, middleNameField);
     if (isNameValid) {
-      const firstName = firstNameField.value.trim();
-      const lastName = lastNameField.value.trim();
-      optVars.middleName = middleNameField.value.trim();
+      const firstName = escapeHTML(firstNameField.value.trim());
+      const lastName = escapeHTML(lastNameField.value.trim());
+      optVars.middleName = escapeHTML(middleNameField.value.trim());
       formVisBools.isNameFormDisplayed = toggleElementVisibility(nameElementArray, formVisBools.isNameFormDisplayed);
       toggleButtonText();
       submitNewName(firstName, lastName);
@@ -475,11 +475,11 @@ const handleEditMailingAddressSection = () => {
   });
 
   document.getElementById('changeMailingAddressSubmit1').addEventListener('click', async (e) => {
-    const addressLine1 = document.getElementById('UPAddress1Line1').value.trim();
-    const addressLine2 = document.getElementById('UPAddress1Line2').value.trim();
-    const city = document.getElementById('UPAddress1City').value.trim();
-    const state = document.getElementById('UPAddress1State').value.trim();
-    const zip = document.getElementById('UPAddress1Zip').value.trim();
+    const addressLine1 = escapeHTML(document.getElementById('UPAddress1Line1').value.trim());
+    const addressLine2 = escapeHTML(document.getElementById('UPAddress1Line2').value.trim());
+    const city = escapeHTML(document.getElementById('UPAddress1City').value.trim());
+    const state = escapeHTML(document.getElementById('UPAddress1State').value.trim());
+    const zip = escapeHTML(document.getElementById('UPAddress1Zip').value.trim());
     const isPOBox = document.getElementById('poBoxCheckbox').checked;
 
     const {hasError, uspsSuggestion} = await validateMailingAddress(1, addressLine1, city, state, zip);
@@ -564,11 +564,11 @@ const handleEditPhysicalMailingAddressSection = () => {
   });
 
   document.getElementById('changeMailingAddressSubmit2').addEventListener('click', async (e) => {
-    const addressLine1 = document.getElementById('UPAddress2Line1').value.trim();
-    const addressLine2 = document.getElementById('UPAddress2Line2').value.trim();
-    const city = document.getElementById('UPAddress2City').value.trim();
-    const state = document.getElementById('UPAddress2State').value.trim();
-    const zip = document.getElementById('UPAddress2Zip').value.trim();
+    const addressLine1 = escapeHTML(document.getElementById('UPAddress2Line1').value.trim());
+    const addressLine2 = escapeHTML(document.getElementById('UPAddress2Line2').value.trim());
+    const city = escapeHTML(document.getElementById('UPAddress2City').value.trim());
+    const state = escapeHTML(document.getElementById('UPAddress2State').value.trim());
+    const zip = escapeHTML(document.getElementById('UPAddress2Zip').value.trim());
 
     const {hasError, uspsSuggestion} = await validateMailingAddress(2, addressLine1, city, state, zip);
     
@@ -646,11 +646,11 @@ const handleEditAltAddressSection = () => {
     });
 
     document.getElementById('changeMailingAddressSubmit3').addEventListener('click', async () => {
-        const altAddressLine1 = document.getElementById('UPAddress3Line1').value.trim();
-        const altAddressLine2 = document.getElementById('UPAddress3Line2').value.trim();
-        const altCity = document.getElementById('UPAddress3City').value.trim();
-        const altState = document.getElementById('UPAddress3State').value.trim();
-        const altZip = document.getElementById('UPAddress3Zip').value.trim();
+        const altAddressLine1 = escapeHTML(document.getElementById('UPAddress3Line1').value.trim());
+        const altAddressLine2 = escapeHTML(document.getElementById('UPAddress3Line2').value.trim());
+        const altCity = escapeHTML(document.getElementById('UPAddress3City').value.trim());
+        const altState = escapeHTML(document.getElementById('UPAddress3State').value.trim());
+        const altZip = escapeHTML(document.getElementById('UPAddress3Zip').value.trim());
         const altAddressIsPOBox = document.getElementById("poBoxCheckboxAltAddress")?.checked;
 
         const { hasError, uspsSuggestion } = await validateMailingAddress(3, altAddressLine1, altCity, altState, altZip);
@@ -811,7 +811,7 @@ const handleEditSignInInformationSection = () => {
         const handleSignInBtn = async (e) => {
             e.preventDefault();
             window.localStorage.setItem('signInUpdate', 'yes');
-            const inputStr = accountInput.value.trim();
+            const inputStr = escapeHTML(accountInput.value.trim());
             const isEmail = !!inputStr.match(validEmailFormat);
             const isPhone = !!inputStr.match(validPhoneNumberFormat);
             if (isEmail) {
