@@ -866,8 +866,8 @@ const handleEditSignInInformationSection = () => {
   });
 
   document.getElementById('changeEmailSubmit').addEventListener('click', e => {
-    const email = document.getElementById('newEmailField').value.trim();
-    const emailConfirm = document.getElementById('newEmailFieldCheck').value.trim();
+    const email = escapeHTML(document.getElementById('newEmailField').value.trim());
+    const emailConfirm = escapeHTML(document.getElementById('newEmailFieldCheck').value.trim());
     const isEmailValid = email && emailConfirm && validateLoginEmail(email, emailConfirm);
     if (isEmailValid) {
         submitNewLoginMethod(email, null)
@@ -875,8 +875,8 @@ const handleEditSignInInformationSection = () => {
   });
 
   document.getElementById('changePhoneSubmit').addEventListener('click', e => {
-    const phone = document.getElementById('newPhoneField').value.trim();
-    const phoneConfirm = document.getElementById('newPhoneFieldCheck').value.trim();
+    const phone = escapeHTML(document.getElementById('newPhoneField').value.trim());
+    const phoneConfirm = escapeHTML(document.getElementById('newPhoneFieldCheck').value.trim());
     const isPhoneValid = phone && phoneConfirm && validateLoginPhone(phone, phoneConfirm);
     if (isPhoneValid) {
         submitNewLoginMethod(null, phone);
