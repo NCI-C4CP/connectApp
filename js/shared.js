@@ -2580,11 +2580,9 @@ export function replaceUnsupportedPDFCharacters(string, font) {
  * @returns {string} - Escaped string
  */
 export const escapeHTML = (str) => {
-    return str.replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+    const div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
 };
 
 export const closeModal = () => {

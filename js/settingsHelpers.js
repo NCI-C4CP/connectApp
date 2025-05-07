@@ -1,5 +1,4 @@
-import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML, closeModal
-} from './shared.js';
+import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML, closeModal, escapeHTML } from './shared.js';
 import { removeAllErrors } from './event.js';
 import cId from './fieldToConceptIdMapping.js';
 
@@ -559,11 +558,6 @@ export const showRiskyEmailWarningMyProfile = (riskyEmails, onSubmit) => {
     };
 
     let bodyHtml = "";
-    const escapeHTML = (str) => {
-        const div = document.createElement("div");
-        div.appendChild(document.createTextNode(str));
-        return div.innerHTML;
-    };
 
     riskyEmails.forEach((item) => {
         const escapedItem = escapeHTML(item);

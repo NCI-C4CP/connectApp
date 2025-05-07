@@ -1491,11 +1491,6 @@ const showInvalidFormWarning = () => {
 const showRiskyEmailWarning = (uspsSuggestion, riskyEmails, formData) => {
     if(!document.getElementById('connectMainModal').classList.contains('show')) openModal();
     let bodyHtml = ''
-    const escapeHTML = (str) => {
-        const div = document.createElement('div');
-        div.appendChild(document.createTextNode(str));
-        return div.innerHTML;
-    };
 
     document.getElementById('connectModalHeader').innerHTML = translateHTML(`
         <button type="button" class="btn-close" id="modalCloseBtn" aria-label="Close"></button>
