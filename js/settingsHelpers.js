@@ -929,6 +929,16 @@ const handleAllEmailField = (changedUserDataForProfile, userData) => {
 };
 
 /**
+ * Convert empty string to null
+ * @param {string} text  - The text is  a string
+ * @returns {string | null}
+ */
+
+const convertToNullIfEmptyString = (text) => {
+  return text.trim().length > 0 ? text : null;
+}
+
+/**
  * Update the mailing address, physical mailing address, or alternate address in the user profile.
  * All address changes are tied to user profile history.
  * @param {number} id - The id of the address to update. 1: mailing, 2: physical, 3: alternate 
@@ -959,11 +969,11 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
     };
   } else if (id === 2) {
     newValues = {
-      [cId.physicalAddress1]: addressLine1,
-      [cId.physicalAddress2]: addressLine2 ?? "",
-      [cId.physicalCity]: city,
-      [cId.physicalState]: state,
-      [cId.physicalZip]: zip.toString(),
+      [cId.physicalAddress1]: convertToNullIfEmptyString(addressLine1),
+      [cId.physicalAddress2]: convertToNullIfEmptyString(addressLine2),
+      [cId.physicalCity]: convertToNullIfEmptyString(city),
+      [cId.physicalState]: convertToNullIfEmptyString(state),
+      [cId.physicalZip]: convertToNullIfEmptyString(zip.toString()),
     };
   } else if (id === 3) {
     const doesAltAddressExist = addressLine1 || addressLine2 || city || state || zip
@@ -972,12 +982,12 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
     
     newValues = {
       [cId.doesAltAddressExist]: doesAltAddressExist,
-      [cId.altAddress1]: addressLine1,
-      [cId.altAddress2]: addressLine2 ?? "",
-      [cId.altCity]: city,
-      [cId.altState]: state,
-      [cId.altZip]: zip.toString(),
-      [cId.isPOBoxAltAddress]: isPOBox ? cId.yes : cId.no
+      [cId.altAddress1]: convertToNullIfEmptyString(addressLine1),
+      [cId.altAddress2]: convertToNullIfEmptyString(addressLine2),
+      [cId.altCity]: convertToNullIfEmptyString(city),
+      [cId.altState]: convertToNullIfEmptyString(state),
+      [cId.altZip]: convertToNullIfEmptyString(zip.toString()),
+      [cId.isPOBoxAltAddress]: isPOBox ? cId.yes : null
     };
   }
 
