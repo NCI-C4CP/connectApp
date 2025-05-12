@@ -873,6 +873,7 @@
         "directionsText": "Dirección e indicaciones",
         "hoursText": "Horario",
         "parkingInstructions": "Instrucciones de estacionamiento",
+        "freeParkingAllCenters": "Hay estacionamiento gratuito disponible en todos los centros.",
         "health_partners": {
             "donatingSamples": "Como parte de su participación en Connect, le pedimos que done muestras de sangre, orina y saliva, y que complete una breve encuesta relacionada con las muestras que estamos recolectando.",
             "whenToDonate": "Cuando llegue el momento de donar sus muestras, le escribiremos por correo electrónico. Es importante que done sus muestras lo antes posible después de recibir el mensaje.<br/><br/><span class=\"site-info-bold\">Nota:</span> Si hace poco tiempo se le ha hecho una transfusión de sangre o ha donado sangre, espere al menos <span class=\"site-info-bold\">ocho semanas</span> desde la fecha de su última donación de sangre o transfusión antes de donar muestras para Connect. Si hace poco tiempo ha donado plasma, espere al menos <span class=\"site-info-bold\">cuatro semanas</span> desde la fecha de su donación de plasma antes de donar muestras para Connect. Si hace poco tiempo ha donado plaquetas, espere al menos <span class=\"site-info-bold\">una semana</span> desde la fecha de su donación de plaquetas antes de donar muestras para Connect. Si van a hacerle una colonoscopia dentro de poco tiempo, <span class=\"site-info-bold\">no</span> done muestras para Connect el <span class=\"site-info-bold\">mismo día</span> de la colonoscopia.",
@@ -936,23 +937,23 @@
             "prepareInstructions": "El día de su cita, beba mucha agua, pero <span style=\"font-weight:900; text-decoration:underline\">deje de beber agua una hora antes de la cita.</span><br/><br/><span style=\"font-weight:900; text-decoration:underline\">Una hora antes de la cita:</span> <span style=\"font-weight:900; text-decoration:underline\">No</span> coma, beba ningún líquido (ni siquiera agua), masque chicle, fume cigarrillos normales o electrónicos ni masque ningún producto (incluido tabaco), no se enjuague la boca ni se cepille los dientes.<br/><br/><span style=\"font-weight:900; text-decoration:underline\">Qué debe llevar y recordar:</span><br/><br/><ul><li>Asegúrese de conocer el nombre de usuario y la contraseña de MyConnect.</li><li>Cuando done sus muestras, le pediremos que complete una breve encuesta. Puede ser útil tener esta información a mano:<ul><li>La última vez que comió o bebió, y la hora a la que se fue a dormir la noche anterior a la cita y a la que se despertó el día de la cita.</li><li>Si está menstruando, la fecha de inicio de su período menstrual más reciente en los últimos 12 meses.</li></ul></li></ul>",
             "whatHappens": "El equipo de Connect lo registrará para su cita y luego tomará sus muestras. Al final de la visita, el equipo de Connect registrará la salida de su cita.<br/><br/>Tomaremos una muestra de sangre y una muestra de orina, y le pediremos que haga buches con enjuague bucal para tomar una muestra de saliva.<br/><br/>También le pediremos que complete <span style=\"font-weight:900; text-decoration:underline\">una breve encuesta</span> en MyConnect con su teléfono celular. Si no tiene teléfono celular, le daremos una tableta electrónica para que responda la encuesta. Para completar la encuesta, necesitará su información de inicio de sesión de MyConnect.",
             "support": "Llame al 1-877-775-7004 (de 8:00 a. m. a 10:00 p. m., hora del centro de EE. UU., o los fines de semana de 9:00 a. m. a 6:00 p. m., hora del centro de EE. UU.)",
+            "parkingInstructions": "Hay estacionamiento gratuito disponible en todos los centros.",
             "locations": {
                 "MarshfieldName": "Clínica Marshfield, Centro Marshfield",
                 "MarshfieldAddress": "1000 N. Oak Ave<br/>Marshfield, WI 54449",
-                "MarshfieldSchedule": "De lunes a jueves: de 7:00 a. m. a 4:00 p. m., y viernes de 7:00 a. m. hasta el mediodía",
                 "generalParking": "Estacionamiento general disponible",
                 "LakeHallieName": "Centro Lake Hallie",
                 "LakeHallieAddress": "12961 27th Ave<br/>Chippewa Falls, Wisconsin 54729",
-                "LakeHallieSchedule": "De lunes a jueves: de 7:00 a. m. a 4:00 p. m.<br/>Viernes: de 8:00 a. m. a 2:00 p. m.",
                 "MinocquaName": "Centro Minocqua",
                 "MinocquaAddress": "9576 WI-70 Trunk<br/>Minocqua, WI 54548",
-                "MinocquaSchedule": "Martes: 8:00 a.m. a 4:00 p.m. Miércoles 8:00 a.m. a 12:00 p.m.",
+                "RiceLakeName": "Centro Rice Lake",
+                "RiceLakeAddress": "1700 W Stout Street <br>Rice Lake, WI 54868",
+                "StevensPointName": "Centro Stevens Point",
+                "StevensPointAddress": "4100 WI-66<br>Stevens Point, WI 54482 ",
                 "WestonName": "Centro Weston",
                 "WestonAddress": "3400 Ministry Pkwy<br/>Weston, WI 54476",
-                "WestonSchedule": "De martes a jueves: 7:00 a.m. a 1:00 p.m.",
                 "WisconsinRapidsName": "Centro Wisconsin Rapids",
                 "WisconsinRapidsAddress": "220 24th St S,<br/>Wisconsin Rapids, WI 54494",
-                "WisconsinRapidsSchedule": "Jueves: de 7:00 a. m. a 4:00 p. m.<br/>Viernes: de 7:00 a. m. a 10:00 a. m."
             }
         },
         "henry_ford": {

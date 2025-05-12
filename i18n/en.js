@@ -869,6 +869,7 @@ const en = {
         "directionsText": "Address and Directions",
         "hoursText": "Hours",
         "parkingInstructions": "Parking Instructions",
+        "freeParkingAllCenters": "Free parking is widely available at all centers.",
         "health_partners": {
             "donatingSamples": "As a part of your Connect participation, we ask you to donate blood, urine, and saliva samples and complete a short survey related to the samples we are collecting.",
             "whenToDonate": "The Connect team will send you an email when it is time to donate your samples. Be sure to check your spam or junk folder. After you receive the email, it is important to donate your samples as soon as you can. It is easy to donate all of your samples in one visit.<br><br><span class=\"site-info-bold\">Note:</span> If you have recently had a blood transfusion or donated blood, please wait at least <span class=\"site-info-bold\">eight weeks</span> from your donation or transfusion before donating your samples for Connect. If you have recently donated plasma, please wait at least <span class=\"site-info-bold\">four weeks</span> from your plasma donation before donating samples for Connect. If you have recently donated platelets, please wait at least <span class=\"site-info-bold\">one week</span> from your platelet donation before donating samples for Connect. If you have an upcoming colonoscopy, please be sure that you <span class=\"site-info-bold\">do not</span> donate samples for Connect on the <span class=\"site-info-bold\">same day</span> as your colonoscopy.",
@@ -933,23 +934,23 @@ const en = {
             "prepareInstructions": "On the day of your appointment, please drink plenty of water, but <span style=\"font-weight:900; text-decoration:underline\">stop drinking water one hour before your appointment.</span><br><br><span style=\"font-weight:900; text-decoration:underline\">One hour before your appointment:</span> Please <span style=\"font-weight:900; text-decoration:underline\">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span style=\"font-weight:900; text-decoration:underline\">Things to bring and remember:</span><br><br><ul><li>Make sure you know your login information for MyConnect.</li><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:<ul><li>The last time you ate or drank, and the times you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></li></ul>",
             "whatHappens": "The Connect team will check you in for your appointment and then collect your samples. At the end of your visit, the Connect team will check you out of your appointment.<br><br>We will draw a blood sample, collect a urine sample, and collect a saliva sample by asking you to swish with mouthwash.<br><br>We will also ask you to complete <span style=\"font-weight:900; text-decoration:underline\">a short survey</span> on MyConnect using your mobile phone. If you do not have a mobile phone, we will provide a tablet for you to use complete your survey. You will need your MyConnect login information to complete the survey.",
             "support": "Call 1-877-505-0253 (8:00 a.m.-10:00 p.m. CT on weekdays and 9:00 a.m.-6:00 p.m. CT on weekends)",
+            "parkingInstructions": "Free parking is widely available at all centers.",
             "locations": {
                 "MarshfieldName": "Marshfield Clinic, Marshfield Center",
                 "MarshfieldAddress": "1000 N. Oak Ave<br>Marshfield, WI 54449",
-                "MarshfieldSchedule": "Monday - Thursday: 7:00 a.m. to 4:00 p.m. and Friday 7:00 a.m. to noon",
                 "generalParking": "General parking available",
                 "LakeHallieName": "Lake Hallie Center",
                 "LakeHallieAddress": "12961 27th Ave<br>Chippewa Falls, WI 54729",
-                "LakeHallieSchedule": "Monday - Thursday: 7:00 a.m. to 4:00 p.m.<br>Fridays: 8:00 a.m. to 2:00 p.m.",
                 "MinocquaName": "Minocqua Center",
                 "MinocquaAddress": "9576 WI-70 Trunk<br>Minocqua, WI 54548",
-                "MinocquaSchedule": "Tuesdays: 8:00 a.m. to 4:00 p.m. Wednesdays: 8:00 a.m. to 12:00 p.m.",
+                "RiceLakeName": "Rice Lake Center",
+                "RiceLakeAddress": "1700 W Stout Street <br>Rice Lake, WI 54868",
+                "StevensPointName": "Stevens Point Center",
+                "StevensPointAddress": "4100 WI-66<br>Stevens Point, WI 54482 ",
                 "WestonName": "Weston Center",
                 "WestonAddress": "3400 Ministry Pkwy<br>Weston, WI 54476",
-                "WestonSchedule": "Tuesday – Thursday: 7:00 a.m. to 1:00 p.m.",
                 "WisconsinRapidsName": "Wisconsin Rapids Center",
                 "WisconsinRapidsAddress": "220 24th St S,<br>Wisconsin Rapids,WI 54494",
-                "WisconsinRapidsSchedule": "Thursdays: 7:00 a.m. to 4:00 p.m.<br>Fridays: 7:00 a.m. to 10:00 a.m."
             }
         },
         "henry_ford": {

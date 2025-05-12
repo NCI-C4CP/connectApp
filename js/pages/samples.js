@@ -76,6 +76,17 @@ export const renderSamplesPage = async () => {
 
                         ${locationTemplate}
 
+                        ${site.parkingInstructions ? `
+                        <div class="row" style="width:100%">
+                            <div style="width:100%">
+                                <div class="messagesHeaderFont" data-i18n="samples.parkingInstructions">
+                                </div>
+                                <div class="messagesBodyFont" data-i18n="samples.freeParkingAllCenters">
+                                </div>
+                            </div>
+                        </div>`
+                        : ''}
+
                         ${site.scheduling ? `
                         <div class="row" style="width:100%">
                             <div style="width:100%">
@@ -428,38 +439,37 @@ const marshfield = {
     prepareInstructions: '<span data-i18n="samples.marshfield.prepareInstructions">On the day of your appointment, please drink plenty of water, but <span style="font-weight:900; text-decoration:underline">stop drinking water one hour before your appointment.</span><br><br><span style="font-weight:900; text-decoration:underline">One hour before your appointment:</span> Please <span style="font-weight:900; text-decoration:underline">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span style="font-weight:900; text-decoration:underline">Things to bring and remember:</span><br><br><ul><li>Make sure you know your login information for MyConnect.</li><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:<ul><li>The last time you ate or drank, and the times you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></li></ul></span>',
     whatHappens: '<span data-i18n="samples.marshfield.whatHappens">The Connect team will check you in for your appointment and then collect your samples. At the end of your visit, the Connect team will check you out of your appointment.<br><br>We will draw a blood sample, collect a urine sample, and collect a saliva sample by asking you to swish with mouthwash.<br><br>We will also ask you to complete <span style="font-weight:900; text-decoration:underline">a short survey</span> on MyConnect using your mobile phone. If you do not have a mobile phone, we will provide a tablet for you to use complete your survey. You will need your MyConnect login information to complete the survey.</span>',
     support: '<span data-i18n="samples.marshfield.support">Call 1-877-505-0253 (8:00 a.m.-10:00 p.m. CT on weekdays and 9:00 a.m.-6:00 p.m. CT on weekends)</span>',
+    parkingInstructions: `<span data-i18n="freeParkingAllCenters"></span>`,
     locations: [
         [
             '<span data-i18n="samples.marshfield.locations.MarshfieldName">Marshfield Clinic, Marshfield Center</span>',
             '<span data-i18n="samples.marshfield.locations.MarshfieldAddress">1000 N. Oak Ave<br>Marshfield, WI 54449</span>',
-            '<span data-i18n="samples.marshfield.locations.MarshfieldSchedule">Monday - Thursday: 7:00 a.m. to 4:00 p.m. and Friday 7:00 a.m. to noon</span>',
-            '<span data-i18n="samples.marshfield.locations.generalParking">General parking available</span>'
         ],
         [
             '<span data-i18n="samples.marshfield.locations.LakeHallieName">Lake Hallie Center</span>',
             '<span data-i18n="samples.marshfield.locations.LakeHallieAddress">12961 27th Ave<br>Chippewa Falls, WI 54729</span>',
-            '<span data-i18n="samples.marshfield.locations.LakeHallieSchedule">Monday - Thursday: 7:00 a.m. to 4:00 p.m.<br>Fridays: 8:00 a.m. to 2:00 p.m.</span>',
-            '<span data-i18n="samples.marshfield.locations.generalParking">General parking available</span>'
         ],
         [
             '<span data-i18n="samples.marshfield.locations.MinocquaName">Minocqua Center</span>',
             '<span data-i18n="samples.marshfield.locations.MinocquaAddress">9576 WI-70 Trunk<br>Minocqua, WI 54548</span>',
-            '<span data-i18n="samples.marshfield.locations.MinocquaSchedule">Tuesdays: 8:00 a.m. to 4:00 p.m. Wednesdays: 8:00 a.m. to 12:00 p.m.</span>',
-            '<span data-i18n="samples.marshfield.locations.generalParking">General parking available</span>'
+        ],
+        [
+            '<span data-i18n="samples.marshfield.locations.RiceLakeName"></span>',
+            '<span data-i18n="samples.marshfield.locations.RiceLakeAddress"></span>',
+        ],
+        [
+            '<span data-i18n="samples.marshfield.locations.StevensPointName"></span>',
+            '<span data-i18n="samples.marshfield.locations.StevensPointAddress"></span>',
         ],
         [
             '<span data-i18n="samples.marshfield.locations.WestonName">Weston Center</span>',
             '<span data-i18n="samples.marshfield.locations.WestonAddress">3400 Ministry Pkwy<br>Weston, WI 54476</span>',
-            '<span data-i18n="samples.marshfield.locations.WestonSchedule">Tuesday – Thursday: 7:00 a.m. to 1:00 p.m.</span>',
-            '<span data-i18n="samples.marshfield.locations.generalParking">General parking available</span>'
         ],
         [
             '<span data-i18n="samples.marshfield.locations.WisconsinRapidsName">Wisconsin Rapids Center</span>',
             '<span data-i18n="samples.marshfield.locations.WisconsinRapidsAddress">220 24th St S,<br>Wisconsin Rapids,WI 54494</span>',
-            '<span data-i18n="samples.marshfield.locations.WisconsinRapidsSchedule">Thursdays: 7:00 a.m. to 4:00 p.m.<br>Fridays: 7:00 a.m. to 10:00 a.m.</span>',
-            '<span data-i18n="samples.marshfield.locations.generalParking">General parking available</span>'
         ]
-    ]
+    ],
 };
 
 const henry_ford = {
@@ -771,6 +781,18 @@ const renderLocations = (site) => {
                             Address
                         </div>
                         <div class="messagesBodyFont">
+                            ${location[1]}
+                        </div>
+                    </div>
+                </div>`
+            } else if (site === marshfield) {
+                template += `
+                <div class="row" style="width:100%">
+                    <div style="width:100%; margin-left: 2rem;">
+                        <div class="messagesHeaderFont" data-i18n="samples.addressText">
+                            Address
+                        </div>
+                        <div class="messagesBodyFont" style="margin:0">
                             ${location[1]}
                         </div>
                     </div>
