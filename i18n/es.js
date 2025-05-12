@@ -1000,7 +1000,9 @@
                 "KenwoodName": "<span class=\"site-info-underline\"><a href=\"https://www.uchicagomedicine.org/find-a-location/uchicago-medicine-kenwood\" target=\"_blank\">UChicago Medicine Kenwood</a></span>",
                 "KenwoodAddress": "4646 S. Drexel Blvd<br/> Chicago, IL 60653",
                 "CrownPointName": "<span class=\"site-info-underline\"><a href=\"https://www.uchicagomedicine.org/find-a-location/uchicago-medicine-crown-point\" target=\"_blank\">UChicago Medicine Crown Point</a></span>",
-                "CrownPointAddress": "10855 Virginia St<br>Crown Point, IN 46307"
+                "CrownPointAddress": "10855 Virginia St<br>Crown Point, IN 46307",
+                "IngallsMemorialHospitalHarveyName": "<span class=\"site-info-underline\"><a href=\"\" target=\"_blank\">UChicago Ingalls Memorial Hospital in Harvey, IL</a></span>",
+                "IngallsMemorialHospitalHarveyAddress": "Centro Ambulatorio Ingalls, 1.er piso<br> 1 Ingalls Dr <br> Harvey, IL 60426 <br><br> *Nota: Este es el laboratorio de consultas externas en el hospital Ingalls principal. El laboratorio de investigación, con personal disponible, está ubicado en el Edificio Profesional.",
             }
         },
         "nci": {

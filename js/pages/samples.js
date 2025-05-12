@@ -585,8 +585,10 @@ const u_chicago = {
         [
             '<span data-i18n="samples.u_chicago.locations.CrownPointName"><span class="site-info-underline"><a href="https://www.uchicagomedicine.org/find-a-location/uchicago-medicine-crown-point" target="_blank">UChicago Medicine Crown Point</a></span></span>',
             '<span data-i18n="samples.u_chicago.locations.CrownPointAddress">10855 Virginia St<br>Crown Point, IN 46307</span>',
-            '',
-            '',
+        ],
+        [
+            '<span data-i18n="samples.u_chicago.locations.IngallsMemorialHospitalHarveyName"><span class="site-info-underline"><a href="" target="_blank">UChicago Ingalls Memorial Hospital in Harvey, IL</a></span></span>',
+            '<span data-i18n="samples.u_chicago.locations.IngallsMemorialHospitalHarveyAddress">Ingalls Outpatient Center <br> 1<sup>st</sup> floor <br> 1 Ingalls Dr <br> Harvey, IL 60426</span>',
         ],
     ]
 };
@@ -792,7 +794,7 @@ const renderLocations = (site) => {
                         <div class="messagesHeaderFont" data-i18n="samples.addressText">
                             Address
                         </div>
-                        <div class="messagesBodyFont" style="margin:0">
+                        <div class="messagesBodyFont">
                             ${location[1]}
                         </div>
                     </div>
@@ -811,14 +813,15 @@ const renderLocations = (site) => {
                 if (location[1]) {
                     template += `<div class="row" style="width:100%">
                                     <div style="width:100%">
-                                        <div class="messagesSubHeader" data-i18n="samples.directionsText">
-                                            Address and Directions
+                                        <div class="messagesSubHeader" data-i18n="samples.addressText">
+                                            Address
                                         </div>
                                         <div class="messagesBodyFont">
                                             ${location[1]}
                                         </div>
                                     </div>
-                                </div>`
+                                </div>
+                                `;
                 }
             } else {
                 template += `<div class="row" style="width:100%">
