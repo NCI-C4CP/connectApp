@@ -78,7 +78,8 @@ const importQuest = async () => {
 }
 
 /**
- * Questionnaire directs the survey module handling throughout the survey loading process.
+ * Questionnaire directs the survey module handling throughout the survey loading process for Quest surveys.
+ * Note: This excludes the DHQ3 survey, which is handled externally (it opens https://dhq3.org in a new tab).
  * Errors from the module loading process are caught here. The loading animation is shown and hidden here.
  * @param {string} moduleId - The ID of the survey module the participant clicked to start.
  */

@@ -1224,7 +1224,16 @@ export const questionnaireModules = () => {
                 },
                 moduleId: "CancerScreeningHistory", 
                 enabled: false
-            }
+            },
+            // External module (unrelated to Quest)
+            'Diet History Questionnaire III (DHQ III)': {
+                path: {
+                    en: 'https://www.dhq3.org/respondent-login/',
+                    es: 'https://www.dhq3.org/respondent-login/'
+                },
+                moduleId: "DHQ3",
+                enabled: false,
+            },
         }
     }
 
@@ -1328,7 +1337,16 @@ export const questionnaireModules = () => {
             },
             moduleId: "CancerScreeningHistory", 
             enabled: false
-        }
+        },
+        // External module (unrelated to Quest)
+        'Diet History Questionnaire III (DHQ III)': {
+            path: {
+                en: 'https://www.dhq3.org/respondent-login/',
+                es: 'https://www.dhq3.org/respondent-login/'
+            },
+            moduleId: "DHQ3",
+            enabled: false,
+        },
     };
 }
 
@@ -2149,6 +2167,103 @@ export const getModuleText = async (sha, path, connectID, moduleID) => {
         });
 
         throw new Error('Error: getModuleText():', error);
+    }
+}
+
+/**
+ * Get the participant's started/completed status from the DHQ3 API.
+ * @param {string} studyID - The study ID for the DHQ3 survey.
+ * @param {string} respondentUsername - The DHQ3 username of the respondent.
+ * @param {string} dhqSurveyStatus - The status of the participant's DHQ3 survey in Firestore.
+ * @returns {Promise<Object>} - The DHQ3 respondent info from the API.
+ */
+
+export const syncDHQ3RespondentInfo = async (studyID, respondentUsername, dhqSurveyStatus) => {
+    if (!studyID || !respondentUsername) {
+        throw new Error('syncDHQ3RespondentInfo: Missing required parameters');
+    }
+
+    try {
+        const url = `${api}?api=syncDHQ3RespondentInfo`;
+        const idToken = await getIdToken();
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + idToken,
+            },
+            body: JSON.stringify({ studyID, respondentUsername, dhqSurveyStatus }),
+        });
+        
+        const jsonResponse = await response.json();
+        
+        if (jsonResponse.code !== 200) {
+            throw new Error(`Failed to check DHQ3 status: ${jsonResponse.message}`);
+        }
+        
+        return jsonResponse.data;
+
+    } catch (error) {
+        logDDRumError(new Error(`Sync DHQ3 Respondent Info Error: + ${error.message}`), 'syncDHQ3RespondentInfoError', {
+                userAction: 'sync DHQ3 Respondent Info',
+                timestamp: new Date().toISOString(),
+        });
+
+        throw new Error(`Error: syncDHQ3RespondentInfo(): ${error.message}`);
+    }
+}
+
+/**
+ * Atomically allocate a DHQ3 credential from the available credential pools.
+ * This also sets the survey's started flag and timestamp in the Firestore profile.
+ * @param {Array<string>} availableCredentialPools - Array of available credential pools to allocate from (Firestore appSettings collection).
+ * @returns {Promise<Object>} - The participant's DHQ3 credential data.
+ */
+
+export const allocateDHQ3Credential = async (availableCredentialPools) => {
+    try {
+        const idToken = await getIdToken();
+        const response = await fetch(`${api}?api=allocateDHQ3Credential`, {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + idToken,
+            },
+            body: JSON.stringify(availableCredentialPools),
+        });
+
+        const jsonResponse = await response.json();
+        if (jsonResponse.code === 200) {
+            return jsonResponse.data;
+        } else {
+            throw new Error('Failed to retrieve DHQ Credential', jsonResponse.message);
+        }
+    } catch (error) {
+        logDDRumError(new Error(`Get DHQ Credential Error: + ${error.message}`), 'getDHQCredentialError', {
+            userAction: 'fetch DHQ Credential',
+            timestamp: new Date().toISOString(),
+        });
+
+        throw new Error(`Error: getDHQCredential(): ${error.message}`);
+    }
+}
+
+/**
+ * Update participant data when the participant starts the DHQ module.
+ * @returns {Promise<Object>} - Response from the storeResponse function.
+ */
+
+export const updateStartDHQParticipantData = async () => {
+    try {
+        const formData = {
+            [fieldMapping.DHQ3.startTs]: new Date().toISOString(),
+            [fieldMapping.DHQ3.statusFlag]: fieldMapping.moduleStatus.started,
+        };
+
+        return await storeResponse(formData);
+
+    } catch (error) {
+        const combinedError = new Error(`Error: updateStartDHQParticipantData(): ${error.message}`);
+        combinedError.stack = `${combinedError.stack}\nCaused by: ${error.stack}`;
+        throw combinedError;
     }
 }
 
