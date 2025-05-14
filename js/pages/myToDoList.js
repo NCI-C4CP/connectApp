@@ -225,7 +225,7 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                     <div class="surveyMainBody" id="surveyMainBody">
                 `;
                 
-                template += await renderMainBody(data, collections, 'todo')
+                template += await renderMainBody(data, collections, 'todo');
                 template += `</ul>`
                 template += `
                         </div>
@@ -237,7 +237,7 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                 
                 mainContent.innerHTML = translateHTML(template);
                 document.getElementById('surveysToDoTab').addEventListener('click', async () => {
-                    document.getElementById('surveyMainBody').innerHTML = await renderMainBody(data, collections, 'todo') 
+                    document.getElementById('surveyMainBody').innerHTML = await renderMainBody(data, collections, 'todo');
                     if(!document.getElementById('surveysToDoTab').classList.contains('survey-Active-Nav')){
                         let toActive = document.getElementById('surveysToDoTab');   
                         let toInactive = document.getElementById('surveysCompleted');
@@ -258,7 +258,7 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                         toInactive.classList.add('survey-Inactive-Nav')
                         toInactive.classList.remove('survey-Active-Nav')
                     }
-                    document.getElementById('surveyMainBody').innerHTML = await renderMainBody(data, collections, 'completed') 
+                    document.getElementById('surveyMainBody').innerHTML = await renderMainBody(data, collections, 'completed');
                     addEventToDoList();
                 })
                 addEventToDoList();
