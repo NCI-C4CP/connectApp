@@ -2261,7 +2261,9 @@ export const updateStartDHQParticipantData = async () => {
         return await storeResponse(formData);
 
     } catch (error) {
-        throw new Error('Error: updateStartDHQParticipantData():', error);
+        const combinedError = new Error(`Error: updateStartDHQParticipantData(): ${error.message}`);
+        combinedError.stack = `${combinedError.stack}\nCaused by: ${error.stack}`;
+        throw combinedError;
     }
 }
 
