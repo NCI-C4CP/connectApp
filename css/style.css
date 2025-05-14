@@ -1116,15 +1116,23 @@ consentNextButton:hover{
     font-size: 1.3125rem;
 }
 
-.messagesBodyFont{
+.messagesBodyFont {
     font-family: 'Noto Sans', sans-serif;
     font-size:18px;
     line-height:27px;
     color: #2E2E2E;
-
+    padding-top: 1rem;
 }
 
+.messagesBodyFont.messagesBodyFontAddress,
+.messagesBodyFont.messagesBodyFontParking { 
+    padding-top: 0rem;
+} 
 
+.removePaddingTop {
+    padding-top: 0rem;
+}
+   
 .consentSubheader{
     font-family: 'Montserrat', sans-serif;
 }
@@ -1569,3 +1577,4 @@ span.my-samples-indent-text {
     display:inline-block;
     margin-left: 20px;
 }
+

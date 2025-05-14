@@ -998,7 +998,7 @@ const en = {
                 "KenwoodAddress": "4646 S. Drexel Blvd<br> Chicago, IL 60653",
                 "CrownPointName": "<span class=\"site-info-underline\"><a href=\"https://www.uchicagomedicine.org/find-a-location/uchicago-medicine-crown-point\" target=\"_blank\">UChicago Medicine Crown Point</a></span>",
                 "CrownPointAddress": "10855 Virginia St<br>Crown Point, IN 46307",
-                "IngallsMemorialHospitalHarveyName": "<span class=\"site-info-underline\"><a href=\"\" target=\"_blank\">UChicago Ingalls Memorial Hospital in Harvey, IL</a></span>",
+                "IngallsMemorialHospitalHarveyName": "<span><a href=\"https://www.uchicagomedicine.org/find-a-location/uchicago-medicine-at-ingalls-harvey\" target=\"_blank\">UChicago Ingalls Memorial Hospital in Harvey, IL</span>",
                 "IngallsMemorialHospitalHarveyAddress": "Ingalls Outpatient Center 1<sup>st</sup> floor <br> 1 Ingalls Dr <br> Harvey, IL 60426 <br><br> *Note: this is the outpatient lab in the main Ingalls hospital. The research lab location with research staff available is in the Professional Building.",
             }
         },

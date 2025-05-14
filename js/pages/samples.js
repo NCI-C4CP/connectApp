@@ -587,7 +587,7 @@ const u_chicago = {
             '<span data-i18n="samples.u_chicago.locations.CrownPointAddress">10855 Virginia St<br>Crown Point, IN 46307</span>',
         ],
         [
-            '<span data-i18n="samples.u_chicago.locations.IngallsMemorialHospitalHarveyName"><span class="site-info-underline"><a href="" target="_blank">UChicago Ingalls Memorial Hospital in Harvey, IL</a></span></span>',
+            '<span data-i18n="samples.u_chicago.locations.IngallsMemorialHospitalHarveyName"><span>UChicago Ingalls Memorial Hospital in Harvey, IL</span>',
             '<span data-i18n="samples.u_chicago.locations.IngallsMemorialHospitalHarveyAddress">Ingalls Outpatient Center <br> 1<sup>st</sup> floor <br> 1 Ingalls Dr <br> Harvey, IL 60426</span>',
         ],
     ]
@@ -789,12 +789,12 @@ const renderLocations = (site) => {
                 </div>`
             } else if (site === marshfield) {
                 template += `
-                <div class="row" style="width:100%">
+                <div class="row removePaddingTop" style="width:100%">
                     <div style="width:100%; margin-left: 2rem;">
-                        <div class="messagesHeaderFont" data-i18n="samples.addressText">
+                        <div class="messagesHeaderFont " data-i18n="samples.addressText">
                             Address
                         </div>
-                        <div class="messagesBodyFont">
+                        <div class="messagesBodyFont messagesBodyFontAddress">
                             ${location[1]}
                         </div>
                     </div>
@@ -811,12 +811,12 @@ const renderLocations = (site) => {
                 </div>`
             } else if (site === u_chicago){
                 if (location[1]) {
-                    template += `<div class="row" style="width:100%">
+                    template += `<div class="row removePaddingTop" style="width:100%">
                                     <div style="width:100%">
                                         <div class="messagesSubHeader" data-i18n="samples.addressText">
                                             Address
                                         </div>
-                                        <div class="messagesBodyFont">
+                                        <div class="messagesBodyFont messagesBodyFontAddress">
                                             ${location[1]}
                                         </div>
                                     </div>
@@ -856,7 +856,7 @@ const renderLocations = (site) => {
                         <div class="messagesSubHeader" data-i18n="samples.parkingInstructions">
                             Parking Instructions
                         </div>
-                        <div class="messagesBodyFont">
+                        <div class="messagesBodyFont messagesBodyFontParking">
                             ${location[3]}
                         </div>
                     </div>
