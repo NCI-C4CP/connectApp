@@ -331,8 +331,7 @@ const userProfile = () => {
                         : Promise.resolve(null);
 
                     const [collectionsData] = await Promise.allSettled([myCollectionsPromise, checkFirstSignInPromise, dhqStatusPromise]);
-
-                    await myToDoList(participantData, false, collectionsData.data);
+                    await myToDoList(participantData, false, collectionsData.value?.data || []);
 
                 } else {
                     // Authenticated user. Firestore profile does not exist (initial sign-up). Show the PIN entry form.
