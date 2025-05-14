@@ -2242,7 +2242,7 @@ export const allocateDHQ3Credential = async (availableCredentialPools) => {
             timestamp: new Date().toISOString(),
         });
 
-        throw new Error('Error: getDHQCredential():', error);
+        throw new Error(`Error: getDHQCredential(): ${error.message}`);
     }
 }
 
