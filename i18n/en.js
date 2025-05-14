@@ -767,6 +767,7 @@ const en = {
         "submittedSurvey": "Thank you for submitting your survey. If you are using a shared device, please remember to sign out of MyConnect and any email accounts you used to sign into MyConnect.",
         "mainHeaderFirstSurveyDescription": "This survey is split into four sections that ask about a wide range of topics, including information about your medical history, family, work, and health behaviors. You can answer all of the questions at one time, or pause and return to complete the survey later. If you pause, your answers will be saved so you can pick up where you left off. You can skip any questions that you do not want to answer.",
         "mainBodyBackgroundDescription": "Questions about you, your medical history, and your family history.",
+        "45_60minutes": "45 to 60 minutes",
         "20_30minutes": "20 to 30 minutes",
         "less5minutes": "Less than 5 minutes",
         "10minutes": "10 minutes",
@@ -794,6 +795,8 @@ const en = {
         "mainBodyExperience2024Description": "Questions about your experience with Connect and your preferences for completing study activities, using MyConnect, and getting messages.",
         "mainBodyCancerScreeningHistoryHeader": "Cancer Screening History Survey",
         "mainBodyCancerScreeningHistoryDescription": "Questions about past tests you may have had to screen for cancer. These are tests that look for cancer in people without symptoms.",
+        "mainBodyDHQ3Header": "Diet History Questionnaire III (DHQ III)",
+        "mainBodyDHQ3Description": "Questions about your typical diet in the past year. After clicking start, the survey will open in a new browser tab or window and you will see a standard Federal data security warning message.",
     },
     "notifications": {
         "read": "Read",
@@ -1791,6 +1794,7 @@ const en = {
         "modQualityofLifeSurvey": "Quality of Life Survey",
         "mod2024ConnectExperienceSurvey": "2024 Connect Experience Survey",
         "modCancerScreeningHistorySurvey": "Cancer Screening History Survey",
+        "modDietHistoryQuestionnaireIIIDHQIII": "Diet History Questionnaire III (DHQ III)",
         "sessionInactiveTitle": "Inactive",
         "sessionInactive": "You were inactive for 20 minutes, would you like to extend your session?<div class=\"modal-footer\"><button type=\"button\" title=\"Close\" class=\"btn btn-dark log-out-user\" data-bs-dismiss=\"modal\">Log Out</button><button type=\"button\" title=\"Continue\" class=\"btn btn-primary extend-user-session\" data-bs-dismiss=\"modal\">Continue</button></div>",
         "homeTitle": "My Connect - Home",
@@ -1878,6 +1882,14 @@ const en = {
         'collapserClosed': '<span style="display: inline-block; background-color: #2A72A5; border-radius: 3px; color: white; font-weight: bold; padding: 3px">+</span> Expand your report description and detailed report.',
         'collapserOpen': '<span style="display: inline-block; background-color: #2A72A5; border-radius: 3px; color: white; font-weight: bold; padding: 3px">-</span> Collapse your report description and detailed report. ',
         'reinstateModalBody': 'Are you sure you want to view this report again? It will move to the Viewed tab so you can see it again.'
+    },
+    "dhq3Screen": {
+        "openedInNewTab": "The Diet History Questionnaire III (DHQ III) is open and in progress in a separate browser tab or window. Please complete the survey in that tab or window. When you finish it, you can exit the window and return here.",
+        "youMayNeedTo": "You may need to ",
+        "refreshThisPage": "refresh this page",
+        "toSeeUpdatedStatus": " to see your updated survey status. The DHQ III may stay on your Dashboard for a short time after you submit it.",
+        "ifSurveyDidntOpen": "If the survey didn’t open, or if you closed it before submitting:",
+        "openAgainButton": "Click here to open the survey again and pick up where you left off",
     }
 }
 

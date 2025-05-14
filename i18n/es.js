@@ -772,6 +772,7 @@
         "submittedSurvey": "Gracias por enviar la encuesta. Si utiliza un dispositivo compartido, recuerde cerrar sesión en MyConnect y en las cuentas de correo electrónico que haya usado para iniciar sesión en MyConnect.",
         "mainHeaderFirstSurveyDescription": "Esta encuesta se divide en cuatro secciones en las que se le pregunta sobre una amplia variedad de temas, como información sobre sus antecedentes médicos, su familia, su trabajo y sus hábitos de salud. Puede responder todas las preguntas en una sola sesión o hacer una pausa y volver para completar la encuesta más tarde. Si hace una pausa, sus respuestas se guardarán para que pueda continuar donde dejó. Puede omitir cualquier pregunta que no desee responder.",
         "mainBodyBackgroundDescription": "Preguntas sobre usted, sus antecedentes médicos y sus antecedentes familiares.",
+        "45_60minutes": "45 a 60 minutos",
         "20_30minutes": "De 20 a 30 minutos",
         "less5minutes": "Menos de 5 minutos",
         "10minutes": "10 minutos",
@@ -799,6 +800,8 @@
         "mainBodyExperience2024Description": "Preguntas acerca de su experiencia con Connect, y sus preferencias para realizar actividades del estudio, utilizar MyConnect, y recibir mensajes.",
         "mainBodyCancerScreeningHistoryHeader":"Encuesta sobre historial de exámenes de detección de cáncer",
         "mainBodyCancerScreeningHistoryDescription": "Preguntas sobre pruebas anteriores para detectar el cáncer. Se trata de pruebas que buscan cáncer en personas sin síntomas.",
+        "mainBodyDHQ3Header": "Cuestionario de Historial Alimentación III (DHQ III, por sus siglas en ingles)",
+        "mainBodyDHQ3Description": "Preguntas sobre su alimentación habitual en el último año. Tras hacer clic en «Iniciar», la encuesta se abrirá en una nueva pestaña o ventana del navegador y verá un mensaje federal estándar de advertencia sobre la seguridad de los datos. Haga clic en «Continuar con el cuestionario» para comenzar la encuesta.",
     },
     "notifications": {
         "read": "Leídos",
@@ -1796,6 +1799,7 @@
         "modQualityofLifeSurvey": "Encuesta sobre calidad de vida",
         "mod2024ConnectExperienceSurvey": "2024 Encuesta Sobre Experiencia de Connect",
         "modCancerScreeningHistorySurvey": "Encuesta sobre historial de exámenes de detección de cáncer",
+        "modDietHistoryQuestionnaireIIIDHQIII": "Cuestionario de Historial Alimentación III (DHQ III, por sus siglas en ingles)",
         "sessionInactiveTitle": "Inactivo",
         "sessionInactive": "Ha estado inactivo durante 20 minutos, ¿desea extender la sesión?<div class=\"modal-footer\"><button type=\"button\" title=\"Cerrar\" class=\"btn btn-dark log-out-user\" data-bs-dismiss=\"modal\">Cerrar sesión</button><button type=\"button\" title=\"Continuar\" class=\"btn btn-primary extend-user-session\" data-bs-dismiss=\"modal\">Continuar</button></div>",
         "homeTitle": "My Connect - Inicio",
@@ -1883,6 +1887,14 @@
         'collapserClosed': '<span style="display: inline-block; background-color: #2A72A5; border-radius: 3px; color: white; font-weight: bold; padding: 3px">+</span> Expanda la descripción de su informe y su informe detallado. ',
         'collapserOpen': '<span style="display: inline-block; background-color: #2A72A5; border-radius: 3px; color: white; font-weight: bold; padding: 3px">-</span> Contraiga la descripción de su informe y su informe detallado. ',
         'reinstateModalBody': '¿Está seguro de que desea ver este informe de nuevo? Se lo moverá a la pestaña Vistos para que pueda verlo de nuevo.'
+    },
+    "dhq3Screen": {
+        "openedInNewTab": "El Cuestionario de Historia Alimentación III (DHQ III, por sus siglas en inglés) está abierto y en progreso en una pestaña o ventana separada del navegador. Por favor, complete la encuesta en esa pestaña o ventana. Cuando la termine, puede salir de la ventana y regresar aquí.",
+        "youMayNeedTo": "Puede que necesite ",
+        "refreshThisPage": "actualizar esta página",
+        "toSeeUpdatedStatus": " para ver el estado actualizado de su encuesta. El Cuestionario de Historial Alimentación III puede permanecer en su Panel de Control por un corto tiempo después de enviarlo.",
+        "ifSurveyDidntOpen": "Si la encuesta no se abrió, o si la cerró antes de enviarla:",
+        "openAgainButton": "Haga clic aquí para abrir la encuesta nuevamente y continuar desde donde la dejó",
     }
 }
 

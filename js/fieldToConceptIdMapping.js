@@ -149,7 +149,8 @@ export default
         "D_390351864":      "Mouthwash",
         "D_601305072":      "PROMIS",
         "D_506648060":      "Experience2024",
-        "D_369168474":      "CancerScreeningHistory"
+        "D_369168474":      "CancerScreeningHistory",
+        "D_497020618":      "DHQ3",
     },
 
     "Module1_OLD": {
@@ -290,6 +291,19 @@ export default
         "standaloneSurvey": true,
         "version": "350996955",
         "questVersion": "562804752",
+    },
+
+    DHQ3:{
+        "conceptId": "D_497020618",
+        "startTs": "109610692",
+        "completeTs": "610227793",
+        "statusFlag": "692560814",
+        "standaloneSurvey": true,
+        "version": "DHQ3",
+        "questVersion": "",
+        "username": "148184166",
+        "uuid": "808755658",
+        "studyID": "196723965",
     },
     
     // @deprecated. Retain until migration to Quest2 is complete. External variables passed into Quest that require extra async/await handling.

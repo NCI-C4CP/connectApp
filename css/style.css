@@ -411,6 +411,15 @@ canvas {
     width:100%;
 }
 
+.btn-expanding-height {
+    margin-top: 0px;
+    border-radius: 30px !important;
+    min-height: 60px !important;
+    background-color: #5c2d93 !important;
+    color: white !important;
+    width: 100%;
+}
+
 
 .no-text-decoration {
     color: #000000 !important;
