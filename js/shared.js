@@ -2208,7 +2208,7 @@ export const syncDHQ3RespondentInfo = async (studyID, respondentUsername, dhqSur
                 timestamp: new Date().toISOString(),
         });
 
-        throw new Error('Error: syncDHQ3RespondentInfo():', error);
+        throw new Error(`Error: syncDHQ3RespondentInfo(): ${error.message}`);
     }
 }
 
