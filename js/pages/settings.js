@@ -305,13 +305,13 @@ const handleEditNameSection = () => {
     const firstNameField = document.getElementById('newFirstNameField');
     const lastNameField = document.getElementById('newLastNameField');
     const middleNameField = document.getElementById('newMiddleNameField');
-    optVars.suffix = document.getElementById('newSuffixNameField').value.trim();
-    optVars.preferredFirstName = document.getElementById('newPreferredFirstNameField').value.trim();
+    optVars.suffix = escapeHTML(document.getElementById('newSuffixNameField').value.trim());
+    optVars.preferredFirstName = escapeHTML(document.getElementById('newPreferredFirstNameField').value.trim());
     const isNameValid = validateName(firstNameField, lastNameField, middleNameField);
     if (isNameValid) {
-      const firstName = firstNameField.value.trim();
-      const lastName = lastNameField.value.trim();
-      optVars.middleName = middleNameField.value.trim();
+      const firstName = escapeHTML(firstNameField.value.trim());
+      const lastName = escapeHTML(lastNameField.value.trim());
+      optVars.middleName = escapeHTML(middleNameField.value.trim());
       formVisBools.isNameFormDisplayed = toggleElementVisibility(nameElementArray, formVisBools.isNameFormDisplayed);
       toggleButtonText();
       submitNewName(firstName, lastName);
@@ -475,11 +475,11 @@ const handleEditMailingAddressSection = () => {
   });
 
   document.getElementById('changeMailingAddressSubmit1').addEventListener('click', async (e) => {
-    const addressLine1 = document.getElementById('UPAddress1Line1').value.trim();
-    const addressLine2 = document.getElementById('UPAddress1Line2').value.trim();
-    const city = document.getElementById('UPAddress1City').value.trim();
-    const state = document.getElementById('UPAddress1State').value.trim();
-    const zip = document.getElementById('UPAddress1Zip').value.trim();
+    const addressLine1 = escapeHTML(document.getElementById('UPAddress1Line1').value.trim());
+    const addressLine2 = escapeHTML(document.getElementById('UPAddress1Line2').value.trim());
+    const city = escapeHTML(document.getElementById('UPAddress1City').value.trim());
+    const state = escapeHTML(document.getElementById('UPAddress1State').value.trim());
+    const zip = escapeHTML(document.getElementById('UPAddress1Zip').value.trim());
     const isPOBox = document.getElementById('poBoxCheckbox').checked;
 
     const {hasError, uspsSuggestion} = await validateMailingAddress(1, addressLine1, city, state, zip);
@@ -519,7 +519,7 @@ const handleEditMailingAddressSection = () => {
 const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, isPOBox = false) => {
   const isSuccess = await changeMailingAddress(id, addressLine1, addressLine2, city, state, zip, userData, isPOBox).catch(function (error) {
     document.getElementById(`mailingAddressFail${id}`).style.display = 'block';
-    document.getElementById(`mailingAddressError${id}`).innerHTML = error.message;
+    document.getElementById(`mailingAddressError${id}`).innerHTML = translateText('settings.failMailUpdate');
   });
   if (isSuccess) {
     await refreshUserDataAfterEdit();
@@ -564,11 +564,11 @@ const handleEditPhysicalMailingAddressSection = () => {
   });
 
   document.getElementById('changeMailingAddressSubmit2').addEventListener('click', async (e) => {
-    const addressLine1 = document.getElementById('UPAddress2Line1').value.trim();
-    const addressLine2 = document.getElementById('UPAddress2Line2').value.trim();
-    const city = document.getElementById('UPAddress2City').value.trim();
-    const state = document.getElementById('UPAddress2State').value.trim();
-    const zip = document.getElementById('UPAddress2Zip').value.trim();
+    const addressLine1 = escapeHTML(document.getElementById('UPAddress2Line1').value.trim());
+    const addressLine2 = escapeHTML(document.getElementById('UPAddress2Line2').value.trim());
+    const city = escapeHTML(document.getElementById('UPAddress2City').value.trim());
+    const state = escapeHTML(document.getElementById('UPAddress2State').value.trim());
+    const zip = escapeHTML(document.getElementById('UPAddress2Zip').value.trim());
 
     const {hasError, uspsSuggestion} = await validateMailingAddress(2, addressLine1, city, state, zip);
     
@@ -646,11 +646,11 @@ const handleEditAltAddressSection = () => {
     });
 
     document.getElementById('changeMailingAddressSubmit3').addEventListener('click', async () => {
-        const altAddressLine1 = document.getElementById('UPAddress3Line1').value.trim();
-        const altAddressLine2 = document.getElementById('UPAddress3Line2').value.trim();
-        const altCity = document.getElementById('UPAddress3City').value.trim();
-        const altState = document.getElementById('UPAddress3State').value.trim();
-        const altZip = document.getElementById('UPAddress3Zip').value.trim();
+        const altAddressLine1 = escapeHTML(document.getElementById('UPAddress3Line1').value.trim());
+        const altAddressLine2 = escapeHTML(document.getElementById('UPAddress3Line2').value.trim());
+        const altCity = escapeHTML(document.getElementById('UPAddress3City').value.trim());
+        const altState = escapeHTML(document.getElementById('UPAddress3State').value.trim());
+        const altZip = escapeHTML(document.getElementById('UPAddress3Zip').value.trim());
         const altAddressIsPOBox = document.getElementById("poBoxCheckboxAltAddress")?.checked;
 
         const { hasError, uspsSuggestion } = await validateMailingAddress(3, altAddressLine1, altCity, altState, altZip);
@@ -811,7 +811,7 @@ const handleEditSignInInformationSection = () => {
         const handleSignInBtn = async (e) => {
             e.preventDefault();
             window.localStorage.setItem('signInUpdate', 'yes');
-            const inputStr = accountInput.value.trim();
+            const inputStr = escapeHTML(accountInput.value.trim());
             const isEmail = !!inputStr.match(validEmailFormat);
             const isPhone = !!inputStr.match(validPhoneNumberFormat);
             if (isEmail) {
@@ -866,8 +866,8 @@ const handleEditSignInInformationSection = () => {
   });
 
   document.getElementById('changeEmailSubmit').addEventListener('click', e => {
-    const email = document.getElementById('newEmailField').value.trim();
-    const emailConfirm = document.getElementById('newEmailFieldCheck').value.trim();
+    const email = escapeHTML(document.getElementById('newEmailField').value.trim());
+    const emailConfirm = escapeHTML(document.getElementById('newEmailFieldCheck').value.trim());
     const isEmailValid = email && emailConfirm && validateLoginEmail(email, emailConfirm);
     if (isEmailValid) {
         submitNewLoginMethod(email, null)
@@ -875,8 +875,8 @@ const handleEditSignInInformationSection = () => {
   });
 
   document.getElementById('changePhoneSubmit').addEventListener('click', e => {
-    const phone = document.getElementById('newPhoneField').value.trim();
-    const phoneConfirm = document.getElementById('newPhoneFieldCheck').value.trim();
+    const phone = escapeHTML(document.getElementById('newPhoneField').value.trim());
+    const phoneConfirm = escapeHTML(document.getElementById('newPhoneFieldCheck').value.trim());
     const isPhoneValid = phone && phoneConfirm && validateLoginPhone(phone, phoneConfirm);
     if (isPhoneValid) {
         submitNewLoginMethod(null, phone);
@@ -1781,7 +1781,7 @@ export const renderPhysicalMailingAddressData = (id) => {
                 </div>
                 <div class="row">
                     <div class="col-md-4"">
-                        <button class="btn btn-primary save-data consentNextButton px-3" id="clearPhysicalAddrBtn" data-i18n="settingsHelpers.clearButtonText">Clear</button>
+                        <button class="btn btn-primary save-data consentNextButton px-3" id="clearPhysicalAddrBtn" data-i18n="settingsHelpers.clearButtonText" style="display:none">Clear</button>
                     </div>
                 </div>
             </div>
@@ -1823,7 +1823,7 @@ const renderAlternateAddressData = (id) => {
                 </div>
                 <div class="row">
                     <div class="col-md-4"">
-                        <button class="btn btn-primary save-data consentNextButton px-3" id="clearAlternateAddrBtn" data-i18n="settingsHelpers.clearButtonText">Clear</button>
+                        <button class="btn btn-primary save-data consentNextButton px-3" id="clearAlternateAddrBtn" data-i18n="settingsHelpers.clearButtonText" style="display:none">Clear</button>
                     </div>
                 </div>
             </div>

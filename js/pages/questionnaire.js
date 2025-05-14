@@ -173,8 +173,6 @@ async function startModule(moduleId) {
     let lang;                                                               // The participant's preferred language.
     let moduleText;                                                         // The fetched module's markdown text.
 
-    await localforage.clear();
-
     try {
         inputData = setInputData(participantData, modules); 
         moduleConfig = questionnaireModules();

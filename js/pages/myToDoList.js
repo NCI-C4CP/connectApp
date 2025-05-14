@@ -213,9 +213,6 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                 }
 
                 template += `
-                    <div class="alert alert-warning" id="notesOnLanguage" style="margin-top:10px;" data-i18n="mytodolist.notesOnLanguage">
-                        If you'd like to take this survey in another language, simply click the button at the top of the page to switch to your preferred language before you start. Once you start this survey in one language, you'll need to finish it in that language.
-                    </div>
                     <ul class="nav nav-tabs" role="tablist" style="border-bottom:none; margin-top:20px">
                         <li class="nav-item" style=:padding-left:10px>
                             <button class=" nav-link navbar-btn survey-Active-Nav" id="surveysToDoTab" role="tab" aria-selected="true" aria-controls="todoPanel" data-i18n="mytodolist.toDoButton">To Do</button>
@@ -666,17 +663,19 @@ const checkForNewSurveys = async (data, collections) => {
     let newSurvey = false;
     let knownSurveys;
     let completedStandaloneSurveys = 0;
+    let completedSurveys = 0;
     let knownCompletedStandaloneSurveys;
 
     Object.keys(modules).forEach(mod => {
         if(modules[mod].moduleId) {
             if(modules[mod].enabled && !modules[mod].unreleased) enabledSurveys++;
+            if(modules[mod].enabled && !modules[mod].unreleased && modules[mod].completed === true) completedSurveys++;
             if(data[fieldMapping[modules[mod].moduleId].completeTs] && fieldMapping[modules[mod].moduleId].standaloneSurvey) completedStandaloneSurveys++;
         }
     });
 
-    if(data['566565527']) {
-        knownSurveys = data['566565527'];
+    if(data[fieldMapping.enabledSurveys]) {
+        knownSurveys = data[fieldMapping.enabledSurveys];
         if(knownSurveys < enabledSurveys) {
             newSurvey = true;
         }
@@ -693,24 +692,38 @@ const checkForNewSurveys = async (data, collections) => {
         `;
     }
 
-    if(data[677381583] || data[677381583] === 0) {
-        knownCompletedStandaloneSurveys = data[677381583];
+    
+    if(data[fieldMapping.completedStandaloneSurveys] || data[fieldMapping.completedStandaloneSurveys] === 0) {
+        knownCompletedStandaloneSurveys = data[fieldMapping.completedStandaloneSurveys];
         if(knownCompletedStandaloneSurveys < completedStandaloneSurveys) {
             template += `
             <div class="alert alert-warning" id="verificationMessage" style="margin-top:10px;" data-i18n="mytodolist.submittedSurvey">
-                Thank you for submitting your survey. If you are using a shared device, please remember to sign out of MyConnect and any email accounts you used to sign into MyConnect.
+            Thank you for submitting your survey. If you are using a shared device, please remember to sign out of MyConnect and any email accounts you used to sign into MyConnect.
             </div>
-        `;
+            `;
         }
     }
     else {
         completedStandaloneSurveys = 0;
     }
 
-    let obj = {
-        566565527: enabledSurveys,
-        677381583: completedStandaloneSurveys
-    };
+    if (enabledSurveys > 0 && enabledSurveys === completedSurveys) {
+        template += `
+            <div class="alert alert-warning" id="verificationMessage" style="margin-top:10px;" data-i18n="mytodolist.surveysCompleted">
+                You've finished all available Connect surveys. We will reach out to you when there are new surveys and study activities to complete. Thank you for your contributions to the study!
+            </div>
+        `;
+    } else {
+        template += `
+            <div class="alert alert-warning" id="notesOnLanguage" style="margin-top:10px;" data-i18n="mytodolist.notesOnLanguage">
+                If you'd like to take this survey in another language, simply click the button at the top of the page to switch to your preferred language before you start. Once you start this survey in one language, you'll need to finish it in that language.
+            </div>
+        `;
+    }
+
+    let obj = {};
+    obj[fieldMapping.enabledSurveys] = enabledSurveys;
+    obj[fieldMapping.completedStandaloneSurveys] = completedStandaloneSurveys;
 
     await storeResponse(obj);
     return template;

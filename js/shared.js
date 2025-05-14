@@ -2609,9 +2609,9 @@ export const getAdjustedTime = (inputTime, days = 0, hours = 0, minutes = 0) => 
 
 
 export const emailValidationStatus = {
-    VALID: "valid",
-    INVALID: "invalid",
-    WARNING: "warning",
+    VALID: "Valid",
+    INVALID: "Invalid",
+    WARNING: "Warning",
 };
 
 export const emailValidationAnalysis = (validation) => {
@@ -2693,11 +2693,9 @@ export function replaceUnsupportedPDFCharacters(string, font) {
  * @returns {string} - Escaped string
  */
 export const escapeHTML = (str) => {
-    return str.replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/'/g, '&#39;');
+    const div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
 };
 
 export const closeModal = () => {

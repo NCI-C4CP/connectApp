@@ -102,6 +102,8 @@ export default
     },
 
     surveyLanguage: 784119588,
+    enabledSurveys: 566565527,
+    completedStandaloneSurveys: 677381583,
 
     "heardAboutStudyForm" : 142654897,
 

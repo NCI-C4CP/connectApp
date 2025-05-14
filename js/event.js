@@ -1,5 +1,4 @@
-import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, errorMessage, BirthMonths, getAge, getMyData, 
-    hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues } from "./shared.js";
+import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues, escapeHTML } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
 import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, requestPINTemplate } from "./pages/healthCareProvider.js";
 import { myToDoList } from "./pages/myToDoList.js";
@@ -706,11 +705,11 @@ export const addEventUPSubmit = async () => {
             if(element.checked) radioChecked = true;
         });
 
-        const phoneNo = `${document.getElementById('UPPhoneNumber11').value}${document.getElementById('UPPhoneNumber12').value}${document.getElementById('UPPhoneNumber13').value}`;
-        const phoneNo2 = `${document.getElementById('UPPhoneNumber21').value}${document.getElementById('UPPhoneNumber22').value}${document.getElementById('UPPhoneNumber23').value}`;
-        const phoneNo3 = `${document.getElementById('UPPhoneNumber31').value}${document.getElementById('UPPhoneNumber32').value}${document.getElementById('UPPhoneNumber33').value}`;
-        const altContactMobilePhone = `${document.getElementById('altContactMobilePhone1').value}${document.getElementById('altContactMobilePhone2').value}${document.getElementById('altContactMobilePhone3').value}`;
-        const altContactHomePhone = `${document.getElementById('altContactHomePhone1').value}${document.getElementById('altContactHomePhone2').value}${document.getElementById('altContactHomePhone3').value}`;
+        const phoneNo = `${escapeHTML(document.getElementById('UPPhoneNumber11').value)}${escapeHTML(document.getElementById('UPPhoneNumber12').value)}${escapeHTML(document.getElementById('UPPhoneNumber13').value)}`;
+        const phoneNo2 = `${escapeHTML(document.getElementById('UPPhoneNumber21').value)}${escapeHTML(document.getElementById('UPPhoneNumber22').value)}${escapeHTML(document.getElementById('UPPhoneNumber23').value)}`;
+        const phoneNo3 = `${escapeHTML(document.getElementById('UPPhoneNumber31').value)}${escapeHTML(document.getElementById('UPPhoneNumber32').value)}${escapeHTML(document.getElementById('UPPhoneNumber33').value)}`;
+        const altContactMobilePhone = `${escapeHTML(document.getElementById('altContactMobilePhone1').value)}${escapeHTML(document.getElementById('altContactMobilePhone2').value)}${escapeHTML(document.getElementById('altContactMobilePhone3').value)}`;
+        const altContactHomePhone = `${escapeHTML(document.getElementById('altContactHomePhone1').value)}${escapeHTML(document.getElementById('altContactHomePhone2').value)}${escapeHTML(document.getElementById('altContactHomePhone3').value)}`;
         const email = document.getElementById('UPEmail').value;
         const email2 = document.getElementById('UPEmail2');
         const email3 = document.getElementById('UPAdditionalEmail2');
@@ -884,103 +883,106 @@ export const addEventUPSubmit = async () => {
         }
 
         document.getElementById('userProfileSubmitButton').disabled = true
-        // if (!hasError) {
-        //     const emailValidation = await emailAddressValidation({
-        //         emails: {
-        //             upEmail: email.trim(),
-        //             upEmail2: email2 ? email2.value.trim() : null,
-        //             upAdditionalEmail2: email3 ? email3.value.trim() : null,
-        //             upAdditionalEmail3: email4 ? email4.value.trim() : null,
-        //             altContactEmail: altContactEmail || null,
-        //         },
-        //     });
-        //     const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail)
-        //     if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email)
-        //     if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
-        //         errorMessage(
-        //             "UPEmail",
-        //             '<span data-i18n="settingsHelpers.emailInvalid">' +
-        //                 translateText("settingsHelpers.emailInvalid") +
-        //                 "</span>",
-        //             focus
-        //         );
-        //         // Clear the "Confirm Preferred Email" field here
-        //         document.getElementById('confirmUPEmail').value = '';
-        //         if (focus) document.getElementById("UPEmail").focus();
-        //         focus = false;
-        //         hasError = true;
-        //     }
+        if (!hasError) {
+            const emailValidation = await emailAddressValidation({
+                emails: {
+                    upEmail: email.trim(),
+                    upEmail2: email2 ? email2.value.trim() : null,
+                    upAdditionalEmail2: email3 ? email3.value.trim() : null,
+                    upAdditionalEmail3: email4 ? email4.value.trim() : null,
+                    altContactEmail: altContactEmail || null,
+                },
+            });
+            const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail)
+            if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email)
+            if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
+                errorMessage(
+                    "UPEmail",
+                    '<span data-i18n="settingsHelpers.emailInvalid">' +
+                        translateText("settingsHelpers.emailInvalid") +
+                        "</span>",
+                    focus
+                );
+                // Clear the "Confirm Preferred Email" field here
+                document.getElementById('confirmUPEmail').value = '';
+                if (focus) document.getElementById("UPEmail").focus();
+                focus = false;
+                hasError = true;
+            }
     
-        //     const upEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail2)
-        //     if (upEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email2.value)
-        //     if (upEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
-        //         errorMessage(
-        //             "UPEmail2",
-        //             '<span data-i18n="settingsHelpers.emailInvalid">' +
-        //                 translateText("settingsHelpers.emailInvalid") +
-        //                 "</span>",
-        //             focus
-        //         );
-        //         if (focus) document.getElementById("UPEmail2").focus();
-        //         focus = false;
-        //         hasError = true;
-        //     }
+            const upEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upEmail2)
+            if (upEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email2.value)
+            if (upEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
+                errorMessage(
+                    "UPEmail2",
+                    '<span data-i18n="settingsHelpers.emailInvalid">' +
+                        translateText("settingsHelpers.emailInvalid") +
+                        "</span>",
+                    focus
+                );
+                if (focus) document.getElementById("UPEmail2").focus();
+                focus = false;
+                hasError = true;
+            }
     
-        //     const upAdditionalEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail2)
-        //     if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email3.value)
-        //     if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
-        //         errorMessage(
-        //             "UPAdditionalEmail2",
-        //             '<span data-i18n="settingsHelpers.emailInvalid">' +
-        //                 translateText("settingsHelpers.emailInvalid") +
-        //                 "</span>",
-        //             focus
-        //         );
-        //         if (focus) document.getElementById("UPAdditionalEmail2").focus();
-        //         focus = false;
-        //         hasError = true;
-        //     }
+            const upAdditionalEmail2ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail2)
+            if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email3.value)
+            if (upAdditionalEmail2ValidationAnalysis === emailValidationStatus.INVALID) {
+                errorMessage(
+                    "UPAdditionalEmail2",
+                    '<span data-i18n="settingsHelpers.emailInvalid">' +
+                        translateText("settingsHelpers.emailInvalid") +
+                        "</span>",
+                    focus
+                );
+                if (focus) document.getElementById("UPAdditionalEmail2").focus();
+                focus = false;
+                hasError = true;
+            }
             
-        //     const upAdditionalEmail3ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail3)
-        //     if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email4.value)
-        //     if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.INVALID) {
-        //         errorMessage(
-        //             "UPAdditionalEmail3",
-        //             '<span data-i18n="settingsHelpers.emailInvalid">' +
-        //                 translateText("settingsHelpers.emailInvalid") +
-        //                 "</span>",
-        //             focus
-        //         );
-        //         if (focus) document.getElementById("UPAdditionalEmail3").focus();
-        //         focus = false;
-        //         hasError = true;
-        //     }
+            const upAdditionalEmail3ValidationAnalysis = emailValidationAnalysis(emailValidation.upAdditionalEmail3)
+            if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(email4.value)
+            if (upAdditionalEmail3ValidationAnalysis === emailValidationStatus.INVALID) {
+                errorMessage(
+                    "UPAdditionalEmail3",
+                    '<span data-i18n="settingsHelpers.emailInvalid">' +
+                        translateText("settingsHelpers.emailInvalid") +
+                        "</span>",
+                    focus
+                );
+                if (focus) document.getElementById("UPAdditionalEmail3").focus();
+                focus = false;
+                hasError = true;
+            }
     
-        //     const altContactEmailValidationAnalysis = emailValidationAnalysis(emailValidation.altContactEmail);
-        //     if (altContactEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(altContactEmail);
-        //     if (altContactEmailValidationAnalysis === emailValidationStatus.INVALID) {
-        //         errorMessage(
-        //             "altContactEmail",
-        //             '<span data-i18n="settingsHelpers.emailInvalid">' +
-        //             translateText("settingsHelpers.emailInvalid") +
-        //             "</span>",
-        //             focus
-        //         );
-        //         if (focus) document.getElementById("altContactEmail").focus();
-        //         focus = false;
-        //         hasError = true;
-        //     }
-        // }
+            const altContactEmailValidationAnalysis = emailValidationAnalysis(emailValidation.altContactEmail);
+            if (altContactEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(altContactEmail);
+            if (altContactEmailValidationAnalysis === emailValidationStatus.INVALID) {
+                errorMessage(
+                    "altContactEmail",
+                    '<span data-i18n="settingsHelpers.emailInvalid">' +
+                    translateText("settingsHelpers.emailInvalid") +
+                    "</span>",
+                    focus
+                );
+                if (focus) document.getElementById("altContactEmail").focus();
+                focus = false;
+                hasError = true;
+            }
+        }
 
         /* Validate emailAddress/physicalAddress */
         const uspsSuggestion = {
+            isMailAddressValid: true,
+            isPhysicalAddressValid: true,
+            isAlternateAddressValid: true,
             mailAddress: {},
             physicalAddress: {},
             alternateAddress: {},
         }
         if (!hasError) {
             const validateMailAddress = await validateAddress(focus, "UPAddress1Line1", "UPAddress1Line2", "UPAddress1City", "UPAddress1State", "UPAddress1Zip")
-            hasError = hasError || validateMailAddress.hasError
+            uspsSuggestion.isMailAddressValid = !validateMailAddress.hasError
             uspsSuggestion.mailAddress = validateMailAddress.result
 
             if (document.getElementById('UPAddress2Line1').value &&
@@ -989,7 +991,7 @@ export const addEventUPSubmit = async () => {
                 document.getElementById('UPAddress2Zip').value) {
 
                 const validatePhysicalAddress = await validateAddress(focus, "UPAddress2Line1", "UPAddress2Line2", "UPAddress2City", "UPAddress2State", "UPAddress2Zip")
-                hasError = hasError || validatePhysicalAddress.hasError
+                uspsSuggestion.isPhysicalAddressValid = !validatePhysicalAddress.hasError
                 uspsSuggestion.physicalAddress = validatePhysicalAddress.result
             }
         }
@@ -1050,7 +1052,7 @@ export const addEventUPSubmit = async () => {
 
             if (!hasError) {
                 const validateAlternateAddress = await validateAddress(focus, "UPAddress3Line1", "UPAddress3Line2", "UPAddress3City", "UPAddress3State", "UPAddress3Zip");
-                hasError = hasError || validateAlternateAddress.hasError;
+                uspsSuggestion.isAlternateAddressValid = !validateAlternateAddress.hasError
                 uspsSuggestion.alternateAddress = validateAlternateAddress.result;
             }
         }
@@ -1266,16 +1268,83 @@ export const addEventUPSubmit = async () => {
 const preVerifyUserDetails = (uspsSuggestion, riskyEmails, formData) => {
     if (riskyEmails.length) {
         showRiskyEmailWarning(uspsSuggestion, riskyEmails, formData);
+    } else if (!uspsSuggestion.isMailAddressValid) {
+        showInvalidAddressWarning(uspsSuggestion, formData, "mail");
+    } else if (!uspsSuggestion.isPhysicalAddressValid) {
+        showInvalidAddressWarning(uspsSuggestion, formData, "physical");
+    } else if (!uspsSuggestion.isAlternateAddressValid) {
+        showInvalidAddressWarning(uspsSuggestion, formData, "alternate");
     } else if (uspsSuggestion.mailAddress.suggestion) {
-        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData, 'mail');
+        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData, "mail");
     } else if (uspsSuggestion.physicalAddress.suggestion) {
-        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData, 'physical');
+        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData, "physical");
     } else if (uspsSuggestion.alternateAddress.suggestion) {
-        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData, 'alternate');
+        showMailAddressSuggestion(uspsSuggestion, riskyEmails, formData, "alternate");
     } else {
         verifyUserDetails(formData);
     }
 };
+
+const showInvalidAddressWarning = (uspsSuggestion, formData, type) => {
+    if (!document.getElementById('connectMainModal').classList.contains('show')) openModal();
+    let addressHtml = ``;
+    if (type === "mail") {
+        addressHtml += `
+            <span data-i18n="event.l1">Line 1</span>: ${escapeHTML(document.getElementById("UPAddress1Line1").value)} </br>
+            <span data-i18n="event.l2">Line 2</span>: ${escapeHTML(document.getElementById("UPAddress1Line2").value)} </br>
+            <span data-i18n="event.city">City</span>: ${escapeHTML(document.getElementById("UPAddress1City").value)} </br>
+            <span data-i18n="event.state">State</span>: ${escapeHTML(document.getElementById("UPAddress1State").value)} </br>
+            <span data-i18n="event.zip">Zip</span>: ${escapeHTML(document.getElementById("UPAddress1Zip").value)} </br>
+        `;
+    }
+    if (type === "physical") {
+        addressHtml += `
+            <span data-i18n="event.l1">Line 1</span>: ${escapeHTML(document.getElementById("UPAddress2Line1").value)} </br>
+            <span data-i18n="event.l2">Line 2</span>: ${escapeHTML(document.getElementById("UPAddress2Line2").value)} </br>
+            <span data-i18n="event.city">City</span>: ${escapeHTML(document.getElementById("UPAddress2City").value)} </br>
+            <span data-i18n="event.state">State</span>: ${escapeHTML(document.getElementById("UPAddress2State").value)} </br>
+            <span data-i18n="event.zip">Zip</span>: ${escapeHTML(document.getElementById("UPAddress2Zip").value)} </br>
+        `;
+    }
+    if (type === "alternate") {
+        addressHtml += `
+            <span data-i18n="event.l1">Line 1</span>: ${escapeHTML(document.getElementById("UPAddress3Line1").value)} </br>
+            <span data-i18n="event.l2">Line 2</span>: ${escapeHTML(document.getElementById("UPAddress3Line2").value)} </br>
+            <span data-i18n="event.city">City</span>: ${escapeHTML(document.getElementById("UPAddress3City").value)} </br>
+            <span data-i18n="event.state">State</span>: ${escapeHTML(document.getElementById("UPAddress3State").value)} </br>
+            <span data-i18n="event.zip">Zip</span>: ${escapeHTML(document.getElementById("UPAddress3Zip").value)} </br>
+        `;
+    }
+
+    let bodyHtml = `
+        <span data-i18n="event.invalidAddressDescription">
+            The address you entered may not be valid. Please check your entry below. If the address is not correct, please click ‘Go Back’ and correct the address. If the address is correct, please click ‘Continue with Address’. We are only able to send Connect communications and packages to valid addresses.
+        </span>
+        <div style="display: flex; justify-content: center; margin-top: 15px;"><div>${addressHtml}</div></div>
+    `
+    document.getElementById('connectModalHeader').style.display = 'none';
+    document.getElementById('connectModalBody').innerHTML = translateHTML(bodyHtml);
+    document.getElementById('connectModalFooter').innerHTML = translateHTML(`
+        <div class="d-flex justify-content-between w-100">
+            <button data-i18n="event.navButtonsClose" type="button" title="Go Back" class="btn btn-dark" data-bs-dismiss="modal">Go Back</button>
+        </div>
+        <p style="margin-top: 20px; font-size: 12px" data-i18n="event.invalidAddressFooter">
+            If you are having problems fixing these errors and can’t submit your profile, please reach out to the <a href="https://myconnect.cancer.gov/support" target="_blank">Connect Support Center</a>  for help or <a id="continueBtn" style="cursor: pointer; text-decoration: underline">Continue with Address</a> as shown.
+        </p>
+    `);
+    document.getElementById('connectModalFooter').style.display = 'block';
+
+    document.getElementById('continueBtn').addEventListener('click', () => {
+        if (type === 'mail') {
+            uspsSuggestion.isMailAddressValid = true
+        } else if (type === 'physical') {
+            uspsSuggestion.isPhysicalAddressValid = true
+        } else {
+            uspsSuggestion.isAlternateAddressValid = true
+        }
+        preVerifyUserDetails(uspsSuggestion, [], formData)
+    })
+}
 
 const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, type) => {
 
@@ -1406,6 +1475,10 @@ const showInvalidFormWarning = () => {
             Please fix the errors in the information you entered before continuing. If you are having problems fixing these errors and can’t submit your profile, please reach out to the <a href="https://myconnect.cancer.gov/support" target="_blank">Connect Support Center</a> for help.
         </span>
     `
+    document.getElementById('connectModalHeader').innerHTML = translateHTML(`
+        <h4 data-i18n="event.reviewProfile">Review your profile details</h4>
+        <button type="button" class="btn-close" id="modalCloseBtn" aria-label="Close" data-bs-dismiss="modal"></button>
+    `);
     document.getElementById('connectModalBody').innerHTML = translateHTML(bodyHtml);
     document.getElementById('connectModalFooter').innerHTML = translateHTML(`
         <div class="d-flex justify-content-between w-100">
@@ -1418,11 +1491,6 @@ const showInvalidFormWarning = () => {
 const showRiskyEmailWarning = (uspsSuggestion, riskyEmails, formData) => {
     if(!document.getElementById('connectMainModal').classList.contains('show')) openModal();
     let bodyHtml = ''
-    const escapeHTML = (str) => {
-        const div = document.createElement('div');
-        div.appendChild(document.createTextNode(str));
-        return div.innerHTML;
-    };
 
     document.getElementById('connectModalHeader').innerHTML = translateHTML(`
         <button type="button" class="btn-close" id="modalCloseBtn" aria-label="Close"></button>
@@ -1444,8 +1512,8 @@ const showRiskyEmailWarning = (uspsSuggestion, riskyEmails, formData) => {
         </div>
         `
     })
+    document.getElementById('connectModalHeader').style.display = 'none';
     document.getElementById('connectModalBody').innerHTML = translateHTML(bodyHtml);
-
     document.getElementById('connectModalFooter').innerHTML = translateHTML(`
         <div class="d-flex justify-content-between w-100">
             <button data-i18n="event.navButtonsClose" type="button" title="Close" class="btn btn-dark" id="goBackBtn">Go Back</button>
@@ -1538,8 +1606,8 @@ export const environmentWarningModal = () => {
         </br>
 
         <div class="col-md-4 mx-auto text-center">
-            <label style="text-align:center;">Enter staff access code</label>
-            <input type="text" style="text-align:center; margin:0 auto;" class="form-control input-validation row" id="testingAccessCode" name="testingAccessCode">
+            <label for="testingAccessCode" style="text-align:center;">Enter staff access code</label>
+            <input type="text" id="testingAccessCode" style="text-align:center; margin:0 auto;" class="form-control input-validation row" name="testingAccessCode">
         </div>
     `;
 
@@ -1840,7 +1908,7 @@ const verifyUserDetails = (formData) => {
 
         <div class="row">
             <div class="col" data-i18n="event.physicalLine1">Line 1 (street, rural route)</div>
-            <div class="col">${formData[fieldMapping.physicalAddress1]}</div>
+            <div class="col">${formData[fieldMapping.physicalAddress1] || ''}</div>
         </div>
  
         <div class="row">
@@ -1850,17 +1918,17 @@ const verifyUserDetails = (formData) => {
 
         <div class="row">
             <div class="col" data-i18n="event.city">City</div>
-            <div class="col">${formData[fieldMapping.physicalCity]}</div>
+            <div class="col">${formData[fieldMapping.physicalCity] || ''}</div>
         </div>
 
         <div class="row">
             <div class="col" data-i18n="event.state">State</div>
-            <div class="col">${formData[fieldMapping.physicalState]}</div>
+            <div class="col">${formData[fieldMapping.physicalState] || ''}</div>
         </div>
 
         <div class="row">
             <div class="col" data-i18n="event.zip">Zip</div>
-            <div class="col">${formData[fieldMapping.physicalZip]}</div>
+            <div class="col">${formData[fieldMapping.physicalZip] || ''}</div>
         </div>
 
         <div class="row">
