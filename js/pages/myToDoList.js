@@ -37,19 +37,19 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                     finalMessage += '<span data-i18n="mytodolist.deletedData">At your request, we have deleted your Connect data. If you have any questions, please contact the Connect Support Center by calling 1-877-505-0253 or by emailing  <a href="mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a>.</span>'
                 }
                 else if (data['831041022'] === 353358909){
-                    if (!data['359404406'] || data['359404406'] == 104430631){
+                    if (!data['359404406'] || data['359404406'] == fieldMapping.no){
                         finalMessage += '<span data-i18n="mytodolist.newFormSign">You have a new <a href="#forms">form</a> to sign.</span>' + defaultMessage
                     }
-                    else if((data['747006172'] && data['747006172'] !== 104430631) && (!data['153713899'] || data['153713899'] == 104430631)){
+                    else if((data[fieldMapping.consentWithdrawn] && data[fieldMapping.consentWithdrawn] !== fieldMapping.no) && (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] == fieldMapping.no)){
                         finalMessage += '<span data-i18n="mytodolist.newFormSign">You have a new <a href="#forms">form</a> to sign.</span>' + defaultMessage
                     }
                     else{
                         finalMessage += defaultMessage
                     }
                 }
-                else if ((data['747006172'] && data['747006172'] !== 104430631)){
+                else if ((data[fieldMapping.consentWithdrawn] && data[fieldMapping.consentWithdrawn] !== fieldMapping.no)){
                     
-                    if (!data['153713899'] || data['153713899'] == 104430631){
+                    if (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] == fieldMapping.no){
                         finalMessage += '<span data-i18n="mytodolist.newFormSign">You have a new <a href="#forms">form</a> to sign.</span>' + defaultMessage
                     }
                     else{
@@ -66,7 +66,7 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                     hideAnimation();
                     return;
                 }
-                else if (((data['773707518'] === 353358909)) && (!data['153713899'] || data['153713899'] === 104430631)){
+                else if (((data[fieldMapping.revokeHipaa] === fieldMapping.yes)) && (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] === fieldMapping.no)){
                     topMessage += '<span data-i18n="mytodolist.newFormSign">You have a new <a href="#forms">form</a> to sign.</span><p/><br>';
                 }
                 if(!data['821247024'] || data['821247024'] == 875007964){
