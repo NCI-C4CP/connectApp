@@ -14,6 +14,8 @@ export default
     "consentWithdrawn": 747006172,
     "revokeHipaa": 773707518,
     "hipaaRevocationSigned": 153713899,
+    "destroyData": 831041022,
+    "destroyDataSigned": 359404406,
     "suffix":506826178,
     "suffixValue": {
         "jr": 612166858,

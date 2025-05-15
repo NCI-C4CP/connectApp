@@ -249,7 +249,7 @@ export const renderAgreements = async () => {
                         </div>
                     </div>
 
-                    ${((((myData.data.hasOwnProperty(fieldMapping.revokeHipaa) && myData.data[fieldMapping.revokeHipaa] == fieldMapping.yes)  || (myData.data[fieldMapping.consentWithdrawn] && myData.data[fieldMapping.consentWithdrawn] == fieldMapping.yes)) && (!myData.data[fieldMapping.hipaaRevocationSigned] || myData.data[fieldMapping.hipaaRevocationSigned] == fieldMapping.no) || (myData.data.hasOwnProperty('831041022') && myData.data['831041022'] == fieldMapping.yes && (!myData.data['359404406'] || myData.data['359404406'] == fieldMapping.no)))) ?`
+                    ${((((myData.data.hasOwnProperty(fieldMapping.revokeHipaa) && myData.data[fieldMapping.revokeHipaa] == fieldMapping.yes)  || (myData.data[fieldMapping.consentWithdrawn] && myData.data[fieldMapping.consentWithdrawn] == fieldMapping.yes)) && (!myData.data[fieldMapping.hipaaRevocationSigned] || myData.data[fieldMapping.hipaaRevocationSigned] == fieldMapping.no) || (myData.data.hasOwnProperty(fieldMapping.destroyData) && myData.data[fieldMapping.destroyData] == fieldMapping.yes && (!myData.data[fieldMapping.destroyDataSigned] || myData.data[fieldMapping.destroyDataSigned] == fieldMapping.no)))) ?`
                     <div class="row">
                         <div class="userProfileBox w-100">
                             <div class="row">
@@ -260,7 +260,7 @@ export const renderAgreements = async () => {
                                 <br>
                                 </div>
                             </div>
-                            ${(myData.data.hasOwnProperty('831041022') && myData.data['831041022'] == fieldMapping.yes && (!myData.data['359404406'] || myData.data['359404406'] == fieldMapping.no)) ?`
+                            ${(myData.data.hasOwnProperty(fieldMapping.destroyData) && myData.data[fieldMapping.destroyData] == fieldMapping.yes && (!myData.data[fieldMapping.destroyDataSigned] || myData.data[fieldMapping.destroyDataSigned] == fieldMapping.no)) ?`
                                 <div class="row">
                                     <div class="col px-2">
                                         <div class="row"  style="border:1px solid lightgrey; border-radius:5px;">
@@ -555,7 +555,7 @@ const renderSignDataDestroy = async () =>{
         const selectedLanguage = appState.getState().language;
         const langSuffix = languageSuffix()[selectedLanguage];
         let formData = {};
-        formData['359404406'] = fieldMapping.yes;
+        formData[fieldMapping.destroyDataSigned] = fieldMapping.yes;
         formData['119449326'] = dateTime();      
         formData['883668444'] = 704529432;
         formData['304438543'] = `Data_Destruction_${consentVersions['DataDestruction']}${(langSuffix ? '_'+langSuffix : '')}`;  
