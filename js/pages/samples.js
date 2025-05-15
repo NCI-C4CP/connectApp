@@ -81,7 +81,7 @@ export const renderSamplesPage = async () => {
                             <div style="width:100%">
                                 <div class="messagesHeaderFont" data-i18n="samples.parkingInstructions">
                                 </div>
-                                <div class="messagesBodyFont" data-i18n="samples.freeParkingAllCenters">
+                                <div class="messagesBodyFont removePaddingTop" data-i18n="samples.freeParkingAllCenters">
                                 </div>
                             </div>
                         </div>`
@@ -93,7 +93,7 @@ export const renderSamplesPage = async () => {
                                 <div class="messagesHeaderFont" data-i18n="samples.schedule">
                                     Scheduling Information
                                 </div>
-                                <div class="messagesBodyFont">
+                                <div class="messagesBodyFont removePaddingTop">
                                     ${site.scheduling}
                                 </div>
                             </div>
