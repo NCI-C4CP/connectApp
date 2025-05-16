@@ -2200,7 +2200,7 @@ const storeParameters = async () => {
  * @returns { string } - The first sign in time in ISO 8601 format.
  */
 
-const getFirstSignInISOTime = async () => {
+export const getFirstSignInISOTime = async () => {
     // Check appState first.
     let firstSignInISOTime = appState.getState().participantData.firstSignInTime;
 

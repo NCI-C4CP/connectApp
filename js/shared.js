@@ -4,6 +4,7 @@ import { signInCheckRender, signUpRender } from "./pages/homePage.js";
 import { signOut } from "../app.js";
 import en from "../i18n/en.js";
 import es from "../i18n/es.js";
+import { getFirstSignInISOTime } from "./event.js";
 
 const i18n = {
     es, en
@@ -2591,3 +2592,21 @@ export const closeModal = () => {
     );
     modal.hide();
 };
+
+export const validateToken = async (token) => {
+    const idToken = await getIdToken();
+    const time = await getFirstSignInISOTime();
+
+    api = 'http://localhost:8080/app';
+
+    const response = await fetch(api + `?api=validateToken`, {
+        method: "POST",
+        headers: {
+            Authorization:"Bearer " + idToken
+        },
+        body: JSON.stringify({ token, time})
+    });
+
+    const data = await response.json();
+    return data;
+}
