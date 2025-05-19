@@ -1,4 +1,4 @@
-import { getParameters, userLoggedIn, getMyData, hasUserData, getMyCollections, showAnimation, hideAnimation, storeResponse, isBrowserCompatible, inactivityTime, urls, appState, processAuthWithFirebaseAdmin, showErrorAlert, successResponse, logDDRumError, translateHTML, translateText, languageAcronyms, toggleNavbarMobileView, validateToken } from "./js/shared.js";
+import { syncDHQ3RespondentInfo, getParameters, userLoggedIn, getMyData, hasUserData, getMyCollections, showAnimation, hideAnimation, storeResponse, isBrowserCompatible, inactivityTime, urls, appState, processAuthWithFirebaseAdmin, showErrorAlert, successResponse, logDDRumError, translateHTML, translateText, languageAcronyms, toggleNavbarMobileView, validateToken } from "./js/shared.js";
 import { userNavBar, homeNavBar, languageSelector, signOutNavBarTemplate } from "./js/components/navbar.js";
 import { homePage, joinNowBtn, whereAmIInDashboard, renderHomeAboutPage, renderHomeExpectationsPage, renderHomePrivacyPage } from "./js/pages/homePage.js";
 import { addEventPinAutoUpperCase, addEventRequestPINForm, addEventRetrieveNotifications, toggleCurrentPage, toggleCurrentPageNoUser, addEventToggleSubmit, addEventLanguageSelection } from "./js/event.js";
@@ -347,9 +347,13 @@ const userProfile = () => {
                         participantData?.['Connect_ID']
                     );
 
-                    const [collectionsData] = await Promise.all([myCollectionsPromise, checkFirstSignInPromise]);
+                    // Check for DHQ3 completion status if it has been started.
+                    const dhqStatusPromise = participantData?.[conceptIdMap.DHQ3.statusFlag] === conceptIdMap.moduleStatus.started 
+                        ? syncDHQ3RespondentInfo(participantData[conceptIdMap.DHQ3.studyID], participantData[conceptIdMap.DHQ3.username], participantData[conceptIdMap.DHQ3.statusFlag])
+                        : Promise.resolve(null);
 
-                    await myToDoList(participantData, false, collectionsData.data);
+                    const [collectionsData] = await Promise.allSettled([myCollectionsPromise, checkFirstSignInPromise, dhqStatusPromise]);
+                    await myToDoList(participantData, false, collectionsData.value?.data || []);
 
                 } else {
                     // Authenticated user. Firestore profile does not exist (initial sign-up). Show the PIN entry form.
