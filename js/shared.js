@@ -2593,11 +2593,14 @@ export const closeModal = () => {
     modal.hide();
 };
 
+/**
+ * Validate the token used in URL by the new participant. Send the token for validation. Include the first sign in time. Both are added to Firestore on success.
+ * @param {object} token - The token used in the tokenized URL by participant. This token comes from sites in a URL sent to participants on invitation.
+ * @returns {object} - The response object from the API.
+ */
 export const validateToken = async (token) => {
     const idToken = await getIdToken();
     const time = await getFirstSignInISOTime();
-
-    api = 'http://localhost:8080/app';
 
     const response = await fetch(api + `?api=validateToken`, {
         method: "POST",
