@@ -4,6 +4,7 @@ import { signInCheckRender, signUpRender } from "./pages/homePage.js";
 import { signOut } from "../app.js";
 import en from "../i18n/en.js";
 import es from "../i18n/es.js";
+import { getFirstSignInISOTime } from "./event.js";
 
 const i18n = {
     es, en
@@ -2706,3 +2707,24 @@ export const closeModal = () => {
     );
     modal.hide();
 };
+
+/**
+ * Validate the token used in URL by the new participant. Send the token for validation. Include the first sign in time. Both are added to Firestore on success.
+ * @param {object} token - The token used in the tokenized URL by participant. This token comes from sites in a URL sent to participants on invitation.
+ * @returns {object} - The response object from the API.
+ */
+export const validateToken = async (token) => {
+    const idToken = await getIdToken();
+    const time = await getFirstSignInISOTime();
+
+    const response = await fetch(api + `?api=validateToken`, {
+        method: "POST",
+        headers: {
+            Authorization:"Bearer " + idToken
+        },
+        body: JSON.stringify({ token, time})
+    });
+
+    const data = await response.json();
+    return data;
+}

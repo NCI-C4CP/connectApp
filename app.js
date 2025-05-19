@@ -1,8 +1,8 @@
-import { syncDHQ3RespondentInfo, getParameters, userLoggedIn, getMyData, hasUserData, getMyCollections, showAnimation, hideAnimation, storeResponse, isBrowserCompatible, inactivityTime, urls, appState, processAuthWithFirebaseAdmin, showErrorAlert, successResponse, logDDRumError, translateHTML, translateText, languageAcronyms, toggleNavbarMobileView } from "./js/shared.js";
+import { syncDHQ3RespondentInfo, getParameters, userLoggedIn, getMyData, hasUserData, getMyCollections, showAnimation, hideAnimation, storeResponse, isBrowserCompatible, inactivityTime, urls, appState, processAuthWithFirebaseAdmin, showErrorAlert, successResponse, logDDRumError, translateHTML, translateText, languageAcronyms, toggleNavbarMobileView, validateToken } from "./js/shared.js";
 import { userNavBar, homeNavBar, languageSelector, signOutNavBarTemplate } from "./js/components/navbar.js";
 import { homePage, joinNowBtn, whereAmIInDashboard, renderHomeAboutPage, renderHomeExpectationsPage, renderHomePrivacyPage } from "./js/pages/homePage.js";
 import { addEventPinAutoUpperCase, addEventRequestPINForm, addEventRetrieveNotifications, toggleCurrentPage, toggleCurrentPageNoUser, addEventToggleSubmit, addEventLanguageSelection } from "./js/event.js";
-import { requestPINTemplate } from "./js/pages/healthCareProvider.js";
+import { requestPINTemplate, duplicateAccountReminderRender } from "./js/pages/healthCareProvider.js";
 import { myToDoList } from "./js/pages/myToDoList.js";
 import {renderNotificationsPage} from "./js/pages/notifications.js"
 import { renderAgreements } from "./js/pages/agreements.js";
@@ -304,6 +304,28 @@ const userProfile = () => {
             try {
                 showAnimation();
                 document.title = translateText('shared.dashboardTitle');
+
+                const href = location.href;
+                const parameters = getParameters(href);
+
+                if (parameters?.token) {
+                    const response = await validateToken(parameters.token);
+
+                    if (response.code === 202) {
+                        const myErrorData = await getMyData();
+
+                        logDDRumError(new Error(`Duplicate Account Found`), 'duplicateAccountError', {
+                            userAction: 'PWA sign in',
+                            timestamp: new Date().toISOString(),
+                            connectID: myErrorData.data['Connect_ID'],
+                        });
+
+                        duplicateAccountReminderRender();
+                        hideAnimation();
+                        return;
+                    }
+                }
+
                 userProfileAuthStateUIHandler(user);
             
                 firestoreUserData = await getMyData();
