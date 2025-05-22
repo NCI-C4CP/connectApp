@@ -304,6 +304,7 @@ export default
         "startTs": "109610692",
         "completeTs": "610227793",
         "statusFlag": "692560814",
+        "statusFlagExternal": "501613780",
         "standaloneSurvey": true,
         "version": "DHQ3",
         "questVersion": "",

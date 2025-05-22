@@ -2176,10 +2176,11 @@ export const getModuleText = async (sha, path, connectID, moduleID) => {
  * @param {string} studyID - The study ID for the DHQ3 survey.
  * @param {string} respondentUsername - The DHQ3 username of the respondent.
  * @param {string} dhqSurveyStatus - The status of the participant's DHQ3 survey in Firestore.
+ * @param {string} dhqSurveyStatusExternal - The status of the participant's DHQ3 survey in the DHQ system (will lag at times).
  * @returns {Promise<Object>} - The DHQ3 respondent info from the API.
  */
 
-export const syncDHQ3RespondentInfo = async (studyID, respondentUsername, dhqSurveyStatus) => {
+export const syncDHQ3RespondentInfo = async (studyID, respondentUsername, dhqSurveyStatus, dhqSurveyStatusExternal) => {
     if (!studyID || !respondentUsername) {
         throw new Error('syncDHQ3RespondentInfo: Missing required parameters');
     }
@@ -2192,7 +2193,7 @@ export const syncDHQ3RespondentInfo = async (studyID, respondentUsername, dhqSur
             headers: {
                 Authorization: "Bearer " + idToken,
             },
-            body: JSON.stringify({ studyID, respondentUsername, dhqSurveyStatus }),
+            body: JSON.stringify({ studyID, respondentUsername, dhqSurveyStatus, dhqSurveyStatusExternal }),
         });
         
         const jsonResponse = await response.json();

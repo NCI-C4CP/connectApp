@@ -320,7 +320,7 @@ const userProfile = () => {
                     const href = location.href;
                     const parameters = getParameters(href);
 
-                    token = parameters.token;
+                    token = parameters?.token;
                 } 
 
                 if (token) {
@@ -364,7 +364,7 @@ const userProfile = () => {
 
                     // Check for DHQ3 completion status if it has been started.
                     const dhqStatusPromise = participantData?.[conceptIdMap.DHQ3.statusFlag] === conceptIdMap.moduleStatus.started 
-                        ? syncDHQ3RespondentInfo(participantData[conceptIdMap.DHQ3.studyID], participantData[conceptIdMap.DHQ3.username], participantData[conceptIdMap.DHQ3.statusFlag])
+                        ? syncDHQ3RespondentInfo(participantData[conceptIdMap.DHQ3.studyID], participantData[conceptIdMap.DHQ3.username], participantData[conceptIdMap.DHQ3.statusFlag], participantData[conceptIdMap.DHQ3.statusFlagExternal])
                         : Promise.resolve(null);
 
                     const [collectionsData] = await Promise.allSettled([myCollectionsPromise, checkFirstSignInPromise, dhqStatusPromise]);
