@@ -305,11 +305,26 @@ const userProfile = () => {
                 showAnimation();
                 document.title = translateText('shared.dashboardTitle');
 
-                const href = location.href;
-                const parameters = getParameters(href);
+                let token = '';
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                const continueUrlParam = urlParams.get('continueUrl');
 
-                if (parameters?.token) {
-                    const response = await validateToken(parameters.token);
+                if (continueUrlParam) {
+                    const decodedContinueUrl = decodeURIComponent(continueUrlParam);
+                    const continueUrlObj = new URL(decodedContinueUrl);
+                    
+                    token = continueUrlObj.searchParams.get('token');
+                }
+                else {
+                    const href = location.href;
+                    const parameters = getParameters(href);
+
+                    token = parameters.token;
+                } 
+
+                if (token) {
+                    const response = await validateToken(token);
 
                     if (response.code === 202) {
                         const myErrorData = await getMyData();
