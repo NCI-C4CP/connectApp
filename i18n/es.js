@@ -802,7 +802,7 @@
         "mainBodyCancerScreeningHistoryDescription": "Preguntas sobre pruebas anteriores para detectar el cáncer. Se trata de pruebas que buscan cáncer en personas sin síntomas.",
         "surveysCompleted": "Ha completado todas las encuestas de Connect disponibles. Nos comunicaremos con usted cuando haya nuevas encuestas y actividades de estudio para completar. ¡Gracias por sus contribuciones al estudio!",
         "mainBodyDHQ3Header": "Cuestionario de Historial Alimentación III (DHQ III, por sus siglas en ingles)",
-        "mainBodyDHQ3Description": "Preguntas sobre su alimentación habitual en el último año. Tras hacer clic en \"Comenzar\", la encuesta se abrirá en una nueva pestaña o ventana del navegador y verá un mensaje federal estándar de advertencia sobre la seguridad de los datos. Haga clic en \"Continuar con el cuestionario\" (Continue with Questionnaire, en inglés) para comenzar la encuesta.",
+        "mainBodyDHQ3Description": "Preguntas sobre su alimentación habitual en el último año. Tras hacer clic en \"Comenzar\", la encuesta se abrirá en una nueva pestaña o ventana del navegador y verá un mensaje federal estándar de advertencia sobre la seguridad de los datos. Haga clic en \"Continuar con el cuestionario\" (Continue with Questionnaire, en inglés) para comenzar la encuesta. Luego, seleccione su idioma preferido para completar la encuesta.",
     },
     "notifications": {
         "read": "Leídos",
