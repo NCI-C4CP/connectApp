@@ -2161,7 +2161,6 @@ export const addEventRequestPINForm = () => {
             });
 
         } finally {
-            await storeParameters();
             hideAnimation();
             loadPathFromPINForm(pathAfterPINSubmission);
         }
@@ -2173,7 +2172,7 @@ export const addEventRequestPINForm = () => {
  * This method is called after the PIN entry form is submitted.
  * The UTM parameters are stored in the participant record if they exist in the session storage.
  */
-const storeParameters = async () => {
+export const storeParameters = async () => {
     const utm = {};
     const acceptedParams = {
         utm_source: ['hfh', 'uc', 'hp'],
