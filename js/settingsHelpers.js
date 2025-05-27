@@ -1,5 +1,4 @@
-import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML, closeModal
-} from './shared.js';
+import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML, closeModal, escapeHTML } from './shared.js';
 import { removeAllErrors } from './event.js';
 import cId from './fieldToConceptIdMapping.js';
 
@@ -559,11 +558,6 @@ export const showRiskyEmailWarningMyProfile = (riskyEmails, onSubmit) => {
     };
 
     let bodyHtml = "";
-    const escapeHTML = (str) => {
-        const div = document.createElement("div");
-        div.appendChild(document.createTextNode(str));
-        return div.innerHTML;
-    };
 
     riskyEmails.forEach((item) => {
         const escapedItem = escapeHTML(item);
@@ -733,22 +727,22 @@ export const validateAltContactInformation = async (altContactMobilePhoneComplet
     hasError = true;
   }
 
-  // if (!hasError) {
-  //   const emailValidation = await emailAddressValidation({
-  //     emails: {
-  //       altContactEmail: altContactEmail || undefined,
-  //     },
-  //   });
+  if (!hasError) {
+    const emailValidation = await emailAddressValidation({
+      emails: {
+        altContactEmail: altContactEmail,
+      },
+    });
 
-  //   const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.altContactEmail)
-  //   if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(altContactEmail)
-  //   if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
-  //     errorMessage('newAltContactEmail', translateText('settingsHelpers.emailInvalid'), focus);
-  //     if (focus) document.getElementById('newAltContactEmail').focus();
-  //     focus = false;
-  //     hasError = true;
-  //   }
-  // }
+    const upEmailValidationAnalysis = emailValidationAnalysis(emailValidation.altContactEmail);
+    if (upEmailValidationAnalysis === emailValidationStatus.WARNING) riskyEmails.push(altContactEmail);
+    if (upEmailValidationAnalysis === emailValidationStatus.INVALID) {
+      errorMessage('newAltContactEmail', translateText('settingsHelpers.emailInvalid'), focus);
+      if (focus) document.getElementById('newAltContactEmail').focus();
+      focus = false;
+      hasError = true;
+    }
+  }
 
   if (hasError) {
     console.error('Error(s) found.');
@@ -929,6 +923,16 @@ const handleAllEmailField = (changedUserDataForProfile, userData) => {
 };
 
 /**
+ * Convert empty string to null
+ * @param {string} text  - The text is  a string
+ * @returns {string | null}
+ */
+
+const convertToNullIfEmptyString = (text) => {
+  return text.trim().length > 0 ? text : null;
+}
+
+/**
  * Update the mailing address, physical mailing address, or alternate address in the user profile.
  * All address changes are tied to user profile history.
  * @param {number} id - The id of the address to update. 1: mailing, 2: physical, 3: alternate 
@@ -959,11 +963,11 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
     };
   } else if (id === 2) {
     newValues = {
-      [cId.physicalAddress1]: addressLine1,
-      [cId.physicalAddress2]: addressLine2 ?? "",
-      [cId.physicalCity]: city,
-      [cId.physicalState]: state,
-      [cId.physicalZip]: zip.toString(),
+      [cId.physicalAddress1]: convertToNullIfEmptyString(addressLine1),
+      [cId.physicalAddress2]: convertToNullIfEmptyString(addressLine2),
+      [cId.physicalCity]: convertToNullIfEmptyString(city),
+      [cId.physicalState]: convertToNullIfEmptyString(state),
+      [cId.physicalZip]: convertToNullIfEmptyString(zip.toString()),
     };
   } else if (id === 3) {
     const doesAltAddressExist = addressLine1 || addressLine2 || city || state || zip
@@ -972,12 +976,12 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
     
     newValues = {
       [cId.doesAltAddressExist]: doesAltAddressExist,
-      [cId.altAddress1]: addressLine1,
-      [cId.altAddress2]: addressLine2 ?? "",
-      [cId.altCity]: city,
-      [cId.altState]: state,
-      [cId.altZip]: zip.toString(),
-      [cId.isPOBoxAltAddress]: isPOBox ? cId.yes : cId.no
+      [cId.altAddress1]: convertToNullIfEmptyString(addressLine1),
+      [cId.altAddress2]: convertToNullIfEmptyString(addressLine2),
+      [cId.altCity]: convertToNullIfEmptyString(city),
+      [cId.altState]: convertToNullIfEmptyString(state),
+      [cId.altZip]: convertToNullIfEmptyString(zip.toString()),
+      [cId.isPOBoxAltAddress]: isPOBox ? cId.yes : null
     };
   }
 
@@ -1335,6 +1339,9 @@ const processUserDataUpdate = async (changedUserDataForProfile, changedUserDataF
   } else {
     document.getElementById(`${type}Fail`).style.display = 'block';
     document.getElementById(`${type}Error`).innerHTML = translateText('settingsHelpers.makeChangesToUpdate');
+    if (type === 'changeAltContactInformation') {
+      document.getElementById(`${type}Error`).setAttribute('data-i18n', 'settingsHelpers.makeChangesToUpdate');
+    }
     return false;
   }
 };

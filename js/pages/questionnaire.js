@@ -78,7 +78,8 @@ const importQuest = async () => {
 }
 
 /**
- * Questionnaire directs the survey module handling throughout the survey loading process.
+ * Questionnaire directs the survey module handling throughout the survey loading process for Quest surveys.
+ * Note: This excludes the DHQ3 survey, which is handled externally (it opens https://dhq3.org in a new tab).
  * Errors from the module loading process are caught here. The loading animation is shown and hidden here.
  * @param {string} moduleId - The ID of the survey module the participant clicked to start.
  */
@@ -171,8 +172,6 @@ async function startModule(moduleId) {
     let key;                                                                // The moduleID key for the module's configuration object.
     let lang;                                                               // The participant's preferred language.
     let moduleText;                                                         // The fetched module's markdown text.
-
-    await localforage.clear();
 
     try {
         inputData = setInputData(participantData, modules); 

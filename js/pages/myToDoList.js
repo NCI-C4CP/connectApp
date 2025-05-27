@@ -1,4 +1,4 @@
-import { hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML, translateText, getAdjustedTime, reportConfiguration, setReportAttributes } from "../shared.js";
+import { allocateDHQ3Credential, hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML, translateText, getAdjustedTime, getAppSettings, logDDRumError, reportConfiguration, setReportAttributes, updateStartDHQParticipantData } from "../shared.js";
 import { blockParticipant, questionnaire } from "./questionnaire.js";
 import { renderUserProfile } from "../components/form.js";
 import { consentTemplate } from "./consent.js";
@@ -37,19 +37,19 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                     finalMessage += '<span data-i18n="mytodolist.deletedData">At your request, we have deleted your Connect data. If you have any questions, please contact the Connect Support Center by calling 1-877-505-0253 or by emailing  <a href="mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a>.</span>'
                 }
                 else if (data['831041022'] === 353358909){
-                    if (!data['359404406'] || data['359404406'] == 104430631){
+                    if (!data['359404406'] || data['359404406'] == fieldMapping.no){
                         finalMessage += '<span data-i18n="mytodolist.newFormSign">You have a new <a href="#forms">form</a> to sign.</span>' + defaultMessage
                     }
-                    else if((data['747006172'] && data['747006172'] !== 104430631) && (!data['153713899'] || data['153713899'] == 104430631)){
+                    else if((data[fieldMapping.consentWithdrawn] && data[fieldMapping.consentWithdrawn] !== fieldMapping.no) && (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] == fieldMapping.no)){
                         finalMessage += '<span data-i18n="mytodolist.newFormSign">You have a new <a href="#forms">form</a> to sign.</span>' + defaultMessage
                     }
                     else{
                         finalMessage += defaultMessage
                     }
                 }
-                else if ((data['747006172'] && data['747006172'] !== 104430631)){
+                else if ((data[fieldMapping.consentWithdrawn] && data[fieldMapping.consentWithdrawn] !== fieldMapping.no)){
                     
-                    if (!data['153713899'] || data['153713899'] == 104430631){
+                    if (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] == fieldMapping.no){
                         finalMessage += '<span data-i18n="mytodolist.newFormSign">You have a new <a href="#forms">form</a> to sign.</span>' + defaultMessage
                     }
                     else{
@@ -66,7 +66,7 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                     hideAnimation();
                     return;
                 }
-                else if (((data['773707518'] === 353358909)) && (!data['153713899'] || data['153713899'] === 104430631)){
+                else if (((data[fieldMapping.revokeHipaa] === fieldMapping.yes)) && (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] === fieldMapping.no)){
                     topMessage += '<span data-i18n="mytodolist.newFormSign">You have a new <a href="#forms">form</a> to sign.</span><p/><br>';
                 }
                 if(!data['821247024'] || data['821247024'] == 875007964){
@@ -97,7 +97,7 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                             else {
                                 topMessage += '';
                             }
-                          }
+                        }
                     }
                     else{
                         topMessage += `
@@ -225,7 +225,7 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                     <div class="surveyMainBody" id="surveyMainBody">
                 `;
                 
-                template += renderMainBody(data, collections, 'todo')
+                template += await renderMainBody(data, collections, 'todo');
                 template += `</ul>`
                 template += `
                         </div>
@@ -236,8 +236,8 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                 `
                 
                 mainContent.innerHTML = translateHTML(template);
-                document.getElementById('surveysToDoTab').addEventListener('click', () => {
-                    document.getElementById('surveyMainBody').innerHTML = renderMainBody(data, collections, 'todo') 
+                document.getElementById('surveysToDoTab').addEventListener('click', async () => {
+                    document.getElementById('surveyMainBody').innerHTML = await renderMainBody(data, collections, 'todo');
                     if(!document.getElementById('surveysToDoTab').classList.contains('survey-Active-Nav')){
                         let toActive = document.getElementById('surveysToDoTab');   
                         let toInactive = document.getElementById('surveysCompleted');
@@ -246,9 +246,10 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                         toInactive.classList.add('survey-Inactive-Nav')
                         toInactive.classList.remove('survey-Active-Nav')
                         addEventToDoList();
+                        addDHQListener(data[fieldMapping.DHQ3.statusFlag], data['Connect_ID']);
                     }
                 })
-                document.getElementById('surveysCompleted').addEventListener('click', () => {
+                document.getElementById('surveysCompleted').addEventListener('click', async () => {
                     if(!document.getElementById('surveysCompleted').classList.contains('survey-Active-Nav')){
                         let toInactive = document.getElementById('surveysToDoTab');   
                         let toActive = document.getElementById('surveysCompleted');
@@ -257,10 +258,11 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                         toInactive.classList.add('survey-Inactive-Nav')
                         toInactive.classList.remove('survey-Active-Nav')
                     }
-                    document.getElementById('surveyMainBody').innerHTML = renderMainBody(data, collections, 'completed') 
+                    document.getElementById('surveyMainBody').innerHTML = await renderMainBody(data, collections, 'completed');
                     addEventToDoList();
                 })
                 addEventToDoList();
+                addDHQListener(data[fieldMapping.DHQ3.statusFlag], data['Connect_ID']);
                 hideAnimation();
                 return;
             }
@@ -322,10 +324,10 @@ const addEventToDoList = () => {
     });
   };
 
-const renderMainBody = (data, collections, tab) => {
+const renderMainBody = async (data, collections, tab) => {
     let template = `<ul class="questionnaire-module-list" role="list">`;
     let modules = questionnaireModules();
-    modules = setModuleAttributes(data, modules, collections);
+    modules = await setModuleAttributes(data, modules, collections);
     
     let toDisplaySystem = [
         {
@@ -382,6 +384,8 @@ const renderMainBody = (data, collections, tab) => {
     }
 
     modules["Cancer Screening History"].enabled && toDisplaySystem.unshift({ body: ["Cancer Screening History"] });
+
+    modules["Diet History Questionnaire III (DHQ III)"].enabled && toDisplaySystem.unshift({ body: ["Diet History Questionnaire III (DHQ III)"] });
 
     if(tab === 'todo'){
         for(let obj of toDisplaySystem){
@@ -446,8 +450,47 @@ const renderMainBody = (data, collections, tab) => {
                         const buttonAction = modules[key].unreleased ? 'mytodolist.comingSoon' : (data[fieldMapping[modules[key].moduleId].statusFlag] === fieldMapping.moduleStatus.started ? 'mytodolist.continue' : 'mytodolist.start');
                         const strippedModuleTitle = moduleTitle?.replace(/(\s|[-._\(\),])/g, '') || '';
                         const ariaLabelButton = translateText(buttonAction) + ' ' + translateText(`shared.mod${strippedModuleTitle}`);
-                        
-                        
+                        const tooltipText = translateText(`shared.mod${strippedModuleTitle}`);
+                        const commonButtonClasses = "col-md-3 d-flex align-items-center justify-content-center";
+
+                        let actionButtonHtml = ''; // Default to no button
+
+                        if (modules[key]['noButton'] !== true) {
+                            // Button for DHQ3 Survey (link to external site)
+                            if (key === "Diet History Questionnaire III (DHQ III)") {
+                                if (isEnabled) {
+                                    let targetUrl;
+                                    const respondentUUID = data?.[fieldMapping.DHQ3.uuid];
+                                    if (respondentUUID) {
+                                        targetUrl = `https://www.dhq3.org/respondent-login/?uuid=${respondentUUID}`;
+                                        
+                                        actionButtonHtml = `
+                                            <div class="${commonButtonClasses}">
+                                                <a href="${targetUrl}"
+                                                    id="dhq3-survey-link"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    class="btn survey-list-active btn-agreement questionnaire-module d-flex align-items-center justify-content-center"
+                                                    role="button"
+                                                    title="${tooltipText}"
+                                                    aria-label="${ariaLabelButton}">
+                                                    <b data-i18n="${buttonAction}"></b>
+                                                </a>
+                                            </div>`;
+                                    }
+                                }
+
+                            // Button for Quest modules
+                            } else {
+                                actionButtonHtml = `
+                                    <div class="${commonButtonClasses}">
+                                        <button class="btn survey-list-active btn-agreement questionnaire-module ${isEnabled ? 'list-item-active' : 'btn-disabled survey-list-inactive disabled'}" ${isEnabled ? '' : 'aria-disabled="true"'} title="${tooltipText}" module_id="${modules[key].moduleId}" aria-label="${ariaLabelButton}">
+                                            <b data-i18n="${buttonAction}"></b>
+                                        </button>
+                                    </div>`;
+                            }
+                        }
+
                         template += `
                             <div class="w-95 mx-auto mb-3 border rounded" role="listitem" aria-label="${moduleTitle} details">
                                 <div class="row">
@@ -472,16 +515,8 @@ const renderMainBody = (data, collections, tab) => {
                                         ` : ''}
                                     </p>
                                     </div>
-                                
-                                    ${modules[key]['noButton'] === true ? '' : `
-                                        <div class="col-md-3">
-                                            <button class="btn survey-list-active btn-agreement questionnaire-module ${isEnabled ? 'list-item-active' : 'btn-disabled survey-list-inactive disabled'}" ${isEnabled ? '': 'aria-disabled="true"'} title="${key}" module_id="${modules[key].moduleId}" aria-label="${ariaLabelButton}">
-                                            <b data-i18n="${buttonAction}"></b>
-                                            </button> 
-                                        </div>
-                                    `}
+                                    ${actionButtonHtml}
                                 </div>
-                                
                             </div>`;
                     } else {
                         const moduleTitle = modules[key]['header'] || key; // Use the module's header or key as the title
@@ -623,7 +658,7 @@ const checkIfComplete = (data) => {
 const checkForNewSurveys = async (data, collections) => {
     let template = ``;
     let modules = questionnaireModules();
-    modules = setModuleAttributes(data, modules, collections);
+    modules = await setModuleAttributes(data, modules, collections);
     let enabledSurveys = 0;
     let newSurvey = false;
     let knownSurveys;
@@ -734,7 +769,7 @@ const checkForNewReports = async (data) => {
     return template;
 };
 
-const setModuleAttributes = (data, modules, collections) => {
+const setModuleAttributes = async (data, modules, collections) => {
     modules['First Survey'] = {};
     modules['First Survey'].description = 'mytodolist.mainHeaderFirstSurveyDescription';
     modules['First Survey'].hasIcon = false;
@@ -795,6 +830,10 @@ const setModuleAttributes = (data, modules, collections) => {
     modules['Cancer Screening History'].header = 'Cancer Screening History Survey';
     modules['Cancer Screening History'].description = 'mytodolist.mainBodyCancerScreeningHistoryDescription';
     modules['Cancer Screening History'].estimatedTime = 'mytodolist.15_20minutes';
+
+    modules['Diet History Questionnaire III (DHQ III)'].header = 'Diet History Questionnaire III (DHQ III)';
+    modules['Diet History Questionnaire III (DHQ III)'].description = 'mytodolist.mainBodyDHQ3Description';
+    modules['Diet History Questionnaire III (DHQ III)'].estimatedTime = 'mytodolist.45_60minutes';
 
     const currentTime = new Date();
     
@@ -938,5 +977,124 @@ const setModuleAttributes = (data, modules, collections) => {
       }
     }
 
+    if (
+        data[fieldMapping.verification] === fieldMapping.verified &&
+        data[fieldMapping.verifiedDate] &&
+        currentTime > getAdjustedTime(data[fieldMapping.verifiedDate], 180)
+    ) {
+        if (data[fieldMapping.DHQ3.statusFlag] === fieldMapping.moduleStatus.notStarted || data[fieldMapping.DHQ3.statusFlag] === fieldMapping.moduleStatus.started) {
+            // Participant is eligible. Make sure a DHQ3 credential is allocated. Allocation runs once per eligible participant.
+            if (!data[fieldMapping.DHQ3.uuid]) {
+                try {
+                    const newUUID = await assignDHQ3Credential(data);
+                    data[fieldMapping.DHQ3.uuid] = newUUID;
+
+                } catch (error) {
+                    console.error("Error assigning DHQ3 credential:", error);
+                    return modules;
+                }
+            }
+        }
+
+        if (data[fieldMapping.DHQ3.statusFlag] && data[fieldMapping.DHQ3.statusFlag] !== fieldMapping.moduleStatus.notYetEligible && data[fieldMapping.DHQ3.uuid]) {
+            modules["Diet History Questionnaire III (DHQ III)"].enabled = true;
+        }
+
+        if (data?.[fieldMapping.DHQ3.statusFlag] === fieldMapping.moduleStatus.submitted) {
+            modules["Diet History Questionnaire III (DHQ III)"].completed = true;
+        }
+    }
+    
     return modules;
+};
+
+const assignDHQ3Credential = async (participantData) => {
+    try {
+        const appSettingsData = await getAppSettings(['dhq']);
+        if (!appSettingsData.dhq) {
+            console.error("DHQ3 app settings not found");
+            return;
+        }
+
+        const dhqStudyIDs = appSettingsData.dhq.dhqStudyIDs || [];                      // List of DHQ study IDs from appSettings.
+        const depletedDHQStudyIDs = appSettingsData.dhq.dhqDepletedCredentials || [];   // List of DHQ study IDs without availableCredentials (skip these in credential search).
+        const availableCredentialPools = dhqStudyIDs.filter(studyID => !depletedDHQStudyIDs.includes(studyID));
+
+        const dhqCredential = await allocateDHQ3Credential(availableCredentialPools);
+        return dhqCredential?.[fieldMapping.DHQ3.uuid];
+
+    } catch (error) {
+        const errorContext = {
+            userAction: 'assignDHQ3Credential',
+            timestamp: new Date().toISOString(),
+            ...(participantData?.['Connect_ID'] && { connectID: participantData['Connect_ID'] }),
+            moduleId: 'DHQ3 Credential Allocation',
+            errorMessage: error.message,
+        };
+
+        logDDRumError(error, 'DHQ3LoadError', errorContext);
+    }
+}
+
+/**
+ * Attach a click listener to the DHQ3 survey link.
+ * On click, open the link in a new tab and update the main content area.
+ */
+
+const addDHQListener = (currentDHQ3SurveyStatus, ConnectID) => {
+    const dhq3Link = document.getElementById('dhq3-survey-link');
+    if (dhq3Link && !dhq3Link.hasClickListener) {
+        dhq3Link.addEventListener('click', async () => {
+            const surveyUrlFromLink = dhq3Link.getAttribute('href');
+            
+            // If status is not started, update it to 'started' in Firestore.
+            if (currentDHQ3SurveyStatus === fieldMapping.moduleStatus.notStarted) {
+                try {
+                    await updateStartDHQParticipantData();
+                    
+                } catch (error) {
+                    console.error("Error calling updateStartDHQParticipantData:", error);
+                    
+                    logDDRumError(error, 'UpdateDHQStatusError', {
+                        connectID: ConnectID,
+                        moduleId: 'DHQ3',
+                        userAction: 'Start DHQ3 Survey (updateStartDHQParticipantData)',
+                        errorMessage: error.message,
+                        timestamp: new Date().toISOString(),
+                    });
+                }
+            }
+
+            // Allows browser navigation before DOM update
+            setTimeout(() => {
+                const rootElement = document.getElementById('root');
+                if (rootElement) {
+                    const dhqScreenHTML = `
+                        <div class="container mt-4">
+                            <p><span data-i18n="dhq3Screen.openedInNewTab">The Diet History Questionnaire III (DHQ III) is open and in progress in a separate browser tab or window. Please complete the survey in that tab or window. When you finish it, you can exit the window and return here.</span></p>
+                            <p>
+                                <span data-i18n="dhq3Screen.youMayNeedTo">You may need to </span>
+                                <strong onclick="location.reload()" style="cursor:pointer; color:blue; text-decoration: underline;"><span data-i18n="dhq3Screen.refreshThisPage">refresh this page</span></strong>
+                                <span data-i18n="dhq3Screen.toSeeUpdatedStatus"> to see your updated survey status. The DHQ III may stay on your Dashboard for a short time after you submit it.</span>
+                            </p>
+                            <p>
+                                <span data-i18n="dhq3Screen.ifSurveyDidntOpen">If the survey didn’t open, or if you closed it before submitting:</span>
+                            </p>
+                            <div class="row">
+                                <div class="col-12 col-lg-6 mx-auto">
+                                    <a href="${surveyUrlFromLink}" target="_blank" rel="noopener noreferrer"
+                                        class="btn btn-expanding-height btn-agreement d-block w-100 mx-auto d-flex align-items-center justify-content-center mt-2"
+                                        role="button">
+                                        <b data-i18n="dhq3Screen.openAgainButton">Click here to open the survey again and pick up where you left off</b>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    rootElement.innerHTML = translateHTML(dhqScreenHTML);
+                }
+            }, 50);
+        });
+        dhq3Link.hasClickListener = true;
+    }
 };

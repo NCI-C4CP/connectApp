@@ -76,13 +76,24 @@ export const renderSamplesPage = async () => {
 
                         ${locationTemplate}
 
+                        ${site.parkingInstructions ? `
+                        <div class="row" style="width:100%">
+                            <div style="width:100%">
+                                <div class="messagesHeaderFont" data-i18n="samples.parkingInstructions">
+                                </div>
+                                <div class="messagesBodyFont removePaddingTop" data-i18n="samples.freeParkingAllCenters">
+                                </div>
+                            </div>
+                        </div>`
+                        : ''}
+
                         ${site.scheduling ? `
                         <div class="row" style="width:100%">
                             <div style="width:100%">
                                 <div class="messagesHeaderFont" data-i18n="samples.schedule">
                                     Scheduling Information
                                 </div>
-                                <div class="messagesBodyFont">
+                                <div class="messagesBodyFont removePaddingTop">
                                     ${site.scheduling}
                                 </div>
                             </div>
@@ -428,38 +439,37 @@ const marshfield = {
     prepareInstructions: '<span data-i18n="samples.marshfield.prepareInstructions">On the day of your appointment, please drink plenty of water, but <span style="font-weight:900; text-decoration:underline">stop drinking water one hour before your appointment.</span><br><br><span style="font-weight:900; text-decoration:underline">One hour before your appointment:</span> Please <span style="font-weight:900; text-decoration:underline">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span style="font-weight:900; text-decoration:underline">Things to bring and remember:</span><br><br><ul><li>Make sure you know your login information for MyConnect.</li><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:<ul><li>The last time you ate or drank, and the times you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></li></ul></span>',
     whatHappens: '<span data-i18n="samples.marshfield.whatHappens">The Connect team will check you in for your appointment and then collect your samples. At the end of your visit, the Connect team will check you out of your appointment.<br><br>We will draw a blood sample, collect a urine sample, and collect a saliva sample by asking you to swish with mouthwash.<br><br>We will also ask you to complete <span style="font-weight:900; text-decoration:underline">a short survey</span> on MyConnect using your mobile phone. If you do not have a mobile phone, we will provide a tablet for you to use complete your survey. You will need your MyConnect login information to complete the survey.</span>',
     support: '<span data-i18n="samples.marshfield.support">Call 1-877-505-0253 (8:00 a.m.-10:00 p.m. CT on weekdays and 9:00 a.m.-6:00 p.m. CT on weekends)</span>',
+    parkingInstructions: `<span data-i18n="freeParkingAllCenters"></span>`,
     locations: [
         [
             '<span data-i18n="samples.marshfield.locations.MarshfieldName">Marshfield Clinic, Marshfield Center</span>',
             '<span data-i18n="samples.marshfield.locations.MarshfieldAddress">1000 N. Oak Ave<br>Marshfield, WI 54449</span>',
-            '<span data-i18n="samples.marshfield.locations.MarshfieldSchedule">Monday - Thursday: 7:00 a.m. to 4:00 p.m. and Friday 7:00 a.m. to noon</span>',
-            '<span data-i18n="samples.marshfield.locations.generalParking">General parking available</span>'
         ],
         [
             '<span data-i18n="samples.marshfield.locations.LakeHallieName">Lake Hallie Center</span>',
             '<span data-i18n="samples.marshfield.locations.LakeHallieAddress">12961 27th Ave<br>Chippewa Falls, WI 54729</span>',
-            '<span data-i18n="samples.marshfield.locations.LakeHallieSchedule">Monday - Thursday: 7:00 a.m. to 4:00 p.m.<br>Fridays: 8:00 a.m. to 2:00 p.m.</span>',
-            '<span data-i18n="samples.marshfield.locations.generalParking">General parking available</span>'
         ],
         [
             '<span data-i18n="samples.marshfield.locations.MinocquaName">Minocqua Center</span>',
             '<span data-i18n="samples.marshfield.locations.MinocquaAddress">9576 WI-70 Trunk<br>Minocqua, WI 54548</span>',
-            '<span data-i18n="samples.marshfield.locations.MinocquaSchedule">Tuesdays: 8:00 a.m. to 4:00 p.m. Wednesdays: 8:00 a.m. to 12:00 p.m.</span>',
-            '<span data-i18n="samples.marshfield.locations.generalParking">General parking available</span>'
+        ],
+        [
+            '<span data-i18n="samples.marshfield.locations.RiceLakeName"></span>',
+            '<span data-i18n="samples.marshfield.locations.RiceLakeAddress"></span>',
+        ],
+        [
+            '<span data-i18n="samples.marshfield.locations.StevensPointName"></span>',
+            '<span data-i18n="samples.marshfield.locations.StevensPointAddress"></span>',
         ],
         [
             '<span data-i18n="samples.marshfield.locations.WestonName">Weston Center</span>',
             '<span data-i18n="samples.marshfield.locations.WestonAddress">3400 Ministry Pkwy<br>Weston, WI 54476</span>',
-            '<span data-i18n="samples.marshfield.locations.WestonSchedule">Tuesday – Thursday: 7:00 a.m. to 1:00 p.m.</span>',
-            '<span data-i18n="samples.marshfield.locations.generalParking">General parking available</span>'
         ],
         [
             '<span data-i18n="samples.marshfield.locations.WisconsinRapidsName">Wisconsin Rapids Center</span>',
             '<span data-i18n="samples.marshfield.locations.WisconsinRapidsAddress">220 24th St S,<br>Wisconsin Rapids,WI 54494</span>',
-            '<span data-i18n="samples.marshfield.locations.WisconsinRapidsSchedule">Thursdays: 7:00 a.m. to 4:00 p.m.<br>Fridays: 7:00 a.m. to 10:00 a.m.</span>',
-            '<span data-i18n="samples.marshfield.locations.generalParking">General parking available</span>'
         ]
-    ]
+    ],
 };
 
 const henry_ford = {
@@ -507,7 +517,7 @@ const u_chicago = {
         '</table></span>',
     howLong: '<span data-i18n="samples.u_chicago.howLong"><span class="site-info-bold">Option 1: UChicago Connect Research Lab Location:</span><br> Please expect to spend about 30-45 minutes at your appointment to donate your samples. During your appointment, we will ask you to complete a short survey related to the samples we collect.<br><br> <span class="site-info-bold">Option 2: UCM Outpatient Clinical Lab  Location:</span><br> Wait times to donate samples may vary by location. Please expect to spend about 10-15 minutes at your appointment to donate your blood and urine samples.</span>',
     prepareInstructions: '<span data-i18n="samples.u_chicago.prepareInstructions">"<span class="site-info-bold">Option 1: UChicago Connect Research Lab Location:</span><br><br>On the day of your visit, you do not need to fast. Please drink plenty of water to keep hydrated, but <span class="site-info-bold">stop drinking water one hour before your visit</span>. Please <span class="site-info-bold">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span class="site-info-bold">Things to bring and remember:</span><br><br><ul><li>Please remember to bring a valid photo ID that is not expired (driver\'s license, passport, Chicago CityKey, school photo ID, or other photo ID)</li><li>Make sure you know your login information for MyConnect</li><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:<ul><li>The last time you ate or drank before your appointment, and the times you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></li></ul> <span class="site-info-bold">Option 2: UCM Outpatient Clinical Lab Location:</span><br><br> On the day of your appointment, you do not need to fast. Please drink plenty of water to keep hydrated.<br><br><span class="site-info-bold">Things to bring and remember:</span><br><br><ul><li>Please remember to bring a valid photo ID that is not expired (driver\'s license, passport, Chicago CityKey, school photo ID, or other photo ID)</li><li>After your appointment:<ul><li>Be sure to check your email for a link to a survey to complete on MyConnect. The survey asks questions about the day you donated samples, so it is important to complete it as soon as you can.</li><li>We will email you when we ship your mouthwash home collection kit. Please use this kit and included instructions to collect your mouthwash sample at home.</li></ul></li></ul></span>',
-    whatHappens: '<span data-i18n="samples.u_chicago.whatHappens">"<span class="site-info-bold">Option 1: UChicago Connect Research Lab Location</span><br><br> The research team will check you in for your appointment and then collect your samples. At the end of your visit, the research team will check you out of your appointment.<br><br>We will draw a blood sample, collect a urine sample, and collect a saliva sample by asking you to swish with mouthwash.<br><br> <span class="site-info-underline">To save time at your appointment, please complete your first Connect survey on MyConnect before donating samples. If you are not able to complete the survey before your appointment, we will ask you to complete the survey during your appointment.</span><br><br> We will also ask you to complete a short survey about your samples on MyConnect using your mobile phone. You will need your MyConnect login information to complete the survey. If you do not have a mobile phone, we will provide you with a tablet to complete your survey. We strongly encourage you to complete your survey at your appointment. If you choose to complete it after you leave your appointment, it is important to do so as soon as possible.<br><br> <span class="site-info-bold">Option 2: UCM Outpatient Clinical Services Lab Location</span><br><br> Lab staff will collect blood and urine samples at your visit. You may donate Connect samples and complete any labs ordered by your provider in the same visit. After your visit, please remember to check your email for a survey to complete on MyConnect. The survey asks questions about the day you donated samples, so please complete it as soon as you can.<br><br><div class="consentHeadersFont" style="color:#606060;width:100%"> When Will I Receive My $25 Payment?</div><br> You will receive your $25 payment after you donate a blood sample and complete all four sections of your first Connect survey.<br><br> You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<br> 1. Background and Overall Health<br>2. Medications, Reproductive Health, Exercise, and Sleep<br>3. Smoking, Alcohol, and Sun Exposure<br>4. Where you Live and Work</span>',
+    whatHappens: '<span data-i18n="samples.u_chicago.whatHappens">"<span class="site-info-bold">Option 1: UChicago Connect Research Lab Location</span><br><br> The research team will check you in for your appointment and then collect your samples. At the end of your visit, the research team will check you out of your appointment.<br><br>We will draw a blood sample, collect a urine sample, and collect a saliva sample by asking you to swish with mouthwash.<br><br> <span class="site-info-underline">To save time at your appointment, please complete your first Connect survey on MyConnect before donating samples.</span>If you are not able to complete the survey before your appointment, we will ask you to complete the survey during your appointment.<br><br> We will also ask you to complete a short survey about your samples on MyConnect using your mobile phone. You will need your MyConnect login information to complete the survey. If you do not have a mobile phone, we will provide you with a tablet to complete your survey. We strongly encourage you to complete your survey at your appointment. If you choose to complete it after you leave your appointment, it is important to do so as soon as possible.<br><br> <span class="site-info-bold">Option 2: UCM Outpatient Clinical Services Lab Location</span><br><br> Lab staff will collect blood and urine samples at your visit. You may donate Connect samples and complete any labs ordered by your provider in the same visit. After your visit, please remember to check your email for a survey to complete on MyConnect. The survey asks questions about the day you donated samples, so please complete it as soon as you can.<br><br><div class="consentHeadersFont" style="color:#606060;width:100%"> When Will I Receive My $25 Payment?</div><br> You will receive your $25 payment after you donate a blood sample and complete all four sections of your first Connect survey.<br><br> You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<br> 1. Background and Overall Health<br>2. Medications, Reproductive Health, Exercise, and Sleep<br>3. Smoking, Alcohol, and Sun Exposure<br>4. Where you Live and Work</span>',
     support: '<span data-i18n="samples.u_chicago.support">Call 1-877-505-0253 (8:00 a.m.-10:00 p.m. CT on weekdays and 9:00 a.m.-6:00 p.m. CT on weekends)</span>',
     locationNotes: '',
     locations: 
@@ -575,8 +585,10 @@ const u_chicago = {
         [
             '<span data-i18n="samples.u_chicago.locations.CrownPointName"><span class="site-info-underline"><a href="https://www.uchicagomedicine.org/find-a-location/uchicago-medicine-crown-point" target="_blank">UChicago Medicine Crown Point</a></span></span>',
             '<span data-i18n="samples.u_chicago.locations.CrownPointAddress">10855 Virginia St<br>Crown Point, IN 46307</span>',
-            '',
-            '',
+        ],
+        [
+            '<span data-i18n="samples.u_chicago.locations.IngallsMemorialHospitalHarveyName"><span>UChicago Ingalls Memorial Hospital in Harvey, IL</span>',
+            '<span data-i18n="samples.u_chicago.locations.IngallsMemorialHospitalHarveyAddress">Ingalls Outpatient Center <br> 1<sup>st</sup> floor <br> 1 Ingalls Dr <br> Harvey, IL 60426</span>',
         ],
     ]
 };
@@ -775,6 +787,18 @@ const renderLocations = (site) => {
                         </div>
                     </div>
                 </div>`
+            } else if (site === marshfield) {
+                template += `
+                <div class="row removePaddingTop" style="width:100%">
+                    <div style="width:100%; margin-left: 2rem;">
+                        <div class="messagesHeaderFont " data-i18n="samples.addressText">
+                            Address
+                        </div>
+                        <div class="messagesBodyFont messagesBodyFontAddress">
+                            ${location[1]}
+                        </div>
+                    </div>
+                </div>`
             } else if (site === sanford) {
                 template += !location[1] ? '' : `<div class="row" style="width:100%">
                 <div style="width:100%">
@@ -787,16 +811,17 @@ const renderLocations = (site) => {
                 </div>`
             } else if (site === u_chicago){
                 if (location[1]) {
-                    template += `<div class="row" style="width:100%">
+                    template += `<div class="row removePaddingTop" style="width:100%">
                                     <div style="width:100%">
-                                        <div class="messagesSubHeader" data-i18n="samples.directionsText">
-                                            Address and Directions
+                                        <div class="messagesSubHeader" data-i18n="samples.addressText">
+                                            Address
                                         </div>
-                                        <div class="messagesBodyFont">
+                                        <div class="messagesBodyFont messagesBodyFontAddress">
                                             ${location[1]}
                                         </div>
                                     </div>
-                                </div>`
+                                </div>
+                                `;
                 }
             } else {
                 template += `<div class="row" style="width:100%">
@@ -831,7 +856,7 @@ const renderLocations = (site) => {
                         <div class="messagesSubHeader" data-i18n="samples.parkingInstructions">
                             Parking Instructions
                         </div>
-                        <div class="messagesBodyFont">
+                        <div class="messagesBodyFont messagesBodyFontParking">
                             ${location[3]}
                         </div>
                     </div>
