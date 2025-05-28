@@ -2161,6 +2161,7 @@ export const addEventRequestPINForm = () => {
             });
 
         } finally {
+            await storeParameters();
             hideAnimation();
             loadPathFromPINForm(pathAfterPINSubmission);
         }
