@@ -956,7 +956,7 @@
                 "WestonName": "Centro Weston",
                 "WestonAddress": "3400 Ministry Pkwy<br/>Weston, WI 54476",
                 "WisconsinRapidsName": "Centro Wisconsin Rapids",
-                "WisconsinRapidsAddress": "220 24th St S,<br/>Wisconsin Rapids, WI 54494",
+                "WisconsinRapidsAddress": "220 24th St S <br/>Wisconsin Rapids, WI 54494",
             }
         },
         "henry_ford": {
