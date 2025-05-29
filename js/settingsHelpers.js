@@ -928,9 +928,12 @@ const handleAllEmailField = (changedUserDataForProfile, userData) => {
  * @returns {string | null}
  */
 
+// temporarily reverting, adding back in June 2025 Release
+/*
 const convertToNullIfEmptyString = (text) => {
   return text.trim().length > 0 ? text : null;
 }
+*/
 
 /**
  * Update the mailing address, physical mailing address, or alternate address in the user profile.
@@ -959,16 +962,16 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.city]: city,
       [cId.state]: state,
       [cId.zip]: zip.toString(),
-      [cId.isPOBox]: isPOBox ? cId.yes : cId.no,
+      [cId.isPOBox]: isPOBox ? cId.yes : cId.no
     };
   } else if (id === 2) {
     newValues = {
-      [cId.physicalAddress1]: convertToNullIfEmptyString(addressLine1),
-      [cId.physicalAddress2]: convertToNullIfEmptyString(addressLine2),
-      [cId.physicalCity]: convertToNullIfEmptyString(city),
-      [cId.physicalState]: convertToNullIfEmptyString(state),
-      [cId.physicalZip]: convertToNullIfEmptyString(zip.toString()),
-    };
+      [cId.physicalAddress1]: addressLine1,
+      [cId.physicalAddress2]: addressLine2 ?? "",
+      [cId.physicalCity]: city,
+      [cId.physicalState]: state,
+      [cId.physicalZip]: zip.toString(),
+     };
   } else if (id === 3) {
     const doesAltAddressExist = addressLine1 || addressLine2 || city || state || zip
       ? cId.yes
@@ -976,13 +979,13 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
     
     newValues = {
       [cId.doesAltAddressExist]: doesAltAddressExist,
-      [cId.altAddress1]: convertToNullIfEmptyString(addressLine1),
-      [cId.altAddress2]: convertToNullIfEmptyString(addressLine2),
-      [cId.altCity]: convertToNullIfEmptyString(city),
-      [cId.altState]: convertToNullIfEmptyString(state),
-      [cId.altZip]: convertToNullIfEmptyString(zip.toString()),
-      [cId.isPOBoxAltAddress]: isPOBox ? cId.yes : null
-    };
+      [cId.altAddress1]: addressLine1,
+      [cId.altAddress2]: addressLine2 ?? "",
+      [cId.altCity]: city,
+      [cId.altState]: state,
+      [cId.altZip]: zip.toString(),
+      [cId.isPOBoxAltAddress]: isPOBox ? cId.yes : cId.no
+     };
   }
 
   const { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValues, userData);
