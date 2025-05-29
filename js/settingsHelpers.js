@@ -959,7 +959,7 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.city]: city,
       [cId.state]: state,
       [cId.zip]: zip.toString(),
-      [cId.isPOBox]: isPOBox ? cId.yes : cId.no,
+      [cId.isPOBox]: isPOBox ? cId.yes : cId.no
     };
   } else if (id === 2) {
     newValues = {
@@ -981,7 +981,7 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.altCity]: convertToNullIfEmptyString(city),
       [cId.altState]: convertToNullIfEmptyString(state),
       [cId.altZip]: convertToNullIfEmptyString(zip.toString()),
-      [cId.isPOBoxAltAddress]: isPOBox ? cId.yes : null
+      [cId.isPOBoxAltAddress]: isPOBox ? cId.yes : cId.no
     };
   }
 
