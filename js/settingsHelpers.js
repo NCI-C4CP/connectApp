@@ -923,13 +923,13 @@ const handleAllEmailField = (changedUserDataForProfile, userData) => {
 };
 
 /**
- * Convert empty string to null
+ * Convert empty string to undefined
  * @param {string} text  - The text is  a string
- * @returns {string | null}
+ * @returns {string | undefined}
  */
 
-const convertToNullIfEmptyString = (text) => {
-  return text.trim().length > 0 ? text : null;
+const convertToUndefinedIfEmptyString = (text) => {
+  return text.trim().length > 0 ? text : undefined;
 }
 
 /**
@@ -963,11 +963,11 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
     };
   } else if (id === 2) {
     newValues = {
-      [cId.physicalAddress1]: convertToNullIfEmptyString(addressLine1),
-      [cId.physicalAddress2]: convertToNullIfEmptyString(addressLine2),
-      [cId.physicalCity]: convertToNullIfEmptyString(city),
-      [cId.physicalState]: convertToNullIfEmptyString(state),
-      [cId.physicalZip]: convertToNullIfEmptyString(zip.toString()),
+      [cId.physicalAddress1]: convertToUndefinedIfEmptyString(addressLine1),
+      [cId.physicalAddress2]: convertToUndefinedIfEmptyString(addressLine2),
+      [cId.physicalCity]: convertToUndefinedIfEmptyString(city),
+      [cId.physicalState]: convertToUndefinedIfEmptyString(state),
+      [cId.physicalZip]: convertToUndefinedIfEmptyString(zip.toString()),
     };
   } else if (id === 3) {
     const doesAltAddressExist = addressLine1 || addressLine2 || city || state || zip
@@ -976,16 +976,24 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
     
     newValues = {
       [cId.doesAltAddressExist]: doesAltAddressExist,
-      [cId.altAddress1]: convertToNullIfEmptyString(addressLine1),
-      [cId.altAddress2]: convertToNullIfEmptyString(addressLine2),
-      [cId.altCity]: convertToNullIfEmptyString(city),
-      [cId.altState]: convertToNullIfEmptyString(state),
-      [cId.altZip]: convertToNullIfEmptyString(zip.toString()),
-      [cId.isPOBoxAltAddress]: isPOBox ? cId.yes : cId.no
+      [cId.altAddress1]: convertToUndefinedIfEmptyString(addressLine1),
+      [cId.altAddress2]: convertToUndefinedIfEmptyString(addressLine2),
+      [cId.altCity]: convertToUndefinedIfEmptyString(city),
+      [cId.altState]: convertToUndefinedIfEmptyString(state),
+      [cId.altZip]: convertToUndefinedIfEmptyString(zip.toString()),
+      [cId.isPOBoxAltAddress]: isPOBox ? cId.yes : doesAltAddressExist == cId.yes ? cId.no : undefined
     };
   }
 
   const { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValues, userData);
+  
+  // for every key in changedUserDataForProfile, if the value is undefined, set to null
+  Object.keys(changedUserDataForProfile).forEach(key => {
+    if (changedUserDataForProfile[key] === undefined) {
+      changedUserDataForProfile[key] = null;
+    }
+  });
+  
   const isSuccess = await processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'mailingAddress');
   return isSuccess;
 };
