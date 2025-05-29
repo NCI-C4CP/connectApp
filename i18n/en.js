@@ -953,7 +953,7 @@ const en = {
                 "WestonName": "Weston Center",
                 "WestonAddress": "3400 Ministry Pkwy<br>Weston, WI 54476",
                 "WisconsinRapidsName": "Wisconsin Rapids Center",
-                "WisconsinRapidsAddress": "220 24th St S,<br>Wisconsin Rapids,WI 54494",
+                "WisconsinRapidsAddress": "220 24th St S <br>Wisconsin Rapids, WI 54494",
             }
         },
         "henry_ford": {

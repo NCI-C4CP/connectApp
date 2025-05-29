@@ -467,7 +467,7 @@ const marshfield = {
         ],
         [
             '<span data-i18n="samples.marshfield.locations.WisconsinRapidsName">Wisconsin Rapids Center</span>',
-            '<span data-i18n="samples.marshfield.locations.WisconsinRapidsAddress">220 24th St S,<br>Wisconsin Rapids,WI 54494</span>',
+            '<span data-i18n="samples.marshfield.locations.WisconsinRapidsAddress">220 24th St S <br>Wisconsin Rapids, WI 54494</span>',
         ]
     ],
 };

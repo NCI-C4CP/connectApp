@@ -2,12 +2,19 @@ import { allocateDHQ3Credential, hideAnimation, questionnaireModules, storeRespo
 import { blockParticipant, questionnaire } from "./questionnaire.js";
 import { renderUserProfile } from "../components/form.js";
 import { consentTemplate } from "./consent.js";
-import { addEventHeardAboutStudy, addEventRequestPINForm, addEventHealthCareProviderSubmit, addEventPinAutoUpperCase, addEventHealthProviderModalSubmit, addEventToggleSubmit } from "../event.js";
+import { addEventHeardAboutStudy, addEventRequestPINForm, addEventHealthCareProviderSubmit, addEventPinAutoUpperCase, addEventHealthProviderModalSubmit, addEventToggleSubmit, storeParameters } from "../event.js";
 import { heardAboutStudy, requestPINTemplate, healthCareProvider } from "./healthCareProvider.js";
 import fieldMapping from '../fieldToConceptIdMapping.js';
 
 export const myToDoList = async (data, fromUserProfile, collections) => {    
     const mainContent = document.getElementById('root');
+
+    // Check for UTM parameters in sessionStorage and store them if not already present
+    if (sessionStorage.getItem('utmSource') || sessionStorage.getItem('utmMedium') || sessionStorage.getItem('utmCampaign')) {
+        if (!data[fieldMapping.utm.campaign] && !data[fieldMapping.utm.source] && !data[fieldMapping.utm.medium]) {
+            await storeParameters();
+        }
+    }
 
     // Completed healthcareProvider and heardAboutStudy forms
     if(data['827220437'] && data['142654897']){
