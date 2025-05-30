@@ -18,7 +18,6 @@
     "google":"readonly",
     "workbox": "readonly",
     "importScripts": "readonly",
-    "localforage": "readonly",
     "pdfjsLib": "readonly",
     "PDFLib": "readonly",
     "download": "readonly"

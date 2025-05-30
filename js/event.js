@@ -1,5 +1,4 @@
-import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, errorMessage, BirthMonths, getAge, getMyData, 
-    hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues } from "./shared.js";
+import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues, escapeHTML } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
 import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, requestPINTemplate } from "./pages/healthCareProvider.js";
 import { myToDoList } from "./pages/myToDoList.js";
@@ -715,11 +714,11 @@ export const addEventUPSubmit = async () => {
             if(element.checked) radioChecked = true;
         });
 
-        const phoneNo = `${document.getElementById('UPPhoneNumber11').value}${document.getElementById('UPPhoneNumber12').value}${document.getElementById('UPPhoneNumber13').value}`;
-        const phoneNo2 = `${document.getElementById('UPPhoneNumber21').value}${document.getElementById('UPPhoneNumber22').value}${document.getElementById('UPPhoneNumber23').value}`;
-        const phoneNo3 = `${document.getElementById('UPPhoneNumber31').value}${document.getElementById('UPPhoneNumber32').value}${document.getElementById('UPPhoneNumber33').value}`;
-        const altContactMobilePhone = `${document.getElementById('altContactMobilePhone1').value}${document.getElementById('altContactMobilePhone2').value}${document.getElementById('altContactMobilePhone3').value}`;
-        const altContactHomePhone = `${document.getElementById('altContactHomePhone1').value}${document.getElementById('altContactHomePhone2').value}${document.getElementById('altContactHomePhone3').value}`;
+        const phoneNo = `${escapeHTML(document.getElementById('UPPhoneNumber11').value)}${escapeHTML(document.getElementById('UPPhoneNumber12').value)}${escapeHTML(document.getElementById('UPPhoneNumber13').value)}`;
+        const phoneNo2 = `${escapeHTML(document.getElementById('UPPhoneNumber21').value)}${escapeHTML(document.getElementById('UPPhoneNumber22').value)}${escapeHTML(document.getElementById('UPPhoneNumber23').value)}`;
+        const phoneNo3 = `${escapeHTML(document.getElementById('UPPhoneNumber31').value)}${escapeHTML(document.getElementById('UPPhoneNumber32').value)}${escapeHTML(document.getElementById('UPPhoneNumber33').value)}`;
+        const altContactMobilePhone = `${escapeHTML(document.getElementById('altContactMobilePhone1').value)}${escapeHTML(document.getElementById('altContactMobilePhone2').value)}${escapeHTML(document.getElementById('altContactMobilePhone3').value)}`;
+        const altContactHomePhone = `${escapeHTML(document.getElementById('altContactHomePhone1').value)}${escapeHTML(document.getElementById('altContactHomePhone2').value)}${escapeHTML(document.getElementById('altContactHomePhone3').value)}`;
         const email = document.getElementById('UPEmail').value;
         const email2 = document.getElementById('UPEmail2');
         const email3 = document.getElementById('UPAdditionalEmail2');
@@ -1323,29 +1322,29 @@ const showInvalidAddressWarning = (uspsSuggestion, formData, type) => {
     let addressHtml = ``;
     if (type === "mail") {
         addressHtml += `
-            <span data-i18n="event.l1">Line 1</span>: ${document.getElementById("UPAddress1Line1").value} </br>
-            <span data-i18n="event.l2">Line 2</span>: ${document.getElementById("UPAddress1Line2").value} </br>
-            <span data-i18n="event.city">City</span>: ${document.getElementById("UPAddress1City").value} </br>
-            <span data-i18n="event.state">State</span>: ${document.getElementById("UPAddress1State").value} </br>
-            <span data-i18n="event.zip">Zip</span>: ${document.getElementById("UPAddress1Zip").value} </br>
+            <span data-i18n="event.l1">Line 1</span>: ${escapeHTML(document.getElementById("UPAddress1Line1").value)} </br>
+            <span data-i18n="event.l2">Line 2</span>: ${escapeHTML(document.getElementById("UPAddress1Line2").value)} </br>
+            <span data-i18n="event.city">City</span>: ${escapeHTML(document.getElementById("UPAddress1City").value)} </br>
+            <span data-i18n="event.state">State</span>: ${escapeHTML(document.getElementById("UPAddress1State").value)} </br>
+            <span data-i18n="event.zip">Zip</span>: ${escapeHTML(document.getElementById("UPAddress1Zip").value)} </br>
         `;
     }
     if (type === "physical") {
         addressHtml += `
-            <span data-i18n="event.l1">Line 1</span>: ${document.getElementById("UPAddress2Line1").value} </br>
-            <span data-i18n="event.l2">Line 2</span>: ${document.getElementById("UPAddress2Line2").value} </br>
-            <span data-i18n="event.city">City</span>: ${document.getElementById("UPAddress2City").value} </br>
-            <span data-i18n="event.state">State</span>: ${document.getElementById("UPAddress2State").value} </br>
-            <span data-i18n="event.zip">Zip</span>: ${document.getElementById("UPAddress2Zip").value} </br>
+            <span data-i18n="event.l1">Line 1</span>: ${escapeHTML(document.getElementById("UPAddress2Line1").value)} </br>
+            <span data-i18n="event.l2">Line 2</span>: ${escapeHTML(document.getElementById("UPAddress2Line2").value)} </br>
+            <span data-i18n="event.city">City</span>: ${escapeHTML(document.getElementById("UPAddress2City").value)} </br>
+            <span data-i18n="event.state">State</span>: ${escapeHTML(document.getElementById("UPAddress2State").value)} </br>
+            <span data-i18n="event.zip">Zip</span>: ${escapeHTML(document.getElementById("UPAddress2Zip").value)} </br>
         `;
     }
     if (type === "alternate") {
         addressHtml += `
-            <span data-i18n="event.l1">Line 1</span>: ${document.getElementById("UPAddress3Line1").value} </br>
-            <span data-i18n="event.l2">Line 2</span>: ${document.getElementById("UPAddress3Line2").value} </br>
-            <span data-i18n="event.city">City</span>: ${document.getElementById("UPAddress3City").value} </br>
-            <span data-i18n="event.state">State</span>: ${document.getElementById("UPAddress3State").value} </br>
-            <span data-i18n="event.zip">Zip</span>: ${document.getElementById("UPAddress3Zip").value} </br>
+            <span data-i18n="event.l1">Line 1</span>: ${escapeHTML(document.getElementById("UPAddress3Line1").value)} </br>
+            <span data-i18n="event.l2">Line 2</span>: ${escapeHTML(document.getElementById("UPAddress3Line2").value)} </br>
+            <span data-i18n="event.city">City</span>: ${escapeHTML(document.getElementById("UPAddress3City").value)} </br>
+            <span data-i18n="event.state">State</span>: ${escapeHTML(document.getElementById("UPAddress3State").value)} </br>
+            <span data-i18n="event.zip">Zip</span>: ${escapeHTML(document.getElementById("UPAddress3Zip").value)} </br>
         `;
     }
 
@@ -1524,11 +1523,6 @@ const showInvalidFormWarning = () => {
 const showRiskyEmailWarning = (uspsSuggestion, riskyEmails, formData) => {
     if(!document.getElementById('connectMainModal').classList.contains('show')) openModal();
     let bodyHtml = ''
-    const escapeHTML = (str) => {
-        const div = document.createElement('div');
-        div.appendChild(document.createTextNode(str));
-        return div.innerHTML;
-    };
 
     document.getElementById('connectModalHeader').innerHTML = translateHTML(`
         <button type="button" class="btn-close" id="modalCloseBtn" aria-label="Close"></button>
@@ -1644,8 +1638,8 @@ export const environmentWarningModal = () => {
         </br>
 
         <div class="col-md-4 mx-auto text-center">
-            <label style="text-align:center;">Enter staff access code</label>
-            <input type="text" style="text-align:center; margin:0 auto;" class="form-control input-validation row" id="testingAccessCode" name="testingAccessCode">
+            <label for="testingAccessCode" style="text-align:center;">Enter staff access code</label>
+            <input type="text" id="testingAccessCode" style="text-align:center; margin:0 auto;" class="form-control input-validation row" name="testingAccessCode">
         </div>
     `;
 
@@ -2211,7 +2205,7 @@ export const addEventRequestPINForm = () => {
  * This method is called after the PIN entry form is submitted.
  * The UTM parameters are stored in the participant record if they exist in the session storage.
  */
-const storeParameters = async () => {
+export const storeParameters = async () => {
     const utm = {};
     const acceptedParams = {
         utm_source: ['hfh', 'uc', 'hp'],
@@ -2238,7 +2232,7 @@ const storeParameters = async () => {
  * @returns { string } - The first sign in time in ISO 8601 format.
  */
 
-const getFirstSignInISOTime = async () => {
+export const getFirstSignInISOTime = async () => {
     // Check appState first.
     let firstSignInISOTime = appState.getState().participantData.firstSignInTime;
 

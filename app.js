@@ -1,8 +1,8 @@
-import { getParameters, userLoggedIn, getMyData, hasUserData, getMyCollections, showAnimation, hideAnimation, storeResponse, isBrowserCompatible, inactivityTime, urls, appState, processAuthWithFirebaseAdmin, showErrorAlert, successResponse, logDDRumError, translateHTML, translateText, languageAcronyms, toggleNavbarMobileView } from "./js/shared.js";
+import { syncDHQ3RespondentInfo, getParameters, userLoggedIn, getMyData, hasUserData, getMyCollections, showAnimation, hideAnimation, storeResponse, isBrowserCompatible, inactivityTime, urls, appState, processAuthWithFirebaseAdmin, showErrorAlert, successResponse, logDDRumError, translateHTML, translateText, languageAcronyms, toggleNavbarMobileView, validateToken } from "./js/shared.js";
 import { userNavBar, homeNavBar, languageSelector, signOutNavBarTemplate } from "./js/components/navbar.js";
 import { homePage, joinNowBtn, whereAmIInDashboard, renderHomeAboutPage, renderHomeExpectationsPage, renderHomePrivacyPage } from "./js/pages/homePage.js";
 import { addEventPinAutoUpperCase, addEventRequestPINForm, addEventRetrieveNotifications, toggleCurrentPage, toggleCurrentPageNoUser, addEventToggleSubmit, addEventLanguageSelection } from "./js/event.js";
-import { requestPINTemplate } from "./js/pages/healthCareProvider.js";
+import { requestPINTemplate, duplicateAccountReminderRender } from "./js/pages/healthCareProvider.js";
 import { myToDoList } from "./js/pages/myToDoList.js";
 import {renderNotificationsPage} from "./js/pages/notifications.js"
 import { renderAgreements } from "./js/pages/agreements.js";
@@ -152,7 +152,7 @@ window.onload = async () => {
         if (user) {
             idToken = await user.getIdToken();
             if (!user.isAnonymous) {
-                localforage.clear();
+
                 const firstSignInTime = new Date(user.metadata.creationTime).toISOString();
                 appState.setState({ participantData: { firstSignInTime } });
 
@@ -304,6 +304,43 @@ const userProfile = () => {
             try {
                 showAnimation();
                 document.title = translateText('shared.dashboardTitle');
+
+                let token = '';
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                const continueUrlParam = urlParams.get('continueUrl');
+
+                if (continueUrlParam) {
+                    const decodedContinueUrl = decodeURIComponent(continueUrlParam);
+                    const continueUrlObj = new URL(decodedContinueUrl);
+                    
+                    token = continueUrlObj.searchParams.get('token');
+                }
+                else {
+                    const href = location.href;
+                    const parameters = getParameters(href);
+
+                    token = parameters?.token;
+                } 
+
+                if (token) {
+                    const response = await validateToken(token);
+
+                    if (response.code === 202) {
+                        const myErrorData = await getMyData();
+
+                        logDDRumError(new Error(`Duplicate Account Found`), 'duplicateAccountError', {
+                            userAction: 'PWA sign in',
+                            timestamp: new Date().toISOString(),
+                            connectID: myErrorData.data['Connect_ID'],
+                        });
+
+                        duplicateAccountReminderRender();
+                        hideAnimation();
+                        return;
+                    }
+                }
+
                 userProfileAuthStateUIHandler(user);
             
                 firestoreUserData = await getMyData();
@@ -325,9 +362,13 @@ const userProfile = () => {
                         participantData?.['Connect_ID']
                     );
 
-                    const [collectionsData] = await Promise.all([myCollectionsPromise, checkFirstSignInPromise]);
+                    // Check for DHQ3 completion status if it has been started.
+                    const dhqStatusPromise = participantData?.[conceptIdMap.DHQ3.statusFlag] === conceptIdMap.moduleStatus.started 
+                        ? syncDHQ3RespondentInfo(participantData[conceptIdMap.DHQ3.studyID], participantData[conceptIdMap.DHQ3.username], participantData[conceptIdMap.DHQ3.statusFlag], participantData[conceptIdMap.DHQ3.statusFlagExternal])
+                        : Promise.resolve(null);
 
-                    await myToDoList(participantData, false, collectionsData.data);
+                    const [collectionsData] = await Promise.allSettled([myCollectionsPromise, checkFirstSignInPromise, dhqStatusPromise]);
+                    await myToDoList(participantData, false, collectionsData.value?.data || []);
 
                 } else {
                     // Authenticated user. Firestore profile does not exist (initial sign-up). Show the PIN entry form.
@@ -420,7 +461,6 @@ export const signOut = async () => {
         window.DD_RUM.stopSession();
         isDataDogUserSessionSet = false;
     }
-    localforage.clear();
 
     await firebase.auth().signOut();
 
