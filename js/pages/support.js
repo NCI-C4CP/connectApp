@@ -1,4 +1,5 @@
 import { getMyData, hasUserData, translateHTML, translateText } from "../shared.js";
+import fieldMapping from '../fieldToConceptIdMapping.js';
 
 export const renderSupportPage = async () => {
     document.title = translateText('support.title');
@@ -10,7 +11,7 @@ export const renderSupportPage = async () => {
     if(hasUserData(myData)){
         let data = myData.data;
         
-        if(!(data['827220437'] && data['142654897'] && data['919254129'] !== 353358909)){
+        if(!(data[fieldMapping.healthcareProvider] && data[fieldMapping.heardAboutStudyForm] && data[fieldMapping.consentSubmitted] !== fieldMapping.yes)){
             link="https://norcfedramp.servicenowservices.com/participant"
             phone = 'signedInPhone';
         }

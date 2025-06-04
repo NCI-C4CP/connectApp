@@ -2044,7 +2044,7 @@ const verifyUserDetails = (formData) => {
     document.getElementById('confirmReview').addEventListener('click', async () => {
         const modal = bootstrap.Modal.getInstance(document.getElementById('connectMainModal'));
         dataSavingBtn('save-data');
-        formData['699625233'] = 353358909;
+        formData[fieldMapping.userProfileSubmittedAutogen] = fieldMapping.yes;
         formData['430551721'] = new Date().toISOString();
 
         const { formerdata } = formData[fieldMapping.userProfileHistory];
