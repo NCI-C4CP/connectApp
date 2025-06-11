@@ -545,13 +545,13 @@ const u_chicago = {
             '',
             '',
             '',
-        ], // Temporarily remove the Duchossois Outpatient Labs location until location is ready
-        // [
-        //     '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsName" class="site-info-underline">UChicago, Duchossois Center for Advanced Medicine (DCAM) Outpatient Labs </span>',
-        //     '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsAddress">University of Chicago Medicine<br> Duchossois Center for Advanced Medicine (DCAM), 3F or 4F<br> 5758 S. Maryland Avenue<br> Chicago, IL 60637<br></span>',
-        //     '',
-        //     '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsParking">The University of Chicago Medicine offers valet and self-parking. The outpatient labs are located on both the 3<sup>rd</sup> and 4<sup>th</sup> floors.</span>',            
-        // ],
+        ],
+        [
+            '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsName" class="site-info-underline"><a href="https://www.uchicagomedicine.org/find-a-location/uchicago-medicine-duchossois-center-for-advanced-medicine-hyde-park" target="_blank">UChicago, Duchossois Center for Advanced Medicine (DCAM) Outpatient Labs</a></span>',
+            '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsAddress">University of Chicago Medicine<br> Duchossois Center for Advanced Medicine (DCAM), 3F or 4F<br> 5758 S. Maryland Avenue<br> Chicago, IL 60637<br></span>',
+            '',
+            '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsParking">The University of Chicago Medicine offers valet and self-parking. The outpatient labs are located on both the 3<sup>rd</sup> and 4<sup>th</sup> floors.</span>',            
+        ],
         [
             '<span data-i18n="samples.u_chicago.locations.RiverEastName"><span class="site-info-underline"><a href="https://www.uchicagomedicine.org/find-a-location/uchicago-medicine-river-east" target="_blank">UChicago Medicine River East</a></span></span>',
             '<span data-i18n="samples.u_chicago.locations.RiverEastAddress">Located in Lucky Strike Downtown Chicago <br>355 E. Grand Ave <br>Chicago, IL 60611</span>',
@@ -652,12 +652,30 @@ const bswh = {
                         </div>
                         <div>
                             <span class="site-info-bold">Baylor Scott & White Medical Center - Irving</span>
-                            <p>1901 N. MacArthur Blvd, Suite 207<br>
+                            <p>1901 N. MacArthur Blvd, Suite 115<br>
                                 Irving, TX 75061<br>
                                 Parking Instructions: The site offers free surface level parking.<br>
-                                Suite 207 is located within the Irving Hospital in the PAT lab.
+                                Suite 115 is located within the Irving Hospital in the PAT lab.
                             </p>
                         </div>
+
+
+                        <div>
+                            <span class="site-info-bold">Baylor Scott & White Center for Diagnostic Medicine – Temple CDM</span>
+                            <p>1605 S 31st St<br>
+                                Temple, TX 76508<br>
+                                Parking Instructions: The site offers free surface level parking.
+                            </p>
+                        </div>
+
+                        <div>
+                            <span class="site-info-bold">Baylor Scott & White, Temple Roney Bone & Joint – Temple Roney</span>
+                            <p>2401 S 31st St, Bldg 35<br>
+                                Temple, TX 76508<br>
+                                Parking Instructions: The site offers free surface level parking.<br>
+                            </p>
+                        </div>
+
                     </div>`,
     howLong: '<span data-i18n="samples.bswh.howLong">If you complete your first Connect survey before your appointment, please expect to spend about 45 minutes at your appointment to donate your samples and complete a short sample survey.</span>',
     prepareInstructions: '<span data-i18n="samples.bswh.prepareInstructions"><p>On the day of your appointment, you do not need to fast. Drink plenty of water to keep hydrated, but <span class="site-info-bold">stop drinking water one hour before your appointment.</span></p> <p><span class="site-info-bold">One hour before your appointment:</span> Please <span class="site-info-bold">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.</p> <p class="site-info-bold">Things to bring and remember</p><ul><li>Please remember to bring a valid photo ID that is not expired (driver’s license, passport, school photo ID, or other photo ID)</li><li>Make sure you know your login information for MyConnect</li><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:</li><ul><li>The last time you ate or drank before your appointment, and the times you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></li></ul></span>',
