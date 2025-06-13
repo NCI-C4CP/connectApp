@@ -471,7 +471,7 @@ export const updateDHQReportViewedStatus = async (studyID, respondentUsername, i
         throw new Error('Failed to update DHQ Report viewed status. Response code: ' + reportData.code);
 
     } catch (error) {
-        console.error('Error in retrieveDHQ3Report:', error);
+        console.error('Error in updateDHQReportViewedStatus:', error);
         throw error;
     }
 }
