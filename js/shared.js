@@ -398,6 +398,86 @@ export const retrievePhysicalActivityReport = async () => {
     return await response.json();
 };
 
+export const retrieveDHQHEIReport = async (dhqData) => {
+
+    if (!dhqData || typeof dhqData !== 'object' || !dhqData.studyID || !dhqData.username) {
+        return { code: 400, data: [], message: 'Invalid DHQ data' };
+    }
+
+    const studyID = dhqData.studyID;
+    const respondentUsername = dhqData.username;
+
+    try {
+        const idToken = await getIdToken();
+        const response = await fetch(`${api}?api=retrieveDHQHEIReport`, {
+            method: "POST",
+            headers: {
+                Authorization: 'Bearer ' + idToken,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ studyID, respondentUsername })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server responded with: ${response.status}`);
+        }
+
+        const jsonResponse = await response.json();
+
+        if (jsonResponse.code === 200) {
+            return jsonResponse;
+        }
+
+        throw new Error(`Retrieve DHQ HEI Report Error: ${jsonResponse.message}`);
+
+    } catch (error) {
+        console.error('Error in retrieveDHQHEIReport:', error);
+        logDDRumError(error, 'RetrieveDHQHEIReportError', {
+            userAction: 'retrieve DHQ HEI report',
+            timestamp: new Date().toISOString(),
+        });
+        return { code: 500, data: [], message: 'An unexpected error occurred in retrieveDHQHEIReport()' };
+    }
+};
+
+export const updateDHQReportViewedStatus = async (studyID, respondentUsername, isDeclined = false) => {
+
+    if (!studyID || !respondentUsername) {
+        console.error('DHQ3 Update criteria not met. Missing at least one of studyID, respondentUsername:', studyID, respondentUsername);
+        return null;
+    }
+
+    try {
+        const idToken = await getIdToken();
+        const response = await fetch(`${api}?api=updateDHQReportViewedStatus`, {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + idToken,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ studyID, respondentUsername, isDeclined })
+        });
+
+        if (!response.ok) {
+            const error = (response.status + ": " + (await response.json()).message);
+            throw new Error(error);
+        }
+
+        const reportData = await response.json();
+        if (reportData.code === 200) {
+            return;
+        }
+
+        throw new Error('Failed to update DHQ Report viewed status. Response code: ' + reportData.code);
+
+    } catch (error) {
+        console.error('Error in updateDHQReportViewedStatus:', error);
+        throw error;
+    }
+}
+
+
+
 export const hasUserData = (response) => {
 
     return response.code === 200 && Object.keys(response.data).length > 0;
@@ -1362,6 +1442,15 @@ export const reportConfiguration = () => {
                 },
                 reportId: "physicalActivity", 
                 enabled: false
+            },
+            // External report (not stored on our servers)
+            'DHQ HEI Report': {
+                path: {
+                    en: 'https://www.dhq3.org/respondent-login/',
+                    es: 'https://www.dhq3.org/respondent-login/'
+                },
+                reportId: "dhqHEI",
+                enabled: false
             }
         }
     }
@@ -1369,6 +1458,11 @@ export const reportConfiguration = () => {
     return {
         'Physical Activity Report': {
             reportId: "physicalActivity", 
+            enabled: false
+        },
+        // External report (not stored on our servers)
+        'DHQ HEI Report': {
+            reportId: "dhqHEI",
             enabled: false
         }
     }
@@ -1394,14 +1488,30 @@ export const setReportAttributes = async (data, reports) => {
         reports['Physical Activity Report'].dateField = 'd_416831581';
         reports['Physical Activity Report'].surveyDate = data[fieldMapping.Module2.completeTs];
     }
+
+    // DHQ HEI Report is available once the DHQ3 survey is submitted
+    // Align data structure with BQ-related mapping from Physical Activity Report
+    if (data[fieldMapping.DHQ3.statusFlag] === fieldMapping.moduleStatus.submitted) {
+        reports['DHQ HEI Report'].enabled = true;
+        reports['DHQ HEI Report'].status = data[fieldMapping.reports.dhq3.reportStatusInternal] || fieldMapping.reports.unread;
+        reports['DHQ HEI Report'].dateField = 'dateField';
+        reports['DHQ HEI Report'].surveyDate = data[fieldMapping.DHQ3.completeTs];
+        reports['DHQ HEI Report'].data = {
+            'dateField': data[fieldMapping.DHQ3.completeTs],
+            'pdfData': '',
+        };
+    }
+
     return reports;
 }
 
 /**
  * Populates the report data from the backend
  * 
- * @param {Object[]} reports 
+ * @param {Object[]} reports
+ * @param {Object} dhqData - Optional data for DHQ HEI report
  */
+
 export const populateReportData = async (reports) => {
     let reportData = await retrievePhysicalActivityReport();
     if (reportData.code === 200) {
@@ -1413,6 +1523,29 @@ export const populateReportData = async (reports) => {
     }
 
     return reports;
+}
+
+export const populateDHQHEIReportData = async (reports, dhqData) => {
+    try {
+        const dhqHEIReportData = await retrieveDHQHEIReport(dhqData);
+
+        if (dhqHEIReportData?.code === 200) {
+            reports['DHQ HEI Report'].data.pdfData = dhqHEIReportData.data || '';
+
+        } else {
+            throw new Error(`Failed to retrieve DHQ HEI report data: ${dhqHEIReportData?.message || 'Unknown error'}`);
+        }
+
+    } catch (error) {
+        logDDRumError(error, 'populateDHQHEIReportDataError', {
+            userAction: 'get DHQ HEI report data',
+            timestamp: new Date().toISOString(),
+        });
+        reports['DHQ HEI Report'].data.pdfData = '';
+
+    } finally {
+        return reports;
+    }
 }
 
 export const isBrowserCompatible = () => {
