@@ -467,7 +467,7 @@ const marshfield = {
         ],
         [
             '<span data-i18n="samples.marshfield.locations.WisconsinRapidsName">Wisconsin Rapids Center</span>',
-            '<span data-i18n="samples.marshfield.locations.WisconsinRapidsAddress">220 24th St S,<br>Wisconsin Rapids,WI 54494</span>',
+            '<span data-i18n="samples.marshfield.locations.WisconsinRapidsAddress">220 24th St S <br>Wisconsin Rapids, WI 54494</span>',
         ]
     ],
 };
@@ -545,13 +545,13 @@ const u_chicago = {
             '',
             '',
             '',
-        ], // Temporarily remove the Duchossois Outpatient Labs location until location is ready
-        // [
-        //     '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsName" class="site-info-underline">UChicago, Duchossois Center for Advanced Medicine (DCAM) Outpatient Labs </span>',
-        //     '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsAddress">University of Chicago Medicine<br> Duchossois Center for Advanced Medicine (DCAM), 3F or 4F<br> 5758 S. Maryland Avenue<br> Chicago, IL 60637<br></span>',
-        //     '',
-        //     '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsParking">The University of Chicago Medicine offers valet and self-parking. The outpatient labs are located on both the 3<sup>rd</sup> and 4<sup>th</sup> floors.</span>',            
-        // ],
+        ],
+        [
+            '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsName" class="site-info-underline"><a href="https://www.uchicagomedicine.org/find-a-location/uchicago-medicine-duchossois-center-for-advanced-medicine-hyde-park" target="_blank">UChicago, Duchossois Center for Advanced Medicine (DCAM) Outpatient Labs</a></span>',
+            '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsAddress">University of Chicago Medicine<br> Duchossois Center for Advanced Medicine (DCAM), 3F or 4F<br> 5758 S. Maryland Avenue<br> Chicago, IL 60637<br></span>',
+            '',
+            '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsParking">The University of Chicago Medicine offers valet and self-parking. The outpatient labs are located on both the 3<sup>rd</sup> and 4<sup>th</sup> floors.</span>',            
+        ],
         [
             '<span data-i18n="samples.u_chicago.locations.RiverEastName"><span class="site-info-underline"><a href="https://www.uchicagomedicine.org/find-a-location/uchicago-medicine-river-east" target="_blank">UChicago Medicine River East</a></span></span>',
             '<span data-i18n="samples.u_chicago.locations.RiverEastAddress">Located in Lucky Strike Downtown Chicago <br>355 E. Grand Ave <br>Chicago, IL 60611</span>',
@@ -652,10 +652,27 @@ const bswh = {
                         </div>
                         <div>
                             <span class="site-info-bold">Baylor Scott & White Medical Center - Irving</span>
-                            <p>1901 N. MacArthur Blvd, Suite 207<br>
+                            <p>1901 N. MacArthur Blvd, Suite 115<br>
                                 Irving, TX 75061<br>
                                 Parking Instructions: The site offers free surface level parking.<br>
-                                Suite 207 is located within the Irving Hospital in the PAT lab.
+                                Suite 115 is located within the Irving Hospital in the PAT lab.
+                            </p>
+                        </div>
+
+
+                        <div>
+                            <span class="site-info-bold">Baylor Scott & White Center for Diagnostic Medicine – Temple CDM</span>
+                            <p>1605 S 31st St<br>
+                                Temple, TX 76508<br>
+                                Parking Instructions: The site offers free surface level parking.
+                            </p>
+                        </div>
+
+                        <div>
+                            <span class="site-info-bold">Baylor Scott & White, Temple Roney Bone & Joint – Temple Roney</span>
+                            <p>2401 S 31st St, Bldg 35<br>
+                                Temple, TX 76508<br>
+                                Parking Instructions: The site offers free surface level parking.<br>
                             </p>
                         </div>
                     </div>`,

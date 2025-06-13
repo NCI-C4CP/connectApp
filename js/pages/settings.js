@@ -135,7 +135,7 @@ export const renderSettingsPage = async () => {
     if (userData[cId.userProfileSubmittedAutogen] === cId.yes) {
       let headerMessage = '';
       if (!isParticipantDataDestroyed) {
-        if (userData[cId.verification] !== cId.verified) {
+        if (userData[cId.verification] !== cId.verified && userData[cId.consentWithdrawn] !== cId.yes) {
             headerMessage = 'settings.joinMessage';
         }
       } else {

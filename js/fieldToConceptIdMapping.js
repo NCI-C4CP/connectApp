@@ -70,9 +70,20 @@ export default
     "altContactHomePhone": 318130543,
     "altContactEmail": 750097000,
 
+    "recruitmentType": 512820379,
+    "recruitmentTypeNotActive": 180583933,
+    "recruitmentTypeActive": 486306141,
+    "recruitmentTypePassive": 854703046,
+
     "healthcareProvider":827220437,
+
     "verification":821247024,
+    "notYetVerified": 875007964,
     "verified":197316935,
+    "cannotBeVerified": 219863910,
+    "duplicate": 922622075,
+    "outreachTimedOut": 160161595,
+
     "verifiedDate": 914594314,
     "firebaseAuthEmail": 421823980,
     "firebaseAuthPhone": 348474836,
@@ -80,6 +91,7 @@ export default
     "yes": 353358909,
     "no": 104430631,
     "consentVersion": 454205108,
+    "consentSubmitted": 919254129,
     "hipaaVersion": 412000022,
     "hipaaRevokeVersion": 407743866,
     "dataDestructionVersion": 304438543,
@@ -92,7 +104,7 @@ export default
     "requestedDataDestroyNotSigned": 111959410,
     "requestedDataDestroySigned": 704529432,
     "noneOfTheseApply": 398561594,
-    "outreachTimedOut": 160161595,
+    
     firstSignInFlag: 230663853,
     firstSignInTime: 335767902,
     hipaaTimestamp: 262613359,
