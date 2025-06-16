@@ -406,8 +406,17 @@ export default
             viewedTS: 749055145,
             declinedTS: 295732360
         },
+        
+        dhq3: {
+            reportStatusInternal: 542983589,
+            reportStatusExternal: 892697201,
+            viewedTS: 600958089,
+            declinedTS: 404613256,
+        },
+
+        // Physical Activity, DHQ internal & external report status. Note: no 'declined' status for DHQ external.
         unread: 702641611,
         viewed: 469323437,
-        declined: 746038746
+        declined: 746038746,
     }
 };
