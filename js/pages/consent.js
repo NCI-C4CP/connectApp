@@ -1049,7 +1049,7 @@ const consentSubmit = async e => {
     formData['982402227'] = CSDate.split('/')[2]+CSDate.split('/')[0]+CSDate.split('/')[1];
     formData['query.firstName'] = [CSFirstName.value.trim().toLowerCase()];
     formData['query.lastName'] = [CSLastName.value.trim().toLowerCase()];
-    formData['919254129'] = 353358909;
+    formData[fieldMapping.consentSubmitted] = fieldMapping.yes;
     formData['454445267'] = dateTime();
     formData['262613359'] = dateTime();
     formData['558435199'] = 353358909;

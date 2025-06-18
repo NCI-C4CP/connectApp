@@ -1,6 +1,7 @@
 import { getMyData, hasUserData, urls, fragment, checkAccount, validEmailFormat, validPhoneNumberFormat, getCleanSearchString, firebaseSignInRender, signInAnonymously, usGov, translateHTML, translateText, getFirebaseUI, showAnimation, hideAnimation } from "../shared.js";
 import { signInConfig } from "./signIn.js";
 import { environmentWarningModal, downtimeWarning } from "../event.js";
+import fieldMapping from '../fieldToConceptIdMapping.js';
 
 /**
  * Renders homepage for sign-in/sign-up 
@@ -129,13 +130,13 @@ export const whereAmIInDashboard = async () => {
     if(!hasUserData(myData)) return '';
     
     let data = myData.data;
-    if(data['827220437'] && data['142654897']){
-        if(data['919254129'] === 353358909){
-            if(data['699625233'] && data['699625233'] === 353358909 && data['821247024'] && data['821247024'] !== 197316935){
+    if(data[fieldMapping.healthcareProvider] && data[fieldMapping.heardAboutStudyForm]){
+        if(data[fieldMapping.consentSubmitted] === fieldMapping.yes){
+            if(data[fieldMapping.userProfileSubmittedAutogen] && data[fieldMapping.userProfileSubmittedAutogen] === fieldMapping.yes && data[fieldMapping.verification] && data[fieldMapping.verification] !== fieldMapping.verified){
                 //Awaiting verification
               return translateText('home.awaitVerification');
             }
-            if(data['699625233'] && data['699625233'] === 353358909){
+            if(data[fieldMapping.userProfileSubmittedAutogen] && data[fieldMapping.userProfileSubmittedAutogen] === fieldMapping.yes){
                 
                 //go do your surveys
               return translateText('home.doSurveys');
@@ -146,11 +147,11 @@ export const whereAmIInDashboard = async () => {
         //sign e-consent
         return translateText('home.signConsent');
     }
-    else if(data['827220437'] && !data['142654897']){
+    else if(data[fieldMapping.healthcareProvider] && !data[fieldMapping.heardAboutStudyForm]){
         //heard about study
         return translateText('home.heardStudy')
     }
-    else if(data['379080287']){
+    else if(data[fieldMapping.pinNumber]){
         //pin
         return translateText('home.havePin')
     }
