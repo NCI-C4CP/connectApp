@@ -1,4 +1,4 @@
-import { reportConfiguration, retrieveDHQHEIReport, setReportAttributes, populateReportData, populateDHQHEIReportData, showAnimation, hideAnimation, translateHTML, translateText, getMyData, storeResponse, translateDate, updateDHQReportViewedStatus } from "../shared.js";
+import { reportConfiguration, retrieveDHQHEIReport, setReportAttributes, populateReportData, populateDHQHEIReportData, showAnimation, getNestedProperty, hideAnimation, translateHTML, translateText, getMyData, storeResponse, translateDate, updateDHQReportViewedStatus } from "../shared.js";
 import fieldMapping from "../fieldToConceptIdMapping.js";
 import { renderPhysicalActivityReport, renderPhysicalActivityReportPDF} from '../../reports/physicalActivity/physicalActivity.js';
 const { PDFDocument, StandardFonts, rgb } = PDFLib;
@@ -47,6 +47,10 @@ export const renderReportsPage = async () => {
             }
         }
     });
+
+    if (unread.length > 1) unread = sortReportsByAvailableDate(unread);
+    if (read.length > 1) read = sortReportsByAvailableDate(read);
+    if (declined.length > 1) declined = sortReportsByAvailableDate(declined);
 
     if (unread.length === 0 && read.length === 0 && declined.length === 0) {
         if (myData[fieldMapping.consentWithdrawn] && myData[fieldMapping.consentWithdrawn] === fieldMapping.yes) {
@@ -205,6 +209,27 @@ const renderMainBody = (data, tab) => {
     template += '</ul>';
 
     return translateHTML(template);
+};
+
+/**
+ * Sorts the reports by their available date in descending order (most recent first).
+ * @param {Array} reports - Array of report objects
+ * @returns {Array} - Sorted array of report objects
+ */
+
+const sortReportsByAvailableDate = (reports) => {
+    return reports.sort((a, b) => {
+
+        // Get the date available field name/path from report config
+        const dateA = getNestedProperty(a, a.dateAvailableField) || '';
+        const dateB = getNestedProperty(b, b.dateAvailableField) || '';
+
+        if (!dateA && !dateB) return 0;
+        if (!dateA) return 1; 
+        if (!dateB) return -1;
+
+        return dateB.localeCompare(dateA);
+    });
 };
 
 const generateReportButtons = (currentReport, tab) => {
