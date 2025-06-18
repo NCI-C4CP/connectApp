@@ -228,7 +228,14 @@ const sortReportsByAvailableDate = (reports) => {
         if (!dateA) return 1; 
         if (!dateB) return -1;
 
-        return dateB.localeCompare(dateA);
+        const dateObjA = new Date(dateA);
+        const dateObjB = new Date(dateB);
+
+        if (isNaN(dateObjA) && isNaN(dateObjB)) return 0;
+        if (isNaN(dateObjA)) return 1;
+        if (isNaN(dateObjB)) return -1;
+
+        return dateObjB - dateObjA;
     });
 };
 
