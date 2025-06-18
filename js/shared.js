@@ -2871,7 +2871,7 @@ export const validateToken = async (token) => {
  * Get a nested property from an object using a dot-separated path.
  * @param {Object} obj - The object to search.
  * @param {string} path - The dot-separated path to the property.
- * @returns {*} - The value at the specified path, or undefined if not found.
+ * @returns {any} - The value at the specified path, or undefined if not found.
  */
 
 export const getNestedProperty = (obj, path) => {
