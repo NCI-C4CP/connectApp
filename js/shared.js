@@ -1436,6 +1436,7 @@ export const reportConfiguration = () => {
     if(location.host === urls.prod) {
         return {
             'Physical Activity Report': {
+                dateAvailableField: 'data.d_416831581', // Report generated in BQ
                 path: {
                     en: 'prod/module2024ConnectExperience.txt', 
                     es: 'prod/module2024ConnectExperienceSpanish.txt'
@@ -1445,6 +1446,7 @@ export const reportConfiguration = () => {
             },
             // External report (not stored on our servers)
             'DHQ HEI Report': {
+                dateAvailableField: 'surveyDate', // Report generated on survey completion
                 path: {
                     en: 'https://www.dhq3.org/respondent-login/',
                     es: 'https://www.dhq3.org/respondent-login/'
@@ -1457,11 +1459,13 @@ export const reportConfiguration = () => {
 
     return {
         'Physical Activity Report': {
+            dateAvailableField: 'data.d_416831581', // Report generated in BQ
             reportId: "physicalActivity", 
             enabled: false
         },
         // External report (not stored on our servers)
         'DHQ HEI Report': {
+            dateAvailableField: 'surveyDate', // Report generated on survey completion
             reportId: "dhqHEI",
             enabled: false
         }
@@ -2862,3 +2866,24 @@ export const validateToken = async (token) => {
     const data = await response.json();
     return data;
 }
+
+/**
+ * Get a nested property from an object using a dot-separated path.
+ * @param {Object} obj - The object to search.
+ * @param {string} path - The dot-separated path to the property.
+ * @returns {any} - The value at the specified path, or undefined if not found.
+ */
+
+export const getNestedProperty = (obj, path) => {
+    if (!path) return undefined;
+
+    // If it's not a path (no dots), return the direct property
+    if (!path.includes('.')) {
+        return obj[path];
+    }
+
+    // Split the path and traverse the object
+    return path.split('.').reduce((current, key) => {
+        return current?.[key];
+    }, obj);
+};
