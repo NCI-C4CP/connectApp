@@ -239,7 +239,7 @@ export const renderAgreements = async () => {
     showAnimation();
     const myData = await getMyData();
     let template = '';
-    if(hasUserData(myData) && myData.data['919254129'] !== undefined && myData.data['919254129'] === fieldMapping.yes){
+    if (hasUserData(myData) && myData.data[fieldMapping.consentSubmitted] !== undefined && myData.data[fieldMapping.consentSubmitted] === fieldMapping.yes) {
         template += translateHTML(`
             <div class="row justify-content-center">
                 <div class="col-lg-8">    
