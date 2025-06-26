@@ -17,19 +17,13 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
     }
 
     // Completed healthcareProvider and heardAboutStudy forms
-    if(data['827220437'] && data['142654897']){
-        localStorage.eligibilityQuestionnaire = JSON.stringify({'827220437': data['827220437']})
-        if(data['919254129'] === 353358909){
+    if (data[fieldMapping.healthcareProvider] && data[fieldMapping.heardAboutStudyForm]) {
+        localStorage.eligibilityQuestionnaire = JSON.stringify({[fieldMapping.healthcareProvider]: data[fieldMapping.healthcareProvider]})
+        if(data[fieldMapping.consentSubmitted] === fieldMapping.yes) {
 
-            if (data['699625233'] === 353358909 && data['512820379'] === 854703046 && data['821247024'] === 875007964) {
-                blockParticipant();
-                hideAnimation();
-                return;
-            }
-            
-            let topMessage = "";
+            let topMessage = ""; 
+            if(data[fieldMapping.userProfileSubmittedAutogen] && data[fieldMapping.userProfileSubmittedAutogen] === fieldMapping.yes){
 
-            if(data['699625233'] && data['699625233'] === 353358909){
                 let template = `
                     <div class="row">
                         <div class="col-xl-2">
@@ -43,8 +37,8 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                 if (isParticipantDataDestroyed(data)){
                     finalMessage += '<span data-i18n="mytodolist.deletedData">At your request, we have deleted your Connect data. If you have any questions, please contact the Connect Support Center by calling 1-877-505-0253 or by emailing  <a href="mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a>.</span>'
                 }
-                else if (data['831041022'] === 353358909){
-                    if (!data['359404406'] || data['359404406'] == fieldMapping.no){
+                else if (data[fieldMapping.destroyData] === fieldMapping.yes) {
+                    if (!data[fieldMapping.destroyDataSigned] || data[fieldMapping.destroyDataSigned] == fieldMapping.no){
                         finalMessage += '<span data-i18n="mytodolist.newFormSign">You have a new <a href="#forms">form</a> to sign.</span>' + defaultMessage
                     }
                     else if((data[fieldMapping.consentWithdrawn] && data[fieldMapping.consentWithdrawn] !== fieldMapping.no) && (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] == fieldMapping.no)){
@@ -63,6 +57,11 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                         finalMessage += defaultMessage
                     }
                 }
+                else if (data[fieldMapping.recruitmentType] === fieldMapping.recruitmentTypePassive && data[fieldMapping.verification] === fieldMapping.notYetVerified) {
+                    blockParticipant();
+                    hideAnimation();
+                    return;
+                }
                 if(finalMessage.trim() !== ""){
                     template += `
                     <div class="alert alert-warning" role="alert" aria-live="polite" id="verificationMessage" style="margin-top:10px;">
@@ -76,7 +75,7 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                 else if (((data[fieldMapping.revokeHipaa] === fieldMapping.yes)) && (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] === fieldMapping.no)){
                     topMessage += '<span data-i18n="mytodolist.newFormSign">You have a new <a href="#forms">form</a> to sign.</span><p/><br>';
                 }
-                if(!data['821247024'] || data['821247024'] == 875007964){
+                if(!data[fieldMapping.verification] || data[fieldMapping.verification] == fieldMapping.notYetVerified){
                     if(data['unverifiedSeen'] && data['unverifiedSeen'] === true){
                         topMessage += '';
                     }
@@ -92,7 +91,7 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                             ${checkIfComplete(data) ? '<span data-i18n="mytodolist.thankYouCompleting">Thank you for completing your first Connect survey! We will be in touch with next steps.</span>': '<span data-i18n="mytodolist.firstSurvey">In the meantime, please begin by completing your first Connect survey.</span>'}`}
                     `
                 }
-                else if(data['821247024'] && data['821247024'] == 197316935) {
+                else if(data[fieldMapping.verification] && data[fieldMapping.verification] == fieldMapping.verified) {
                     if(data['verifiedSeen'] && data['verifiedSeen'] === true){
                         if(checkIfComplete(data)) {
                             if(!data['firstSurveyCompletedSeen']) {
@@ -120,7 +119,7 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                         storeResponse(formData);
                     }
                 }
-                else if(data['821247024'] && data['821247024'] == 219863910) {
+                else if(data[fieldMapping.verification] && data[fieldMapping.verification] == fieldMapping.cannotBeVerified) {
                     template += `
                     <div class="alert alert-warning" role="alert" aria-live="polite" id="verificationMessage" style="margin-top:10px;"  data-i18n="mytodolist.notEligibleMessage">
                         Based on our records you are not eligible for the Connect for Cancer Prevention Study. Thank you for your interest. Any information that you have already provided will remain private. We will not use any information you shared for our research.
@@ -136,7 +135,7 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                     hideAnimation();
                     return;
                 }
-                else if(data['821247024'] && data['821247024'] == 922622075) {
+                else if(data[fieldMapping.verification] && data[fieldMapping.verification] == fieldMapping.duplicate) {
                     template += `
                     <div class="alert alert-warning" role="alert" aria-live="polite" id="verificationMessage" style="margin-top:10px;" data-i18n="mytodolist.alreadyHaveAccount">
                         Our records show that you already have another account with a different email or phone number. Please try signing in again. Contact the Connect Support Center by emailing <a href = "mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a> or calling <span style="white-space:nowrap;overflow:hidden">1-877-505-0253</span> if you need help accessing your account.
@@ -281,9 +280,9 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
         consentTemplate();
         hideAnimation();
         return;
-    }
+                  }
     // Completed healthcareProvider form. Did not complete heardAboutStudy form.
-    else if(data['827220437'] && !data['142654897'] && !isParticipantDataDestroyed(data)){
+    else if(data[fieldMapping.healthcareProvider] && !data[fieldMapping.heardAboutStudyForm] && !isParticipantDataDestroyed(data)){
         mainContent.innerHTML =  heardAboutStudy();
         addEventHeardAboutStudy();
         hideAnimation();
@@ -348,7 +347,7 @@ const renderMainBody = async (data, collections, tab) => {
         },
         { body: ["Enter SSN"] },
     ];
-    if (data["821247024"] === 875007964) {
+    if (data[fieldMapping.verification] === fieldMapping.notYetVerified) {
         toDisplaySystem = [
             {
                 header: "First Survey",
@@ -854,7 +853,7 @@ const setModuleAttributes = async (data, modules, collections) => {
         modules['Covid-19'].enabled = true;
     }
 
-    if (data[fieldMapping.menstrualSurveyEligible] === 353358909) {
+    if (data[fieldMapping.menstrualSurveyEligible] === fieldMapping.yes) {
         modules['Menstrual Cycle'].enabled = true;
 
         if (data[fieldMapping.MenstrualCycle.statusFlag] !== fieldMapping.moduleStatus.submitted) {

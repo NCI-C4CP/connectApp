@@ -1,6 +1,7 @@
-import { reportConfiguration, setReportAttributes, populateReportData, showAnimation, hideAnimation, translateHTML, translateText, getMyData, storeResponse } from "../shared.js";
+import { reportConfiguration, retrieveDHQHEIReport, setReportAttributes, populateReportData, populateDHQHEIReportData, showAnimation, getNestedProperty, hideAnimation, translateHTML, translateText, getMyData, storeResponse, translateDate, updateDHQReportViewedStatus } from "../shared.js";
 import fieldMapping from "../fieldToConceptIdMapping.js";
 import { renderPhysicalActivityReport, renderPhysicalActivityReportPDF} from '../../reports/physicalActivity/physicalActivity.js';
+const { PDFDocument, StandardFonts, rgb } = PDFLib;
 
 let reports = reportConfiguration();
 let myData;
@@ -46,6 +47,10 @@ export const renderReportsPage = async () => {
             }
         }
     });
+
+    if (unread.length > 1) unread = sortReportsByAvailableDate(unread);
+    if (read.length > 1) read = sortReportsByAvailableDate(read);
+    if (declined.length > 1) declined = sortReportsByAvailableDate(declined);
 
     if (unread.length === 0 && read.length === 0 && declined.length === 0) {
         if (myData[fieldMapping.consentWithdrawn] && myData[fieldMapping.consentWithdrawn] === fieldMapping.yes) {
@@ -176,24 +181,12 @@ const renderMainBody = (data, tab) => {
             let currentReport = data[key];
             let reportTitle = '<span data-i18n="reports.' + currentReport.reportId + 'Title">' + translateText('reports.' + currentReport.reportId + 'Title') + '</span>';
             let reportDescription = '<div id="' + currentReport.reportId + 'Description" data-i18n="reports.' + currentReport.reportId + 'Description"' + (tab !== 'Unread' ? ' style="display: none"' : '') + '>' + translateText('reports.' + currentReport.reportId + 'Description') + '</div>';
-            let reportTime = currentReport.dateField && currentReport.data[currentReport.dateField] ? `<p class="report-generated"><span data-i18n="reports.generated">Report Generated On </span> <span data-i18n="date" data-timestamp="${currentReport.data[currentReport.dateField]}" data-date-options="${encodeURIComponent(JSON.stringify(dateOptions))}"  class="report-generated"></span></p>` : '';
-            let buttons;
+            let reportTime = currentReport?.dateField && currentReport.data?.[currentReport.dateField] ? `<p class="report-generated"><span data-i18n="reports.generated">Report Generated On </span> <span data-i18n="date" data-timestamp="${currentReport.data[currentReport.dateField]}" data-date-options="${encodeURIComponent(JSON.stringify(dateOptions))}"  class="report-generated"></span></p>` : '';
+            let buttons = generateReportButtons(currentReport, tab);
             let collapser;
-            switch (tab) {
-                case 'Unread':
-                    buttons = `<button id="${currentReport.reportId}LearnMore" class="btn btn-primary save-data consentNextButton px-3" data-i18n="reports.learnMore">Learn More</button>`;
-                    break;
-                case 'Read':
-                    collapser = `<p><a href="#reports" id="${currentReport.reportId}Collapser" data-i18n="reports.collapserClosed"></a></p>`;
-                    buttons = `<button id="${currentReport.reportId}ViewReport" style="display: none" class="btn btn-primary save-data consentNextButton px-3" data-i18n="reports.viewReport">View my report</button>
-                    <button id="${currentReport.reportId}DeclineReport" style="display: none"  class="btn btn-primary save-data consentPrevButton px-3" data-i18n="reports.declineReport">Decline for now</button>`;
-                    break;
-                case 'Declined':
-                    collapser = `<p><a href="#reports" id="${currentReport.reportId}Collapser" data-i18n="reports.collapserClosed"></a></p>`;
-                    buttons = `<button id="${currentReport.reportId}ReinstateReport" style="display: none"  class="btn btn-primary save-data consentNextButton px-3" data-i18n="reports.viewReport">View my report</button>`;
-                    break;
+            if (tab === 'Read' || tab === 'Declined') {
+                collapser = `<p><a href="#reports" id="${currentReport.reportId}Collapser" data-i18n="reports.collapserClosed"></a></p>`;
             }
-
 
             template += `<li style="width:100%; margin:auto; margin-bottom:20px; border:1px solid lightgrey; border-radius:5px;" id="${currentReport.reportId}Container">
                 <div>
@@ -218,12 +211,90 @@ const renderMainBody = (data, tab) => {
     return translateHTML(template);
 };
 
+/**
+ * Sorts the reports by their available date in descending order (most recent first).
+ * @param {Array} reports - Array of report objects
+ * @returns {Array} - Sorted array of report objects
+ */
+
+const sortReportsByAvailableDate = (reports) => {
+    return reports.sort((a, b) => {
+
+        // Get the date available field name/path from report config
+        const dateA = getNestedProperty(a, a.dateAvailableField) || '';
+        const dateB = getNestedProperty(b, b.dateAvailableField) || '';
+
+        if (!dateA && !dateB) return 0;
+        if (!dateA) return 1; 
+        if (!dateB) return -1;
+
+        const dateObjA = new Date(dateA);
+        const dateObjB = new Date(dateB);
+
+        if (isNaN(dateObjA) && isNaN(dateObjB)) return 0;
+        if (isNaN(dateObjA)) return 1;
+        if (isNaN(dateObjB)) return -1;
+
+        return dateObjB - dateObjA;
+    });
+};
+
+const generateReportButtons = (currentReport, tab) => {
+    const reportId = currentReport.reportId;
+
+    // Physical Activity Report ('Unread' routes to Informed Consent)
+    if (reportId === 'physicalActivity') {
+        switch (tab) {
+            case 'Unread':
+                return `<button id="${reportId}LearnMore" class="btn btn-primary save-data consentNextButton px-3" data-i18n="reports.learnMore">Learn More</button>`;
+            case 'Read':
+                return `<button id="${reportId}ViewReport" style="display: none" class="btn btn-primary save-data consentNextButton px-3" data-i18n="reports.viewReport">View my report</button>
+                        <button id="${reportId}DeclineReport" style="display: none" class="btn btn-primary save-data consentPrevButton px-3" data-i18n="reports.declineReport">Decline for now</button>`;
+            case 'Declined':
+                return `<button id="${reportId}ReinstateReport" style="display: none" class="btn btn-primary save-data consentNextButton px-3" data-i18n="reports.viewReport">View my report</button>`;
+        }
+    }
+
+    // DHQ HEI Report ('Unread' routes to View/Decline buttons)
+    if (reportId === 'dhqHEI') {
+        switch (tab) {
+            case 'Unread':
+                return `<button id="${reportId}ViewReport" class="btn btn-primary save-data consentNextButton px-3" data-i18n="reports.viewReport">View my report</button>
+                        <button id="${reportId}DeclineReport" class="btn btn-primary save-data consentPrevButton px-3" data-i18n="reports.declineReport">Decline for now</button>`;
+            case 'Read':
+                return `<button id="${reportId}ViewReport" style="display: none" class="btn btn-primary save-data consentNextButton px-3" data-i18n="reports.viewReport">View my report</button>
+                        <button id="${reportId}DeclineReport" style="display: none" class="btn btn-primary save-data consentPrevButton px-3" data-i18n="reports.declineReport">Decline for now</button>`;
+            case 'Declined':
+                return `<button id="${reportId}ReinstateReport" style="display: none" class="btn btn-primary save-data consentNextButton px-3" data-i18n="reports.viewReport">View my report</button>`;
+        }
+    }
+
+    return '';
+};
+
 const initializeUnreadButtons = () => {
+    // Physical Activity Report - Learn More button (Informed Consent)
     let physActLearn = document.getElementById('physicalActivityLearnMore');
     if (physActLearn) {
         physActLearn.addEventListener('click', () => {
             document.getElementById('physicalActivityContainer').innerHTML = translateHTML(renderPhysicalActivityInformedConsent());
             initializePhysicalActivityInformedConsent();
+        });
+    }
+
+    // DHQ HEI Report - View button
+    let dhqHEIView = document.getElementById('dhqHEIViewReport');
+    if (dhqHEIView) {
+        dhqHEIView.addEventListener('click', async () => {
+            await handleDHQHEIViewReport();
+        });
+    }
+
+    // DHQ HEI Report - Decline button
+    let dhqHEIDecline = document.getElementById('dhqHEIDeclineReport');
+    if (dhqHEIDecline) {
+        dhqHEIDecline.addEventListener('click', () => {
+            handleDHQHEIDeclineReport();
         });
     }
 }
@@ -233,29 +304,7 @@ const initializeReadButtons = () => {
     let declineButton = document.getElementById('physicalActivityDeclineReport');
     let viewButton = document.getElementById('physicalActivityViewReport');
     if (physActExpand) {
-        physActExpand.addEventListener('click', () => {
-            if (physActExpand.dataset.i18n === 'reports.collapserClosed') {
-                physActExpand.setAttribute('data-i18n', 'reports.collapserOpen');
-                translateHTML(physActExpand);
-                document.getElementById('physicalActivityDescription').style.display = 'block';
-                if (viewButton) {
-                    viewButton.style.display = 'inline-block';
-                }
-                if (declineButton) {
-                    declineButton.style.display = 'inline-block';
-                }
-            } else {
-                physActExpand.setAttribute('data-i18n', 'reports.collapserClosed');
-                translateHTML(physActExpand);
-                document.getElementById('physicalActivityDescription').style.display = 'none';
-                if (viewButton) {
-                    viewButton.style.display = 'none';
-                }
-                if (declineButton) {
-                    declineButton.style.display = 'none';
-                }
-            }
-        });
+        handleReportCollapser('physicalActivity', ['physicalActivityViewReport', 'physicalActivityDeclineReport']);
     }
     if (declineButton) {
         declineButton.addEventListener('click', () => {
@@ -294,29 +343,33 @@ const initializeReadButtons = () => {
             });
         });
     }
+
+    const dhqHEIExpand = document.getElementById('dhqHEICollapser');
+    const dhqHEIViewButton = document.getElementById('dhqHEIViewReport');
+    const dhqHEIDeclineButton = document.getElementById('dhqHEIDeclineReport');
+
+    if (dhqHEIExpand) {
+        handleReportCollapser('dhqHEI', ['dhqHEIViewReport', 'dhqHEIDeclineReport']);
+    }
+
+    if (dhqHEIViewButton) {
+        dhqHEIViewButton.addEventListener('click', async () => {
+            await handleDHQHEIViewReport();
+        });
+    }
+
+    if (dhqHEIDeclineButton) {
+        dhqHEIDeclineButton.addEventListener('click', () => {
+            handleDHQHEIDeclineReport();
+        });
+    }
 }
 
 const initializeDeclinedButtons = () => {
     let physActExpand = document.getElementById('physicalActivityCollapser');
     let restoreButton = document.getElementById('physicalActivityReinstateReport');
     if (physActExpand) {
-        physActExpand.addEventListener('click', () => {
-            if (physActExpand.dataset.i18n === 'reports.collapserClosed') {
-                physActExpand.setAttribute('data-i18n', 'reports.collapserOpen');
-                translateHTML(physActExpand);
-                document.getElementById('physicalActivityDescription').style.display = 'block';
-                if (restoreButton) {
-                    restoreButton.style.display = 'inline-block';
-                }
-            } else {
-                physActExpand.setAttribute('data-i18n', 'reports.collapserClosed');
-                translateHTML(physActExpand);
-                document.getElementById('physicalActivityDescription').style.display = 'none';
-                if (restoreButton) {
-                    restoreButton.style.display = 'none';
-                }
-            }
-        });
+        handleReportCollapser('physicalActivity', ['physicalActivityReinstateReport']);
     }
     if (restoreButton) {
         restoreButton.addEventListener('click', () => {
@@ -347,7 +400,158 @@ const initializeDeclinedButtons = () => {
             softModal.show();
         });
     }
+
+    const dhqHEIExpand = document.getElementById('dhqHEICollapser');
+    const dhqHEIRestoreButton = document.getElementById('dhqHEIReinstateReport');
+
+    if (dhqHEIExpand) {
+        handleReportCollapser('dhqHEI', ['dhqHEIReinstateReport']);
+    }
+
+    if (dhqHEIRestoreButton) {
+        dhqHEIRestoreButton.addEventListener('click', () => {
+            handleDHQHEIReinstateReport();
+        });
+    }
 }
+
+const handleReportCollapser = (reportId, buttons = []) => {
+    const collapser = document.getElementById(`${reportId}Collapser`);
+    const description = document.getElementById(`${reportId}Description`);
+
+    if (!collapser || !description) {
+        console.warn(`Collapser elements not found for report: ${reportId}`);
+        return;
+    }
+
+    collapser.addEventListener('click', (event) => {
+        event.preventDefault();
+        const isCurrentlyClosed = collapser.dataset.i18n === 'reports.collapserClosed';
+
+        if (isCurrentlyClosed) {
+            // Expand report
+            collapser.setAttribute('data-i18n', 'reports.collapserOpen');
+            translateHTML(collapser);
+            description.style.display = 'block';
+
+            // Show buttons
+            buttons.forEach(buttonId => {
+                const button = document.getElementById(buttonId);
+                if (button) {
+                    button.style.display = 'inline-block';
+                }
+            });
+        } else {
+            // Collapse report
+            collapser.setAttribute('data-i18n', 'reports.collapserClosed');
+            translateHTML(collapser);
+            description.style.display = 'none';
+
+            // Hide buttons
+            buttons.forEach(buttonId => {
+                const button = document.getElementById(buttonId);
+                if (button) {
+                    button.style.display = 'none';
+                }
+            });
+        }
+    });
+};
+
+const handleDHQHEIViewReport = async () => {
+    try {
+        showAnimation();
+
+        const dhqData = {
+            'studyID': myData[fieldMapping.DHQ3.studyID],
+            'username': myData[fieldMapping.DHQ3.username],
+        };
+
+        // Fetch and render
+        reports = await populateDHQHEIReportData(reports, dhqData);
+        document.getElementById('dhqHEIContainer').innerHTML = translateHTML(await renderDHQHEIReport(reports));
+
+        // Initialize download button
+        const downloadButton = document.getElementById('dhqHEIDownloadReport');
+        if (downloadButton) {
+            downloadButton.addEventListener('click', async () => {
+                await renderDHQHEIReportPDF(reports);
+            });
+        }
+
+        // Update viewed status
+        if (myData[fieldMapping.reports.dhq3.reportStatusInternal] !== fieldMapping.reports.viewed) {
+            await updateDHQReportViewedStatus(myData[fieldMapping.DHQ3.studyID], myData[fieldMapping.DHQ3.username], false);
+        }
+
+    } catch (error) {
+        console.error('Error in DHQ HEI View Report handler:', error);
+        displayReportError('dhqHEI');
+
+    } finally {
+        hideAnimation();
+    }
+};
+
+const handleDHQHEIDeclineReport = () => {
+    let modalContainer = document.getElementById('declineModal');
+    if (!modalContainer) {
+        modalContainer = document.createElement('div');
+        modalContainer.id = 'declineModal';
+        modalContainer.classList.add("modal");
+        modalContainer.classList.add("fade");
+        document.getElementById('root').parentNode.appendChild(modalContainer);
+    }
+    modalContainer.innerHTML = translateHTML(renderDeclineModal());
+    const okButton = document.getElementById('reportDecline');
+    okButton.addEventListener('click', async () => {
+        try {
+            showAnimation();
+            await updateDHQReportViewedStatus(myData[fieldMapping.DHQ3.studyID], myData[fieldMapping.DHQ3.username], true);
+
+        } catch (error) {
+            console.error('Error updating DHQ report viewed status:', error);
+            displayReportError('dhqHEI');
+
+        } finally {
+            hideAnimation();
+        }
+        
+        window.location.reload();
+    });
+    const softModal = new bootstrap.Modal(document.getElementById('declineModal'));
+    softModal.show();
+};
+
+const handleDHQHEIReinstateReport = () => {
+    let modalContainer = document.getElementById('reinstateModal');
+    if (!modalContainer) {
+        modalContainer = document.createElement('div');
+        modalContainer.id = 'reinstateModal';
+        modalContainer.classList.add("modal");
+        modalContainer.classList.add("fade");
+        document.getElementById('root').parentNode.appendChild(modalContainer);
+    }
+    modalContainer.innerHTML = translateHTML(renderReinstateModal());
+    const okButton = document.getElementById('reportReinstate');
+    okButton.addEventListener('click', async () => {
+        try {
+            showAnimation();
+            await updateDHQReportViewedStatus(myData[fieldMapping.DHQ3.studyID], myData[fieldMapping.DHQ3.username], false);
+
+        } catch (error) {
+            console.error('Error updating DHQ report viewed status:', error);
+            displayReportError('dhqHEI');
+
+        } finally {
+            hideAnimation();
+        }
+
+        window.location.reload();
+    });
+    const softModal = new bootstrap.Modal(document.getElementById('reinstateModal'));
+    softModal.show();
+};
 
 const renderPhysicalActivityInformedConsent = () => {
     let template = `<div>
@@ -411,6 +615,130 @@ const initializePhysicalActivityInformedConsent = () => {
     });
 }
 
+const renderDHQHEIReport = async (reports) => {
+    const report = reports['DHQ HEI Report'];
+
+    let template = `<div>
+                    <div class="row" style="max-width: 1200px">
+                        <div class="col-md-12">`;
+    
+    const reportTitle = '<span data-i18n="reports.' + report.reportId + 'ResultsTitle">' + translateText('reports.' + report.reportId + 'Title') + '</span>';
+    const dateOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    const reportTime = report.dateField && report.data[report.dateField]
+        ? `<p class="report-generated"><span data-i18n="reports.generated">Report generated </span><span data-i18n="date" data-timestamp="${report.data[report.dateField]}" data-date-options="${encodeURIComponent(JSON.stringify(dateOptions))}" class="report-generated"></span></p>`
+        : '';
+
+    template += `<p class="messagesHeaderFont">
+            ${reportTitle}
+        </p>
+        ${reportTime}`;
+
+    if (report.data?.pdfData) {
+
+        // Convert base64 to blob for iframe display
+        const binaryString = atob(report.data.pdfData);
+        const bytes = new Uint8Array(binaryString.length);
+        for (let i = 0; i < binaryString.length; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        const blob = await generateDHQHEIPDF(report.data[report.dateField], report.data.pdfData);
+        let pdfUrl = URL.createObjectURL(blob);
+        pdfUrl = `${pdfUrl}#toolbar=0&navpanes=0`;
+        template += renderDHQHEIReportContainer(pdfUrl);
+    }
+
+    template += `</div></div></div>`;
+    return template;
+};
+
+const generateDHQHEIPDF = async (dhqCompletedDate, reportData) => {
+    const binaryString = atob(reportData);
+    const bytes = new Uint8Array(binaryString.length);
+    for (let i = 0; i < binaryString.length; i++) {
+        bytes[i] = binaryString.charCodeAt(i);
+    }
+
+    const pdfDoc = await PDFDocument.load(bytes);
+    const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+    const pages = pdfDoc.getPages();
+    const firstPage = pages[0];
+    const { width, height } = firstPage.getSize();
+
+    const dateOptions = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    };
+
+    const dateString = translateDate(dhqCompletedDate, null, dateOptions);
+    const fontSize = 16;
+
+    const textWidth = helveticaFont.widthOfTextAtSize(dateString, fontSize);
+    const x = (width - textWidth) / 2;  // Horizontally center the text
+    const y = height - 245;             // Under the 'Healthy Eating Index' title
+
+    firstPage.drawText(dateString, {
+        x: x,
+        y: y,
+        font: helveticaFont,
+        size: fontSize,
+    });
+
+    const pdfBytes = await pdfDoc.save();
+
+    return new Blob([pdfBytes], { type: 'application/pdf' });
+}
+
+const renderDHQHEIReportPDF = async (reportData) => {
+    try {
+        showAnimation();
+        const report = reportData['DHQ HEI Report'];
+        if (!report || !report.data || !report.data.pdfData) {
+            console.error('DHQ HEI Report data is missing or incomplete');
+            return;
+        }
+
+        const blob = await generateDHQHEIPDF(report.data[report.dateField], report.data.pdfData);
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+
+        // Add current date to filename
+        const currentDate = new Date().toISOString().split('T')[0];
+        const baseFilename = report.data.filename || 'dhq_hei_report.pdf';
+        const nameWithoutExt = baseFilename.replace('.pdf', '');
+        a.download = `${nameWithoutExt}_${currentDate}.pdf`;
+
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+    } catch (error) {
+        console.error('Error generating DHQ HEI Report PDF:', error);
+        displayReportError('dhqHEI');
+
+    } finally {
+        hideAnimation();
+    }
+};
+
+const displayReportError = (reportID) => {
+    const reportContainer = document.getElementById(`${reportID}Container`);
+    if (reportContainer) {
+        reportContainer.innerHTML = translateHTML(`
+            <div role="alert" aria-live="assertive" style="margin-top:25px">
+                <h2 class="visually-hidden">Error Message. Something went wrong. Please try again. Contact the Connect Support Center at 1-877-505-0253 if you continue to experience this problem.</h2>
+                <p data-i18n="questionnaire.somethingWrong">Something went wrong. Please try again. Contact the 
+                    <a href="https://norcfedramp.servicenowservices.com/participant" target="_blank" rel="noopener noreferrer">Connect Support Center</a> 
+                    if you continue to experience this problem.
+                </p>
+            </div>
+        `);
+    }
+}
+
 /**
  * Renders the decline modal
  * 
@@ -452,3 +780,83 @@ const renderReinstateModal = () => {
         </div>
     `);
 }
+
+const renderDHQHEIReportContainer = (pdfUrl) => {
+    return translateHTML(`
+        <p><button id="dhqHEIDownloadReport" class="btn btn-primary save-data consentNextButton px-3" data-i18n="reports.downloadReport">Download a PDF of my report</button></p>
+
+        <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; display: flex">
+            <div style="align-self: stretch; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
+
+                <!-- PDF Container with zoom wrapper -->
+                <div style="width: 100%; background: white; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); overflow: hidden; border: 1px solid #E5E7EB;">
+
+                    <!-- PDF Controls Bar -->
+                    <div style="background: #F9FAFB; padding: 12px 20px; border-bottom: 1px solid #E5E7EB; display: flex; justify-content: center; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <!-- Zoom Controls -->
+                            <button onclick="zoomPDF('out')" style="background: #6B7280; color: white; border: none; padding: 6px 10px; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; line-height: 1;" title="Zoom Out">
+                                −
+                            </button>
+                            <span id="zoomLevel" style="color: #374151; font-size: 12px; font-family: Noto Sans; min-width: 45px; text-align: center; font-weight: 500;">
+                                100%
+                            </span>
+                            <button onclick="zoomPDF('in')" style="background: #6B7280; color: white; border: none; padding: 6px 10px; border-radius: 4px; font-size: 16px; cursor: pointer; font-weight: bold; line-height: 1;" title="Zoom In">
+                                +
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- PDF Viewer -->
+                    <div id="pdfContainer" style="width: 100%; height: 900px; overflow: auto; background: white; position: relative;">
+                        <iframe id="dhqPdfFrame" src="${pdfUrl}" style="width: 100%; height: 100%; border: none; display: block; background: white; transform-origin: top left; transition: transform 0.2s ease;" title="DHQ HEI Report PDF"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `);
+}
+
+// Zoom using CSS transforms
+let currentZoom = 100;
+const zoomStep = 10;
+const minZoom = 50;
+const maxZoom = 200;
+
+window.zoomPDF = function (action) {
+    const iframe = document.getElementById('dhqPdfFrame');
+    const container = document.getElementById('pdfContainer');
+    const zoomDisplay = document.getElementById('zoomLevel');
+
+    if (!iframe || !container || !zoomDisplay) {
+        console.error('PDF zoom elements not found');
+        return;
+    }
+
+    let newZoom = currentZoom;
+
+    switch (action) {
+        case 'in':
+            newZoom = Math.min(currentZoom + zoomStep, maxZoom);
+            break;
+        case 'out':
+            newZoom = Math.max(currentZoom - zoomStep, minZoom);
+            break;
+    }
+
+    // Apply zoom transform
+    const scale = newZoom / 100;
+    iframe.style.transform = `scale(${scale})`;
+
+    // Container dims
+    if (scale !== 1) {
+        iframe.style.width = `${100 / scale}%`;
+        iframe.style.height = `${100 / scale}%`;
+    } else {
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+    }
+
+    currentZoom = newZoom;
+    zoomDisplay.textContent = `${currentZoom}%`;
+};
