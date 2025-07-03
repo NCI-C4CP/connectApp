@@ -11,6 +11,11 @@ export default
     "consentLastName": 736251808,
     "consentSuffix": 480305327,
     "consentDate":454445267,
+    "consentWithdrawn": 747006172,
+    "revokeHipaa": 773707518,
+    "hipaaRevocationSigned": 153713899,
+    "destroyData": 831041022,
+    "destroyDataSigned": 359404406,
     "suffix":506826178,
     "suffixValue": {
         "jr": 612166858,
@@ -37,20 +42,48 @@ export default
     "canWeVoicemailHome":187894482,
     "canWeVoicemailOther":983278853,
     "canWeText":646873644,
+    // Mailing Address
     "address1":521824358,
     "address2":442166669,
     "city":703385619,    
     "state":634434746,
     "zip":892050548,
     "isPOBox":250235523,
+    // Physical Address
     "physicalAddress1":207908218,
     "physicalAddress2":224392018,
     "physicalCity":451993790,    
     "physicalState":187799450,
     "physicalZip":449168732,
+    // Alternate Address
+    "doesAltAddressExist": 646504105,
+    "altAddress1": 284580415,
+    "altAddress2": 728926441,
+    "altCity": 907038282,
+    "altState": 970839481,
+    "altZip": 379899229,
+    "isPOBoxAltAddress": 810747471,
+    // Alternate contact
+    "altContactFirstName": 661719912,
+    "altContactLastName": 801653230,
+    "altContactMobilePhone": 286149234,
+    "altContactHomePhone": 318130543,
+    "altContactEmail": 750097000,
+
+    "recruitmentType": 512820379,
+    "recruitmentTypeNotActive": 180583933,
+    "recruitmentTypeActive": 486306141,
+    "recruitmentTypePassive": 854703046,
+
     "healthcareProvider":827220437,
+
     "verification":821247024,
+    "notYetVerified": 875007964,
     "verified":197316935,
+    "cannotBeVerified": 219863910,
+    "duplicate": 922622075,
+    "outreachTimedOut": 160161595,
+
     "verifiedDate": 914594314,
     "firebaseAuthEmail": 421823980,
     "firebaseAuthPhone": 348474836,
@@ -58,6 +91,7 @@ export default
     "yes": 353358909,
     "no": 104430631,
     "consentVersion": 454205108,
+    "consentSubmitted": 919254129,
     "hipaaVersion": 412000022,
     "hipaaRevokeVersion": 407743866,
     "dataDestructionVersion": 304438543,
@@ -70,7 +104,7 @@ export default
     "requestedDataDestroyNotSigned": 111959410,
     "requestedDataDestroySigned": 704529432,
     "noneOfTheseApply": 398561594,
-    "outreachTimedOut": 160161595,
+    
     firstSignInFlag: 230663853,
     firstSignInTime: 335767902,
     hipaaTimestamp: 262613359,
@@ -84,6 +118,8 @@ export default
     },
 
     surveyLanguage: 784119588,
+    enabledSurveys: 566565527,
+    completedStandaloneSurveys: 677381583,
 
     "heardAboutStudyForm" : 142654897,
 
@@ -131,7 +167,8 @@ export default
         "D_390351864":      "Mouthwash",
         "D_601305072":      "PROMIS",
         "D_506648060":      "Experience2024",
-        "D_369168474":      "CancerScreeningHistory"
+        "D_369168474":      "CancerScreeningHistory",
+        "D_497020618":      "DHQ3",
     },
 
     "Module1_OLD": {
@@ -219,7 +256,10 @@ export default
         "completeTs":       "217640691",  
         "statusFlag":       "459098666", 
         "standaloneSurvey": true,
-        "version":          "901199566"
+        "version":          "901199566",
+        "endResponse":      104430631,
+        "endSpan":          "questionnaire.endMenstrual",
+        "endQuestions":     ["D_951357171"]
     },
 
     "ClinicalBiospecimen": {
@@ -237,7 +277,10 @@ export default
         "completeTs":       "195145666",  
         "statusFlag":       "547363263", 
         "standaloneSurvey": true,
-        "version":          "850585325"
+        "version":          "850585325",
+        "endResponse":      141992510,
+        "endSpan":          "questionnaire.endMouthwash",
+        "endQuestions":     ["D_667908442"]
     },
 
     "PROMIS": {
@@ -267,6 +310,20 @@ export default
         "version": "350996955",
         "questVersion": "562804752",
     },
+
+    DHQ3:{
+        "conceptId": "D_497020618",
+        "startTs": "109610692",
+        "completeTs": "610227793",
+        "statusFlag": "692560814",
+        "statusFlagExternal": "501613780",
+        "standaloneSurvey": true,
+        "version": "DHQ3",
+        "questVersion": "",
+        "username": "148184166",
+        "uuid": "808755658",
+        "studyID": "196723965",
+    },
     
     // @deprecated. Retain until migration to Quest2 is complete. External variables passed into Quest that require extra async/await handling.
     delayedParameterArray: [
@@ -286,6 +343,22 @@ export default
                     func: "soccer",
                     args: ["D_118061122", "D_518387017"],
                 }
+            },
+        },
+        "MenstrualCycle": {
+            asyncQuestions: {
+                "[END]": {
+                    func: "resetMenstrualCycle",
+                    args: ["D_951357171"],
+                },
+            },
+        },
+        "Mouthwash": {
+            asyncQuestions: {
+                "[END]": {
+                    func: "resetMouthwash",
+                    args: ["D_667908442"],
+                },
             },
         },
     },
@@ -333,8 +406,17 @@ export default
             viewedTS: 749055145,
             declinedTS: 295732360
         },
+        
+        dhq3: {
+            reportStatusInternal: 542983589,
+            reportStatusExternal: 892697201,
+            viewedTS: 600958089,
+            declinedTS: 404613256,
+        },
+
+        // Physical Activity, DHQ internal & external report status. Note: no 'declined' status for DHQ external.
         unread: 702641611,
         viewed: 469323437,
-        declined: 746038746
+        declined: 746038746,
     }
 };

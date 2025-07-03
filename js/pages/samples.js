@@ -59,7 +59,7 @@ export const renderSamplesPage = async () => {
                             </div>
                         </div>          
                     </div>
-                    <div class="row" style="width:100%">
+                    <div class="row" style="width:100%;">
                         <div class="consentHeadersFont" style="color:#606060;width:100%">
                             <div data-i18n="samples.whereToDonate">
                                 Where Do I Donate My Samples?
@@ -67,7 +67,7 @@ export const renderSamplesPage = async () => {
                         </div>
 
                         ${site.locationNotes ? `
-                        <div class="row" style="width:100%;">
+                        <div class="row" style="width:100%; padding-top:0;">
                             <div class="messagesBodyFont">
                                 ${site.locationNotes}
                             </div>
@@ -76,13 +76,24 @@ export const renderSamplesPage = async () => {
 
                         ${locationTemplate}
 
+                        ${site.parkingInstructions ? `
+                        <div class="row" style="width:100%">
+                            <div style="width:100%">
+                                <div class="messagesHeaderFont" data-i18n="samples.parkingInstructions">
+                                </div>
+                                <div class="messagesBodyFont removePaddingTop" data-i18n="samples.freeParkingAllCenters">
+                                </div>
+                            </div>
+                        </div>`
+                        : ''}
+
                         ${site.scheduling ? `
                         <div class="row" style="width:100%">
                             <div style="width:100%">
                                 <div class="messagesHeaderFont" data-i18n="samples.schedule">
                                     Scheduling Information
                                 </div>
-                                <div class="messagesBodyFont">
+                                <div class="messagesBodyFont removePaddingTop">
                                     ${site.scheduling}
                                 </div>
                             </div>
@@ -138,13 +149,11 @@ export const renderSamplesPage = async () => {
                          }
                         </div><br>
                         <div class="messagesBodyFont" style="width:100%">
-                            <div><br>
+                            <div>
                             ${
-                                site.contact
-                                    ? site.contact
-                                    : '<a href="https://myconnect.cancer.gov/support" target="_blank">MyConnect.cancer.gov/support</a> or <a data-i18n="samples.emailSupport" href="mailto: ConnectSupport@norc.org">ConnectSupport@norc.org</a>'
+                                site.contact ||
+                                '<a href="https://myconnect.cancer.gov/support" target="_blank">MyConnect.cancer.gov/support</a> <br><br> <a data-i18n="samples.emailSupport" href="mailto: ConnectSupport@norc.org">ConnectSupport@norc.org</a> <br>'
                             }
-                                <br>
                                 <br>
                                 ${site.support}
                             </div>
@@ -299,9 +308,9 @@ const health_partners = {
 
     donatingSamples: '<span data-i18n="samples.health_partners.donatingSamples">As a part of your Connect participation, we ask you to donate blood, urine, and saliva samples and complete a short survey related to the samples we are collecting.',
     whenToDonate: '<span data-i18n="samples.health_partners.whenToDonate">The Connect team will send you an email when it is time to donate your samples. Be sure to check your spam or junk folder. After you receive the email, it is important to donate your samples as soon as you can. It is easy to donate all of your samples in one visit.<br><br><span class="site-info-bold">Note:</span> If you have recently had a blood transfusion or donated blood, please wait at least <span class="site-info-bold">eight weeks</span> from your donation or transfusion before donating your samples for Connect. If you have recently donated plasma, please wait at least <span class="site-info-bold">four weeks</span> from your plasma donation before donating samples for Connect. If you have recently donated platelets, please wait at least <span class="site-info-bold">one week</span> from your platelet donation before donating samples for Connect. If you have an upcoming colonoscopy, please be sure that you <span class="site-info-bold">do not</span> donate samples for Connect on the <span class="site-info-bold">same day</span> as your colonoscopy.',
-    howToDonate: '<span data-i18n="samples.health_partners.howToDonate">Connect participants at HealthPartners have two options for donating samples. You can choose the most convenient option for you. There are no co-pays or charges associated with donating samples for Connect.<br><br><span class="site-info-bold">Option 1:</span> Make an appointment to come into one of our Connect research locations, the HealthPartners Neuroscience Center or Park Nicollet Clinic and Specialty Center, to donate your samples.<br><br><span class="site-info-bold">Option 2:</span> Make an appointment to come into one of the HealthPartners clinical collection locations.<br><br>When it is time to donate your samples, we will send you an email with a link for more information. If you are interested in donating samples at one of the Connect research locations, simply click the link to schedule a time that works for you. If you prefer to donate samples at one of our HealthPartners clinical collection locations, please call the Connect team at HealthPartners at (952) 967-5067.  The table below includes more information about these options.<br><br><table border="1" style="width: 100`%;"><tr><th class="site-info-align" style="width: 50%;"><span class="site-info-bold">Option 1: Connect Research Locations</span><br><i>HealthPartners Neuroscience Center, St. Paul and Park Nicollet Clinic and Specialty Center, St. Louis Park </i>  </th><th style="width: 50%;"><span class="site-info-bold">Option 2: HealthPartners Clinical Collection Locations </span><br><i>HealthPartners Riverway Clinic Elk River and <br>Park Nicollet Clinic Chanhassen and Park Nicollet Clinic Minneapolis </i><br><br></th></tr><tr><td style="width: 50%;">Connect team will greet you and walk you through your visit.</td><td style="width: 50%;">HealthPartners clinical lab staff will collect your Connect samples.</td></tr><tr><td style="width: 50%;">The team will draw blood, collect urine, and collect a saliva sample by asking you to swish with mouthwash.<br><br>You will also complete a survey related to the samples we are collecting in MyConnect using your mobile phone. If you do not have a mobile phone, we will provide you with a tablet to complete your survey. You will need your MyConnect login information to complete the survey.</td><td style="width: 50%;">Lab staff will collect blood and urine samples at your visit. You can donate Connect samples and complete any labs ordered by your provider in the same visit. <br><br>Within 48 hours of your sample donation, you will receive an email with a link to a survey to complete on MyConnect. The survey is related to the samples that we collected. <br><br> The Connect team will send you a mouthwash collection kit with instructions to complete your saliva sample at home.</td></tr><tr><td style="width: 50%;">When you receive the scheduling email from the Connect team, please use the link included to schedule an appointment to donate your samples at a time that is convenient for you. You may also call the Connect team at 952-967-5357 if you would prefer to schedule your appointment over the phone.</td><td style="width: 50%;">To schedule at one of these locations, please call our team at 952-967-5357 after you receive the scheduling email from the Connect team.</td></tr></table><br>For questions, please contact the Connect team at HealthPartners at 952-967-5357 or ConnectStudy@healthpartners.com.',
+    howToDonate: '<span data-i18n="samples.health_partners.howToDonate">Connect participants at HealthPartners have two options for donating samples. You can choose the most convenient option for you. There are no co-pays or charges associated with donating samples for Connect.<br><br><span class="site-info-bold">Option 1:</span> Make an appointment to come into one of our Connect research locations, the HealthPartners Neuroscience Center or Park Nicollet Clinic and Specialty Center, to donate your samples.<br><br><span class="site-info-bold">Option 2:</span> Make an appointment to come into one of the HealthPartners or Park Nicollet clinical collection locations.<br><br>When it is time to donate your samples, we will send you an email with a link for more information. If you are interested in donating samples at one of the Connect research locations, simply click the link to schedule a time that works for you. If you prefer to donate samples at one of our HealthPartners clinical collection locations, please call the Connect team at HealthPartners at (952) 967-5067.  The table below includes more information about these options.<br><br><table border="1" style="width: 100`%;"><tr><th class="site-info-align" style="width: 50%;"><span class="site-info-bold">Option 1: Connect Research Locations</span><br><i>HealthPartners Neuroscience Center, St. Paul and Park Nicollet Clinic and Specialty Center, St. Louis Park </i>  </th><th style="width: 50%;"><span class="site-info-bold">Option 2: HealthPartners Clinical Collection Locations </span><br><i>HealthPartners Riverway Clinic Elk River and <br>Park Nicollet Clinic Chanhassen and Park Nicollet Clinic Minneapolis </i><br><br></th></tr><tr><td style="width: 50%;">Connect team will greet you and walk you through your visit.</td><td style="width: 50%;">HealthPartners clinical lab staff will collect your Connect samples.</td></tr><tr><td style="width: 50%;">The team will draw blood, collect urine, and collect a saliva sample by asking you to swish with mouthwash.<br><br>You will also complete a survey related to the samples we are collecting in MyConnect using your mobile phone. If you do not have a mobile phone, we will provide you with a tablet to complete your survey. You will need your MyConnect login information to complete the survey.</td><td style="width: 50%;">Lab staff will collect blood and urine samples at your visit. You can donate Connect samples and complete any labs ordered by your provider in the same visit. <br><br>Within 48 hours of your sample donation, you will receive an email with a link to a survey to complete on MyConnect. The survey is related to the samples that we collected. <br><br> The Connect team will send you a mouthwash collection kit with instructions to complete your saliva sample at home.</td></tr><tr><td style="width: 50%;">When you receive the scheduling email from the Connect team, please use the link included to schedule an appointment to donate your samples at a time that is convenient for you. You may also call the Connect team at 952-967-5357 if you would prefer to schedule your appointment over the phone.</td><td style="width: 50%;">To schedule at one of these locations, please call our team at 952-967-5357 after you receive the scheduling email from the Connect team.</td></tr></table><br>For questions, please contact the Connect team at HealthPartners at 952-967-5357 or ConnectStudy@healthpartners.com.',
     scheduling: '',
-    howLong: '<span data-i18n="samples.health_partners.howLong"><span class="site-info-bold">Connect Research Location:</span><br><br>Please expect to spend about 30-45 minutes at your appointment to donate your samples. During your appointment, we will ask you to complete a short survey related to the samples we are collecting.<br><br><span class="site-info-bold">Connect Clinical Collection Location:</span><br><br>Please expect to spend about 10-15 minutes at your appointment to donate your blood and urine samples.',
+    howLong: '<span data-i18n="samples.health_partners.howLong"><span class="site-info-bold">Connect Research Location:</span><br><br>Please expect to spend about 30 minutes at your appointment to donate your samples. During your appointment, we will ask you to complete a short survey related to the samples we are collecting.<br><br><span class="site-info-bold">Connect Clinical Collection Location:</span><br><br>Please expect to spend about 10-15 minutes at your appointment to donate your blood and urine samples.',
     prepareInstructions: '<span data-i18n="samples.health_partners.prepareInstructions"><span class="site-info-bold">Connect Research Locations:</span><br><br>On the day of your appointment, please drink plenty of water, but <span class="site-info-bold">stop drinking water one hour before your appointment.</span><br><br><span class="site-info-bold">One hour before your appointment:</span> Please <span class="site-info-bold">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span class="site-info-bold">Things to bring and remember:</span><br><br><ul><li>Please bring a valid government-issued photo ID, such as a driver\'s license.</li><li>Make sure you know your login information for your <a href="https://myconnect.cancer.gov">MyConnect account.</a><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:</li><ul><li>The last time you ate or drank, and the times you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></li></ul><br><span class="site-info-bold">Connect Clinical Collection Locations:</span><br><br>On the day of your appointment, you do not need to fast. Please drink plenty of water to keep hydrated.<br><br><span class="site-info-bold">Things to bring and remember:</span><br><br><ul><li>Please bring a valid government-issued photo ID, such as a driver\'s license.</li><li>After your appointment:<br><ul><li>Be sure to check your email for a link to a survey to complete on MyConnect. The survey asks questions about the day you donated samples, so it is important to complete it as soon as you can.</li><li>We will email you when we ship your mouthwash home collection kit. Please use this kit and included instructions to collect your mouthwash sample at home.</li></ul></li></ul><br> <div class="consentHeadersFont" style="color:#606060;width:100%">When Will I Receive My $25 Payment?</div><br>You will receive your $25 e-gift card  after you donate a blood sample and complete <span class="site-info-bold">all four sections</span> of your first Connect survey.<br><br>You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<ol><li>Background and Overall Health</li><li>Medications, Reproductive Health, Exercise, and Sleep</li><li>Smoking, Alcohol, and Sun Exposure</li><li>Where you Live and Work</li>',
     support: '<span data-i18n="samples.health_partners.support">Call 1-877-505-0253 (8:00 a.m.-10:00 p.m. CT on weekdays and 9:00 a.m.-6:00 p.m. CT on weekends)',
     locations: [
@@ -332,9 +341,27 @@ const health_partners = {
         ],
         [
             '<span data-i18n="samples.health_partners.locations.NicolletMinneapolisName">Park Nicollet Clinic Minneapolis</span>',
-            '<span data-i18n="samples.health_partners.locations.NicolletMinneapolisAddress">2001 Blaisdell Ave <br>Minneapolis, MN 55404 <br><br>Upon entering the building, go to the left and take the stairs or elevator down to the lower-level lobby. In the lower level-lobby, please check in at the laboratory front desk.</span>',
+            '<span data-i18n="samples.health_partners.locations.NicolletMinneapolisAddress">2001 Blaisdell Ave <br>Minneapolis, MN 55404 <br><br>Upon entering the building, go to the left and take the stairs or elevator down to the lower-level lobby. In the lower-level lobby, please check in at the laboratory front desk.</span>',
             '',
             '<span data-i18n="samples.health_partners.locations.NicolletMinneapolisParking">Parking is free and available at the front entrance or across the street.<br><br><div class="messagesHeaderFont">Scheduling Information</div><br>Self-scheduling is not currently available for the Minneapolis location. For questions and scheduling, please call 952-967-5067.</span>',
+        ],
+        [
+            '<span data-i18n="samples.health_partners.locations.BrooklynCenterName">HealthPartners Clinic Brooklyn Center</span>',
+            '<span data-i18n="samples.health_partners.locations.BrooklynCenterAddress">6845 Lee Ave N <br>Brooklyn Center, MN 55429 <br><br> Upon entering the building, go down the hallway located on the right side of the building and follow the sign that says “Lab”. On your left, please check in at the laboratory front desk.</span>',
+            '',
+            '<span data-i18n="samples.health_partners.locations.BrooklynCenterParking">"Free parking is available on-site at the front of the building.<br><br><div class=\"messagesSubHeader\">Scheduling Information</div><br>Self-scheduling is not currently available for the Brooklyn Center location. For questions and scheduling, please call 952-967-5067.</span>',
+        ],
+        [
+            '<span data-i18n="samples.health_partners.locations.ClinicalStillwaterName">HealthPartners Clinic Stillwater</span>',
+            '<span data-i18n="samples.health_partners.locations.ClinicalStillwaterAddress">1500 Curve Crest Blvd<br>Stillwater, MN 55082 <br><br>Enter through “Entrance 1 – TRIA entrance”. Upon entering the building, please check in at the front desk of the clinic. You will be handed a lab slip to then check in at the lab desk to your right down the hall.</span>',
+            '',
+            '<span data-i18n="samples.health_partners.locations.ClinicalStillwaterParking">"Free parking is available on-site at the front of the building.<br><br><div class="messagesSubHeader">Scheduling Information</div><br>Self-scheduling is not currently available for the Stillwater location. For questions and scheduling, please call 952-967-5067.</span>',
+        ],
+        [
+            '<span data-i18n="samples.health_partners.locations.NewRichmondClinicName">New Richmond Clinic, Westfields Hospital & Clinic</span>',
+            '<span data-i18n="samples.health_partners.locations.NewRichmondClinicAddress">535 Hospital Rd<br>New Richmond, WI 54017 <br><br>Upon entering the building by the rotunda entrance, check in with the information desk. Ask for the “Connect Study at the Clinic lab and you will be guided through the double doors to your right to check in at the \"clinic lab\".</span>',
+            '',
+            '<span data-i18n="samples.health_partners.locations.NewRichmondClinicParking">"Free parking is available on-site at the front of the building.<br><br><div class="messagesSubHeader">Scheduling Information</div><br>Self-scheduling is not currently available for the New Richmond location. For questions and scheduling, please call 952-967-5067.</span>',
         ]
     ]
 };
@@ -387,16 +414,16 @@ const sanford = {
             ''
         ],
         [
-            '<span data-i18n="samples.sanford.locations.SiouxFallsName">Sioux Falls, SD: Edith Breast Cancer Center</span>',
+            '<span data-i18n="samples.sanford.locations.SiouxFallsName">Sioux Falls, SD: Edith Sanford Breast Center</span>',
             '<span data-i18n="samples.sanford.locations.SiouxFallsAddress">1210 W. 18th St.<br>Sioux Falls, SD 57104<br><i>Enter Through Door BB</i></span></span>',
             '',
-            '<span data-i18n="samples.sanford.locations.SiouxFallsParking">Free valet parking is available near the front entrance of the Edith Breast Cancer Center. Free patient parking is also available in the lot on the corner of S Grange Ave and W 18th Street. Enter through door BB. No parking validation is needed.</span>'
+            '<span data-i18n="samples.sanford.locations.SiouxFallsParking">Free valet parking is available near the front entrance of the Edith Sanford Breast Center. Free patient parking is also available in the lot on the corner of S Grange Ave and W 18th Street. Enter through door BB. No parking validation is needed.</span>'
         ],
         [
-            '<span data-i18n="samples.sanford.locations.FargoName">Fargo, ND: South University Urgent Care/Orthopedic Walk-In Clinic</span>',
-            '<span data-i18n="samples.sanford.locations.FargoAddress">1720 University Drive S<br>Fargo, ND 58102<br><i>Enter Through Door #8</i></span>',
+            '<span data-i18n="samples.sanford.locations.FargoName">Fargo, ND: Sanford Amber Valley</span>',
+            '<span data-i18n="samples.sanford.locations.FargoAddress">4840 23<sup>rd</sup> Ave S<br>Fargo, ND 58104<br><i>Enter Through Door 4840. Upon entering, follow the signs to “Sanford Research” on Floor 2.</i></span>',
             '',
-            '<span data-i18n="samples.sanford.locations.FargoParking">Free patient parking is available in the lot near the Urgent Care entrance—Door #8. No parking validation needed.</span>',
+            '<span data-i18n="samples.sanford.locations.FargoParking">Free patient parking is available in the lot near door 4840. No parking validation needed.</span>',
         ]
       ]
 };
@@ -412,38 +439,37 @@ const marshfield = {
     prepareInstructions: '<span data-i18n="samples.marshfield.prepareInstructions">On the day of your appointment, please drink plenty of water, but <span style="font-weight:900; text-decoration:underline">stop drinking water one hour before your appointment.</span><br><br><span style="font-weight:900; text-decoration:underline">One hour before your appointment:</span> Please <span style="font-weight:900; text-decoration:underline">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span style="font-weight:900; text-decoration:underline">Things to bring and remember:</span><br><br><ul><li>Make sure you know your login information for MyConnect.</li><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:<ul><li>The last time you ate or drank, and the times you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></li></ul></span>',
     whatHappens: '<span data-i18n="samples.marshfield.whatHappens">The Connect team will check you in for your appointment and then collect your samples. At the end of your visit, the Connect team will check you out of your appointment.<br><br>We will draw a blood sample, collect a urine sample, and collect a saliva sample by asking you to swish with mouthwash.<br><br>We will also ask you to complete <span style="font-weight:900; text-decoration:underline">a short survey</span> on MyConnect using your mobile phone. If you do not have a mobile phone, we will provide a tablet for you to use complete your survey. You will need your MyConnect login information to complete the survey.</span>',
     support: '<span data-i18n="samples.marshfield.support">Call 1-877-505-0253 (8:00 a.m.-10:00 p.m. CT on weekdays and 9:00 a.m.-6:00 p.m. CT on weekends)</span>',
+    parkingInstructions: `<span data-i18n="freeParkingAllCenters"></span>`,
     locations: [
         [
             '<span data-i18n="samples.marshfield.locations.MarshfieldName">Marshfield Clinic, Marshfield Center</span>',
             '<span data-i18n="samples.marshfield.locations.MarshfieldAddress">1000 N. Oak Ave<br>Marshfield, WI 54449</span>',
-            '<span data-i18n="samples.marshfield.locations.MarshfieldSchedule">Monday - Thursday: 7:00 a.m. to 4:00 p.m. and Friday 7:00 a.m. to noon</span>',
-            '<span data-i18n="samples.marshfield.locations.generalParking">General parking available</span>'
         ],
         [
             '<span data-i18n="samples.marshfield.locations.LakeHallieName">Lake Hallie Center</span>',
             '<span data-i18n="samples.marshfield.locations.LakeHallieAddress">12961 27th Ave<br>Chippewa Falls, WI 54729</span>',
-            '<span data-i18n="samples.marshfield.locations.LakeHallieSchedule">Monday - Thursday: 7:00 a.m. to 4:00 p.m.<br>Fridays: 8:00 a.m. to 2:00 p.m.</span>',
-            '<span data-i18n="samples.marshfield.locations.generalParking">General parking available</span>'
         ],
         [
             '<span data-i18n="samples.marshfield.locations.MinocquaName">Minocqua Center</span>',
             '<span data-i18n="samples.marshfield.locations.MinocquaAddress">9576 WI-70 Trunk<br>Minocqua, WI 54548</span>',
-            '<span data-i18n="samples.marshfield.locations.MinocquaSchedule">Tuesdays: 8:00 a.m. to 4:00 p.m. Wednesdays: 8:00 a.m. to 12:00 p.m.</span>',
-            '<span data-i18n="samples.marshfield.locations.generalParking">General parking available</span>'
+        ],
+        [
+            '<span data-i18n="samples.marshfield.locations.RiceLakeName"></span>',
+            '<span data-i18n="samples.marshfield.locations.RiceLakeAddress"></span>',
+        ],
+        [
+            '<span data-i18n="samples.marshfield.locations.StevensPointName"></span>',
+            '<span data-i18n="samples.marshfield.locations.StevensPointAddress"></span>',
         ],
         [
             '<span data-i18n="samples.marshfield.locations.WestonName">Weston Center</span>',
             '<span data-i18n="samples.marshfield.locations.WestonAddress">3400 Ministry Pkwy<br>Weston, WI 54476</span>',
-            '<span data-i18n="samples.marshfield.locations.WestonSchedule">Tuesday – Thursday: 7:00 a.m. to 1:00 p.m.</span>',
-            '<span data-i18n="samples.marshfield.locations.generalParking">General parking available</span>'
         ],
         [
             '<span data-i18n="samples.marshfield.locations.WisconsinRapidsName">Wisconsin Rapids Center</span>',
-            '<span data-i18n="samples.marshfield.locations.WisconsinRapidsAddress">220 24th St S,<br>Wisconsin Rapids,WI 54494</span>',
-            '<span data-i18n="samples.marshfield.locations.WisconsinRapidsSchedule">Thursdays: 7:00 a.m. to 4:00 p.m.<br>Fridays: 7:00 a.m. to 10:00 a.m.</span>',
-            '<span data-i18n="samples.marshfield.locations.generalParking">General parking available</span>'
+            '<span data-i18n="samples.marshfield.locations.WisconsinRapidsAddress">220 24th St S <br>Wisconsin Rapids, WI 54494</span>',
         ]
-    ]
+    ],
 };
 
 const henry_ford = {
@@ -456,7 +482,7 @@ const henry_ford = {
     howLong: '<span data-i18n="samples.henry_ford.howLong"><span class="site-info-bold">For Option 1: Connect Research Lab Appointment</span><br>Please expect to spend about one hour at your appointment to donate your samples and complete a short survey.<br><br><span class="site-info-bold">For Option 2: Henry Ford Health Lab Services Locations</span><br>Wait times to donate samples may vary by location. To better serve HFH patients, Henry Ford Lab Services have started using <span class="site-info-bold">“Save My Spot".</span><br><br><span class="site-info-bold">“Save My Spot"</span> is an optional service to reserve your spot in line at one of the participating Henry Ford Health Lab Services locations (see table of locations above). All lab orders must be placed before using “Save My Spot,” including your lab order for Connect.<br><br>To use this optional service, click this link only after receiving order confirmation from Connect staff: <a href= "https://www.henryford.com/locations/henry-ford-hospital/lab-services">https://www.henryford.com/locations/henry-ford-hospital/lab-services</a> </span>',
     prepareInstructions: '<span data-i18n="samples.henry_ford.prepareInstructions">On the day of your visit to donate samples for Connect, you do not need to fast unless told to do so by your provider for any other lab work they’ve ordered. We request you drink plenty of water to keep hydrated but <span class="site-info-bold">stop drinking water one hour before your visit.</span><br><br><span class="site-info-bold">One hour before your visit:</span> Please <span class="site-info-bold">do not</span> eat, drink, chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span class="site-info-bold">Things to bring and remember:</span> We will ask you to complete a short survey on MyConnect after you donate samples. You will need your login method for MyConnect and a personal device to complete the survey. <br><br>You will be asked questions related to:<ul><li>The last time you ate or drank before your appointment, and the time you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul><br><div class="consentHeadersFont" style="color:#606060;width:100%">When Will I Receive My $25 Payment?</div><br>You will receive your $25 gift card after you donate a blood sample and complete <span class="site-info-bold">all four sections</span> of your first Connect survey.<br><br>You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<ol><li>Background and Overall Health</li><li>Medications, Reproductive Health, Exercise, and Sleep</li><li>Smoking, Alcohol, and Sun Exposure</li><li>Where you Live and Work</li></span>',
     support: '<span data-i18n="samples.henry_ford.support">Call 855-574-7540 (9:00 a.m. – 7:00 p.m. on weekdays. On weekends and after business hours please leave a message with your name and a good time to call you back).</span>',
-    locationNotes: '<span data-i18n="samples.henry_ford.locationNotes">The table below lists Connect Research Lab and HFH Lab Services locations where you can donate samples for the study.<br><br>If you schedule a visit to donate Connect samples at a Connect Research Lab, you will receive a confirmation email with the address, time / date of your appointment, and parking information.<br><br> Please <a href="https://www.henryford.com/locations/search-results?|#services=&locationtype={6892DD84-8634-4F32-A6C0-8DC0F2E45486}&locationname=&&g=0|0" target="_plank">click here</a> to find address, business hours, and parking information for participating HFH Lab Services locations shown in the table below.<br><br><table style="width: 100%;border: 1px solid"><tr style="border: 1px solid"><td style="padding: 10px;vertical-align:top;border: 1px solid"><span class="site-info-bold">Connect Research Lab</span> </td><td style="padding: 10px;vertical-align:top;border: 1px solid"><span class="site-info-bold">HFH Lab Services Locations</span> </td></tr><tr style="border: 1px solid"><td style="padding: 10px;vertical-align:top;border: 1px solid">1. HFH Main K13 Research Clinic<br> 2. HFH Medical Center Livonia </td><td style="padding: 10px;vertical-align:top;border: 1px solid">1. HFH Medical Center Brownstown<br>2. HFH Medical Center Columbus<br>3. HFH Detroit Main- K1<br>4. HFH Medical Center Fairlane<br>5. HFH Medical Center Ford Road<br>6. HFH Macomb<br>7. HFH Medical Center New Center One<br>8. HFH Medical Center Plymouth<br>9. HFH Medical Center Royal Oak<br>10.  HFH Medical Center Sterling Heights<br>11. HFH Medical Center Troy<br>12. HFH West Bloomfield<br>13. HFH Wyandotte </td></tr></table></span>',
+    locationNotes: '<span data-i18n="samples.henry_ford.locationNotes">The table below lists Connect Research Lab and HFH Lab Services locations where you can donate samples for the study.<br><br>If you schedule a visit to donate Connect samples at a Connect Research Lab, you will receive a confirmation email with the address, time / date of your appointment, and parking information.<br><br> Please <a href="https://www.henryford.com/locations/search-results?|#services=&locationtype={6892DD84-8634-4F32-A6C0-8DC0F2E45486}&locationname=&&g=0|0" target="_plank">click here</a> to find address, business hours, and parking information for participating HFH Lab Services locations shown in the table below.<br><br><table style="width: 100%;border: 1px solid"><tr style="border: 1px solid"><td style="padding: 10px;vertical-align:top;border: 1px solid"><span class="site-info-bold">Connect Research Lab</span> </td><td style="padding: 10px;vertical-align:top;border: 1px solid"><span class="site-info-bold">HFH Lab Services Locations</span> </td></tr><tr style="border: 1px solid"><td style="padding: 10px;vertical-align:top;border: 1px solid">1. HFH Main K13 Research Clinic<br> 2. HFH Medical Center- Detroit Northwest </td><td style="padding: 10px;vertical-align:top;border: 1px solid">1. HFH Medical Center Brownstown<br>2. HFH Medical Center Columbus<br>3. HFH Detroit Main- K1<br>4. HFH Medical Center Fairlane<br>5. HFH Medical Center Ford Road<br>6. HFH Macomb<br>7. HFH Medical Center New Center One<br>8. HFH Medical Center Plymouth<br>9. HFH Medical Center Royal Oak<br>10.  HFH Medical Center Sterling Heights<br>11. HFH Medical Center Troy<br>12. HFH West Bloomfield<br>13. HFH Wyandotte </td></tr></table></span>',
     locations: [],
     questions: '<div data-i18n="samples.henry_ford.questions">Questions? Contact the Connect Study Team at Henry Ford Health</div>',
     contact: '<a href="mailto: connectstudy@hfhs.org">ConnectStudy@hfhs.org</a>'
@@ -491,7 +517,7 @@ const u_chicago = {
         '</table></span>',
     howLong: '<span data-i18n="samples.u_chicago.howLong"><span class="site-info-bold">Option 1: UChicago Connect Research Lab Location:</span><br> Please expect to spend about 30-45 minutes at your appointment to donate your samples. During your appointment, we will ask you to complete a short survey related to the samples we collect.<br><br> <span class="site-info-bold">Option 2: UCM Outpatient Clinical Lab  Location:</span><br> Wait times to donate samples may vary by location. Please expect to spend about 10-15 minutes at your appointment to donate your blood and urine samples.</span>',
     prepareInstructions: '<span data-i18n="samples.u_chicago.prepareInstructions">"<span class="site-info-bold">Option 1: UChicago Connect Research Lab Location:</span><br><br>On the day of your visit, you do not need to fast. Please drink plenty of water to keep hydrated, but <span class="site-info-bold">stop drinking water one hour before your visit</span>. Please <span class="site-info-bold">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span class="site-info-bold">Things to bring and remember:</span><br><br><ul><li>Please remember to bring a valid photo ID that is not expired (driver\'s license, passport, Chicago CityKey, school photo ID, or other photo ID)</li><li>Make sure you know your login information for MyConnect</li><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:<ul><li>The last time you ate or drank before your appointment, and the times you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></li></ul> <span class="site-info-bold">Option 2: UCM Outpatient Clinical Lab Location:</span><br><br> On the day of your appointment, you do not need to fast. Please drink plenty of water to keep hydrated.<br><br><span class="site-info-bold">Things to bring and remember:</span><br><br><ul><li>Please remember to bring a valid photo ID that is not expired (driver\'s license, passport, Chicago CityKey, school photo ID, or other photo ID)</li><li>After your appointment:<ul><li>Be sure to check your email for a link to a survey to complete on MyConnect. The survey asks questions about the day you donated samples, so it is important to complete it as soon as you can.</li><li>We will email you when we ship your mouthwash home collection kit. Please use this kit and included instructions to collect your mouthwash sample at home.</li></ul></li></ul></span>',
-    whatHappens: '<span data-i18n="samples.u_chicago.whatHappens">"<span class="site-info-bold">Option 1: UChicago Connect Research Lab Location</span><br><br> The research team will check you in for your appointment and then collect your samples. At the end of your visit, the research team will check you out of your appointment.<br><br>We will draw a blood sample, collect a urine sample, and collect a saliva sample by asking you to swish with mouthwash.<br><br> <span class="site-info-underline">To save time at your appointment, please complete your first Connect survey on MyConnect before donating samples. If you are not able to complete the survey before your appointment, we will ask you to complete the survey during your appointment.</span><br><br> We will also ask you to complete a short survey about your samples on MyConnect using your mobile phone. You will need your MyConnect login information to complete the survey. If you do not have a mobile phone, we will provide you with a tablet to complete your survey. We strongly encourage you to complete your survey at your appointment. If you choose to complete it after you leave your appointment, it is important to do so as soon as possible.<br><br> <span class="site-info-bold">Option 2: UCM Outpatient Clinical Services Lab Location</span><br><br> Lab staff will collect blood and urine samples at your visit. You may donate Connect samples and complete any labs ordered by your provider in the same visit. After your visit, please remember to check your email for a survey to complete on MyConnect. The survey asks questions about the day you donated samples, so please complete it as soon as you can.<br><br><div class="consentHeadersFont" style="color:#606060;width:100%"> When Will I Receive My $25 Payment?</div><br> You will receive your $25 payment after you donate a blood sample and complete all four sections of your first Connect survey.<br><br> You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<br> 1. Background and Overall Health<br>2. Medications, Reproductive Health, Exercise, and Sleep<br>3. Smoking, Alcohol, and Sun Exposure<br>4. Where you Live and Work</span>',
+    whatHappens: '<span data-i18n="samples.u_chicago.whatHappens">"<span class="site-info-bold">Option 1: UChicago Connect Research Lab Location</span><br><br> The research team will check you in for your appointment and then collect your samples. At the end of your visit, the research team will check you out of your appointment.<br><br>We will draw a blood sample, collect a urine sample, and collect a saliva sample by asking you to swish with mouthwash.<br><br> <span class="site-info-underline">To save time at your appointment, please complete your first Connect survey on MyConnect before donating samples.</span>If you are not able to complete the survey before your appointment, we will ask you to complete the survey during your appointment.<br><br> We will also ask you to complete a short survey about your samples on MyConnect using your mobile phone. You will need your MyConnect login information to complete the survey. If you do not have a mobile phone, we will provide you with a tablet to complete your survey. We strongly encourage you to complete your survey at your appointment. If you choose to complete it after you leave your appointment, it is important to do so as soon as possible.<br><br> <span class="site-info-bold">Option 2: UCM Outpatient Clinical Services Lab Location</span><br><br> Lab staff will collect blood and urine samples at your visit. You may donate Connect samples and complete any labs ordered by your provider in the same visit. After your visit, please remember to check your email for a survey to complete on MyConnect. The survey asks questions about the day you donated samples, so please complete it as soon as you can.<br><br><div class="consentHeadersFont" style="color:#606060;width:100%"> When Will I Receive My $25 Payment?</div><br> You will receive your $25 payment after you donate a blood sample and complete all four sections of your first Connect survey.<br><br> You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<br> 1. Background and Overall Health<br>2. Medications, Reproductive Health, Exercise, and Sleep<br>3. Smoking, Alcohol, and Sun Exposure<br>4. Where you Live and Work</span>',
     support: '<span data-i18n="samples.u_chicago.support">Call 1-877-505-0253 (8:00 a.m.-10:00 p.m. CT on weekdays and 9:00 a.m.-6:00 p.m. CT on weekends)</span>',
     locationNotes: '',
     locations: 
@@ -503,8 +529,8 @@ const u_chicago = {
             '',
         ],
         [
-            '<span data-i18n="samples.u_chicago.locations.DuchossoisName"><span class="site-info-underline">UChicago, Duchossois Center for Advanced Medicine (DCAM) in Hyde Park</span></span>',
-            '<span data-i18n="samples.u_chicago.locations.DuchossoisAddress">University of Chicago Medicine <br>Duchossois Center for Advanced Medicine (DCAM) #2101 </br>5758 S. Maryland Avenue <br>Chicago, IL 60637</br><br>After entering the DCAM building from the main entrance, look for us at the top of the stairs on the 2nd floor.</br></p></span>',
+            '<span data-i18n="samples.u_chicago.locations.DuchossoisName" class="site-info-underline">UChicago Duchossois Center for Advanced Medicine (DCAM) Research Clinic in Hyde Park</span>',
+            '<span data-i18n="samples.u_chicago.locations.DuchossoisAddress">University of Chicago Medicine <br>Duchossois Center for Advanced Medicine (DCAM) #2A </br>5758 S. Maryland Avenue <br>Chicago, IL 60637</br><br>After entering the DCAM building from the main entrance, look for us at the top of the stairs on the 2nd floor.</br></p></span>',
             '',
             '<span data-i18n="samples.u_chicago.locations.DuchossoisParking">The University of Chicago Medicine offers valet and self-parking. We will validate your parking pass. Please show your self-parking ticket to research staff.</span>',
         ],
@@ -519,6 +545,12 @@ const u_chicago = {
             '',
             '',
             '',
+        ],
+        [
+            '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsName" class="site-info-underline"><a href="https://www.uchicagomedicine.org/find-a-location/uchicago-medicine-duchossois-center-for-advanced-medicine-hyde-park" target="_blank">UChicago, Duchossois Center for Advanced Medicine (DCAM) Outpatient Labs</a></span>',
+            '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsAddress">University of Chicago Medicine<br> Duchossois Center for Advanced Medicine (DCAM), 3F or 4F<br> 5758 S. Maryland Avenue<br> Chicago, IL 60637<br></span>',
+            '',
+            '<span data-i18n="samples.u_chicago.locations.DuchossoisOutpatientLabsParking">The University of Chicago Medicine offers valet and self-parking. The outpatient labs are located on both the 3<sup>rd</sup> and 4<sup>th</sup> floors.</span>',            
         ],
         [
             '<span data-i18n="samples.u_chicago.locations.RiverEastName"><span class="site-info-underline"><a href="https://www.uchicagomedicine.org/find-a-location/uchicago-medicine-river-east" target="_blank">UChicago Medicine River East</a></span></span>',
@@ -553,8 +585,10 @@ const u_chicago = {
         [
             '<span data-i18n="samples.u_chicago.locations.CrownPointName"><span class="site-info-underline"><a href="https://www.uchicagomedicine.org/find-a-location/uchicago-medicine-crown-point" target="_blank">UChicago Medicine Crown Point</a></span></span>',
             '<span data-i18n="samples.u_chicago.locations.CrownPointAddress">10855 Virginia St<br>Crown Point, IN 46307</span>',
-            '',
-            '',
+        ],
+        [
+            '<span data-i18n="samples.u_chicago.locations.IngallsMemorialHospitalHarveyName"><span>UChicago Ingalls Memorial Hospital in Harvey, IL</span>',
+            '<span data-i18n="samples.u_chicago.locations.IngallsMemorialHospitalHarveyAddress">Ingalls Outpatient Center <br> 1<sup>st</sup> floor <br> 1 Ingalls Dr <br> Harvey, IL 60426</span>',
         ],
     ]
 };
@@ -571,45 +605,77 @@ const bswh = {
     whatHappensAfter: '<span data-i18n="samples.bswh.whatHappensAfter">Within a day of your blood and urine collection, we will send you an email asking you to complete a short survey on MyConnect. The survey will ask about recent actions, such as:<br></br><ul  style="list-style-type:circle;"><li>The last time you ate or drank before your lab visit, and the times you went to sleep the night before your visit and woke up on the day of your visit.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul><span class="site-info-bold-italic">When you receive our email, it is important that you complete the survey as soon as possible.</span></span>',
     howToDonateMouthwash: '<span data-i18n="samples.bswh.howToDonateMouthwash">We will send you an email as soon as your mouthwash home collection kit is on its way.  Once you receive the kit, you can collect your mouthwash sample in the comfort of your own home. The kit we mail you will include instructions and all of the items you need to collect your sample, including a return shipping box with a pre-paid shipping label to return your sample to us.<br></br>When you collect your mouthwash sample, we will ask you to complete a short survey on MyConnect. <span class="site-info-bold-italic">It is important to complete this survey on the same day that you collect your mouthwash sample.</span></span>',
     support: '<p><span data-i18n="samples.bswh.support">Call 1-877-505-0253 (8:00 a.m. - 10:00 p.m. CT on weekdays and 9:00 a.m. - 6:00 p.m. CT on weekends).</span></p>',
-    locationNotes: `<span data-i18n="samples.bswh.locationNotes"><div style="margin-bottom:2rem;"> 
-                    <div>
-                        <span class="site-info-bold">Baylor Scott & White Health and Wellness Center- Dallas</span>
-                        <p>4500 Spring Ave<br>
-                            Dallas, TX 75210<br>
-                            Parking Instructions: The site offers free surface level parking.
-                        </p>
-                    </div>
-                    <div>
-                        <span class="site-info-bold">Baylor Scott & White Community Care (BCC) - Fort Worth*</span>
-                        <p >1307 8th Ave, Ste 305<br>
-                            Fort Worth, TX 76104<br>
-                            Parking Instructions: The site offers free surface level parking.<br>
-                            <span style="font-size:1rem" class="site-info-underline-italic">*Note: Only patients of Baylor Scott & White Health Community Care - Fort Worth clinic can schedule an appointment at this location.</span>
-                        </p>
-                    </div>
-                    <div>
-                        <span class="site-info-bold">Baylor Scott & White All Saints Hospital- Fort Worth</span>
-                        <p>1400 8th Avenue Fort Worth, TX 76104<br>
-                        6th Floor, C Building<br>
-                        Parking Instructions: Use the patient parking structure by the hospital.
-                        </p>
-                    </div>
-                    <div>
-                        <span class="site-info-bold">Baylor Scott & White Community Care (BCC) - Worth Street Clinic*</span>
-                        <p>4001 Worth St.<br>
-                        Dallas, TX 75246<br>
-                        Parking Instructions: The site offers free surface level parking.<br>
-                        <span style="font-size:1rem" class="site-info-underline-italic">*Note: Only patients of Baylor Scott & White Health Community Care - Worth Street clinic can schedule an appointment at this location.</span>
-                        </p>
-                    </div>
-                    <div>
-                        <span class="site-info-bold">Baylor Scott & White Sammons Cancer Center</span>
-                        <p>3410 Worth St, Suite 530<br>
-                        Dallas, TX 75246<br>
-                        Parking Instructions: Drive to the back of the Sammons Cancer Center Building and park in the underground garage. You will get a ticket from the machine as you enter the garage. Please keep the ticket. During your visit, the Connect team will give you a voucher for free parking. 
-                        </p>
-                    </div>
-                    </span>`,
+    locationNotes: `<div data-i18n="samples.bswh.locationNotes"><div style="margin-bottom:2rem;"> 
+                        <div>
+                            <span class="site-info-bold">Baylor Scott & White Health and Wellness Center- Dallas</span>
+                            <p>4500 Spring Ave<br>
+                                Dallas, TX 75210<br>
+                                Parking Instructions: The site offers free surface level parking.
+                            </p>
+                        </div>
+                        <div>
+                            <span class="site-info-bold">Baylor Scott & White Community Care (BCC) - Fort Worth*</span>
+                            <p >1307 8th Ave, Ste 305<br>
+                                Fort Worth, TX 76104<br>
+                                Parking Instructions: The site offers free surface level parking.<br>
+                                <span style="font-size:1rem" class="site-info-underline-italic">*Note: Only patients of Baylor Scott & White Health Community Care - Fort Worth clinic can schedule an appointment at this location.</span>
+                            </p>
+                        </div>
+                        <div>
+                            <span class="site-info-bold">Baylor Scott & White All Saints Hospital- Fort Worth</span>
+                            <p>1400 8th Avenue Fort Worth, TX 76104<br>
+                                6th Floor, C Building<br>
+                                Parking Instructions: Use the patient parking structure by the hospital.
+                            </p>
+                        </div>
+                        <div>
+                            <span class="site-info-bold">Baylor Scott & White Community Care (BCC) - Worth Street Clinic*</span>
+                            <p>4001 Worth St.<br>
+                                Dallas, TX 75246<br>
+                                Parking Instructions: The site offers free surface level parking.<br>
+                                <span style="font-size:1rem" class="site-info-underline-italic">*Note: Only patients of Baylor Scott & White Health Community Care - Worth Street clinic can schedule an appointment at this location.</span>
+                            </p>
+                        </div>
+                        <div>
+                            <span class="site-info-bold">Baylor Scott & White Sammons Cancer Center</span>
+                            <p>3410 Worth St, Suite 530<br>
+                                Dallas, TX 75246<br>
+                                Parking Instructions: Drive to the back of the Sammons Cancer Center Building and park in the underground garage. You will get a ticket from the machine as you enter the garage. Please keep the ticket. During your visit, the Connect team will give you a voucher for free parking. 
+                            </p>
+                        </div>
+                        <div>
+                            <span class="site-info-bold">Baylor Scott & White - N. Garland Clinic</span>
+                            <p>7217 Telecom Pkwy, Suite 100<br>
+                                Garland, TX 75044<br>
+                                Parking Instructions: The site offers free surface level parking.
+                            </p>
+                        </div>
+                        <div>
+                            <span class="site-info-bold">Baylor Scott & White Medical Center - Irving</span>
+                            <p>1901 N. MacArthur Blvd, Suite 115<br>
+                                Irving, TX 75061<br>
+                                Parking Instructions: The site offers free surface level parking.<br>
+                                Suite 115 is located within the Irving Hospital in the PAT lab.
+                            </p>
+                        </div>
+
+
+                        <div>
+                            <span class="site-info-bold">Baylor Scott & White Center for Diagnostic Medicine – Temple CDM</span>
+                            <p>1605 S 31st St<br>
+                                Temple, TX 76508<br>
+                                Parking Instructions: The site offers free surface level parking.
+                            </p>
+                        </div>
+
+                        <div>
+                            <span class="site-info-bold">Baylor Scott & White, Temple Roney Bone & Joint – Temple Roney</span>
+                            <p>2401 S 31st St, Bldg 35<br>
+                                Temple, TX 76508<br>
+                                Parking Instructions: The site offers free surface level parking.<br>
+                            </p>
+                        </div>
+                    </div>`,
     howLong: '<span data-i18n="samples.bswh.howLong">If you complete your first Connect survey before your appointment, please expect to spend about 45 minutes at your appointment to donate your samples and complete a short sample survey.</span>',
     prepareInstructions: '<span data-i18n="samples.bswh.prepareInstructions"><p>On the day of your appointment, you do not need to fast. Drink plenty of water to keep hydrated, but <span class="site-info-bold">stop drinking water one hour before your appointment.</span></p> <p><span class="site-info-bold">One hour before your appointment:</span> Please <span class="site-info-bold">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.</p> <p class="site-info-bold">Things to bring and remember</p><ul><li>Please remember to bring a valid photo ID that is not expired (driver’s license, passport, school photo ID, or other photo ID)</li><li>Make sure you know your login information for MyConnect</li><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:</li><ul><li>The last time you ate or drank before your appointment, and the times you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></li></ul></span>',
     whatHappens: `<span data-i18n="samples.bswh.whatHappens"><p>The research team will check you in for your appointment and then collect your samples. At the end of your visit, the research team will check you out of your appointment.</p>
@@ -738,6 +804,18 @@ const renderLocations = (site) => {
                         </div>
                     </div>
                 </div>`
+            } else if (site === marshfield) {
+                template += `
+                <div class="row removePaddingTop" style="width:100%">
+                    <div style="width:100%; margin-left: 2rem;">
+                        <div class="messagesHeaderFont " data-i18n="samples.addressText">
+                            Address
+                        </div>
+                        <div class="messagesBodyFont messagesBodyFontAddress">
+                            ${location[1]}
+                        </div>
+                    </div>
+                </div>`
             } else if (site === sanford) {
                 template += !location[1] ? '' : `<div class="row" style="width:100%">
                 <div style="width:100%">
@@ -748,18 +826,24 @@ const renderLocations = (site) => {
                         ${location[1]}
                     </div>
                 </div>`
-            } else if (site === u_chicago && !location[1]){
-                template += `<div class="row" style="width:100%">
-                <div style="width:100%">
-                    <div class="messagesBodyFont">
-                        ${location[1]}
-                    </div>
-                </div>
-            </div>`
+            } else if (site === u_chicago){
+                if (location[1]) {
+                    template += `<div class="row removePaddingTop" style="width:100%">
+                                    <div style="width:100%">
+                                        <div class="messagesSubHeader" data-i18n="samples.addressText">
+                                            Address
+                                        </div>
+                                        <div class="messagesBodyFont messagesBodyFontAddress">
+                                            ${location[1]}
+                                        </div>
+                                    </div>
+                                </div>
+                                `;
+                }
             } else {
                 template += `<div class="row" style="width:100%">
                 <div style="width:100%">
-                    <div class="messagesHeaderFont" data-i18n="samples.directionsText">
+                    <div class="messagesSubHeader" data-i18n="samples.directionsText">
                         Address and Directions
                     </div>
                     <div class="messagesBodyFont">
@@ -786,10 +870,10 @@ const renderLocations = (site) => {
             template+=` 
                 <div class="row" style="width:100%">
                     <div style="width:100%">
-                        <div class="messagesHeaderFont" data-i18n="samples.parkingInstructions">
+                        <div class="messagesSubHeader" data-i18n="samples.parkingInstructions">
                             Parking Instructions
                         </div>
-                        <div class="messagesBodyFont">
+                        <div class="messagesBodyFont messagesBodyFontParking">
                             ${location[3]}
                         </div>
                     </div>

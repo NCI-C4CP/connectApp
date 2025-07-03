@@ -411,6 +411,15 @@ canvas {
     width:100%;
 }
 
+.btn-expanding-height {
+    margin-top: 0px;
+    border-radius: 30px !important;
+    min-height: 60px !important;
+    background-color: #5c2d93 !important;
+    color: white !important;
+    width: 100%;
+}
+
 
 .no-text-decoration {
     color: #000000 !important;
@@ -1101,24 +1110,38 @@ consentNextButton:hover{
     font-size:18px;
 }
 
-.messagesHeaderFont{
+.messagesHeaderFont,
+.messagesSubHeader               {
     font-family: 'Montserrat', sans-serif;
     font-weight: bold;
-    font-size:23px;
     line-height:25px;
     color: #6B6B6B;
 }
+.messagesHeaderFont {
+    font-size: 1.4375rem;
+}
 
-.messagesBodyFont{
+.messagesSubHeader {
+    font-size: 1.3125rem;
+}
+
+.messagesBodyFont {
     font-family: 'Noto Sans', sans-serif;
     font-size:18px;
     line-height:27px;
     color: #2E2E2E;
-    margin-top:20px;
-
+    padding-top: 1rem;
 }
 
+.messagesBodyFont.messagesBodyFontAddress,
+.messagesBodyFont.messagesBodyFontParking { 
+    padding-top: 0rem;
+} 
 
+.removePaddingTop {
+    padding-top: 0rem;
+}
+   
 .consentSubheader{
     font-family: 'Montserrat', sans-serif;
 }
@@ -1395,8 +1418,9 @@ button.connect-secondary {
     margin-bottom: 1rem;
 }
 
-#donateMySamplesTable tbody tr td {
-    padding: 0.5rem;
+#donateMySamplesTable tbody tr td,
+#donateMySamplesTable tbody tr th {
+    padding: 0.6rem;
 }
 
 .messagesHeaderFont .samples-page-text {
@@ -1539,3 +1563,27 @@ button.connect-secondary {
         border-width: 0.5px;
     }
 }
+
+.phys-act-rep-cols {
+    flex-direction: row;
+}
+
+.phys-act-rep-sidebar {
+    max-width: 250px;
+}
+
+@media (max-width: 550px) {
+    .phys-act-rep-cols {
+        flex-direction: column-reverse;
+    }
+
+    .phys-act-rep-sidebar {
+        max-width: 100%;
+    }
+}
+
+span.my-samples-indent-text {
+    display:inline-block;
+    margin-left: 20px;
+}
+

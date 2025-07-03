@@ -1,8 +1,8 @@
-import { getParameters, userLoggedIn, getMyData, hasUserData, getMyCollections, showAnimation, hideAnimation, storeResponse, isBrowserCompatible, inactivityTime, urls, appState, processAuthWithFirebaseAdmin, showErrorAlert, successResponse, logDDRumError, translateHTML, translateText, languageAcronyms, toggleNavbarMobileView } from "./js/shared.js";
+import { syncDHQ3RespondentInfo, getParameters, userLoggedIn, getMyData, hasUserData, getMyCollections, showAnimation, hideAnimation, storeResponse, isBrowserCompatible, inactivityTime, urls, appState, processAuthWithFirebaseAdmin, showErrorAlert, successResponse, logDDRumError, translateHTML, translateText, languageAcronyms, toggleNavbarMobileView, validateToken } from "./js/shared.js";
 import { userNavBar, homeNavBar, languageSelector, signOutNavBarTemplate } from "./js/components/navbar.js";
 import { homePage, joinNowBtn, whereAmIInDashboard, renderHomeAboutPage, renderHomeExpectationsPage, renderHomePrivacyPage } from "./js/pages/homePage.js";
-import { addEventPinAutoUpperCase, addEventRequestPINForm, addEventRetrieveNotifications, toggleCurrentPage, toggleCurrentPageNoUser, addEventToggleSubmit, addEventLanguageSelection, environmentWarningModal } from "./js/event.js";
-import { requestPINTemplate } from "./js/pages/healthCareProvider.js";
+import { addEventPinAutoUpperCase, addEventRequestPINForm, addEventRetrieveNotifications, toggleCurrentPage, toggleCurrentPageNoUser, addEventToggleSubmit, addEventLanguageSelection } from "./js/event.js";
+import { requestPINTemplate, duplicateAccountReminderRender } from "./js/pages/healthCareProvider.js";
 import { myToDoList } from "./js/pages/myToDoList.js";
 import {renderNotificationsPage} from "./js/pages/notifications.js"
 import { renderAgreements } from "./js/pages/agreements.js";
@@ -16,7 +16,8 @@ import { firebaseConfig as devFirebaseConfig } from "./dev/config.js";
 import { firebaseConfig as stageFirebaseConfig } from "./stage/config.js";
 import { firebaseConfig as prodFirebaseConfig } from "./prod/config.js";
 import conceptIdMap from "./js/fieldToConceptIdMapping.js";
-import fieldToConceptIdMapping from "./js/fieldToConceptIdMapping.js";
+
+let appVersion;
 
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker
@@ -41,6 +42,7 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.addEventListener("message", (event) => {
       if (event.data.action === "sendAppVersion") {
         document.getElementById("appVersion").textContent = event.data.payload;
+        appVersion = event.data.payload;
       }
     });
   }
@@ -117,13 +119,13 @@ window.onload = async () => {
         script.src = `https://maps.googleapis.com/maps/api/js?key=${prodFirebaseConfig.apiKey}&libraries=places&callback=Function.prototype`
         !firebase.apps.length ? firebase.initializeApp(prodFirebaseConfig) : firebase.app();
 
-        window.DD_RUM && window.DD_RUM.init({ ...datadogConfig, env: 'prod' });
+        window.DD_RUM && window.DD_RUM.init({ ...datadogConfig, env: 'prod', version: appVersion });
     }
     else if(location.host === urls.stage) {
         script.src = `https://maps.googleapis.com/maps/api/js?key=${stageFirebaseConfig.apiKey}&libraries=places&callback=Function.prototype`
         !firebase.apps.length ? firebase.initializeApp(stageFirebaseConfig) : firebase.app();
 
-        window.DD_RUM && window.DD_RUM.init({ ...datadogConfig, env: 'stage' });
+        window.DD_RUM && window.DD_RUM.init({ ...datadogConfig, env: 'stage', version: appVersion });
     }
     else if (isLocalDev) {
         const { firebaseConfig: localDevFirebaseConfig } = await import("./local-dev/config.js");
@@ -135,7 +137,7 @@ window.onload = async () => {
     } else {
         script.src = `https://maps.googleapis.com/maps/api/js?key=${devFirebaseConfig.apiKey}&libraries=places&callback=Function.prototype`
         !firebase.apps.length ? firebase.initializeApp(devFirebaseConfig) : firebase.app();
-        !isLocalDev && window.DD_RUM && window.DD_RUM.init({ ...datadogConfig, env: 'dev' });
+        !isLocalDev && window.DD_RUM && window.DD_RUM.init({ ...datadogConfig, env: 'dev', version: appVersion });
     }
 
     !isLocalDev && window.DD_RUM && window.DD_RUM.startSessionReplayRecording();
@@ -189,65 +191,11 @@ window.onload = async () => {
 }
 
 const handleVerifyEmail = (auth, actionCode) => {
-    auth.applyActionCode(actionCode).then(function(resp) {
+    auth.applyActionCode(actionCode).then(function() {
         window.location.hash = '#verified';
         location.reload();
     }).catch(function(error) {
         console.log(error);
-    });
-}
-
-const handleResetPassword = (auth, actionCode) => {
-    auth.verifyPasswordResetCode(actionCode).then(function(email) {
-        document.getElementById('root').innerHTML = `
-            <h2>Reset password</h2> for <strong>${email}</strong>
-            <form id="resetPasswordForm" method="POST">
-                <div class="form-group row">
-                    <label class="col-sm-3 col-form-label">Enter new password</label>
-                    <input type="password" id="resetPassword" pattern="[A-Za-z0-9@_]{6,}" title="Strong passwords have at least 6 characters and a mix of letters and numbers" class="form-control col-sm-4">
-                    <i class="fas fa-eye show-text" id="showPassword" title="Show password"></i>
-                </div>
-                </br>
-                <button type="submit" class="btn btn-primary mb-3">Update password</button>
-            </form>
-        `;
-        const form = document.getElementById('resetPasswordForm');
-
-        const show = document.getElementById('showPassword');
-        show.addEventListener('click', () => {
-            const element = document.getElementById('resetPassword');
-            if(element.type === 'password') {
-                element.type = 'text';
-                show.classList = ['fas fa-eye-slash show-text'];
-                show.title = "Hide password";
-            }
-            else {
-                element.type = 'password';
-                show.classList = ['fas fa-eye show-text'];
-                show.title = "Show password";
-            }
-        });
-
-        form.addEventListener('submit', e => {
-            e.preventDefault();
-            const newPassword = document.getElementById('resetPassword').value;
-            if(!newPassword) return;
-            if(newPassword.trim() === '') return;
-            // Save the new password.
-            auth.confirmPasswordReset(actionCode, newPassword).then(function(resp) {
-                document.getElementById('root').innerHTML = `
-                    Password reset successfully! Please <a href="#sign_in">sign in</a> again to continue.
-                `;
-                auth.signInWithEmailAndPassword(accountEmail, newPassword);
-            }).catch(function(error) {
-                // Error occurred during confirmation. The code might have expired or the
-                // password is too weak.
-            });
-        })
-        
-    }).catch(function(error) {
-      // Invalid or expired action code. Ask user to try to reset the password
-      // again.
     });
 }
 
@@ -261,20 +209,13 @@ const router = async () => {
         const mode = parameters['mode'];
         const actionCode = parameters['oobCode'];
         switch (mode) {
-            case 'resetPassword':
-                handleResetPassword(auth, actionCode);
-            break;
-            //   case 'recoverEmail':
-            // Display email recovery handler and UI.
-            // handleRecoverEmail(auth, actionCode, lang);
-            // break;
             case 'verifyEmail':
                 handleVerifyEmail(auth, actionCode);
             break;
             default:
             // Error: invalid mode.
         }
-        if(['resetPassword', 'verifyEmail'].includes(parameters['mode'])) return;
+        if(['verifyEmail'].includes(parameters['mode'])) return;
     }
 
     let loggedIn = await userLoggedIn();
@@ -363,6 +304,43 @@ const userProfile = () => {
             try {
                 showAnimation();
                 document.title = translateText('shared.dashboardTitle');
+
+                let token = '';
+                
+                const urlParams = new URLSearchParams(window.location.search);
+                const continueUrlParam = urlParams.get('continueUrl');
+
+                if (continueUrlParam) {
+                    const decodedContinueUrl = decodeURIComponent(continueUrlParam);
+                    const continueUrlObj = new URL(decodedContinueUrl);
+                    
+                    token = continueUrlObj.searchParams.get('token');
+                }
+                else {
+                    const href = location.href;
+                    const parameters = getParameters(href);
+
+                    token = parameters?.token;
+                } 
+
+                if (token) {
+                    const response = await validateToken(token);
+
+                    if (response.code === 202) {
+                        const myErrorData = await getMyData();
+
+                        logDDRumError(new Error(`Duplicate Account Found`), 'duplicateAccountError', {
+                            userAction: 'PWA sign in',
+                            timestamp: new Date().toISOString(),
+                            connectID: myErrorData.data['Connect_ID'],
+                        });
+
+                        duplicateAccountReminderRender();
+                        hideAnimation();
+                        return;
+                    }
+                }
+
                 userProfileAuthStateUIHandler(user);
             
                 firestoreUserData = await getMyData();
@@ -384,9 +362,13 @@ const userProfile = () => {
                         participantData?.['Connect_ID']
                     );
 
-                    const [collectionsData] = await Promise.all([myCollectionsPromise, checkFirstSignInPromise]);
+                    // Check for DHQ3 completion status if it has been started.
+                    const dhqStatusPromise = participantData?.[conceptIdMap.DHQ3.statusFlag] === conceptIdMap.moduleStatus.started 
+                        ? syncDHQ3RespondentInfo(participantData[conceptIdMap.DHQ3.studyID], participantData[conceptIdMap.DHQ3.username], participantData[conceptIdMap.DHQ3.statusFlag], participantData[conceptIdMap.DHQ3.statusFlagExternal])
+                        : Promise.resolve(null);
 
-                    await myToDoList(participantData, false, collectionsData.data);
+                    const [collectionsData] = await Promise.allSettled([myCollectionsPromise, checkFirstSignInPromise, dhqStatusPromise]);
+                    await myToDoList(participantData, false, collectionsData.value?.data || []);
 
                 } else {
                     // Authenticated user. Firestore profile does not exist (initial sign-up). Show the PIN entry form.

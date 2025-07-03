@@ -4,6 +4,7 @@ import { signInCheckRender, signUpRender } from "./pages/homePage.js";
 import { signOut } from "../app.js";
 import en from "../i18n/en.js";
 import es from "../i18n/es.js";
+import { getFirstSignInISOTime } from "./event.js";
 
 const i18n = {
     es, en
@@ -151,12 +152,20 @@ export const sendEmailLink = () => {
     const signInEmail = wrapperDiv.getAttribute("data-account-value");
     const continueUrl = window.location.href;
 
+    const continueUrlWithoutHash = continueUrl.endsWith("#")
+            ? continueUrl.slice(0, -1)
+            : continueUrl;
+
     fetch(`${api}?api=sendEmailLink`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email: signInEmail, continueUrl , preferredLanguage}),
+        body: JSON.stringify({ 
+            email: signInEmail, 
+            continueUrl: continueUrlWithoutHash, 
+            preferredLanguage
+        })
     }).then(() => {
         signInFlowRender(signInEmail);
     });
@@ -237,7 +246,13 @@ export const storeResponseTree = async (questName) => {
     await storeResponse(formData);
 }
 
-//Attempting to store tree on push
+/**
+ * Processes and stores questionnaire response data in the appropriate format for the backend.
+ * It separates completion status data from regular response data, processes them separately,
+ * and ensures proper storage of both types of data.
+ * @param {object} formData - The raw form data object containing questionnaire responses with keys in the format "moduleId.conceptId".
+ * @returns {Promise<object>} - The response from the storeResponse API call.
+ */
 export const storeResponseQuest = async (formData) => {
     
     let keys = Object.keys(formData);
@@ -261,10 +276,8 @@ export const storeResponseQuest = async (formData) => {
     });
 
     if (Object.keys(completedData).length > 0) {
-        await completeSurvey(completedData, moduleId);
+        return await completeSurvey(completedData, moduleId);
     }
-
-    transformedData = await clientFilterData(transformedData);
 
     if(Object.keys(transformedData[moduleId]).length > 0) {
         return await storeResponse(transformedData);
@@ -307,13 +320,16 @@ const completeSurvey = async (data, moduleId) => {
         [fieldMapping[moduleName].completeTs]: data["COMPLETED_TS"],
     }
 
+    // Return the response on failure.
+    // The success response reloads the page, but the error response needs to be handled in Quest.
+    let submitSurveyResponse;
     try {
-        const submitSurveyResponse = await storeResponse(formData);
+        submitSurveyResponse = await storeResponse(formData);
 
         if (submitSurveyResponse.code === 200) {
             location.reload();
         } else {
-            throw new Error(`Submit Survey Error: Failed to submit survey. Code: ${submitSurveyResponse.code}, Message: ${submitSurveyResponse.message}` );
+            throw new Error(`Submit Survey Error: Failed to submit survey. Code: ${submitSurveyResponse.code}, Message: ${submitSurveyResponse.message}`);
         }
     } catch (error) {
         logDDRumError(error, 'SubmitSurveyError', {
@@ -321,6 +337,8 @@ const completeSurvey = async (data, moduleId) => {
             timestamp: new Date().toISOString(),
             questionnaire: moduleId,
         });
+
+        return submitSurveyResponse;
     }
 }
 
@@ -379,6 +397,86 @@ export const retrievePhysicalActivityReport = async () => {
 
     return await response.json();
 };
+
+export const retrieveDHQHEIReport = async (dhqData) => {
+
+    if (!dhqData || typeof dhqData !== 'object' || !dhqData.studyID || !dhqData.username) {
+        return { code: 400, data: [], message: 'Invalid DHQ data' };
+    }
+
+    const studyID = dhqData.studyID;
+    const respondentUsername = dhqData.username;
+
+    try {
+        const idToken = await getIdToken();
+        const response = await fetch(`${api}?api=retrieveDHQHEIReport`, {
+            method: "POST",
+            headers: {
+                Authorization: 'Bearer ' + idToken,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ studyID, respondentUsername })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Server responded with: ${response.status}`);
+        }
+
+        const jsonResponse = await response.json();
+
+        if (jsonResponse.code === 200) {
+            return jsonResponse;
+        }
+
+        throw new Error(`Retrieve DHQ HEI Report Error: ${jsonResponse.message}`);
+
+    } catch (error) {
+        console.error('Error in retrieveDHQHEIReport:', error);
+        logDDRumError(error, 'RetrieveDHQHEIReportError', {
+            userAction: 'retrieve DHQ HEI report',
+            timestamp: new Date().toISOString(),
+        });
+        return { code: 500, data: [], message: 'An unexpected error occurred in retrieveDHQHEIReport()' };
+    }
+};
+
+export const updateDHQReportViewedStatus = async (studyID, respondentUsername, isDeclined = false) => {
+
+    if (!studyID || !respondentUsername) {
+        console.error('DHQ3 Update criteria not met. Missing at least one of studyID, respondentUsername:', studyID, respondentUsername);
+        return null;
+    }
+
+    try {
+        const idToken = await getIdToken();
+        const response = await fetch(`${api}?api=updateDHQReportViewedStatus`, {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + idToken,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ studyID, respondentUsername, isDeclined })
+        });
+
+        if (!response.ok) {
+            const error = (response.status + ": " + (await response.json()).message);
+            throw new Error(error);
+        }
+
+        const reportData = await response.json();
+        if (reportData.code === 200) {
+            return;
+        }
+
+        throw new Error('Failed to update DHQ Report viewed status. Response code: ' + reportData.code);
+
+    } catch (error) {
+        console.error('Error in updateDHQReportViewedStatus:', error);
+        throw error;
+    }
+}
+
+
 
 export const hasUserData = (response) => {
 
@@ -454,7 +552,7 @@ export const getMyCollections = async () => {
 
 const allIHCS = {
     531629870: 'HealthPartners',
-    548392715: 'Henry Ford Health System',
+    548392715: 'Henry Ford Health',
     125001209: 'Kaiser Permanente Colorado',
     327912200: 'Kaiser Permanente Georgia',
     300267574: 'Kaiser Permanente Hawaii',
@@ -470,7 +568,7 @@ export const sites = () => {
         return {
             657167265: 'Sanford Health',
             531629870: 'HealthPartners',
-            548392715: 'Henry Ford Health System',
+            548392715: 'Henry Ford Health',
             303349821: 'Marshfield Clinic Health System',
             809703864: 'University of Chicago Medicine',
             125001209: 'Kaiser Permanente Colorado',
@@ -484,7 +582,7 @@ export const sites = () => {
         return {
             657167265: 'Sanford Health',
             531629870: 'HealthPartners',
-            548392715: 'Henry Ford Health System',
+            548392715: 'Henry Ford Health',
             303349821: 'Marshfield Clinic Health System',
             809703864: 'University of Chicago Medicine',
             125001209: 'Kaiser Permanente Colorado',
@@ -537,13 +635,13 @@ export const dateTime = () => {
 }
 
 export const getIdToken = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
             unsubscribe();
             if (user && !user.isAnonymous) {
                 user.getIdToken().then((idToken) => {
                     resolve(idToken);
-            }, (error) => {
+            }, () => {
                 resolve(null);
             });
             } else {
@@ -554,7 +652,7 @@ export const getIdToken = () => {
 };
 
 export const userLoggedIn = () => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
         const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
             unsubscribe();
             if (user && !user.isAnonymous) {
@@ -714,6 +812,61 @@ export const allStates = {
     "Wyoming":51,
     "NA": 52
 }
+
+export const statesWithAbbreviations = {
+    Alabama: "AL",
+    Alaska: "AK",
+    Arizona: "AZ",
+    Arkansas: "AR",
+    California: "CA",
+    Colorado: "CO",
+    Connecticut: "CT",
+    Delaware: "DE",
+    "District of Columbia": "DC",
+    Florida: "FL",
+    Georgia: "GA",
+    Hawaii: "HI",
+    Idaho: "ID",
+    Illinois: "IL",
+    Indiana: "IN",
+    Iowa: "IA",
+    Kansas: "KS",
+    Kentucky: "KY",
+    Louisiana: "LA",
+    Maine: "ME",
+    Maryland: "MD",
+    Massachusetts: "MA",
+    Michigan: "MI",
+    Minnesota: "MN",
+    Mississippi: "MS",
+    Missouri: "MO",
+    Montana: "MT",
+    Nebraska: "NE",
+    Nevada: "NV",
+    "New Hampshire": "NH",
+    "New Jersey": "NJ",
+    "New Mexico": "NM",
+    "New York": "NY",
+    "North Carolina": "NC",
+    "North Dakota": "ND",
+    Ohio: "OH",
+    Oklahoma: "OK",
+    Oregon: "OR",
+    Pennsylvania: "PA",
+    "Rhode Island": "RI",
+    "South Carolina": "SC",
+    "South Dakota": "SD",
+    Tennessee: "TN",
+    Texas: "TX",
+    Utah: "UT",
+    Vermont: "VT",
+    Virginia: "VA",
+    Washington: "WA",
+    "West Virginia": "WV",
+    Wisconsin: "WI",
+    Wyoming: "WY",
+    NA: "NA", // Assuming NA should remain NA
+};
 
 export const allCountries = {
     "United States":1,
@@ -973,6 +1126,18 @@ export const BirthMonths = {
     "12": "12 - December"
 }
 
+export const swapKeysAndValues = (obj) => {
+    const swapped = {};
+
+    for (const key in obj) {
+        if (obj.hasOwnProperty(key)) {
+            swapped[obj[key]] = key; // Direct swap (no duplicate check)
+        }
+    }
+
+    return swapped;
+};
+
 export const showAnimation = () => {
     if(document.getElementById('loadingAnimation')) document.getElementById('loadingAnimation').style.display = '';
 }
@@ -1140,7 +1305,16 @@ export const questionnaireModules = () => {
                 },
                 moduleId: "CancerScreeningHistory", 
                 enabled: false
-            }
+            },
+            // External module (unrelated to Quest)
+            'Diet History Questionnaire III (DHQ III)': {
+                path: {
+                    en: 'https://www.dhq3.org/respondent-login/',
+                    es: 'https://www.dhq3.org/respondent-login/'
+                },
+                moduleId: "DHQ3",
+                enabled: false,
+            },
         }
     }
 
@@ -1244,7 +1418,16 @@ export const questionnaireModules = () => {
             },
             moduleId: "CancerScreeningHistory", 
             enabled: false
-        }
+        },
+        // External module (unrelated to Quest)
+        'Diet History Questionnaire III (DHQ III)': {
+            path: {
+                en: 'https://www.dhq3.org/respondent-login/',
+                es: 'https://www.dhq3.org/respondent-login/'
+            },
+            moduleId: "DHQ3",
+            enabled: false,
+        },
     };
 }
 
@@ -1253,11 +1436,22 @@ export const reportConfiguration = () => {
     if(location.host === urls.prod) {
         return {
             'Physical Activity Report': {
+                dateAvailableField: 'data.d_416831581', // Report generated in BQ
                 path: {
                     en: 'prod/module2024ConnectExperience.txt', 
                     es: 'prod/module2024ConnectExperienceSpanish.txt'
                 },
                 reportId: "physicalActivity", 
+                enabled: false
+            },
+            // External report (not stored on our servers)
+            'DHQ HEI Report': {
+                dateAvailableField: 'surveyDate', // Report generated on survey completion
+                path: {
+                    en: 'https://www.dhq3.org/respondent-login/',
+                    es: 'https://www.dhq3.org/respondent-login/'
+                },
+                reportId: "dhqHEI",
                 enabled: false
             }
         }
@@ -1265,7 +1459,14 @@ export const reportConfiguration = () => {
 
     return {
         'Physical Activity Report': {
+            dateAvailableField: 'data.d_416831581', // Report generated in BQ
             reportId: "physicalActivity", 
+            enabled: false
+        },
+        // External report (not stored on our servers)
+        'DHQ HEI Report': {
+            dateAvailableField: 'surveyDate', // Report generated on survey completion
+            reportId: "dhqHEI",
             enabled: false
         }
     }
@@ -1291,14 +1492,30 @@ export const setReportAttributes = async (data, reports) => {
         reports['Physical Activity Report'].dateField = 'd_416831581';
         reports['Physical Activity Report'].surveyDate = data[fieldMapping.Module2.completeTs];
     }
+
+    // DHQ HEI Report is available once the DHQ3 survey is submitted
+    // Align data structure with BQ-related mapping from Physical Activity Report
+    if (data[fieldMapping.DHQ3.statusFlag] === fieldMapping.moduleStatus.submitted) {
+        reports['DHQ HEI Report'].enabled = true;
+        reports['DHQ HEI Report'].status = data[fieldMapping.reports.dhq3.reportStatusInternal] || fieldMapping.reports.unread;
+        reports['DHQ HEI Report'].dateField = 'dateField';
+        reports['DHQ HEI Report'].surveyDate = data[fieldMapping.DHQ3.completeTs];
+        reports['DHQ HEI Report'].data = {
+            'dateField': data[fieldMapping.DHQ3.completeTs],
+            'pdfData': '',
+        };
+    }
+
     return reports;
 }
 
 /**
  * Populates the report data from the backend
  * 
- * @param {Object[]} reports 
+ * @param {Object[]} reports
+ * @param {Object} dhqData - Optional data for DHQ HEI report
  */
+
 export const populateReportData = async (reports) => {
     let reportData = await retrievePhysicalActivityReport();
     if (reportData.code === 200) {
@@ -1310,6 +1527,29 @@ export const populateReportData = async (reports) => {
     }
 
     return reports;
+}
+
+export const populateDHQHEIReportData = async (reports, dhqData) => {
+    try {
+        const dhqHEIReportData = await retrieveDHQHEIReport(dhqData);
+
+        if (dhqHEIReportData?.code === 200) {
+            reports['DHQ HEI Report'].data.pdfData = dhqHEIReportData.data || '';
+
+        } else {
+            throw new Error(`Failed to retrieve DHQ HEI report data: ${dhqHEIReportData?.message || 'Unknown error'}`);
+        }
+
+    } catch (error) {
+        logDDRumError(error, 'populateDHQHEIReportDataError', {
+            userAction: 'get DHQ HEI report data',
+            timestamp: new Date().toISOString(),
+        });
+        reports['DHQ HEI Report'].data.pdfData = '';
+
+    } finally {
+        return reports;
+    }
 }
 
 export const isBrowserCompatible = () => {
@@ -1561,7 +1801,7 @@ export const inactivityTime = () => {
 
 export const renderSyndicate = (url, element, page) => {
     const mainContent = document.getElementById(element);
-    const isCompatible = isBrowserCompatible();
+
     fetch(url)
     .then(response => response.body)
     .then(rb =>{
@@ -1634,47 +1874,6 @@ export const renderSyndicate = (url, element, page) => {
     hideAnimation();
 
     });
-}
-
-export const addEventReturnToDashboard = () => {
-    document.getElementById('returnToDashboard').addEventListener('click', () => {
-        location.reload();
-    });
-}
-
-const resetMenstrualCycleSurvey = async () => {
-
-    let formData = {
-        "459098666":    972455046,
-        "844088537":    null
-    }
-
-    await storeResponse(formData);
-}
-
-const removeMenstrualCycleData = () => {
-
-    localforage.removeItem("D_912367929");
-    localforage.removeItem("D_912367929.treeJSON");
-
-    let clearedData = {"D_912367929": {
-        "treeJSON":     null,
-        "D_951357171":  null,
-        "D_593467240":  null
-    }};
-    
-    return clearedData;
-}
-
-const clientFilterData = async (formData) => {
-
-    if(formData["D_912367929"]?.["D_951357171"] == 104430631) {
-        formData = removeMenstrualCycleData();
-
-        await resetMenstrualCycleSurvey();
-    }
-    
-    return formData;
 }
 
 export function fragment(strings, ...values) {
@@ -2064,7 +2263,7 @@ export const updateStartSurveyParticipantData = async (sha, path, connectId, mod
 
         return moduleText;
     } catch (error) {
-        throw error;
+        throw new Error('Error: updateStartSurveyParticipantData():', error);
     }
 }
 
@@ -2106,6 +2305,104 @@ export const getModuleText = async (sha, path, connectID, moduleID) => {
         });
 
         throw new Error('Error: getModuleText():', error);
+    }
+}
+
+/**
+ * Get the participant's started/completed status from the DHQ3 API.
+ * @param {string} studyID - The study ID for the DHQ3 survey.
+ * @param {string} respondentUsername - The DHQ3 username of the respondent.
+ * @param {string} dhqSurveyStatus - The status of the participant's DHQ3 survey in Firestore.
+ * @param {string} dhqSurveyStatusExternal - The status of the participant's DHQ3 survey in the DHQ system (will lag at times).
+ * @returns {Promise<Object>} - The DHQ3 respondent info from the API.
+ */
+
+export const syncDHQ3RespondentInfo = async (studyID, respondentUsername, dhqSurveyStatus, dhqSurveyStatusExternal) => {
+    if (!studyID || !respondentUsername) {
+        throw new Error('syncDHQ3RespondentInfo: Missing required parameters');
+    }
+
+    try {
+        const url = `${api}?api=syncDHQ3RespondentInfo`;
+        const idToken = await getIdToken();
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + idToken,
+            },
+            body: JSON.stringify({ studyID, respondentUsername, dhqSurveyStatus, dhqSurveyStatusExternal }),
+        });
+        
+        const jsonResponse = await response.json();
+        
+        if (jsonResponse.code !== 200) {
+            throw new Error(`Failed to check DHQ3 status: ${jsonResponse.message}`);
+        }
+        
+        return jsonResponse.data;
+
+    } catch (error) {
+        logDDRumError(new Error(`Sync DHQ3 Respondent Info Error: + ${error.message}`), 'syncDHQ3RespondentInfoError', {
+                userAction: 'sync DHQ3 Respondent Info',
+                timestamp: new Date().toISOString(),
+        });
+
+        throw new Error(`Error: syncDHQ3RespondentInfo(): ${error.message}`);
+    }
+}
+
+/**
+ * Atomically allocate a DHQ3 credential from the available credential pools.
+ * This also sets the survey's started flag and timestamp in the Firestore profile.
+ * @param {Array<string>} availableCredentialPools - Array of available credential pools to allocate from (Firestore appSettings collection).
+ * @returns {Promise<Object>} - The participant's DHQ3 credential data.
+ */
+
+export const allocateDHQ3Credential = async (availableCredentialPools) => {
+    try {
+        const idToken = await getIdToken();
+        const response = await fetch(`${api}?api=allocateDHQ3Credential`, {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + idToken,
+            },
+            body: JSON.stringify(availableCredentialPools),
+        });
+
+        const jsonResponse = await response.json();
+        if (jsonResponse.code === 200) {
+            return jsonResponse.data;
+        } else {
+            throw new Error('Failed to retrieve DHQ Credential', jsonResponse.message);
+        }
+    } catch (error) {
+        logDDRumError(new Error(`Get DHQ Credential Error: + ${error.message}`), 'getDHQCredentialError', {
+            userAction: 'fetch DHQ Credential',
+            timestamp: new Date().toISOString(),
+        });
+
+        throw new Error(`Error: getDHQCredential(): ${error.message}`);
+    }
+}
+
+/**
+ * Update participant data when the participant starts the DHQ module.
+ * @returns {Promise<Object>} - Response from the storeResponse function.
+ */
+
+export const updateStartDHQParticipantData = async () => {
+    try {
+        const formData = {
+            [fieldMapping.DHQ3.startTs]: new Date().toISOString(),
+            [fieldMapping.DHQ3.statusFlag]: fieldMapping.moduleStatus.started,
+        };
+
+        return await storeResponse(formData);
+
+    } catch (error) {
+        const combinedError = new Error(`Error: updateStartDHQParticipantData(): ${error.message}`);
+        combinedError.stack = `${combinedError.stack}\nCaused by: ${error.stack}`;
+        throw combinedError;
     }
 }
 
@@ -2420,6 +2717,20 @@ export const emailAddressValidation = async (data) => {
     return jsonResponse;
 }
 
+export const addressValidation = async (data) => {
+    const idToken = appState.getState().idToken;
+    const response = await fetch(`${api}?api=addressValidation`, {
+        method: "POST",
+        headers: {
+            Authorization: "Bearer " + idToken
+        },
+        body: JSON.stringify(data)
+    });
+
+    const jsonResponse = await response.json();
+    return jsonResponse;
+}
+
 /**
  * Create a new Date object with adjusted time
  * @param {number | string | Date} inputTime - Input time to adjust
@@ -2439,9 +2750,9 @@ export const getAdjustedTime = (inputTime, days = 0, hours = 0, minutes = 0) => 
 
 
 export const emailValidationStatus = {
-    VALID: "valid",
-    INVALID: "invalid",
-    WARNING: "warning",
+    VALID: "Valid",
+    INVALID: "Invalid",
+    WARNING: "Warning",
 };
 
 export const emailValidationAnalysis = (validation) => {
@@ -2516,3 +2827,63 @@ export function replaceUnsupportedPDFCharacters(string, font) {
  }
  return String.fromCodePoint(...codePoints);
 }
+
+/**
+ * Escape HTML characters (useful for github-advanced-security bot warnings)
+ * @param {string} str - String to escape 
+ * @returns {string} - Escaped string
+ */
+export const escapeHTML = (str) => {
+    const div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+};
+
+export const closeModal = () => {
+    const modal = bootstrap.Modal.getInstance(
+        document.getElementById("connectMainModal")
+    );
+    modal.hide();
+};
+
+/**
+ * Validate the token used in URL by the new participant. Send the token for validation. Include the first sign in time. Both are added to Firestore on success.
+ * @param {object} token - The token used in the tokenized URL by participant. This token comes from sites in a URL sent to participants on invitation.
+ * @returns {object} - The response object from the API.
+ */
+export const validateToken = async (token) => {
+    const idToken = await getIdToken();
+    const time = await getFirstSignInISOTime();
+
+    const response = await fetch(api + `?api=validateToken`, {
+        method: "POST",
+        headers: {
+            Authorization:"Bearer " + idToken
+        },
+        body: JSON.stringify({ token, time})
+    });
+
+    const data = await response.json();
+    return data;
+}
+
+/**
+ * Get a nested property from an object using a dot-separated path.
+ * @param {Object} obj - The object to search.
+ * @param {string} path - The dot-separated path to the property.
+ * @returns {any} - The value at the specified path, or undefined if not found.
+ */
+
+export const getNestedProperty = (obj, path) => {
+    if (!path) return undefined;
+
+    // If it's not a path (no dots), return the direct property
+    if (!path.includes('.')) {
+        return obj[path];
+    }
+
+    // Split the path and traverse the object
+    return path.split('.').reduce((current, key) => {
+        return current?.[key];
+    }, obj);
+};

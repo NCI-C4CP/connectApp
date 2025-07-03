@@ -1,6 +1,7 @@
 import { getMyData, hasUserData, urls, fragment, checkAccount, validEmailFormat, validPhoneNumberFormat, getCleanSearchString, firebaseSignInRender, signInAnonymously, usGov, translateHTML, translateText, getFirebaseUI, showAnimation, hideAnimation } from "../shared.js";
 import { signInConfig } from "./signIn.js";
 import { environmentWarningModal, downtimeWarning } from "../event.js";
+import fieldMapping from '../fieldToConceptIdMapping.js';
 
 /**
  * Renders homepage for sign-in/sign-up 
@@ -129,13 +130,13 @@ export const whereAmIInDashboard = async () => {
     if(!hasUserData(myData)) return '';
     
     let data = myData.data;
-    if(data['827220437'] && data['142654897']){
-        if(data['919254129'] === 353358909){
-            if(data['699625233'] && data['699625233'] === 353358909 && data['821247024'] && data['821247024'] !== 197316935){
+    if(data[fieldMapping.healthcareProvider] && data[fieldMapping.heardAboutStudyForm]){
+        if(data[fieldMapping.consentSubmitted] === fieldMapping.yes){
+            if(data[fieldMapping.userProfileSubmittedAutogen] && data[fieldMapping.userProfileSubmittedAutogen] === fieldMapping.yes && data[fieldMapping.verification] && data[fieldMapping.verification] !== fieldMapping.verified){
                 //Awaiting verification
               return translateText('home.awaitVerification');
             }
-            if(data['699625233'] && data['699625233'] === 353358909){
+            if(data[fieldMapping.userProfileSubmittedAutogen] && data[fieldMapping.userProfileSubmittedAutogen] === fieldMapping.yes){
                 
                 //go do your surveys
               return translateText('home.doSurveys');
@@ -146,11 +147,11 @@ export const whereAmIInDashboard = async () => {
         //sign e-consent
         return translateText('home.signConsent');
     }
-    else if(data['827220437'] && !data['142654897']){
+    else if(data[fieldMapping.healthcareProvider] && !data[fieldMapping.heardAboutStudyForm]){
         //heard about study
         return translateText('home.heardStudy')
     }
-    else if(data['379080287']){
+    else if(data[fieldMapping.pinNumber]){
         //pin
         return translateText('home.havePin')
     }
@@ -495,7 +496,7 @@ export const renderHomePrivacyPage = () => {
                   <li class="list-style">Maintain tight security controls. Our information systems, including MyConnect, are watched closely by security experts.</li>
                   <li class="list-style">Remove information that can identify you, including your name, date of birth, and social security number (if you shared it), from your survey answers and samples before we share them with researchers. This information is replaced with a unique number (a code) to protect your identity.</li>
                   <li class="list-style">Limit and keep track of who can access the information and samples you share. Only approved researchers who agree to our privacy rules will be allowed to use study information and samples for valid scientific reasons.</li>
-                  <li class="list-style">Maintain our <a href="https://grants.nih.gov/policy/humansubjects/coc.htm">Certificate of Confidentiality</a> from the United States government. This will help protect against any legal requests (such as a court order) to give out information that could identify you.</li>
+                  <li class="list-style">Maintain our <a href="https://grants.nih.gov/policy-and-compliance/policy-topics/human-subjects/coc">Certificate of Confidentiality</a> from the United States government. This will help protect against any legal requests (such as a court order) to give out information that could identify you.</li>
                 </ul>
                 <p>If you have questions about our privacy safeguards, please <a href="https://norcfedramp.servicenowservices.com/recruit">contact us</a>.</p>
                 <!-- End Contents -->

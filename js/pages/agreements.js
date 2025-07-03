@@ -100,11 +100,19 @@ const siteToConsentSignPosMap = {
             "Eng": {nameX:90,nameY:402,signatureX:110,signatureY:322,dateX:90,dateY:362},
             "Span": {nameX:105,nameY:392,signatureX:105,signatureY:312,dateX:105,dateY:352}
         },
+        "V0.06": {
+            "Eng": {nameX:90,nameY:402,signatureX:110,signatureY:322,dateX:90,dateY:362},
+            "Span": {nameX:105,nameY:392,signatureX:105,signatureY:312,dateX:105,dateY:352}
+        },
         "default": {nameX:90,nameY:420,signatureX:110,signatureY:340,dateX:90,dateY:380},
     },
     
     "HFHS":{
         "V0.03":  {
+            "Eng": {nameX:90,nameY:410,signatureX:110,signatureY:330,dateX:90,dateY:370},
+            "Span": {nameX:105,nameY:410,signatureX:105,signatureY:330,dateX:105,dateY:370}
+        },
+        "V0.04":  {
             "Eng": {nameX:90,nameY:410,signatureX:110,signatureY:330,dateX:90,dateY:370},
             "Span": {nameX:105,nameY:410,signatureX:105,signatureY:330,dateX:105,dateY:370}
         },
@@ -116,16 +124,22 @@ const siteToConsentSignPosMap = {
             "Eng": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355},
             "Span": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355},
         },
+        "V0.05": {
+            "Eng": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355},
+            "Span": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355},
+        },
         "V0.03": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355},
         "default": {nameX:110,nameY:400,signatureX:110,signatureY:320,dateX:110,dateY:360},
     },
     "KPGA": {
+        "V0.05": {nameX:110,nameY:375,signatureX:110,signatureY:295,dateX:110,dateY:335},
         "V0.04": {nameX:110,nameY:375,signatureX:110,signatureY:295,dateX:110,dateY:335},
         "V0.03": {nameX:110,nameY:375,signatureX:110,signatureY:295,dateX:110,dateY:335},
         "default": {nameX:110,nameY:400,signatureX:110,signatureY:320,dateX:110,dateY:360},
     },
     "KPHI": {
         "V0.03": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355},
+        "V0.04": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355},
         "default": {nameX:110,nameY:370,signatureX:110,signatureY:290,dateX:110,dateY:330},
     },
     "KPNW": {
@@ -137,11 +151,19 @@ const siteToConsentSignPosMap = {
             "Eng": {nameX:90,nameY:407,signatureX:110,signatureY:330,dateX:90,dateY:370},
             "Span": {nameX:105,nameY:407,signatureX:105,signatureY:330,dateX:105,dateY:370}
         },
+        "V0.06": {
+            "Eng": {nameX:90,nameY:407,signatureX:110,signatureY:330,dateX:90,dateY:370},
+            "Span": {nameX:105,nameY:407,signatureX:105,signatureY:330,dateX:105,dateY:370}
+        },
         "default": {nameX:90,nameY:410,signatureX:110,signatureY:335,dateX:90,dateY:375},
     },
     "Marshfield": {
         "V0.02": {nameX:110,nameY:425,signatureX:115,signatureY:345,dateX:110,dateY:385},
         "V0.03": {
+            "Eng": {nameX:110,nameY:405,signatureX:115,signatureY:325,dateX:110,dateY:365},
+            "Span": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355}
+        },
+        "V0.04": {
             "Eng": {nameX:110,nameY:405,signatureX:115,signatureY:325,dateX:110,dateY:365},
             "Span": {nameX:110,nameY:395,signatureX:110,signatureY:315,dateX:110,dateY:355}
         },
@@ -152,14 +174,23 @@ const siteToConsentSignPosMap = {
             "Eng": {nameX:120,nameY:730,signatureX:120,signatureY:655,dateX:120,dateY:690},
             "Span": {nameX:120,nameY:200,signatureX:120,signatureY:125,dateX:120,dateY:160}
         },
+        "V0.04": {
+            "Eng": {nameX:120,nameY:730,signatureX:120,signatureY:655,dateX:120,dateY:690},
+            "Span": {nameX:120,nameY:200,signatureX:120,signatureY:125,dateX:120,dateY:160}
+        },
         "default": {nameX:120,nameY:407,signatureX:120,signatureY:330,dateX:120,dateY:367},
     },
     "UChicago": {
         "V0.05": {nameX:110,nameY:410,signatureX:115,signatureY:330,dateX:110,dateY:370},
+        "V0.06": {nameX:110,nameY:410,signatureX:115,signatureY:330,dateX:110,dateY:370},
         "default": {nameX:110,nameY:380,signatureX:115,signatureY:305,dateX:110,dateY:342},
     },
     "BSWH": {
         "V0.02": {
+            "Eng": { nameX: 105, nameY: 407, signatureX: 105, signatureY: 329, dateX: 105, dateY: 367 },
+            "Span": { nameX: 105, nameY: 407, signatureX: 105, signatureY: 329, dateX: 105, dateY: 367 }
+        },
+        "V0.03": {
             "Eng": { nameX: 105, nameY: 407, signatureX: 105, signatureY: 329, dateX: 105, dateY: 367 },
             "Span": { nameX: 105, nameY: 407, signatureX: 105, signatureY: 329, dateX: 105, dateY: 367 }
         },
@@ -208,7 +239,7 @@ export const renderAgreements = async () => {
     showAnimation();
     const myData = await getMyData();
     let template = '';
-    if(hasUserData(myData) && myData.data['919254129'] !== undefined && myData.data['919254129'] === 353358909){
+    if (hasUserData(myData) && myData.data[fieldMapping.consentSubmitted] !== undefined && myData.data[fieldMapping.consentSubmitted] === fieldMapping.yes) {
         template += translateHTML(`
             <div class="row justify-content-center">
                 <div class="col-lg-8">    
@@ -218,7 +249,7 @@ export const renderAgreements = async () => {
                         </div>
                     </div>
 
-                    ${((((myData.data.hasOwnProperty('773707518') && myData.data['773707518'] == 353358909)  || (myData.data['747006172'] && myData.data['747006172'] == 353358909)) && (!myData.data['153713899'] || myData.data['153713899'] == 104430631) || (myData.data.hasOwnProperty('831041022') && myData.data['831041022'] == 353358909 && (!myData.data['359404406'] || myData.data['359404406'] == 104430631)))) ?`
+                    ${((((myData.data.hasOwnProperty(fieldMapping.revokeHipaa) && myData.data[fieldMapping.revokeHipaa] == fieldMapping.yes)  || (myData.data[fieldMapping.consentWithdrawn] && myData.data[fieldMapping.consentWithdrawn] == fieldMapping.yes)) && (!myData.data[fieldMapping.hipaaRevocationSigned] || myData.data[fieldMapping.hipaaRevocationSigned] == fieldMapping.no) || (myData.data.hasOwnProperty(fieldMapping.destroyData) && myData.data[fieldMapping.destroyData] == fieldMapping.yes && (!myData.data[fieldMapping.destroyDataSigned] || myData.data[fieldMapping.destroyDataSigned] == fieldMapping.no)))) ?`
                     <div class="row">
                         <div class="userProfileBox w-100">
                             <div class="row">
@@ -229,7 +260,7 @@ export const renderAgreements = async () => {
                                 <br>
                                 </div>
                             </div>
-                            ${(myData.data.hasOwnProperty('831041022') && myData.data['831041022'] == 353358909 && (!myData.data['359404406'] || myData.data['359404406'] == 104430631)) ?`
+                            ${(myData.data.hasOwnProperty(fieldMapping.destroyData) && myData.data[fieldMapping.destroyData] == fieldMapping.yes && (!myData.data[fieldMapping.destroyDataSigned] || myData.data[fieldMapping.destroyDataSigned] == fieldMapping.no)) ?`
                                 <div class="row">
                                     <div class="col px-2">
                                         <div class="row"  style="border:1px solid lightgrey; border-radius:5px;">
@@ -252,7 +283,7 @@ export const renderAgreements = async () => {
                                     </div>
                                 </div>
                             `:''}
-                            ${(((myData.data.hasOwnProperty('773707518') && myData.data['773707518'] == 353358909) || (myData.data['747006172'] && myData.data['747006172'] == 353358909)) && (!myData.data['153713899'] || myData.data['153713899'] == 104430631)) ?`
+                            ${(((myData.data.hasOwnProperty(fieldMapping.revokeHipaa) && myData.data[fieldMapping.revokeHipaa] == fieldMapping.yes) || (myData.data[fieldMapping.consentWithdrawn] && myData.data[fieldMapping.consentWithdrawn] == fieldMapping.yes)) && (!myData.data[fieldMapping.hipaaRevocationSigned] || myData.data[fieldMapping.hipaaRevocationSigned] == fieldMapping.no)) ?`
                                 <div class="row">
                                     <div class="col px-2">
                                         <div class="row"  style="border:1px solid lightgrey; border-radius:5px;">
@@ -524,7 +555,7 @@ const renderSignDataDestroy = async () =>{
         const selectedLanguage = appState.getState().language;
         const langSuffix = languageSuffix()[selectedLanguage];
         let formData = {};
-        formData['359404406'] = 353358909;
+        formData[fieldMapping.destroyDataSigned] = fieldMapping.yes;
         formData['119449326'] = dateTime();      
         formData['883668444'] = 704529432;
         formData['304438543'] = `Data_Destruction_${consentVersions['DataDestruction']}${(langSuffix ? '_'+langSuffix : '')}`;  
@@ -570,7 +601,7 @@ const renderSignHIPAARevoke = async () =>{
         let formData = {};
         const selectedLanguage = appState.getState().language;
         const langSuffix = languageSuffix()[selectedLanguage];
-        formData['153713899'] = 353358909;
+        formData[fieldMapping.hipaaRevocationSigned] = fieldMapping.yes;
         formData['613641698'] = dateTime();
         formData['577794331'] = 121454001;
         formData['407743866'] = `HIPAA_Revocation_${consentVersions['Revocation']}${(langSuffix ? '_'+langSuffix : '')}`;  
@@ -632,7 +663,7 @@ const consentSignTemplate = () => {
                 <div class="col-md-4 mb-4 pe-md-4">
                     <div style="min-height: 48px">
                         <label class="consent-form-label" data-i18n="agreements.firstName">
-                            First name<span class="required">*</span>
+                            First Name<span class="required">*</span>
                         </label>
                     </div>
                     <input required type="text" autocomplete="off" id="CSFirstName" class="form-control col-md-10" placeholder="" style="margin-left:0px;">
@@ -641,7 +672,7 @@ const consentSignTemplate = () => {
                 <div class="col-md-2 mb-4 px-md-2">
                     <div style="min-height: 48px">
                         <label class="consent-form-label" data-i18n="agreements.middleName">
-                            Middle name<span></span>
+                            Middle Name<span></span>
                         </label>
                     </div>
                     <input type="text" autocomplete="off" id="CSMiddleName" class="form-control col-md-10" placeholder="" style="margin-left:0px;">
@@ -650,7 +681,7 @@ const consentSignTemplate = () => {
                 <div class="col-md-4 mb-4 px-md-4">
                     <div style="min-height: 48px">
                         <label class="consent-form-label" data-i18n="agreements.lastName">
-                            Last name<span class="required">*</span>
+                            Last Name<span class="required">*</span>
                         </label>
                     </div>
                     <input required type="text" autocomplete="off" id="CSLastName" class="form-control col-md-10" placeholder="" style="margin-left:0px;">

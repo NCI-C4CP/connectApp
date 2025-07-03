@@ -1,5 +1,5 @@
-import { allStates, showAnimation, hideAnimation, getMyData, hasUserData, urls, firebaseSignInRender, validEmailFormat, validPhoneNumberFormat, checkAccount, translateHTML, translateText, languageTranslations } from '../shared.js';
-import { attachTabEventListeners, addOrUpdateAuthenticationMethod, changeContactInformation, changeMailingAddress, changeName, formatFirebaseAuthPhoneNumber, FormTypes, getCheckedRadioButtonValue, handleContactInformationRadioButtonPresets, handleOptionalFieldVisibility, hideOptionalElementsOnShowForm, hideSuccessMessage, openUpdateLoginForm, showAndPushElementToArrayIfExists, showEditButtonsOnUserVerified, suffixList, suffixToTextMap, toggleElementVisibility, togglePendingVerificationMessage, unlinkFirebaseAuthProvider, updatePhoneNumberInputFocus, validateContactInformation, validateLoginEmail, validateLoginPhone, validateMailingAddress, validateName } from '../settingsHelpers.js';
+import { allStates, escapeHTML, showAnimation, hideAnimation, getMyData, hasUserData, firebaseSignInRender, validEmailFormat, validPhoneNumberFormat, checkAccount, translateHTML, translateText, languageTranslations } from '../shared.js';
+import { attachTabEventListeners, addOrUpdateAuthenticationMethod, changeAltContactInformation, changeContactInformation, changeMailingAddress, changeName, formatFirebaseAuthPhoneNumber, FormTypes, getCheckedRadioButtonValue, handleContactInformationRadioButtonPresets, handleOptionalFieldVisibility, hideOptionalElementsOnShowForm, hideSuccessMessage, openUpdateLoginForm, showAndPushElementToArrayIfExists, showEditButtonsOnUserVerified, suffixList, suffixToTextMap, toggleElementVisibility, togglePendingVerificationMessage, unlinkFirebaseAuthProvider, updatePhoneNumberInputFocus, validateAltContactInformation, validateContactInformation, validateLoginEmail, validateLoginPhone, validateMailingAddress, validateName, showMailAddressSuggestionMyProfile, showRiskyEmailWarningMyProfile, showClearAddressConfirmation } from '../settingsHelpers.js';
 import { addEventAddressAutoComplete } from '../event.js';
 import cId from '../fieldToConceptIdMapping.js';
 
@@ -7,6 +7,8 @@ const nameElementArray = [];
 const mailingAddressElementArray = [];
 const physicalMailingAddressElementArray = [];
 const contactInformationElementArray = [];
+const altAddressElementArray = [];
+const altContactElementArray = [];
 const loginElementArray = [];
 
 const btnObj = {
@@ -14,6 +16,8 @@ const btnObj = {
     changeContactInformationButton: null,
     changeMailingAddressButton: null,
     changePhysicalMailingAddressButton: null,
+    changeAltMailingAddressButton: null,
+    changeAltContactInfoButton: null,
     changeLoginButton: null
 };
 
@@ -30,6 +34,11 @@ const optVars = {
     canWeText: null,
     canWeVoicemailHome: null,
     canWeVoicemailOther: null,
+    altContactFirstName: null,
+    altContactLastName: null,
+    altContactMobilePhoneNumberComplete: null,
+    altContactHomePhoneNumberComplete: null,
+    altContactEmail: null,
     loginEmail: null,
     loginPhone: null,
     preferredLanguage: null,
@@ -40,6 +49,8 @@ const formVisBools = {
     isContactInformationFormDisplayed: null,
     isMailingAddressFormDisplayed: null,
     isPhysicalMailingAddressFormDisplayed: null,
+    isAltAddressFormDisplayed: null,
+    isAltContactInfoFormDisplayed: null,
     isLoginFormDisplayed: null,
 };
 
@@ -56,12 +67,17 @@ const optRowEles = {
     otherPhoneVoicemailRow: null,
     additionalEmail1Row: null,
     additionalEmail2Row: null,
+    altContactFirstNameRow: null,
+    altContactLastNameRow: null,
+    altContactMobilePhoneRow: null,
+    altContactHomePhoneRow: null,
+    altContactEmailRow: null,
     loginEmailRow: null,
     loginPhoneRow: null,
     preferredLanguageRow: null,
 };
 
-let firebaseAuthUser;
+let firebaseAuthUser; // eslint-disable-line no-unused-vars
 let successMessageElement;
 let userData;
 let isParticipantDataDestroyed;
@@ -100,18 +116,26 @@ export const renderSettingsPage = async () => {
     optVars.otherPhoneNumberComplete = userData[cId.otherPhone];
     optVars.additionalEmail1 = userData[cId.additionalEmail1];
     optVars.additionalEmail2 = userData[cId.additionalEmail2];
-
     optVars.preferredLanguage = userData[cId.preferredLanguage];
+
+    optVars.altContactFirstName = userData[cId.altContactFirstName];
+    optVars.altContactLastName = userData[cId.altContactLastName];
+    optVars.altContactMobilePhoneNumberComplete = userData[cId.altContactMobilePhone];
+    optVars.altContactHomePhoneNumberComplete = userData[cId.altContactHomePhone];
+    optVars.altContactEmail = userData[cId.altContactEmail];
 
     formVisBools.isNameFormDisplayed = false;
     formVisBools.isContactInformationFormDisplayed = false;
     formVisBools.isMailingAddressFormDisplayed = false;
     formVisBools.isPhysicalMailingAddressFormDisplayed = false;
+    formVisBools.isAltAddressFormDisplayed = false;
+    formVisBools.isAltContactInfoFormDisplayed = false;
     formVisBools.isLoginFormDisplayed = false;
+
     if (userData[cId.userProfileSubmittedAutogen] === cId.yes) {
       let headerMessage = '';
       if (!isParticipantDataDestroyed) {
-        if (userData[cId.verification] !== cId.verified) {
+        if (userData[cId.verification] !== cId.verified && userData[cId.consentWithdrawn] !== cId.yes) {
             headerMessage = 'settings.joinMessage';
         }
       } else {
@@ -152,6 +176,16 @@ export const renderSettingsPage = async () => {
                         ${renderPhysicalMailingAddressData(2)}
                         ${renderChangeMailingAddressGroup(2)}
                     </div>
+                    <div class="userProfileBox" id="altAddressDiv" style="display:none">
+                        ${renderAltAddressHeadingAndButton()}
+                        ${renderAlternateAddressData(3)}
+                        ${renderChangeMailingAddressGroup(3)}
+                    </div>
+                    <div class="userProfileBox" id="altContactDiv" style="display:none">
+                        ${renderAltContactInformationHeadingAndButton()}
+                        ${renderAlternateContactInformationData()}
+                        ${renderChangeAltContactInformationGroup()}
+                    </div>
                     <div class="userProfileBox" id="signInInformationDiv" style="display:none">
                         ${renderSignInInformationHeadingAndButton()}
                         ${renderSignInInformationData()}
@@ -175,18 +209,24 @@ export const renderSettingsPage = async () => {
      * Create the buttons, add the event listeners, push the elements to the arrays for visibility toggling
      * If the user profile has not been verified, then hide the profile and edit functionality, show the pending verification message
      */
-    if (userData[cId.verification] == cId.verified) {
+    if (userData[cId.verification] == cId.verified && userData[cId.consentWithdrawn] !== cId.yes) {
       btnObj.changeNameButton = document.getElementById('changeNameButton');
       btnObj.changeContactInformationButton = document.getElementById('changeContactInformationButton');
       btnObj.changeMailingAddressButton = document.getElementById('changeMailingAddressButton');
       btnObj.changePhysicalMailingAddressButton = document.getElementById('changePhysicalMailingAddressButton');
+      btnObj.changeAltAddressButton = document.getElementById('changeAltAddressButton');
+      btnObj.changeAltContactInfoButton = document.getElementById('changeAltContactButton');
       btnObj.changeLoginButton = document.getElementById('changeLoginButton');
       showEditButtonsOnUserVerified();
       handleEditNameSection();
       handleEditContactInformationSection();
       handleEditMailingAddressSection();
       handleEditPhysicalMailingAddressSection();
+      handleEditAltAddressSection();
+      handleEditAltContactSection();
       handleEditSignInInformationSection();
+      handleClearPhysicalAddress();
+      handleClearAlternateAddress();
       attachTabEventListeners();
       attachLoginEditFormButtons();
     }
@@ -211,6 +251,8 @@ const buildPageTemplate = () => {
       loadContactInformationElements();
       loadMailingAddressElements();
       loadPhysicalMailingAddressElements();
+      loadAltAddressElements();
+      loadAltContactElements();
       loadSignInInformationElements();
       showMajorFormDivs();
       togglePendingVerificationMessage(userData);
@@ -223,8 +265,10 @@ const showMajorFormDivs = () => {
   document.getElementById('nameDiv').style.display = 'block';
   document.getElementById('contactInformationDiv').style.display = 'block';
   document.getElementById('mailingAddressDiv').style.display = 'block';
-  document.getElementById('signInInformationDiv').style.display = 'block';
   document.getElementById('physicalMailingAddressDiv').style.display = 'block';
+  document.getElementById('altAddressDiv').style.display = 'block';
+  document.getElementById('altContactDiv').style.display = 'block';
+  document.getElementById('signInInformationDiv').style.display = 'block';
 };
 
 /**
@@ -261,13 +305,13 @@ const handleEditNameSection = () => {
     const firstNameField = document.getElementById('newFirstNameField');
     const lastNameField = document.getElementById('newLastNameField');
     const middleNameField = document.getElementById('newMiddleNameField');
-    optVars.suffix = document.getElementById('newSuffixNameField').value.trim();
-    optVars.preferredFirstName = document.getElementById('newPreferredFirstNameField').value.trim();
+    optVars.suffix = escapeHTML(document.getElementById('newSuffixNameField').value.trim());
+    optVars.preferredFirstName = escapeHTML(document.getElementById('newPreferredFirstNameField').value.trim());
     const isNameValid = validateName(firstNameField, lastNameField, middleNameField);
     if (isNameValid) {
-      const firstName = firstNameField.value.trim();
-      const lastName = lastNameField.value.trim();
-      optVars.middleName = middleNameField.value.trim();
+      const firstName = escapeHTML(firstNameField.value.trim());
+      const lastName = escapeHTML(lastNameField.value.trim());
+      optVars.middleName = escapeHTML(middleNameField.value.trim());
       formVisBools.isNameFormDisplayed = toggleElementVisibility(nameElementArray, formVisBools.isNameFormDisplayed);
       toggleButtonText();
       submitNewName(firstName, lastName);
@@ -288,7 +332,7 @@ const submitNewName = async (firstName, lastName) => {
     successMessageElement.style.display = 'block';
     document.getElementById('profileFirstName').textContent = firstName;
     document.getElementById('profileLastName').textContent = lastName;
-    refreshUserDataAfterEdit();
+    await refreshUserDataAfterEdit();
   }
 };
 
@@ -336,7 +380,7 @@ const handleEditContactInformationSection = () => {
     }
     toggleButtonText();
     handleContactInformationRadioButtonPresets(optVars.mobilePhoneNumberComplete, optVars.canWeVoicemailMobile, optVars.canWeText, optVars.homePhoneNumberComplete, optVars.canWeVoicemailHome, optVars.otherPhoneNumberComplete, optVars.canWeVoicemailOther);
-    updatePhoneNumberInputFocus();
+    updatePhoneNumberInputFocus(FormTypes.CONTACT);
   });
 
   document.getElementById('changeContactInformationSubmit').addEventListener('click', async (e) => {
@@ -364,12 +408,19 @@ const handleEditContactInformationSection = () => {
     
     optVars.preferredLanguage = document.getElementById('newpreferredLanguage').value.toLowerCase().trim();
 
-    const isContactInformationValid = await validateContactInformation(optVars.mobilePhoneNumberComplete, optVars.homePhoneNumberComplete, preferredEmail, optVars.otherPhoneNumberComplete, optVars.additionalEmail1, optVars.additionalEmail2);
-    if (isContactInformationValid) {
-      formVisBools.isContactInformationFormDisplayed = toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed);
-      toggleButtonText();
-      submitNewContactInformation(preferredEmail);
-    }
+      const { hasError, riskyEmails } = await validateContactInformation(optVars.mobilePhoneNumberComplete, optVars.homePhoneNumberComplete, preferredEmail, optVars.otherPhoneNumberComplete, optVars.additionalEmail1, optVars.additionalEmail2);
+      if (!hasError) {
+          const submit = () => {
+              formVisBools.isContactInformationFormDisplayed = toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed);
+              toggleButtonText();
+              submitNewContactInformation(preferredEmail);
+          }
+          if (riskyEmails.length > 0) {
+              showRiskyEmailWarningMyProfile(riskyEmails, submit)
+              return
+          }
+          submit();
+      }
   });
 };
 
@@ -394,7 +445,7 @@ const submitNewContactInformation = async preferredEmail => {
     successMessageElement = document.getElementById('changeContactInformationSuccess');
     successMessageElement.style.display = 'block';
     document.getElementById('profilePreferredEmail').textContent = preferredEmail;
-    refreshUserDataAfterEdit();
+    await refreshUserDataAfterEdit();
   }
 };
 
@@ -423,19 +474,44 @@ const handleEditMailingAddressSection = () => {
     toggleButtonText();
   });
 
-  document.getElementById('changeMailingAddressSubmit1').addEventListener('click', e => {
-    const addressLine1 = document.getElementById('UPAddress1Line1').value.trim();
-    const addressLine2 = document.getElementById('UPAddress1Line2').value.trim();
-    const city = document.getElementById('UPAddress1City').value.trim();
-    const state = document.getElementById('UPAddress1State').value.trim();
-    const zip = document.getElementById('UPAddress1Zip').value.trim();
+  document.getElementById('changeMailingAddressSubmit1').addEventListener('click', async (e) => {
+    const addressLine1 = escapeHTML(document.getElementById('UPAddress1Line1').value.trim());
+    const addressLine2 = escapeHTML(document.getElementById('UPAddress1Line2').value.trim());
+    const city = escapeHTML(document.getElementById('UPAddress1City').value.trim());
+    const state = escapeHTML(document.getElementById('UPAddress1State').value.trim());
+    const zip = escapeHTML(document.getElementById('UPAddress1Zip').value.trim());
     const isPOBox = document.getElementById('poBoxCheckbox').checked;
 
-    const isMailingAddressValid = validateMailingAddress(1, addressLine1, city, state, zip);
-    if (isMailingAddressValid) {
-      formVisBools.isMailingAddressFormDisplayed = toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed);
-      toggleButtonText();
-      submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isPOBox);
+    const {hasError, uspsSuggestion} = await validateMailingAddress(1, addressLine1, city, state, zip);
+
+    if (!hasError) {
+      const submitNewAddress = (addressLine1, addressLine2, city, state, zip) => {
+        formVisBools.isMailingAddressFormDisplayed = toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed);
+        toggleButtonText();
+        submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isPOBox);
+        document.getElementById(`UPAddress1Line1`).value = "";
+        document.getElementById(`UPAddress1Line2`).value = "";
+        document.getElementById(`UPAddress1City`).value = "";
+        document.getElementById(`UPAddress1State`).value = "";
+        document.getElementById(`UPAddress1Zip`).value = "";
+      }
+      if (uspsSuggestion.suggestion) {
+          showMailAddressSuggestionMyProfile(
+              uspsSuggestion,
+              'event.addressSuggestionDescription',
+              (streetAddress, secondaryAddress, city, state, zipCode) => {
+                  submitNewAddress(
+                      streetAddress,
+                      secondaryAddress,
+                      city,
+                      state,
+                      zipCode
+                  );
+              }
+          );
+      } else {
+          submitNewAddress(addressLine1, addressLine2, city, state, zip);
+      }
     }
   });
 };
@@ -443,17 +519,31 @@ const handleEditMailingAddressSection = () => {
 const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, isPOBox = false) => {
   const isSuccess = await changeMailingAddress(id, addressLine1, addressLine2, city, state, zip, userData, isPOBox).catch(function (error) {
     document.getElementById(`mailingAddressFail${id}`).style.display = 'block';
-    document.getElementById(`mailingAddressError${id}`).innerHTML = error.message;
+    document.getElementById(`mailingAddressError${id}`).innerHTML = translateText('settings.failMailUpdate');
   });
   if (isSuccess) {
-    if (!addressLine2 || addressLine2 === '') {
-      document.getElementById(`profileMailingAddress${id}`).innerHTML = `${addressLine1}</br>${city}, ${state} ${zip}`;
-    } else {
-      document.getElementById(`profileMailingAddress${id}`).innerHTML = `${addressLine1}</br>${addressLine2}</br>${city}, ${state} ${zip}`;
+    await refreshUserDataAfterEdit();
+
+    let poBoxText = '';
+    if (id === 1) {
+        poBoxText = translateHTML(`<br><br><span data-i18n="event.poBox">Mailing address is PO Box</span>: <span data-i18n="settings.${isPOBox ? 'optYes' : 'optNo'}">${isPOBox ? "Yes" : "No"}</span>`);
+    } else if (id === 3) {
+        poBoxText = translateHTML(`<br><br><span data-i18n="event.poBoxAltAddress">Alternate address is PO Box</span>: <span data-i18n="settings.${isPOBox ? 'optYes' : 'optNo'}">${isPOBox ? "Yes" : "No"}</span>`);
     }
+
+    if (!addressLine2 || addressLine2 === '') {
+        document.getElementById(`profileMailingAddress${id}`).innerHTML = `${escapeHTML(addressLine1)}</br>${escapeHTML(city)}, ${escapeHTML(state)} ${escapeHTML(zip)}${poBoxText}`;
+
+    } else {
+        document.getElementById(`profileMailingAddress${id}`).innerHTML = `${escapeHTML(addressLine1)}</br>${escapeHTML(addressLine2)}</br>${escapeHTML(city)}, ${escapeHTML(state)} ${escapeHTML(zip)}${poBoxText}`;
+    }
+
+    if (addressLine1 === ""){
+        document.getElementById(`profileMailingAddress${id}`).innerHTML = ""
+    }
+
     successMessageElement = document.getElementById(`mailingAddressSuccess${id}`);
     successMessageElement.style.display = 'block';
-    refreshUserDataAfterEdit();
   }
 };
 
@@ -473,22 +563,224 @@ const handleEditPhysicalMailingAddressSection = () => {
     toggleButtonText();
   });
 
-  document.getElementById('changeMailingAddressSubmit2').addEventListener('click', e => {
-    const addressLine1 = document.getElementById('UPAddress2Line1').value.trim();
-    const addressLine2 = document.getElementById('UPAddress2Line2').value.trim();
-    const city = document.getElementById('UPAddress2City').value.trim();
-    const state = document.getElementById('UPAddress2State').value.trim();
-    const zip = document.getElementById('UPAddress2Zip').value.trim();
+  document.getElementById('changeMailingAddressSubmit2').addEventListener('click', async (e) => {
+    const addressLine1 = escapeHTML(document.getElementById('UPAddress2Line1').value.trim());
+    const addressLine2 = escapeHTML(document.getElementById('UPAddress2Line2').value.trim());
+    const city = escapeHTML(document.getElementById('UPAddress2City').value.trim());
+    const state = escapeHTML(document.getElementById('UPAddress2State').value.trim());
+    const zip = escapeHTML(document.getElementById('UPAddress2Zip').value.trim());
 
-    const isMailingAddressValid = validateMailingAddress(2, addressLine1, city, state, zip);
-    if (isMailingAddressValid) {
-      formVisBools.isPhysicalMailingAddressFormDisplayed = toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed);
-      toggleButtonText();
-      submitNewMailingAddress(2, addressLine1, addressLine2, city, state, zip, true);
+    const {hasError, uspsSuggestion} = await validateMailingAddress(2, addressLine1, city, state, zip);
+    
+    if (!hasError) {
+      const submitNewAddress = (addressLine1, addressLine2, city, state, zip) => {
+        formVisBools.isPhysicalMailingAddressFormDisplayed = toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed);
+        toggleButtonText();
+        submitNewMailingAddress(
+            2,
+            addressLine1,
+            addressLine2,
+            city,
+            state,
+            zip,
+            true
+        );
+        document.getElementById(`UPAddress2Line1`).value = "";
+        document.getElementById(`UPAddress2Line2`).value = "";
+        document.getElementById(`UPAddress2City`).value = "";
+        document.getElementById(`UPAddress2State`).value = "";
+        document.getElementById(`UPAddress2Zip`).value = "";
+      }
+      if (uspsSuggestion.suggestion) {
+        showMailAddressSuggestionMyProfile(
+            uspsSuggestion,
+            'event.addressSuggestionDescriptionPhysical',
+            (streetAddress, secondaryAddress, city, state, zipCode) => {
+                submitNewAddress(
+                    streetAddress,
+                    secondaryAddress,
+                    city,
+                    state,
+                    zipCode
+                );
+            }
+        );
+    } else {
+        submitNewAddress(addressLine1, addressLine2, city, state, zip);
+    }
+
     }
   });
 };
 
+const handleClearPhysicalAddress = () => {
+    document.getElementById('clearPhysicalAddrBtn').addEventListener('click', async (e) => {
+        showClearAddressConfirmation(() => {
+            submitNewMailingAddress(2, "", "", "", "", "")
+        })
+    })
+}
+
+const handleClearAlternateAddress = () => {
+    document.getElementById('clearAlternateAddrBtn').addEventListener('click', async (e) => {
+        showClearAddressConfirmation(() => {
+            submitNewMailingAddress(3, "", "", "", "", "")
+        })
+    })
+}
+
+const loadAltAddressElements = () => {
+    altAddressElementArray.push(document.getElementById(`currentMailingAddressDiv3`));
+    altAddressElementArray.push(document.getElementById(`changeMailingAddressGroup3`));
+}
+
+const handleEditAltAddressSection = () => {
+    btnObj.changeAltAddressButton.addEventListener('click', () => {
+        successMessageElement = hideSuccessMessage(successMessageElement);
+        formVisBools.isAltAddressFormDisplayed = toggleElementVisibility(altAddressElementArray, formVisBools.isAltAddressFormDisplayed);
+        if (formVisBools.isAltAddressFormDisplayed) {
+            toggleActiveForm(FormTypes.ALT_ADDRESS);
+            addEventAddressAutoComplete(3);
+        }
+        toggleButtonText();
+    });
+
+    document.getElementById('changeMailingAddressSubmit3').addEventListener('click', async () => {
+        const altAddressLine1 = escapeHTML(document.getElementById('UPAddress3Line1').value.trim());
+        const altAddressLine2 = escapeHTML(document.getElementById('UPAddress3Line2').value.trim());
+        const altCity = escapeHTML(document.getElementById('UPAddress3City').value.trim());
+        const altState = escapeHTML(document.getElementById('UPAddress3State').value.trim());
+        const altZip = escapeHTML(document.getElementById('UPAddress3Zip').value.trim());
+        const altAddressIsPOBox = document.getElementById("poBoxCheckboxAltAddress")?.checked;
+
+        const { hasError, uspsSuggestion } = await validateMailingAddress(3, altAddressLine1, altCity, altState, altZip);
+
+        if (!hasError) {
+            const submitNewAddress = async (addressLine1, addressLine2, city, state, zip) => {
+                formVisBools.isAltAddressFormDisplayed = toggleElementVisibility(altAddressElementArray, formVisBools.isAltAddressFormDisplayed);
+                toggleButtonText();
+                await submitNewMailingAddress(
+                    3,
+                    addressLine1,
+                    addressLine2,
+                    city,
+                    state,
+                    zip,
+                    altAddressIsPOBox
+                );
+                document.getElementById(`UPAddress3Line1`).value = "";
+                document.getElementById(`UPAddress3Line2`).value = "";
+                document.getElementById(`UPAddress3City`).value = "";
+                document.getElementById(`UPAddress3State`).value = "";
+                document.getElementById(`UPAddress3Zip`).value = "";
+            }
+            if (uspsSuggestion.suggestion) {
+                showMailAddressSuggestionMyProfile(
+                    uspsSuggestion,
+                    'event.addressSuggestionDescriptionAlternate',
+                    (streetAddress, secondaryAddress, city, state, zipCode) => {
+                        submitNewAddress(
+                            streetAddress,
+                            secondaryAddress,
+                            city,
+                            state,
+                            zipCode
+                        );
+                    }
+                );
+            } else {
+                await submitNewAddress(altAddressLine1, altAddressLine2, altCity, altState, altZip);
+            }
+
+        }
+    });
+};
+
+const loadAltContactElements = () => {
+    altContactElementArray.push(document.getElementById('changeAltContactInformationGroup'));
+    optRowEles.altContactFirstNameRow = document.getElementById('altContactFirstNameRow');
+    optRowEles.altContactLastNameRow = document.getElementById('altContactLastNameRow');
+    optRowEles.altContactMobilePhoneRow = document.getElementById('altContactMobilePhoneRow');
+    optRowEles.altContactHomePhoneRow = document.getElementById('altContactHomePhoneRow');
+    optRowEles.altContactEmailRow = document.getElementById('altContactEmailRow');
+
+    showAndPushElementToArrayIfExists(optVars.altContactFirstName, optRowEles.altContactFirstNameRow, !!optVars.altContactFirstName, altContactElementArray);
+    showAndPushElementToArrayIfExists(optVars.altContactLastName, optRowEles.altContactLastNameRow, !!optVars.altContactLastName, altContactElementArray);
+    showAndPushElementToArrayIfExists(optVars.altContactMobilePhoneNumberComplete, optRowEles.altContactMobilePhoneRow, !!optVars.altContactMobilePhoneNumberComplete, altContactElementArray);
+    showAndPushElementToArrayIfExists(optVars.altContactHomePhoneNumberComplete, optRowEles.altContactHomePhoneRow, !!optVars.altContactHomePhoneNumberComplete, altContactElementArray);
+    showAndPushElementToArrayIfExists(optVars.altContactEmail, optRowEles.altContactEmailRow, !!optVars.altContactEmail, altContactElementArray);
+};
+
+const handleEditAltContactSection = () => {
+    btnObj.changeAltContactInfoButton.addEventListener('click', () => {
+        successMessageElement = hideSuccessMessage(successMessageElement);
+        formVisBools.isAltContactInfoFormDisplayed = toggleElementVisibility(altContactElementArray, formVisBools.isAltContactInfoFormDisplayed);
+        if (formVisBools.isAltContactInfoFormDisplayed) {
+            hideOptionalElementsOnShowForm([optRowEles.altContactFirstNameRow, optRowEles.altContactLastNameRow, optRowEles.altContactMobilePhoneRow, optRowEles.altContactHomePhoneRow, optRowEles.altContactEmailRow]);
+            toggleActiveForm(FormTypes.ALT_CONTACT);
+        }
+        toggleButtonText();
+        updatePhoneNumberInputFocus(FormTypes.ALT_CONTACT);
+    });
+
+    document.getElementById('changeAltContactInformationSubmit').addEventListener('click', async () => {
+        optVars.altContactFirstName = document.getElementById('newAltContactFirstNameField')?.value?.trim() || '';
+        optVars.altContactLastName = document.getElementById('newAltContactLastNameField')?.value?.trim() || '';
+
+        const altContactMobilePhonePart1 = document.getElementById('altContactMobilePhoneNumber1')?.value;
+        const altContactMobilePhonePart2 = document.getElementById('altContactMobilePhoneNumber2')?.value;
+        const altContactMobilePhonePart3 = document.getElementById('altContactMobilePhoneNumber3')?.value;
+        optVars.altContactMobilePhoneNumberComplete = `${altContactMobilePhonePart1}${altContactMobilePhonePart2}${altContactMobilePhonePart3}`;
+
+        const altContactHomePhonePart1 = document.getElementById('altContactHomePhoneNumber1')?.value;
+        const altContactHomePhonePart2 = document.getElementById('altContactHomePhoneNumber2')?.value;
+        const altContactHomePhonePart3 = document.getElementById('altContactHomePhoneNumber3')?.value;
+        optVars.altContactHomePhoneNumberComplete = `${altContactHomePhonePart1}${altContactHomePhonePart2}${altContactHomePhonePart3}`;
+
+        optVars.altContactEmail = document.getElementById('newAltContactEmail')?.value?.toLowerCase().trim();
+
+        const { hasError, riskyEmails } = await validateAltContactInformation(
+            optVars.altContactMobilePhoneNumberComplete,
+            optVars.altContactHomePhoneNumberComplete,
+            optVars.altContactEmail
+        );
+        if (!hasError) {
+            const submit = () => {
+                formVisBools.isAltContactInfoFormDisplayed =
+                    toggleElementVisibility(
+                        altContactElementArray,
+                        formVisBools.isAltContactInfoFormDisplayed
+                    );
+                toggleButtonText();
+                submitNewAltContactInformation();
+            };
+            if (riskyEmails.length > 0) {
+                showRiskyEmailWarningMyProfile(riskyEmails, submit);
+                return;
+            }
+            submit();
+        }
+    });
+};
+
+const submitNewAltContactInformation = async () => {
+    const isSuccess = await changeAltContactInformation(optVars.altContactFirstName, optVars.altContactLastName, optVars.altContactMobilePhoneNumberComplete, optVars.altContactHomePhoneNumberComplete, optVars.altContactEmail, userData).catch(function (error) {
+        document.getElementById('changeAltContactInformationFail').style.display = 'block';
+        document.getElementById('changeAltContactInformationError').innerHTML = error.message;
+    });
+    if (isSuccess) {
+        await refreshUserDataAfterEdit();
+
+        handleOptionalFieldVisibility(optVars.altContactFirstName, 'altContactFirstName', optRowEles.altContactFirstNameRow, contactInformationElementArray[0], 'text');
+        handleOptionalFieldVisibility(optVars.altContactLastName, 'altContactLastName', optRowEles.altContactLastNameRow, contactInformationElementArray[0], 'text');
+        handleOptionalFieldVisibility(optVars.altContactMobilePhoneNumberComplete, 'altContactMobilePhoneNumber', optRowEles.altContactMobilePhoneRow, contactInformationElementArray[0], 'phone');
+        handleOptionalFieldVisibility(optVars.altContactHomePhoneNumberComplete, 'altContactHomePhoneNumber', optRowEles.altContactHomePhoneRow, contactInformationElementArray[0], 'phone');
+        handleOptionalFieldVisibility(optVars.altContactEmail, 'altContactEmail', optRowEles.altContactEmailRow, contactInformationElementArray[0], 'text');
+
+        successMessageElement = document.getElementById('changeAltContactInformationSuccess');
+        successMessageElement.style.display = 'block';
+    }
+};
 
 const loadSignInInformationElements = () => {
   loginElementArray.push(document.getElementById('currentSignInInformationDiv'));
@@ -519,7 +811,7 @@ const handleEditSignInInformationSection = () => {
         const handleSignInBtn = async (e) => {
             e.preventDefault();
             window.localStorage.setItem('signInUpdate', 'yes');
-            const inputStr = accountInput.value.trim();
+            const inputStr = escapeHTML(accountInput.value.trim());
             const isEmail = !!inputStr.match(validEmailFormat);
             const isPhone = !!inputStr.match(validPhoneNumberFormat);
             if (isEmail) {
@@ -574,8 +866,8 @@ const handleEditSignInInformationSection = () => {
   });
 
   document.getElementById('changeEmailSubmit').addEventListener('click', e => {
-    const email = document.getElementById('newEmailField').value.trim();
-    const emailConfirm = document.getElementById('newEmailFieldCheck').value.trim();
+    const email = escapeHTML(document.getElementById('newEmailField').value.trim());
+    const emailConfirm = escapeHTML(document.getElementById('newEmailFieldCheck').value.trim());
     const isEmailValid = email && emailConfirm && validateLoginEmail(email, emailConfirm);
     if (isEmailValid) {
         submitNewLoginMethod(email, null)
@@ -583,8 +875,8 @@ const handleEditSignInInformationSection = () => {
   });
 
   document.getElementById('changePhoneSubmit').addEventListener('click', e => {
-    const phone = document.getElementById('newPhoneField').value.trim();
-    const phoneConfirm = document.getElementById('newPhoneFieldCheck').value.trim();
+    const phone = escapeHTML(document.getElementById('newPhoneField').value.trim());
+    const phoneConfirm = escapeHTML(document.getElementById('newPhoneFieldCheck').value.trim());
     const isPhoneValid = phone && phoneConfirm && validateLoginPhone(phone, phoneConfirm);
     if (isPhoneValid) {
         submitNewLoginMethod(null, phone);
@@ -666,42 +958,44 @@ const submitNewLoginMethod = async (email, phone) => {
   }
 };
 
-const toggleActiveForm = clickedFormType => {
-  switch (clickedFormType) {
-    case FormTypes.NAME:
-      formVisBools.isContactInformationFormDisplayed = formVisBools.isContactInformationFormDisplayed ? toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed) : false;
-      formVisBools.isMailingAddressFormDisplayed = formVisBools.isMailingAddressFormDisplayed ? toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed) : false;
-      formVisBools.isPhysicalMailingAddressFormDisplayed = formVisBools.isPhysicalMailingAddressFormDisplayed ? toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed) : false;
-      formVisBools.isLoginFormDisplayed = formVisBools.isLoginFormDisplayed ? toggleElementVisibility(loginElementArray, formVisBools.isLoginFormDisplayed) : false;
-      break;
-    case FormTypes.CONTACT:
-      formVisBools.isNameFormDisplayed = formVisBools.isNameFormDisplayed ? toggleElementVisibility(nameElementArray, formVisBools.isNameFormDisplayed) : false;
-      formVisBools.isMailingAddressFormDisplayed = formVisBools.isMailingAddressFormDisplayed ? toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed) : false;
-      formVisBools.isPhysicalMailingAddressFormDisplayed = formVisBools.isPhysicalMailingAddressFormDisplayed ? toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed) : false;
-      formVisBools.isLoginFormDisplayed = formVisBools.isLoginFormDisplayed ? toggleElementVisibility(loginElementArray, formVisBools.isLoginFormDisplayed) : false;
-      break;
-    case FormTypes.MAILING:
-      formVisBools.isNameFormDisplayed = formVisBools.isNameFormDisplayed ? toggleElementVisibility(nameElementArray, formVisBools.isNameFormDisplayed) : false;
-      formVisBools.isContactInformationFormDisplayed = formVisBools.isContactInformationFormDisplayed ? toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed) : false;
-      formVisBools.isLoginFormDisplayed = formVisBools.isLoginFormDisplayed ? toggleElementVisibility(loginElementArray, formVisBools.isLoginFormDisplayed) : false;
-      formVisBools.isPhysicalMailingAddressFormDisplayed = formVisBools.isPhysicalMailingAddressFormDisplayed ? toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed) : false;
-      break;
-    case FormTypes.PHYSICAL_MAILING:
-      formVisBools.isNameFormDisplayed = formVisBools.isNameFormDisplayed ? toggleElementVisibility(nameElementArray, formVisBools.isNameFormDisplayed) : false;
-      formVisBools.isContactInformationFormDisplayed = formVisBools.isContactInformationFormDisplayed ? toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed) : false;
-      formVisBools.isLoginFormDisplayed = formVisBools.isLoginFormDisplayed ? toggleElementVisibility(loginElementArray, formVisBools.isLoginFormDisplayed) : false;
-      formVisBools.isMailingAddressFormDisplayed = formVisBools.isMailingAddressFormDisplayed ? toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed) : false;
-      break;
-    case FormTypes.LOGIN:
-      formVisBools.isNameFormDisplayed = formVisBools.isNameFormDisplayed ? toggleElementVisibility(nameElementArray, formVisBools.isNameFormDisplayed) : false;
-      formVisBools.isContactInformationFormDisplayed = formVisBools.isContactInformationFormDisplayed ? toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed) : false;
-      formVisBools.isMailingAddressFormDisplayed = formVisBools.isMailingAddressFormDisplayed ? toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed) : false;
-    formVisBools.isPhysicalMailingAddressFormDisplayed = formVisBools.isPhysicalMailingAddressFormDisplayed ? toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed) : false;
-      break;
-    default:
-      break;
-  }
+const formMapping = {
+    [FormTypes.NAME]: {
+        boolKey: 'isNameFormDisplayed',
+        elements: nameElementArray,
+    },
+    [FormTypes.CONTACT]: {
+        boolKey: 'isContactInformationFormDisplayed',
+        elements: contactInformationElementArray,
+    },
+    [FormTypes.MAILING]: {
+        boolKey: 'isMailingAddressFormDisplayed',
+        elements: mailingAddressElementArray,
+    },
+    [FormTypes.PHYSICAL_MAILING]: {
+        boolKey: 'isPhysicalMailingAddressFormDisplayed',
+        elements: physicalMailingAddressElementArray,
+    },
+    [FormTypes.ALT_ADDRESS]: {
+        boolKey: 'isAltAddressFormDisplayed',
+        elements: altAddressElementArray,
+    },
+    [FormTypes.ALT_CONTACT]: {
+        boolKey: 'isAltContactInfoFormDisplayed',
+        elements: altContactElementArray,
+    },
+    [FormTypes.LOGIN]: {
+        boolKey: 'isLoginFormDisplayed',
+        elements: loginElementArray,
+    },
 };
+
+const toggleActiveForm = clickedFormType => {
+    Object.entries(formMapping).forEach(([formType, { boolKey, elements }]) => {
+        if (formType !== clickedFormType && formVisBools[boolKey]) {
+            formVisBools[boolKey] = toggleElementVisibility(elements, formVisBools[boolKey]);
+        }
+    });
+}
 
 export const toggleButtonText = () => {
   btnObj.changeNameButton.textContent = formVisBools.isNameFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateName');
@@ -712,17 +1006,28 @@ export const toggleButtonText = () => {
   btnObj.changeMailingAddressButton.setAttribute('data-i18n',formVisBools.isMailingAddressFormDisplayed ? 'settings.cancel' : 'settings.updateAddress');
   btnObj.changePhysicalMailingAddressButton.textContent = formVisBools.isPhysicalMailingAddressFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateAddress');
   btnObj.changePhysicalMailingAddressButton.setAttribute('data-i18n',formVisBools.isPhysicalMailingAddressFormDisplayed ? 'settings.cancel' : 'settings.updateAddress');
+  btnObj.changeAltAddressButton.textContent = formVisBools.isAltAddressFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateAddress');
+  btnObj.changeAltAddressButton.setAttribute('data-i18n',formVisBools.isAltAddressFormDisplayed ? 'settings.cancel' : 'settings.updateAddress');
+  btnObj.changeAltContactInfoButton.textContent = formVisBools.isAltContactInfoFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateContact');
+  btnObj.changeAltContactInfoButton.setAttribute('data-i18n',formVisBools.isAltContactInfoFormDisplayed ? 'settings.cancel' : 'settings.updateContact');
   btnObj.changeLoginButton.textContent = formVisBools.isLoginFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateSignIn');
   btnObj.changeLoginButton.setAttribute('data-i18n', formVisBools.isLoginFormDisplayed ? 'settings.cancel' : 'settings.updateSignIn');
 };
 
 const refreshUserDataAfterEdit = async () => {
-  const updatedUserData = await getMyData();
-  if (hasUserData(updatedUserData)) {
-    userData = updatedUserData.data;
-    await firebase.auth().currentUser.reload();
-    firebaseAuthUser = firebase.auth().currentUser;
-  }
+    try {
+        showAnimation();
+        const updatedUserData = await getMyData();
+        if (hasUserData(updatedUserData)) {
+            userData = updatedUserData.data;
+            await firebase.auth().currentUser.reload();
+            firebaseAuthUser = firebase.auth().currentUser;
+        }
+    } catch (error) {
+        console.error('Error refreshing user data after edit', error);
+    } finally {
+        hideAnimation();
+    }
 };
 
 /**
@@ -983,17 +1288,17 @@ export const renderChangeNameGroup = () => {
   return eval('`'+translateHTML(`
       <div class="row userProfileLinePaddings" id="changeNameGroup" style="display:none;">
             <div class="col">
-                <label for="newFirstNameField" class="custom-form-label" data-i18n="settings.firstNameFieldLabel">First name <span class="required">*</span></label>
+                <label for="newFirstNameField" class="custom-form-label" data-i18n="settings.firstNameFieldLabel">First Name <span class="required">*</span></label>
                 <input type="text" value="${userData[cId.fName]}" class="form-control input-validation row ms-1" data-validation-pattern="alphabets" data-error-validation="Your first name should contain only uppercase and lowercase letters and can contain some special characters." id="newFirstNameField" placeholder="Enter first name" style="margin-left:0px; max-width:215px; !important;" data-i18n="settings.firstNameField">
             </div>
             <br>
             <div class="col">
-                <label  data-i18n="settings.middleNameFieldLabel" for="newMiddleNameField" class="custom-form-label">Middle name </label><span data-i18n="settings.optional"> (optional)</span>
+                <label  data-i18n="settings.middleNameFieldLabel" for="newMiddleNameField" class="custom-form-label">Middle Name </label><span data-i18n="settings.optional"> (optional)</span>
                 <input  data-i18n="settings.middleNameField" type="text" value="${userData[cId.mName] ? userData[cId.mName] : ''}" class="form-control input-validation row ms-1" data-validation-pattern="alphabets" data-error-validation="Your middle name should contain only uppercase and lowercase letters and can contain some special characters." id="newMiddleNameField" placeholder="Enter middle name (optional)" style="margin-left:0px; max-width:215px; !important;">
             </div>
             <br>
             <div class="col">
-                <label for="newLastNameField" class="custom-form-label" data-i18n="settings.lastNameFieldLabel">Last name <span class="required">*</span></label>
+                <label for="newLastNameField" class="custom-form-label" data-i18n="settings.lastNameFieldLabel">Last Name <span class="required">*</span></label>
                 <input type="text" value="${userData[cId.lName]}" class="form-control input-validation row  ms-1" data-validation-pattern="alphabets" data-error-validation="${translateText("settings.lastNameFieldValidation")}" id="newLastNameField" placeholder="${translateText("settings.lastNameFieldPlaceholder")}" style="margin-left:0px; max-width:304px; !important;">
             </div>
             <br>
@@ -1049,7 +1354,7 @@ export const renderContactInformationHeadingAndButton = () => {
                 </span>
             </div>
             <div class="col-12 col-sm-6 d-flex justify-content-end">
-                <button id="changeContactInformationButton" class="btn btn-primary save-data consentNextButton px-3" data-i18n="settings.updateContactText">
+                <button id="changeContactInformationButton" class="btn btn-primary save-data consentNextButton px-3" style="float:right; display:none;" data-i18n="settings.updateContactText">
                     Update Contact Info
                 </button>
             </div>
@@ -1414,6 +1719,22 @@ export const renderPhysicalMailingAddressHeadingAndButton = () => {
       `);
 };
 
+const renderAltAddressHeadingAndButton = () => {
+    return translateHTML(`
+      <div class="row">
+          <div class="col-12 col-sm-6">
+              <span class="userProfileLabels" data-i18n="settings.altAddress">
+                  Alternate Address (Optional)
+              </span><br>
+              <i data-i18n="settings.altAddressNote">For any other mailing addresses you have</i>
+          </div>
+          <div class="col-12 col-sm-6 d-flex justify-content-end">
+              <button id="changeAltAddressButton" class="btn btn-primary save-data consentNextButton px-3" style="float:right; display:none;" data-i18n="settings.updateAddressText">Update Address</button>
+          </div>
+      </div>
+      `);
+};
+
 export const renderMailingAddressData = (id) => {
   return translateHTML(`
             <div class="row userProfileLinePaddings" id="currentMailingAddressDiv${id}">
@@ -1425,6 +1746,7 @@ export const renderMailingAddressData = (id) => {
                             ${userData[cId.address1]}</br>
                             ${userData[cId.address2] ? `${userData[cId.address2]}</br>` : ''}
                             ${userData[cId.city]}, ${userData[cId.state]} ${userData[cId.zip]}</br>
+                            <br>
                             <span data-i18n="event.poBox">Mailing address is PO Box</span>:
                             <span data-i18n="settings.${userData[cId.isPOBox] === cId.yes ? 'optYes': 'optNo'}">${userData[cId.isPOBox] === cId.yes ? "Yes" : "No"}</span> 
                         ` 
@@ -1437,111 +1759,183 @@ export const renderMailingAddressData = (id) => {
             </div>
         `);
 };
+
 export const renderPhysicalMailingAddressData = (id) => {
   return translateHTML(`
-            <div class="row userProfileLinePaddings" id="currentMailingAddressDiv${id}">
-                <div class="col">
-                    <b>
-                    <div class="userProfileBodyFonts" id="profileMailingAddress${id}">
-                        ${!isParticipantDataDestroyed ?
-                        `
-                            ${userData[cId.physicalAddress1]}</br>
-                            ${userData[cId.physicalAddress2] ? `${userData[cId.physicalAddress2]}</br>` : ''}
-                            ${userData[cId.physicalCity]} ${userData[cId.physicalState] ? ',':''} ${userData[cId.physicalState]} ${userData[cId.physicalZip]}    
-                        ` 
-                        : translateText('settings.dataDeleted')
-                    }
+            <div id="currentMailingAddressDiv${id}">
+                <div class="row userProfileLinePaddings">
+                    <div class="col">
+                        <div class="userProfileBodyFonts" id="profileMailingAddress${id}">
+                            <b>
+                            ${!isParticipantDataDestroyed ?
+                                `
+                                    ${userData[cId.physicalAddress1] || ''}</br>
+                                    ${userData[cId.physicalAddress2] ? `${userData[cId.physicalAddress2]}</br>` : ''}
+                                    ${userData[cId.physicalCity] || ''}${userData[cId.physicalState] ? ',':''} ${userData[cId.physicalState] || ''} ${userData[cId.physicalZip] || ''}    
+                                ` 
+                                : translateText('settings.dataDeleted')
+                            }
+                            </b>
+                        </div>
                     </div>
-                    </b>
-                    </span>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"">
+                        <button class="btn btn-primary save-data consentNextButton px-3" id="clearPhysicalAddrBtn" data-i18n="settingsHelpers.clearButtonText" style="display:none">Clear</button>
+                    </div>
                 </div>
             </div>
         `);
 };
 
-export const renderChangeMailingAddressGroup = (id) => {
-  return translateHTML(`
-      <div class="row userProfileLinePaddings" id="changeMailingAddressGroup${id}" style="display:none;">
-        <div class="col">
-            <div class="form-group row">
-                <div class="col">
-                    <label for="UPAddress${id}Line1" class="custom-form-label" data-i18n="settings.${id === 2 ? 'physical': 'mail'}AddressLine1">
-                        Line 1 (street, ${id ===1 ? 'PO box, ': '' }rural route) <span class="required">*</span>
-                    </label>
-                    <br>
-                    <input style="max-width:301px;" type=text id="UPAddress${id}Line1" data-i18n="settings.${id === 2 ? 'physical': 'mail'}AddressLine1Field" autocomplete="off" class="form-control required-field" placeholder="${translateText('settings.mailAddressLine1Placeholder')}">
+const renderAlternateAddressData = (id) => {
+    const hasAddressContent = !!(
+        userData[cId.altAddress1] ||
+        userData[cId.altAddress2] ||
+        userData[cId.altCity] ||
+        userData[cId.altState] ||
+        userData[cId.altZip]
+    );
+
+    let address = '';
+    if (hasAddressContent) {
+        address = `
+            <b>
+            ${userData[cId.altAddress1] || ''}</br>
+            ${userData[cId.altAddress2] ? `${userData[cId.altAddress2]}</br>` : ''}
+            ${userData[cId.altCity] || ''}${userData[cId.altState] ? ',' : ''} ${userData[cId.altState] || ''} ${userData[cId.altZip] || ''}<br>
+            <br>
+            <span data-i18n="event.poBoxAltAddress">Alternate address is PO Box</span>:
+            <span data-i18n="settings.${userData[cId.isPOBoxAltAddress] === cId.yes ? 'optYes' : 'optNo'}">${userData[cId.isPOBoxAltAddress] === cId.yes ? "Yes" : "No"}</span>
+            </b>
+        `;
+    }
+
+    return translateHTML(`
+            <div id="currentMailingAddressDiv${id}">
+                <div class="row userProfileLinePaddings">
+                    <div class="col">
+                        <div class="userProfileBodyFonts" id="profileMailingAddress${id}">
+                            ${!isParticipantDataDestroyed ? address : translateText('settings.dataDeleted')}
+                        </div>
+                        
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4"">
+                        <button class="btn btn-primary save-data consentNextButton px-3" id="clearAlternateAddrBtn" data-i18n="settingsHelpers.clearButtonText" style="display:none">Clear</button>
+                    </div>
                 </div>
             </div>
-            <div class="form-group row">
-                <div class="col">
-                    <label for="UPAddress${id}Line2"class="custom-form-label" data-i18n="settings.mailAddressLine2">
-                        Line 2 (apartment, suite, unit, building)
-                    </label>
-                    <br>
-                    <input style="max-width:301px;" type=text id="UPAddress${id}Line2" data-i18n="settings.mailAddressLine2Field" autocomplete="off" class="form-control" placeholder="${translateText('settings.mailAddressLine2Placeholder')}">
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col">
-                    <label for="UPAddress${id}City" class="custom-form-label" data-i18n="settings.city">
-                        City <span class="required">*</span>
-                    </label>
-                    <br>
-                    <input style="max-width:301px;" type=text id="UPAddress${id}City" data-i18n="settings.cityField" class="form-control required-field" data-error-required="${translateText('settings.cityValidator')}" placeholder="${translateText('settings.cityPlaceholder')}">
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-lg-2">
-                    <label for="UPAddress${id}State" class="custom-form-label" data-i18n="settings.state">
-                        State <span class="required">*</span>
-                    </label>
-                    <br>
-                    <select style="max-width:150px; text-align-last: center; text-align: center;" class="form-control required-field" data-error-required="${translateText('settings.stateValidator')}" id="UPAddress${id}State">
-                        <option class="option-dark-mode" value="" data-i18n="form.selectOption">-- Select --</option>
-                        ${renderStates()}
-                    </select>
-                </div>
-                <div class="col-lg-2">
-                    <label for="UPAddress${id}Zip" class="custom-form-label" data-i18n="settings.zip">
-                        Zip <span class="required">*</span>
-                    </label>
-                   <input type=text style="max-width:301px;" id="UPAddress${id}Zip" data-i18n="settings.zipField" data-error-validation="${translateText('settings.zipValidator')}" data-val-pattern="[0-9]{5}" title="${translateHTML('settings.zipTitle')}" class="form-control required-field num-val" data-error-required="${translateText('settings.zipRequired')}" size="5" maxlength="5" placeholder="99999">
-                </div>
-            </div>
-            ${id === 1 ? `
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" id="poBoxCheckbox">
-                        <span  data-i18n="form.isPOBoxChecked">Please check if mailing address is a P.O. Box</span>
-                    </label> 
-                </div>
-            `:``}
-            <div class="form-group row">
-                
-            </div>
-                
-            <div class="form-group row">
-                      <div class="col">
-                          <button id="changeMailingAddressSubmit${id}" class="btn btn-primary save-data consentNextButton" data-i18n="settings.submit${id === 1 ? 'Mail': 'Physical'}Update">Submit ${id === 1 ? 'Mailing': 'Physical'} Address Update</button>
-                      </div>
-                  </div>
-            </div>
-        </div>
-        <div class="row userProfileLinePaddings" id="mailingAddressSuccess${id}" style="display:none;">
-            <div class="col">
-                <span class="userProfileBodyFonts" data-i18n="settings.successMailUpdate">
-                    Mailing Address Change Success!
-                </span>
-            </div>
-        </div>
-        <div class="row userProfileLinePaddings" id="mailingAddressFail${id}" style="display:none;">
-            <div class="col">
-                <span id="mailingAddressError${id}" class="userProfileBodyFonts" style="color:red;" data-i18n="settings.failMailUpdate">
-                    Mailing Address Change Failed!
-                </span>
-            </div>
-        </div>
         `);
+};
+
+const renderChangeMailingAddressGroup = (id) => {
+    if (!id) {
+        console.error('id is required for renderChangeMailingAddressGroup');
+        return;
+    }
+
+    const idMappings = {
+        1: { idText: "Mail", idTerm: "Mailing", poBoxText: 'PO box, ' },
+        2: { idText: "Physical", idTerm: "Physical", poBoxText: '' },
+        3: { idText: "Alt", idTerm: "Alternate", poBoxText: 'PO box, ' }
+    };
+    const { idText, idTerm, poBoxText } = idMappings[id];
+
+    const checkboxes = {
+        1: `<div class="checkbox">
+                <label>
+                    <input type="checkbox" id="poBoxCheckbox">
+                    <span data-i18n="form.isPOBoxChecked">Please check if mailing address is a P.O. Box</span>
+                </label> 
+            </div>
+            <br>`,
+        3: `<div class="checkbox">
+                <label>
+                    <input type="checkbox" id="poBoxCheckboxAltAddress">
+                    <span data-i18n="form.isPOBoxCheckboxAltAddress">Please check if alternate address is a P.O. Box</span>
+                </label> 
+            </div>
+            <br>`
+    };
+    const checkboxHTML = checkboxes[id] || '';
+
+    return translateHTML(`
+        <div class="row userProfileLinePaddings" id="changeMailingAddressGroup${id}" style="display:none;">
+            <div class="col">
+                <div class="form-group row">
+                    <div class="col">
+                        <label for="UPAddress${id}Line1" class="custom-form-label" data-i18n="settings.${idText.toLowerCase()}AddressLine1">
+                            Line 1 (street, ${poBoxText}rural route) <span class="required">*</span>
+                        </label>
+                        <br>
+                        <input style="max-width:301px;" type=text id="UPAddress${id}Line1" data-i18n="settings.${idText.toLowerCase()}AddressLine1Field" autocomplete="off" class="form-control required-field" placeholder="${translateText('settings.mailAddressLine1Placeholder')}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col">
+                        <label for="UPAddress${id}Line2" class="custom-form-label" data-i18n="settings.mailAddressLine2">
+                            Line 2 (apartment, suite, unit, building)
+                        </label>
+                        <br>
+                        <input style="max-width:301px;" type=text id="UPAddress${id}Line2" data-i18n="settings.mailAddressLine2Field" autocomplete="off" class="form-control" placeholder="${translateText('settings.mailAddressLine2Placeholder')}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col">
+                        <label for="UPAddress${id}City" class="custom-form-label" data-i18n="settings.city">
+                            City <span class="required">*</span>
+                        </label>
+                        <br>
+                        <input style="max-width:301px;" type=text id="UPAddress${id}City" data-i18n="settings.cityField" class="form-control required-field" data-error-required="${translateText('settings.cityValidator')}" placeholder="${translateText('settings.cityPlaceholder')}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-lg-2">
+                        <label for="UPAddress${id}State" class="custom-form-label" data-i18n="settings.state">
+                            State <span class="required">*</span>
+                        </label>
+                        <br>
+                        <select style="max-width:150px; text-align-last: center; text-align: center;" class="form-control required-field" data-error-required="${translateText('settings.stateValidator')}" id="UPAddress${id}State">
+                            <option class="option-dark-mode" value="" data-i18n="form.selectOption">-- Select --</option>
+                            ${renderStates()}
+                        </select>
+                        <br>
+                    </div>
+                    <div class="col-lg-2">
+                        <label for="UPAddress${id}Zip" class="custom-form-label" data-i18n="settings.zip">
+                            Zip <span class="required">*</span>
+                        </label>
+                    <input type=text style="max-width:301px;" id="UPAddress${id}Zip" data-i18n="settings.zipField" data-error-validation="${translateText('settings.zipValidator')}" data-val-pattern="[0-9]{5}" title="${translateHTML('settings.zipTitle')}" class="form-control required-field num-val" data-error-required="${translateText('settings.zipRequired')}" size="5" maxlength="5" placeholder="99999">
+                    </div>
+                </div>
+                <br>
+                <!-- PO Box Checkbox (for mailing and alt addresses) -->
+                ${checkboxHTML}
+                <div class="form-group row">
+                        <div class="col">
+                            <button id="changeMailingAddressSubmit${id}" class="btn btn-primary save-data consentNextButton" data-i18n="settings.submit${idText}Update">Submit ${idTerm} Address Update</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row userProfileLinePaddings" id="mailingAddressSuccess${id}" style="display:none;">
+                <div class="col">
+                    <span class="userProfileBodyFonts" data-i18n="settings.successMailUpdate">
+                        Mailing Address Change Success!
+                    </span>
+                </div>
+            </div>
+            <div class="row userProfileLinePaddings" id="mailingAddressFail${id}" style="display:none;">
+                <div class="col">
+                    <span id="mailingAddressError${id}" class="userProfileBodyFonts" style="color:red;" data-i18n="settings.failMailUpdate">
+                        Mailing Address Change Failed!
+                    </span>
+                </div>
+            </div>
+        </div>
+    `);
 };
 
 const renderStates = () => {
@@ -1550,6 +1944,184 @@ const renderStates = () => {
     options += `<option class="option-dark-mode" value="${state}" data-i18n="shared.state${state.replace(/\s/g,'')}">${state}</option>`;
   }
   return options;
+};
+
+const renderAltContactInformationHeadingAndButton = () => {
+    return translateHTML(`
+        <div class="row">
+            <div class="col-12 col-sm-6">
+                <span class="userProfileLabels" data-i18n="settings.altContactHeader">
+                    Alternate Contact
+                </span><br>
+                <i data-i18n="settings.altContactNote">To help us get in touch with you if we lose contact</i>
+            </div>
+            <div class="col-12 col-sm-6 d-flex justify-content-end">
+                <button id="changeAltContactButton" class="btn btn-primary save-data consentNextButton px-3" style="float:right; display:none;" data-i18n="settings.updateContactText">
+                    Update Contact Info
+                </button>
+            </div>
+        </div>
+    `);
+};
+
+const renderAlternateContactInformationData = () => {
+    return translateHTML(`        
+        <div class="row userProfileLinePaddings" id="altContactFirstNameRow" style="display:none;">
+            <div class="col">
+                <span class="userProfileBodyFonts">
+                    <span data-i18n="settings.firstName">${translateText('settings.firstName')}</span>
+                <br>
+                    <b>
+                    <div id="altContactFirstName">
+                        ${optVars.altContactFirstName || ''}
+                    </div>    
+                    </b>
+                </span>
+            </div>
+        </div>
+
+        <div class="row userProfileLinePaddings" id="altContactLastNameRow" style="display:none;">
+            <div class="col">
+                <span class="userProfileBodyFonts">
+                <span data-i18n="settings.lastName">${translateText('settings.lastName')}</span>
+                <br>
+                    <b>
+                    <div id="altContactLastName">
+                        ${optVars.altContactLastName || ''}
+                    </div>
+                    </b>
+                </span>
+            </div>
+        </div>
+
+        <div class="row userProfileLinePaddings" id="altContactMobilePhoneRow" style="display:none;">
+            <div class="col">
+                <span class="userProfileBodyFonts">
+                <span data-i18n="settings.mobilePhone">
+                    Mobile Phone
+                </span>
+                <br>
+                    <b>
+                    <div id="altContactMobilePhoneNumber">
+                        ${optVars.altContactMobilePhoneNumberComplete ? `${optVars.altContactMobilePhoneNumberComplete.substr(0, 3)}-${optVars.altContactMobilePhoneNumberComplete.substr(3, 3)}-${optVars.altContactMobilePhoneNumberComplete.substr(6, 4)}` : ''}
+                    </div>    
+                    </b>
+                </span>
+            </div>
+        </div>
+
+        <div class="row userProfileLinePaddings" id="altContactHomePhoneRow" style="display:none;">
+            <div class="col">
+                <span class="userProfileBodyFonts">
+                <span data-i18n="settings.homePhone">
+                    Home Phone
+                </span>
+                <br>
+                    <b>
+                    <div id="altContactHomePhoneNumber">
+                        ${optVars.altContactHomePhoneNumberComplete ? `${optVars.altContactHomePhoneNumberComplete.substr(0, 3)}-${optVars.altContactHomePhoneNumberComplete.substr(3, 3)}-${optVars.altContactHomePhoneNumberComplete.substr(6, 4)}` : ''}
+                    </div>    
+                    </b>
+                </span>
+            </div>
+        </div>            
+
+        <div class="row userProfileLinePaddings" id="altContactEmailRow" style="display:none;">
+            <div class="col">
+                <span class="userProfileBodyFonts">
+                <span data-i18n="settings.altContactEmail">
+                    Email
+                </span>
+                <br>
+                    <b>
+                    <div id="altContactEmail"  ${!isParticipantDataDestroyed ? '' : 'data-i18n="settings.dataDeleted"'}>
+                        ${!isParticipantDataDestroyed ? optVars.altContactEmail : translateText('settings.dataDeleted')}
+                    </div>
+                    </b>
+                </span>
+            </div>
+        </div>
+        `
+    );
+}
+
+const renderChangeAltContactInformationGroup = () => {
+    return translateHTML(`
+        <div class="row userProfileLinePaddings" id="changeAltContactInformationGroup" style="display:none;">
+            <div class="col">
+                <div class="form-group row">
+                    <div class="col">
+                        <label for="newAltContactFirstNameField" class="custom-form-label" data-i18n="settings.altContactFirstNameFieldLabel">First Name</label>
+                        <input type="text" value="${optVars.altContactFirstName || ''}" class="form-control input-validation row ms-1" data-validation-pattern="alphabets" data-error-validation="Your first name should contain only uppercase and lowercase letters and can contain some special characters." id="newAltContactFirstNameField" placeholder="Enter first name" style="margin-left:0px; max-width:215px; !important;" data-i18n="settings.altContactFirstNameField">
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <div class="col">
+                        <label for="newAltContactLastNameField" class="custom-form-label" data-i18n="settings.altContactLastNameFieldLabel">Last Name</label>
+                        <input type="text" value="${optVars.altContactLastName || ''}" class="form-control input-validation row  ms-1" data-validation-pattern="alphabets" data-error-validation="${translateText("settings.altContactLastNameFieldValidation")}" id="newAltContactLastNameField" placeholder="${translateText("settings.altContactLastNameFieldPlaceholder")}" style="margin-left:0px; max-width:304px; !important;" data-i18n="settings.altContactLastNameField">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col">
+                        <label for"editAltContactMobilePhone" class="custom-form-label" data-i18n="settings.mobilePhone">
+                            Mobile phone
+                        </label>
+                        <br>
+                        <div class="btn-group col-md-4" id="editAltContactMobilePhone">
+                            <input type="tel" class="form-control num-val-phone" value="${optVars?.altContactMobilePhoneNumberComplete?.length === 10 ? optVars?.altContactMobilePhoneNumberComplete.substr(0, 3) : ''}" id="altContactMobilePhoneNumber1" data-val-pattern="[1-9]{1}[0-9]{2}" data-i18n="settings.onlyNumbersField"  title="${translateText('settings.onlyNumbers')}" data-error-validation="${translateText('settings.onlyNumbers')}" size="3" maxlength="3" Placeholder="999" style="margin-left:0px"> <span class="hyphen">-</span>
+                            <input type="tel" class="form-control num-val-phone" value="${optVars?.altContactMobilePhoneNumberComplete?.length === 10 ? optVars?.altContactMobilePhoneNumberComplete.substr(3, 3) : ''}" id="altContactMobilePhoneNumber2" data-val-pattern="[0-9]{3}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" data-error-validation="${translateText('settings.onlyNumbers')}" size="3" maxlength="3" Placeholder="999"> <span class="hyphen">-</span>
+                            <input type="tel" class="form-control num-val-phone" value="${optVars?.altContactMobilePhoneNumberComplete?.length === 10 ? optVars?.altContactMobilePhoneNumberComplete.substr(6, 4) : ''}" id="altContactMobilePhoneNumber3" data-val-pattern="[0-9]{4}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" data-error-validation="${translateText('settings.onlyNumbers')}" size="4" maxlength="4" Placeholder="9999">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col">
+                        <label for="editAltContactHomePhone" class="custom-form-label" data-i18n="settings.homePhone">
+                            Home phone
+                        </label>
+                        <br>
+                        <div class="btn-group col-md-4" id="editAltContactHomePhone">
+                            <input type="tel" class="form-control num-val-phone" value="${optVars?.altContactHomePhoneNumberComplete?.length === 10 ? optVars?.altContactHomePhoneNumberComplete.substr(0, 3) : ''}" id="altContactHomePhoneNumber1" data-val-pattern="[1-9]{1}[0-9]{2}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" size="3" maxlength="3" Placeholder="999"> <span class="hyphen">-</span>
+                            <input type="tel" class="form-control num-val-phone" value="${optVars?.altContactHomePhoneNumberComplete?.length === 10 ? optVars?.altContactHomePhoneNumberComplete.substr(3, 3) : ''}" id="altContactHomePhoneNumber2" data-val-pattern="[0-9]{3}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" size="3" maxlength="3" Placeholder="999"> <span class="hyphen">-</span>
+                            <input type="tel" class="form-control num-val-phone" value="${optVars?.altContactHomePhoneNumberComplete?.length === 10 ? optVars?.altContactHomePhoneNumberComplete.substr(6, 4) : ''}" id="altContactHomePhoneNumber3" data-val-pattern="[0-9]{4}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" size="4" maxlength="4" Placeholder="9999">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col">
+                        <label for="newAltContactEmail" class="custom-form-label" data-i18n="settings.altContactEmail">Email</label>
+                        <input max-width:382px;" value="${optVars.altContactEmail || ''}" type="email" class="form-control ms-1" id="newAltContactEmail" placeholder="abc@mail.com">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col">
+                        <button id="changeAltContactInformationSubmit" class="btn btn-primary save-data consentNextButton" data-i18n="settings.submitContactInfoUpdate">Submit Contact Info Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row userProfileLinePaddings" id="changeAltContactInformationSuccess" style="display:none;">
+            <div class="col">
+                <span class="userProfileBodyFonts" data-i18n="settings.successContactUpdate">
+                    Success! Your contact information has been updated.
+                </span>
+            </div>
+        </div>
+
+        <div class="row userProfileLinePaddings" id="changeAltContactInformationFail" style="display:none;">
+            <div class="col">
+                <span id="changeAltContactInformationError" class="userProfileBodyFonts" style="color:red;" data-i18n="settings.failContactUpdate">
+                    Contact Information Update Failed!
+                </span>
+            </div>
+        </div>
+        `
+    );
 };
 
 export const renderSignInInformationHeadingAndButton = () => {

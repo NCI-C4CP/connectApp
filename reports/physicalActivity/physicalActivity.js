@@ -56,9 +56,9 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
     }
     template += `<p><span data-i18n="reports.physicalActivityIntroStart"></span> <span data-i18n="date" data-timestamp="${currentReport.surveyDate}" data-date-options="${encodeURIComponent(JSON.stringify(monthDateOptions))}"></span><span data-i18n="reports.physicalActivityIntroOf"></span><span data-i18n="date" data-timestamp="${currentReport.surveyDate}" data-date-options="${encodeURIComponent(JSON.stringify(yearDateOptions))}"></span><span data-i18n="reports.physicalActivityIntroEnd"></span></p>
         <p><button id="physicalActivityDownloadReport" class="btn btn-primary save-data consentNextButton px-3" data-i18n="reports.downloadReport">Download a PDF of my report</button></p>
-        <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; display: inline-flex">
+        <div style="flex-direction: column; justify-content: flex-start; align-items: flex-start; display: flex">
             <div
-                style="align-self: stretch; padding: 32px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 36px; display: flex">
+                style="align-self: stretch; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 36px; display: flex">
                 <div
                     style="align-self: stretch; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 24px; display: flex">
                     <div data-i18n="reports.physicalActivityDefinition" 
@@ -67,7 +67,7 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                         categories are important for health: aerobic activity (such as brisk walking or dancing), and
                         muscle strengthening activity (such as lifting weights or using resistance bands).</div>
                     <div
-                        style="align-self: stretch; padding-top: 24px; padding-bottom: 24px; padding-left: 32px; padding-right: 24px; background: #E9F6F8; border-radius: 3px; border-left: 8px #2973A5 solid; justify-content: flex-start; align-items: flex-start; gap: 24px; display: inline-flex">
+                        style="align-self: stretch; padding-top: 24px; padding-bottom: 24px; padding-left: 32px; padding-right: 24px; background: #E9F6F8; border-radius: 3px; border-left: 8px #2973A5 solid; justify-content: flex-start; align-items: flex-start; gap: 24px; display: flex">
                         <div style="width: 24px; height: 24px; position: relative">
                             <div style="width: 23.56px; height: 23.56px; left: 0px; top: 0.44px; position: absolute">
                                 <div style="width: 23.56px; height: 23.56px; left: 0px; top: 0px; position: absolute">
@@ -88,19 +88,19 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                             activity.</div>
                     </div>
                 </div>
-                <div
-                    style="align-self: stretch; justify-content: flex-start; align-items: flex-start; gap: 36px; display: inline-flex">
+                <div class="phys-act-rep-cols"
+                    style="align-self: stretch; justify-content: flex-start; align-items: flex-start; gap: 36px; display: flex">
                     <div
-                        style="flex: 1 1 0; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 36px; display: inline-flex">
+                        style="flex: 1 1 0; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 36px; display: flex">
                         <div
-                            style="align-self: stretch; height: 284.90px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
+                            style="align-self: stretch;  flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
                             <div data-i18n="reports.physicalActivityAerobicHeader"
-                                style="width: 364px; color: #606060; font-size: 20px; font-family: Montserrat; font-weight: 700; line-height: 23px; word-wrap: break-word">
+                                style="color: #606060; font-size: 20px; font-family: Montserrat; font-weight: 700; line-height: 23px; word-wrap: break-word">
                                 Your aerobic activity</div>
                             <div
-                                style="align-self: stretch; height: 249.90px; padding: 24px; background: #164C71; border-radius: 3px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 18px; display: flex; min-width: 450px;">
+                                style="align-self: stretch; min-height: 250px; padding: 24px; background: #164C71; border-radius: 3px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 18px; display: flex;">
                                 <div
-                                    style="align-self: stretch; height: 141px; flex-direction: column; justify-content: center; align-items: flex-start; gap: 12px; display: flex">
+                                    style="align-self: stretch;  flex-direction: column; justify-content: center; align-items: flex-start; gap: 12px; display: flex">
                                     <div
                                         style="height: 43px;line-height: 50px;background-image: url('${aerobicImage}');background-repeat: no-repeat;color: white;font-size: 18px;font-family: Montserrat;font-weight: 700;word-wrap: break-word;padding-left: 100px;">
                                         <span data-i18n="reports.${aerobicTitle}"></span></div>
@@ -111,14 +111,14 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                             </div>
                         </div>
                         <div
-                            style="align-self: stretch; height: 311.90px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
+                            style="align-self: stretch;  flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
                             <div data-i18n="reports.physicalActivityMuscleHeader"
                                 style="color: #606060; font-size: 20px; font-family: Montserrat; font-weight: 700; line-height: 23px; word-wrap: break-word">
                                 Your muscle strengthening activity</div>
                             <div
-                                style="align-self: stretch; height: 276.90px; padding: 24px; background: #164C71; border-radius: 3px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 18px; display: flex; min-width: 450px;">
+                                style="align-self: stretch; min-height: 276.90px; padding: 24px; background: #164C71; border-radius: 3px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 18px; display: flex;">
                                 <div
-                                    style="align-self: stretch; height: 168px; flex-direction: column; justify-content: center; align-items: flex-start; gap: 12px; display: flex">
+                                    style="align-self: stretch;  flex-direction: column; justify-content: center; align-items: flex-start; gap: 12px; display: flex">
                                     <div
                                         style="height: 43px;line-height: 50px;background-image: url('${muscleImage}');background-repeat: no-repeat;color: white;font-size: 18px;font-family: Montserrat;font-weight: 700;word-wrap: break-word;padding-left: 60px;">
                                         <span data-i18n="reports.${muscleTitle}"></span> </div>
@@ -129,8 +129,8 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                             </div>
                         </div>
                     </div>
-                    <div
-                        style="width: 246px; padding: 24px; border-radius: 3px; border: 1px #A9AEB1 solid; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: inline-flex">
+                    <div class="phys-act-rep-sidebar"
+                        style="padding: 24px; border-radius: 3px; border: 1px #A9AEB1 solid; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
                         <div data-i18n="reports.physicalActivityCalcHeader" 
                             style="align-self: stretch; color: #606060; font-size: 18px; font-family: Montserrat; font-weight: 700; line-height: 21px; word-wrap: break-word">
                             How did we calculate your activity?</div>
@@ -146,7 +146,7 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                 <div
                     style="align-self: stretch; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 24px; display: flex">
                     <div
-                        style="align-self: stretch; height: 100px; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
+                        style="align-self: stretch; flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
                         <div data-i18n="reports.physicalActivityGuidlinesHeader"
                             style="color: #606060; font-size: 20px; font-family: Montserrat; font-weight: 700; line-height: 23px; word-wrap: break-word">
                             Key guidelines for adults</div>
@@ -155,9 +155,9 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                             The national physical activity guidelines were developed by experts based on more than 60
                             years of research showing how physical activity affects our health.</div>
                     </div>
-                    <div style="justify-content: flex-start; align-items: flex-start; gap: 24px; display: inline-flex">
+                    <div class="phys-act-rep-cols" style="justify-content: flex-start; align-items: flex-start; gap: 24px; display: flex">
                         <div
-                            style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: inline-flex">
+                            style="flex-direction: column; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
                             <div data-i18n="reports.physicalActivityGuidlinesListHeader"
                                 style="align-self: stretch; color: #606060; font-size: 18px; font-family: Montserrat; font-weight: 700; line-height: 21px; word-wrap: break-word">
                                 Adults need a mix of activity to be healthy</div>
@@ -177,9 +177,9 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                                 </ul>
                             </div>
                         </div>
-                        <div
+                        <div class="phys-act-rep-sidebar"
                             style="padding: 24px; background: #FDBE19; border-radius: 3px; justify-content: flex-start; align-items: flex-start; gap: 12px; display: flex">
-                            <div style="width: 198px"><span data-i18n="reports.physicalActivityModerateHeader" 
+                            <div><span data-i18n="reports.physicalActivityModerateHeader" 
                                     style="color: #2E2E2E; font-size: 14px; font-family: Noto Sans; font-weight: 700; line-height: 20px; word-wrap: break-word">What
                                     counts as “moderate” and “vigorous” aerobic activity? </span> <span data-i18n="reports.physicalActivityModerateBody" 
                                     style="color: #2E2E2E; font-size: 14px; font-family: Noto Sans; font-weight: 400; line-height: 20px; word-wrap: break-word">Use
@@ -198,7 +198,7 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                         </div>
                     </div>
                     <div
-                        style="align-self: stretch; padding-top: 24px; padding-bottom: 24px; padding-left: 32px; padding-right: 24px; background: #E9F6F8; border-radius: 3px; border-left: 8px #2973A5 solid; justify-content: flex-start; align-items: flex-start; gap: 24px; display: inline-flex">
+                        style="align-self: stretch; padding-top: 24px; padding-bottom: 24px; padding-left: 32px; padding-right: 24px; background: #E9F6F8; border-radius: 3px; border-left: 8px #2973A5 solid; justify-content: flex-start; align-items: flex-start; gap: 24px; display: flex">
                         <div style="width: 24px; height: 24px; position: relative">
                             <div style="width: 23.56px; height: 23.56px; left: 0px; top: 0.44px; position: absolute">
                                 <div style="width: 23.56px; height: 23.56px; left: 0px; top: 0px; position: absolute">
@@ -361,9 +361,9 @@ export const renderPhysicalActivityReport = (reports, includeHeader) => {
                     </div>
                 </div>
                 <div
-                    style=" padding: 24px; background: #164C71; border-radius: 3px; justify-content: flex-start; align-items: flex-start; gap: 18px; display: inline-flex">
+                    style=" padding: 24px; background: #164C71; border-radius: 3px; justify-content: flex-start; align-items: flex-start; gap: 18px; display: flex">
                     <div
-                        style="flex: 1 1 0; flex-direction: column; justify-content: center; align-items: flex-start; gap: 12px; display: inline-flex">
+                        style="flex: 1 1 0; flex-direction: column; justify-content: center; align-items: flex-start; gap: 12px; display: flex">
                         <div data-i18n="reports.physicalActivityInTouch" 
                             style="align-self: stretch; color: white; font-size: 20px; font-family: Montserrat; font-weight: 700; line-height: 23px; word-wrap: break-word">
                             Get in touch</div>

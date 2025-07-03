@@ -1,4 +1,4 @@
-import { todaysDate, storeResponse, dataSavingBtn, dateTime, errorMessageConsent, siteAcronyms, getMyData, hasUserData, isMobile, openNewTab, languageSuffix, getSelectedLanguage, translateHTML, translateText} from "../shared.js";
+import { todaysDate, storeResponse, dataSavingBtn, dateTime, errorMessageConsent, siteAcronyms, getMyData, hasUserData, isMobile, openNewTab, languageSuffix, getSelectedLanguage, translateHTML, translateText, validNameFormat} from "../shared.js";
 import { renderUserProfile } from "../components/form.js";
 import { removeAllErrors } from "../event.js";
 import { downloadSignedPdf } from "./agreements.js";
@@ -254,7 +254,7 @@ const consentPrivacyPage = () => {
                     <li>Maintain tight security controls. Our information systems, including MyConnect, are watched closely by security experts.</li>
                     <li>Remove information that can identify you, including your name and date of birth, from your survey answers and samples before we share them with researchers. This information is replaced with a unique number to protect your identity.</li>
                     <li>Limit and keep track of who can access the information and samples you share. Only approved researchers who agree to our privacy rules may use study information and samples for valid scientific research.</li>
-                    <li>Maintain our <a target="_blank" href="https://grants.nih.gov/policy/humansubjects/coc.htm">Certificate of Confidentiality</a> from the United States government. This will help protect against any legal requests (such as a court order) to give out information that could identify you.</li>                
+                    <li>Maintain our <a target="_blank" href="https://grants.nih.gov/policy-and-compliance/policy-topics/human-subjects/coc">Certificate of Confidentiality</a> from the United States government. This will help protect against any legal requests (such as a court order) to give out information that could identify you.</li>                
                 </ul>   
                 <p class="consentBodyFont1" data-i18n="consent.privacyPageBody3">If you have questions about privacy, please <a target="_blank" href="https://norcfedramp.servicenowservices.com/recruit">contact us</a>.</p>
 
@@ -635,7 +635,7 @@ const consentConsentPage = async () => {
                             <div class="col-md-4 mb-4 pe-md-4">
                                 <div style="min-height: 48px">
                                     <label class="consent-form-label consentSignHeader" data-i18n="consent.consentPageFormFirstName">
-                                        First name<span class="required">*</span>
+                                        First Name<span class="required">*</span>
                                     </label>
                                 </div>
                                 <input type="text" autocomplete="off" id="CSFirstName" class="form-control" placeholder="">
@@ -646,7 +646,7 @@ const consentConsentPage = async () => {
                             <div class="col-md-2 mb-4 px-md-2">
                                 <div style="min-height: 48px">
                                     <label class="consent-form-label consentSignHeader" data-i18n="consent.consentPageFormMiddleName">
-                                        Middle name<span></span>
+                                        Middle Name<span></span>
                                     </label>
                                 </div>
                                 <input type="text" autocomplete="off" id="CSMiddleName" class="form-control" placeholder="">
@@ -655,7 +655,7 @@ const consentConsentPage = async () => {
                             <div class="col-md-4 mb-4 px-md-4">
                                 <div style="min-height: 48px">
                                     <label class="consent-form-label consentSignHeader" data-i18n="consent.consentPageFormLastName">
-                                        Last name<span class="required">*</span>
+                                        Last Name<span class="required">*</span>
                                     </label>
                                 </div>
                                 <input type="text" autocomplete="off" id="CSLastName" class="form-control" placeholder="">
@@ -1018,13 +1018,19 @@ const consentSubmit = async e => {
             focus = false;
             hasError = true;
         }
-        if(/[0-9,\.<>:;!@#\$%\^&\*\+=\[\]\{\}\\\|]/.test(CSFirstName.value)) {
+        if(!validNameFormat.test(CSFirstName.value)) {
             const msg = '<span data-i18n="consent.firstNameCheck">'+translateText('consent.firstNameCheck')+'</span>';
             errorMessageConsent('CSFirstName', msg, focus)
             focus = false;
             hasError = true;
         }
-        if(/[0-9,\.<>:;!@#\$%\^&\*\+=\[\]\{\}\\\|]/.test(CSLastName.value)) {
+        if(CSMiddleName.value && !validNameFormat.test(CSMiddleName.value)) {
+            const msg = '<span data-i18n="consent.middleNameCheck">'+translateText('consent.middleNameCheck')+'</span>';
+            errorMessageConsent('CSMiddleName', msg, focus)
+            focus = false;
+            hasError = true;
+        }
+        if(!validNameFormat.test(CSLastName.value)) {
             const msg = '<span data-i18n="consent.lastNameCheck">'+translateText('consent.lastNameCheck')+'</span>';
             errorMessageConsent('CSLastName', msg, focus)
             focus = false;
@@ -1043,7 +1049,7 @@ const consentSubmit = async e => {
     formData['982402227'] = CSDate.split('/')[2]+CSDate.split('/')[0]+CSDate.split('/')[1];
     formData['query.firstName'] = [CSFirstName.value.trim().toLowerCase()];
     formData['query.lastName'] = [CSLastName.value.trim().toLowerCase()];
-    formData['919254129'] = 353358909;
+    formData[fieldMapping.consentSubmitted] = fieldMapping.yes;
     formData['454445267'] = dateTime();
     formData['262613359'] = dateTime();
     formData['558435199'] = 353358909;
