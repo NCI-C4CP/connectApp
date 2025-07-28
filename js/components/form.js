@@ -1,4 +1,4 @@
-import { allStates, allCountries, getMyData, hasUserData, translateHTML } from "../shared.js";
+import { allStates, allCountries, getMyData, hasUserData, translateHTML, country3Codes, translateText } from "../shared.js";
 import { addEventMonthSelection, addEventMonthConfirmationSelection, addEventUPSubmit, addEventCancerFollowUp, addEventChangeFocus, addEventAddressAutoComplete, addEventAdditionalEmail, addEventCheckCanText, addEventFormerName, addMoreFormerName, addEventPhysicalAddressLine } from "../event.js";
 import cId from '../fieldToConceptIdMapping.js';
 import { suffixList, suffixToTextMapDropdown, suffixToTextMap, numberOfDefaultFormerNames } from "../settingsHelpers.js";
@@ -173,12 +173,15 @@ export const renderUserProfile = async () => {
                 </div>
             </div>
             <div class="form-group row">
-                <div class="col">
+                <div class="col  col-md-7">
                     <label class="col-form-label" data-i18n="form.countryOfBirth.title">
                         Country 
                     </label>
                     <br>
-                    <input data-i18n="form.countryOfBirth" style="margin-left:0px; max-width:301px;" type=text id="countryOfBirth" class="form-control" placeholder="Enter Country">
+                    <select class="form-control"  id="countryOfOrigin" data-live-search="true">
+                         <option class="option-dark-mode" value="" data-i18n="form.selectOption">-- Select --</option>
+                        ${renderCountries()}
+                    </select>
                 </div>
             </div>
 
@@ -620,7 +623,7 @@ export const renderMailingAddress = (type, id, required, showCountry) => {
             </label>
             <select class="form-control col-md-4" ${required ? 'required' : ''} id="UPAddress${id}Country">
                 <option class="option-dark-mode" value="">-- Select Country --</option>
-                ${renderCountries()}
+                ${renderMailingCountries()}
             </select>
         </div>
         `:``}
@@ -636,6 +639,31 @@ const renderStates = () => {
 }
 
 const renderCountries = () => {
+    let countries = country3Codes.map((code) => {
+        return {code,
+            title: translateText('countries.' + code)
+        }
+    }).sort((a, b) => {
+        if (a.code === 'usa') {
+            return -1;
+        } else if (b.code === 'usa') {
+            return 1;
+        } else if (a.title < b.title) {
+            return -1
+        } else {
+            return 1;
+        }
+    });
+
+    let options = '';
+    for(const index in countries) {
+        let country = countries[index];
+        options += `<option class="option-dark-mode" value="${country.code}" data-i18n="countries.${country.code}">${country.title}</option>`;
+    }
+    return options;
+}
+
+const renderMailingCountries = () => {
     let options = '';
     for(const country in allCountries){
         options += `<option class="option-dark-mode" value="${allCountries[country]}" data-i18n="shared.country${country.replace(/(\s|[-.])/g,'')}">${country}</option>`
