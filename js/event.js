@@ -1135,7 +1135,7 @@ export const addEventUPSubmit = async () => {
         // User Profile Place of Birth
         formData['876546260'] = document.getElementById('cityOfBirth').value;
         formData['337485417'] = document.getElementById('stateOfBirth').value;
-        formData['384576626'] = document.getElementById('countryOfBirth').value;
+        formData[fieldMapping.countryOfOrigin] = document.getElementById('countryOfOrigin').value ? fieldMapping.countries[document.getElementById('countryOfOrigin').value] : '';
 
         const gender = document.getElementsByName('UPRadio');
         Array.from(gender).forEach(radioBtn => {
@@ -1800,8 +1800,8 @@ const verifyUserDetails = (formData) => {
             <div class="col">${formData['337485417']}</div>
         </div>
          <div class="row">
-            <div class="col" data-i18n="form.countryOfBirth.title">Country</div>
-            <div class="col">${formData['384576626']}</div>
+            <div class="col" data-i18n="form.countryOfOrigin.title">Country</div>
+            <div class="col" ${formData[fieldMapping.countryOfOrigin] ? `data-i18n="countries.${Object.keys(fieldMapping.countries).find(key => fieldMapping.countries[key] === formData[fieldMapping.countryOfOrigin])}"` : ''}>${formData[fieldMapping.countryOfOrigin] ? translateText(`countries.${Object.keys(fieldMapping.countries).find(key => fieldMapping.countries[key] === formData[fieldMapping.countryOfOrigin])}`) : ''}</div>
         </div>
         <div class="row">
             <div class="col"><strong data-i18n="event.contactInfo">Contact Information</strong></div>
