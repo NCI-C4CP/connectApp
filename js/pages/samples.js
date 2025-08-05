@@ -658,8 +658,6 @@ const bswh = {
                                 Suite 115 is located within the Irving Hospital in the PAT lab.
                             </p>
                         </div>
-
-
                         <div>
                             <span class="site-info-bold">Baylor Scott & White Center for Diagnostic Medicine – Temple CDM</span>
                             <p>1605 S 31st St<br>
@@ -667,13 +665,16 @@ const bswh = {
                                 Parking Instructions: The site offers free surface level parking.
                             </p>
                         </div>
-
                         <div>
                             <span class="site-info-bold">Baylor Scott & White, Temple Roney Bone & Joint – Temple Roney</span>
                             <p>2401 S 31st St, Bldg 35<br>
                                 Temple, TX 76508<br>
                                 Parking Instructions: The site offers free surface level parking.<br>
                             </p>
+                        </div>
+                        <div>
+                            <span class=\"site-info-bold\">Baylor Scott & White Temple Westfield Clinic</span>
+                            <p>7556 Honeysuckle <br>Temple, TX 76502 <br><br> Parking Instructions: The site offers free surface level parking.</p>
                         </div>
                     </div>`,
     howLong: '<span data-i18n="samples.bswh.howLong">If you complete your first Connect survey before your appointment, please expect to spend about 45 minutes at your appointment to donate your samples and complete a short sample survey.</span>',
