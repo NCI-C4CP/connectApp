@@ -692,7 +692,7 @@
         "enterPin": {
             "placeholder": "Ingresar PIN"
         },
-        "noPinMsg": `<strong>Si no tiene un PIN, haga clic en el botón de abajo para continua.</strong>`,
+        "noPinMsg": `<strong>Si no tiene un PIN, haga clic en el botón de abajo para continuar.</strong>`,
         "noPin": "No tengo PIN",
         "submitText": "Enviar",
         "modalCancel": "No",
