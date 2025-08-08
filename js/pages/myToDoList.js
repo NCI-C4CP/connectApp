@@ -159,10 +159,10 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                         body = `<span data-i18n="mytodolist.bodyHenryFord">Henry Ford Health by emailing <a href = "mailto:ConnectStudy@hfhs.org">ConnectStudy@hfhs.org</a></span>`
                     }
                     if(site === fieldMapping.kaiserPermanenteCO){
-                        body = `<span data-i18n="mytodolist.bodyKPColorado">KP Colorado by emailing <a href = "mailto:Connect-Study-KPCO@kp.org">Connect-Study-KPCO@kp.org</a> or calling 303-636-3126</span>`
+                        body = `<span data-i18n="mytodolist.bodyKPColorado">KP Colorado by emailing <a href = "mailto:Connect-Study-KPCO@kp.org">Connect-Study-KPCO@kp.org</a> or calling 833-630-0007</span>`
                     }
                     if (site === fieldMapping.kaiserPermanenteGA){
-                        body = `<span data-i18n="mytodolist.bodyKPGeorgia">KP Georgia by emailing <a href = "mailto:Connect-Study-KPGA@kp.org">Connect-Study-KPGA@kp.org</a> or calling 404-745-5115</span>`
+                        body = `<span data-i18n="mytodolist.bodyKPGeorgia">KP Georgia by emailing <a href = "mailto:Connect-Study-KPGA@kp.org">Connect-Study-KPGA@kp.org</a> or calling 404-504-5660</span>`
                     }
                     if (site === fieldMapping.kaiserPermanenteHI){
                         body = `<span data-i18n="mytodolist.bodyKPHawaii">KP Hawaii by emailing <a href = "mailto:Connect-Study-KPHI@kp.org">Connect-Study-KPHI@kp.org</a> or calling 833-417-0846</span>`
@@ -171,7 +171,7 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                         body = `<span data-i18n="mytodolist.bodyKPNorthwest">KP Northwest by emailing <a href = "mailto:Connect-Study-KPNW@kp.org">Connect-Study-KPNW@kp.org</a> or calling 1-866-554-6039 (toll-free) or 503-528-3985</span>`
                     }
                     if (site === fieldMapping.marshfieldClinical){
-                        body = `<span data-i18n="mytodolist.bodyConnectSupport">the Connect Support Center by emailing <a href = "mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a> or calling 1-877-505-0253</span>`
+                        body = `<span data-i18n="mytodolist.bodyMarshfieldClinic">Marshfield Clinic by emailing <a href = "mailto:connectstudy@marshfieldresearch.org">connectstudy@marshfieldresearch.org</a> or calling 715-898-9444</span>`
                     }
                     if (site === fieldMapping.sanfordHealth){
                         body = `<span data-i18n="mytodolist.bodySanfordHealth">Sanford Health by emailing <a href = "mailto:ConnectStudy@sanfordhealth.org">ConnectStudy@sanfordhealth.org</a> or calling 605-312-6100</span>`
