@@ -688,6 +688,7 @@ const en = {
         "enterPin": {
             "placeholder": "Enter PIN"
         },
+        "noPinMsg": `<strong>If you don't have a PIN, click the button below to continue.</strong>`,
         "noPin": "I do not have a PIN",
         "submitText": "Submit",
         "modalCancel": "No",

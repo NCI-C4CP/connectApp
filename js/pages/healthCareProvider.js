@@ -20,16 +20,17 @@ export const requestPINTemplate = () => {
         <div class="col-lg-8 eligibility-form">
             <form method="POST" id="requestPINForm">
                 <div class="mb-3">
-                    <label class="form-label" data-i18n="provider.receivedPin">
+                    <label for="participantPIN" class="form-label" data-i18n="provider.receivedPin">
                         <strong>If you received a PIN as part of your study invitation, please enter it here.<br>
                         Your PIN should be 6 characters and will include only numbers and uppercase letters.<br></strong>
                     </label>
-                    <input data-i18n="provider.enterPin" type="text" maxlength="6" id="participantPIN" class="form-control" placeholder="Enter PIN">
+                    <input data-i18n="provider.enterPin" type="text" maxlength="6" id="participantPIN" class="form-control" style="width: 10rem" placeholder="Enter PIN">
+                    <button type="submit" disabled class="btn btn-primary save-data consentNextButton mt-2" id="pinSubmit" data-i18n="provider.submitText">Submit</button>
                 </div>
 
-                <div class="d-flex justify-content-between align-items-center mt-4">
-                    <button type="submit" class="btn btn-primary save-data" id="noPinSubmit" data-i18n="provider.noPin">I do not have a PIN</button>
-                    <button type="submit" disabled class="btn btn-primary save-data consentNextButton" id="pinSubmit" data-i18n="provider.submitText">Submit</button>
+                <div class="mt-5">
+                    <div data-i18n="provider.noPinMsg"><strong>If you don't have a PIN, click the button below to continue.</strong></div>
+                    <button type="submit" class="btn btn-primary save-data mt-2" id="noPinSubmit" data-i18n="provider.noPin">I do not have a PIN</button>
                 </div>
             </form>
         </div>
