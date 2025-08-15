@@ -143,7 +143,9 @@ window.onload = async () => {
     !isLocalDev && window.DD_RUM && window.DD_RUM.startSessionReplayRecording();
     
     document.body.appendChild(script)
+    
     auth = firebase.auth();
+    await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION); // SESSION persistence signs out when browser/tab closes
 
     let inactivityCleanupFunction = null;
 
