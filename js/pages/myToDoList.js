@@ -1,9 +1,6 @@
-import { allocateDHQ3Credential, hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML, translateText, getAdjustedTime, getAppSettings, logDDRumError, reportConfiguration, setReportAttributes, updateStartDHQParticipantData } from "../shared.js";
-import { blockParticipant, questionnaire } from "./questionnaire.js";
-import { renderUserProfile } from "../components/form.js";
-import { consentTemplate } from "./consent.js";
-import { addEventHeardAboutStudy, addEventRequestPINForm, addEventHealthCareProviderSubmit, addEventPinAutoUpperCase, addEventHealthProviderModalSubmit, addEventToggleSubmit, storeParameters } from "../event.js";
-import { heardAboutStudy, requestPINTemplate, healthCareProvider } from "./healthCareProvider.js";
+import { allocateDHQ3Credential, hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML, translateText, getAdjustedTime, getAppSettings, logDDRumError,  updateStartDHQParticipantData } from "../shared.js";
+import { questionnaire } from "./questionnaire.js";
+import { storeParameters } from "../event.js";
 import fieldMapping from '../fieldToConceptIdMapping.js';
 
 export const myToDoList = async (data, fromUserProfile, collections) => {    
