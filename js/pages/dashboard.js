@@ -296,7 +296,7 @@ const renderMainBody = async (data, collections) => {
 
 const renderSurveysCard = async (data, collections) => {
     const newSurvey = await hasNewSurvey(data, collections);
-    let icon = '../../images/surveys-icon.svg';
+    let icon = './images/surveys-icon.svg';
     let href = '#surveys';
     let type = 'survey';
     return renderCard(icon, type, href, newSurvey);
@@ -305,7 +305,7 @@ const renderSurveysCard = async (data, collections) => {
 const renderFormsCard = (data) => {
     let newForm = ((data[fieldMapping.revokeHipaa] === fieldMapping.yes)) &&
         (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] === fieldMapping.no);
-    let icon = '../../images/agreements-icon.svg';
+    let icon = './images/agreements-icon.svg';
     let href = "#forms"
     let type = "form";
     return renderCard(icon, type, href, newForm);
@@ -313,7 +313,7 @@ const renderFormsCard = (data) => {
 
 const renderReportsCard = async (data) => {
     const newReport = await checkForNewReports(data);
-    let icon = '../../images/results-data-icon.svg';
+    let icon = './images/results-data-icon.svg';
     let href = "#reports";
     let type = "report";
     return renderCard(icon, type, href, newReport);
@@ -323,7 +323,7 @@ const renderSamplesCard = (data) => {
     let template = ``;
     if (data[fieldMapping.userProfileSubmittedAutogen] === fieldMapping.yes &&
         data[fieldMapping.consentSubmitted] === fieldMapping.yes) {
-        let icon = '../../images/samples-icon.svg';
+        let icon = './images/samples-icon.svg';
         let href = '#samples';
         let type = 'samples';
         template = renderCard(icon, type, href, false);
