@@ -318,16 +318,21 @@
     },
     "navbar": {
         "dashboardLink": " Panel",
-        "messagesLink": "Mensajes<!--<span class=\"badge\">2</span>-->",
+        "messagesLink": "Mensajes",
+        "messagesIcon": {
+            title: "Mensajes"
+        },
         "formsLink": "Formularios",
         "profileLink": "Mi perfil",
+        "profileLinkPre": "Perfil de ",
+        "profileLinkPost": " ",
         "reportsLink": "Mis Informes",
         "paymentLink": " Mi pago",
         "samplesLink": " Mis muestras",
         "supportLink": " Asistencia",
         "signOutLink": {
             "title": "Cerrar sesión",
-            "innerHTML": "<i class=\"fas fa-sign-out-alt\"></i> Cerrar sesión"
+            "innerHTML": "Cerrar sesión"
         },
         "homeLink": "<a class=\"nav-link\" href=\"#\" id=\"home\" title=\"Inicio\"> Inicio</a>",
         "aboutLink": "<a class=\"nav-link\" href=\"#about\" id=\"about\" title=\"Acerca de\"> Acerca de</a>",
@@ -1823,7 +1828,9 @@
         "sessionInactive": "Ha estado inactivo durante 20 minutos, ¿desea extender la sesión?<div class=\"modal-footer\"><button type=\"button\" title=\"Cerrar\" class=\"btn btn-dark log-out-user\" data-bs-dismiss=\"modal\">Cerrar sesión</button><button type=\"button\" title=\"Continuar\" class=\"btn btn-primary extend-user-session\" data-bs-dismiss=\"modal\">Continuar</button></div>",
         "homeTitle": "My Connect - Inicio",
         "dashboardTitle": "My Connect - Panel",
-        "signInPhone": "Iniciar sesión con el número de teléfono"
+        "surveyTitle": "My Connect - Encuestas",
+        "signInPhone": "Iniciar sesión con el número de teléfono",
+        "welcomeText": "Le damos la bienvenida, ",
     },
     "languageSelector": {
         "title": "Idioma",
@@ -2188,6 +2195,17 @@
         "ymd": "YEMEN, DEMOCRATIC",
         "zmb": "ZAMBIA",
         "zwe": "ZIMBABWE"
+    },
+    "dashboard": {
+        "newText": "Nuevo",
+        "surveyTitle": "Encuestas",
+        "surveyText": "Ver encuestas y completar las encuestas requeridas para este estudio",
+        "samplesTitle": "Muestras",
+        "samplesText": "Vea muestras y aprenda cómo enviarlas.",
+        "reportTitle": "Mis Informes",
+        "reportText": "Ver y rechazar informes sobre sus datos.",
+        "formTitle": "Formularios",
+        "formText": "Revise y descargue los formularios que ha completado"
     }
 }
 

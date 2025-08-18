@@ -21,7 +21,6 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
         localStorage.eligibilityQuestionnaire = JSON.stringify({[fieldMapping.healthcareProvider]: data[fieldMapping.healthcareProvider]})
         if(data[fieldMapping.consentSubmitted] === fieldMapping.yes) {
 
-            let topMessage = ""; 
             if(data[fieldMapping.userProfileSubmittedAutogen] && data[fieldMapping.userProfileSubmittedAutogen] === fieldMapping.yes){
 
                 let template = `
@@ -31,191 +30,11 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                         <div class="col-xl-8">
                      
                 `;
-                let finalMessage = "";
-                const defaultMessage = '<p/><br><span data-i18n="mytodolist.withdrawnConnect">You have withdrawn from Connect. We will not collect any more data from you. If you have any questions, please contact the Connect Support Center by calling 1-877-505-0253 or by emailing <a href="mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a>.</span><br>';
-
-                if (isParticipantDataDestroyed(data)){
-                    finalMessage += '<span data-i18n="mytodolist.deletedData">At your request, we have deleted your Connect data. If you have any questions, please contact the Connect Support Center by calling 1-877-505-0253 or by emailing  <a href="mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a>.</span>'
-                }
-                else if (data[fieldMapping.destroyData] === fieldMapping.yes) {
-                    if (!data[fieldMapping.destroyDataSigned] || data[fieldMapping.destroyDataSigned] == fieldMapping.no){
-                        finalMessage += '<span data-i18n="mytodolist.newFormSign">You have a new <a href="#forms">form</a> to sign.</span>' + defaultMessage
-                    }
-                    else if((data[fieldMapping.consentWithdrawn] && data[fieldMapping.consentWithdrawn] !== fieldMapping.no) && (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] == fieldMapping.no)){
-                        finalMessage += '<span data-i18n="mytodolist.newFormSign">You have a new <a href="#forms">form</a> to sign.</span>' + defaultMessage
-                    }
-                    else{
-                        finalMessage += defaultMessage
-                    }
-                }
-                else if ((data[fieldMapping.consentWithdrawn] && data[fieldMapping.consentWithdrawn] !== fieldMapping.no)){
-                    
-                    if (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] == fieldMapping.no){
-                        finalMessage += '<span data-i18n="mytodolist.newFormSign">You have a new <a href="#forms">form</a> to sign.</span>' + defaultMessage
-                    }
-                    else{
-                        finalMessage += defaultMessage
-                    }
-                }
-                else if (data[fieldMapping.recruitmentType] === fieldMapping.recruitmentTypePassive && data[fieldMapping.verification] === fieldMapping.notYetVerified) {
-                    blockParticipant();
-                    hideAnimation();
-                    return;
-                }
-                if(finalMessage.trim() !== ""){
-                    template += `
-                    <div class="alert alert-warning" role="alert" aria-live="polite" id="verificationMessage" style="margin-top:10px;">
-                        ${finalMessage}
-                    </div>
-                    `
-                    mainContent.innerHTML = translateHTML(template);
-                    hideAnimation();
-                    return;
-                }
-                else if (((data[fieldMapping.revokeHipaa] === fieldMapping.yes)) && (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] === fieldMapping.no)){
-                    topMessage += '<span data-i18n="mytodolist.newFormSign">You have a new <a href="#forms">form</a> to sign.</span><p/><br>';
-                }
-                if(!data[fieldMapping.verification] || data[fieldMapping.verification] == fieldMapping.notYetVerified){
-                    if(data['unverifiedSeen'] && data['unverifiedSeen'] === true){
-                        topMessage += '';
-                    }
-                    else{
-                        topMessage = '';
-                    }
-                    topMessage += `
-                        ${fromUserProfile ? 
-                            `<span data-i18n="mytodolist.completingProfile">Thank you for completing your profile for the Connect for Cancer Prevention Study. Next, the Connect team at your health care system will check that you are eligible to be part of the study. We will contact you within a few business days.
-                            <br>
-                            In the meantime, please begin by completing your first Connect survey.</span>`:
-                            `<span data-i18n="mytodolist.checkEligibility">The Connect team at your health care system is working to check that you are eligible to be part of the study.</span> 
-                            ${checkIfComplete(data) ? '<span data-i18n="mytodolist.thankYouCompleting">Thank you for completing your first Connect survey! We will be in touch with next steps.</span>': '<span data-i18n="mytodolist.firstSurvey">In the meantime, please begin by completing your first Connect survey.</span>'}`}
-                    `
-                }
-                else if(data[fieldMapping.verification] && data[fieldMapping.verification] == fieldMapping.verified) {
-                    if(data['verifiedSeen'] && data['verifiedSeen'] === true){
-                        if(checkIfComplete(data)) {
-                            if(!data['firstSurveyCompletedSeen']) {
-                                topMessage += '<span data-i18n="mytodolist.thankYouCompleting">Thank you for completing your first Connect survey! We will be in touch with next steps.</span>' 
-                                let formData = {};
-                                formData['firstSurveyCompletedSeen'] = true;
-                                storeResponse(formData);
-                            }
-                            else {
-                                topMessage += '';
-                            }
-                        }
-                    }
-                    else{
-                        topMessage += `
-                            <span data-i18n="mytodolist.confirmedEligibility">Great news! We have confirmed that you are eligible for the Connect for Cancer Prevention Study. You are now an official Connect participant.</span>
-                            <br>
-                            ${checkIfComplete(data) ? '<span data-i18n="mytodolist.thankYouCompleting">Thank you for completing your first Connect survey! We will be in touch with next steps.</span>':'<span data-i18n="mytodolist.completeFirstSurvey">The next step is to complete your first Connect survey.</span>'}
-                            <br>
-                            <span data-i18n="mytodolist.thankYouBeingPart">Thank you for being a part of Connect and for your commitment to help us learn more about how to prevent cancer.</span>
-                            <br>
-                        `
-                        let formData = {};
-                        formData['verifiedSeen'] = true;
-                        storeResponse(formData);
-                    }
-                }
-                else if(data[fieldMapping.verification] && data[fieldMapping.verification] == fieldMapping.cannotBeVerified) {
-                    template += `
-                    <div class="alert alert-warning" role="alert" aria-live="polite" id="verificationMessage" style="margin-top:10px;"  data-i18n="mytodolist.notEligibleMessage">
-                        Based on our records you are not eligible for the Connect for Cancer Prevention Study. Thank you for your interest. Any information that you have already provided will remain private. We will not use any information you shared for our research.
-                        <br>
-                        If you think this is a mistake or if you have any questions, please contact the <a href="https://norcfedramp.servicenowservices.com/participant" target="_blank">Connect Support Center</a>.
-                    </div>
-                    </div>
-                    <div class="col-xl-2">
-                    </div>
-                    </div>
-                    `
-                    mainContent.innerHTML = translateHTML(template);
-                    hideAnimation();
-                    return;
-                }
-                else if(data[fieldMapping.verification] && data[fieldMapping.verification] == fieldMapping.duplicate) {
-                    template += `
-                    <div class="alert alert-warning" role="alert" aria-live="polite" id="verificationMessage" style="margin-top:10px;" data-i18n="mytodolist.alreadyHaveAccount">
-                        Our records show that you already have another account with a different email or phone number. Please try signing in again. Contact the Connect Support Center by emailing <a href = "mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a> or calling <span style="white-space:nowrap;overflow:hidden">1-877-505-0253</span> if you need help accessing your account.
-                    </div>
-                    </div>
-                    <div class="col-xl-2">
-                    </div>
-                    </div>
-                    `
-                    mainContent.innerHTML = translateHTML(template);
-                    hideAnimation();
-                    return;
-                }
-                else if (data[fieldMapping.verification] && data[fieldMapping.verification] == fieldMapping.outreachTimedOut) {
-                    let site = data[fieldMapping.healthcareProvider]
-                    let body = `<span data-i18n="mytodolist.bodyConnectSupport">the Connect Support Center by emailing <a href = "mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a> or calling 1-877-505-0253</span>`;
-                    if (site === fieldMapping.healthPartners){
-                        body = `<span data-i18n="mytodolist.bodyHealthPartners">HealthPartners by emailing <a href = "mailto:ConnectStudy@healthpartners.com">ConnectStudy@healthpartners.com</a> or calling 952-967-5067</span>`
-                    }
-                    if (site === fieldMapping.henryFordHealth){
-                        body = `<span data-i18n="mytodolist.bodyHenryFord">Henry Ford Health by emailing <a href = "mailto:ConnectStudy@hfhs.org">ConnectStudy@hfhs.org</a></span>`
-                    }
-                    if(site === fieldMapping.kaiserPermanenteCO){
-                        body = `<span data-i18n="mytodolist.bodyKPColorado">KP Colorado by emailing <a href = "mailto:Connect-Study-KPCO@kp.org">Connect-Study-KPCO@kp.org</a> or calling 833-630-0007</span>`
-                    }
-                    if (site === fieldMapping.kaiserPermanenteGA){
-                        body = `<span data-i18n="mytodolist.bodyKPGeorgia">KP Georgia by emailing <a href = "mailto:Connect-Study-KPGA@kp.org">Connect-Study-KPGA@kp.org</a> or calling 404-504-5660</span>`
-                    }
-                    if (site === fieldMapping.kaiserPermanenteHI){
-                        body = `<span data-i18n="mytodolist.bodyKPHawaii">KP Hawaii by emailing <a href = "mailto:Connect-Study-KPHI@kp.org">Connect-Study-KPHI@kp.org</a> or calling 833-417-0846</span>`
-                    }
-                    if (site === fieldMapping.kaiserPermanenteNW){
-                        body = `<span data-i18n="mytodolist.bodyKPNorthwest">KP Northwest by emailing <a href = "mailto:Connect-Study-KPNW@kp.org">Connect-Study-KPNW@kp.org</a> or calling 1-866-554-6039 (toll-free) or 503-528-3985</span>`
-                    }
-                    if (site === fieldMapping.marshfieldClinical){
-                        body = `<span data-i18n="mytodolist.bodyMarshfieldClinic">Marshfield Clinic by emailing <a href = "mailto:connectstudy@marshfieldresearch.org">connectstudy@marshfieldresearch.org</a> or calling 715-898-9444</span>`
-                    }
-                    if (site === fieldMapping.sanfordHealth){
-                        body = `<span data-i18n="mytodolist.bodySanfordHealth">Sanford Health by emailing <a href = "mailto:ConnectStudy@sanfordhealth.org">ConnectStudy@sanfordhealth.org</a> or calling 605-312-6100</span>`
-                    }
-                    if (site === fieldMapping.uChicagoMedicine){
-                        body = `<span data-i18n="mytodolist.bodyConnectSupport">the Connect Support Center by emailing <a href = "mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a> or calling 1-877-505-0253</span>`
-                    }
-                    if (site === fieldMapping.baylorScottAndWhiteHealth) {
-                        body = `<span data-i18n="mytodolist.bodyBaylorScottAndWhiteHealth">Baylor Scott & White Health by emailing <a href = "mailto:ConnectStudy@bswhealth.org">ConnectStudy@bswhealth.org</a> or calling 214-865-2427</span>`
-                    }
-
-                    template += `
-                    <div class="alert alert-warning" role="alert" aria-live="polite" id="verificationMessage" style="margin-top:10px;">
-                        <span  data-i18n="mytodolist.tryingContact">Our study team has been trying to contact you about your eligibility for the Connect for Cancer Prevention Study. We need more information from you to check that you can be part of Connect. Please contact </span>${body}<span data-i18n="mytodolist.tryingContactEnd"> to confirm that you can take part in the study.</span>    
-                    </div>
-                    </div>
-                    <div class="col-xl-2">
-                    </div>
-                    </div>
-                    `;
-                    mainContent.innerHTML = translateHTML(template);
-                    window.scrollTo(0,0)
-                    hideAnimation();
-                    return;
-                }
                 
                 const surveyMessage = await checkForNewSurveys(data, collections);
 
                 if(surveyMessage) {
                     template += surveyMessage;
-                }
-
-                const reportMessage = await checkForNewReports(data);
-
-                if(reportMessage) {
-                    template += reportMessage;
-                }
-                
-                if(topMessage.trim() !== ""){
-                    template += `
-                    <div class="alert alert-warning" role="alert" aria-live="polite" id="verificationMessage" style="margin-top:10px;">
-                        ${topMessage}
-                    </div>
-                    `
                 }
 
                 template += `
@@ -272,28 +91,9 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                 hideAnimation();
                 return;
             }
-            renderUserProfile();
             hideAnimation();
             return;
         }
-
-        consentTemplate();
-        hideAnimation();
-        return;
-                  }
-    // Completed healthcareProvider form. Did not complete heardAboutStudy form.
-    else if(data[fieldMapping.healthcareProvider] && !data[fieldMapping.heardAboutStudyForm] && !isParticipantDataDestroyed(data)){
-        mainContent.innerHTML =  heardAboutStudy();
-        addEventHeardAboutStudy();
-        hideAnimation();
-    }
-    // Completed PIN entry form by either entering a PIN number or specifying no PIN number (passive recruit).
-    else if (data[fieldMapping.pinNumber] || data[fieldMapping.dontHavePinNumber] === fieldMapping.yes){
-        mainContent.innerHTML = healthCareProvider();
-        addEventHealthCareProviderSubmit();
-        addEventHealthProviderModalSubmit();
-    }
-    else{
         // Data Destroyed
         if (isParticipantDataDestroyed(data)) {
             mainContent.innerHTML = `
@@ -309,12 +109,6 @@ export const myToDoList = async (data, fromUserProfile, collections) => {
                 </div>
             `;
         // None of the above. Start at PIN entry form.
-        } else {
-            mainContent.innerHTML = requestPINTemplate();
-            addEventPinAutoUpperCase();
-            addEventRequestPINForm();
-            addEventToggleSubmit();
-            hideAnimation();
         }
         hideAnimation();
     }
@@ -730,46 +524,6 @@ const checkForNewSurveys = async (data, collections) => {
     let obj = {};
     obj[fieldMapping.enabledSurveys] = enabledSurveys;
     obj[fieldMapping.completedStandaloneSurveys] = completedStandaloneSurveys;
-
-    await storeResponse(obj);
-    return template;
-};
-
-const checkForNewReports = async (data) => {
-    let template = ``;
-    let reports = reportConfiguration();
-    reports = await setReportAttributes(data, reports);
-    let availableReports = 0;
-    let newReport = false;
-    let knownReports;
-
-    Object.keys(reports).forEach(rep => {
-        if(reports[rep].reportId) {
-            if(reports[rep].enabled) availableReports++;
-        }
-    });
-
-    if(data[fieldMapping.reports.knownReports]) {
-        knownReports = data[fieldMapping.reports.knownReports];
-        if(knownReports < availableReports) {
-            newReport = true;
-        }
-    }
-    else if (availableReports > 0) {
-        newReport = true;
-    }
-
-    if(newReport) {
-        template += `
-            <div class="alert alert-warning" id="verificationMessage" style="margin-top:10px;" data-i18n="reports.newReport">
-                You have a new report available!
-            </div>
-        `;
-    }
-
-    let obj = {
-        [fieldMapping.reports.knownReports]: availableReports
-    };
 
     await storeResponse(obj);
     return template;

@@ -2447,13 +2447,13 @@ export const toggleCurrentPage = async (route) => {
     });
     if(route === '#' && document.getElementById('home')) document.getElementById('home').click();
     if(route === '#dashboard') document.getElementById('userDashboard').click();
-    if(route === '#messages') document.getElementById('Notifications').click();
-    if(route === '#forms') document.getElementById('userAgreements').click();
-    if(route === '#myprofile') document.getElementById('userSettings').click();
-    if(route === '#reports') document.getElementById('reports').click();
+    // if(route === '#messages') document.getElementById('Notifications').click();
+    // if(route === '#forms') document.getElementById('userAgreements').click();
+    // if(route === '#myprofile') document.getElementById('userSettings').click();
+    // if(route === '#reports') document.getElementById('reports').click();
     if(route === '#support') document.getElementById('connectSupport').click();
-    if(route === '#samples') document.getElementById('connectSamples').click();
-    if(route === '#payment') document.getElementById('connectPayment').click();
+    // if(route === '#samples') document.getElementById('connectSamples').click();
+    // if(route === '#payment') document.getElementById('connectPayment').click();
 }
 
 export const toggleCurrentPageNoUser = async () => {
