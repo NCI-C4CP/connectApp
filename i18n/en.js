@@ -334,6 +334,7 @@ const en = {
             "title": "Sign Out",
             "innerHTML": "Sign Out"
         },
+        "editProfileLink": "Edit My Profile",
         "homeLink": "<a class=\"nav-link\" href=\"#\" id=\"home\" title=\"Home\"> Home</a>",
         "aboutLink": "<a class=\"nav-link\" href=\"#about\" id=\"about\" title=\"About\"> About</a>",
         "expectationsLink": "<a class=\"nav-link\" href=\"#expectations\" id=\"expectations\" title=\"Expectations\"> What to expect</a>",

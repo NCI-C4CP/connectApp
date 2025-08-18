@@ -33,14 +33,14 @@ export const userHeaderNavBar = (response) => {
                     <span class="fas fa-user profile-icon"></span><span data-i18n="navbar.profileLinkPre"></span>${response.data[fieldMapping.fName]}<span data-i18n="navbar.profileLinkPost">'s Profile</span>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownUserMenuButton">
-                    <a class="dropdown-item ${disabledClass}" href="#myprofile" >Edit My Profile</a>
+                    <a class="dropdown-item ${disabledClass}" href="#myprofile" data-i18n="navbar.editProfileLink">Edit My Profile</a>
                     <hr class="dropdown-divider" />
                     <a class="dropdown-item" href="#sign_out" data-i18n="navbar.signOutLink">Sign Out</a>
                 </div>
                 </div>
             </li>
             <li class="nav-item d-md-none ${disabledClass}">
-                <a class="nav-link d-flex align-items-center  ${disabledClass}" href="#myprofile" ><span class="fas fa-user profile-icon-sm"></span> &nbsp;<span>Edit My Profile</span></a>
+                <a class="nav-link d-flex align-items-center  ${disabledClass}" href="#myprofile" ><span class="fas fa-user profile-icon-sm"></span> &nbsp;<span data-i18n="navbar.editProfileLink">Edit My Profile</span></a>
             </li>
             <li class="nav-item d-md-none">
                 <a class="nav-link" href="#sign_out"><span class="fas fa-sign-out-alt"></span> <span data-i18n="navbar.signOutLink">Sign Out</span></a>

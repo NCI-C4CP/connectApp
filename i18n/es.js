@@ -334,6 +334,7 @@
             "title": "Cerrar sesión",
             "innerHTML": "Cerrar sesión"
         },
+        "editProfileLink": "Editar mi perfil",
         "homeLink": "<a class=\"nav-link\" href=\"#\" id=\"home\" title=\"Inicio\"> Inicio</a>",
         "aboutLink": "<a class=\"nav-link\" href=\"#about\" id=\"about\" title=\"Acerca de\"> Acerca de</a>",
         "expectationsLink": "<a class=\"nav-link\" href=\"#expectations\" id=\"expectations\" title=\"Expectativas\"> Qué esperar</a>",
