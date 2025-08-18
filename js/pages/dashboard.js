@@ -59,7 +59,6 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                     }
                 }
                 else if (data[fieldMapping.recruitmentType] === fieldMapping.recruitmentTypePassive && data[fieldMapping.verification] === fieldMapping.notYetVerified) {
-                    console.log(data[fieldMapping.recruitmentType], fieldMapping.recruitmentTypePassive, data[fieldMapping.verification], fieldMapping.notYetVerified, data['Connect_ID']);
                     blockParticipant();
                     hideAnimation();
                     return;
