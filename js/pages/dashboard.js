@@ -6,7 +6,7 @@ import { addEventHeardAboutStudy, addEventRequestPINForm, addEventHealthCareProv
 import { heardAboutStudy, requestPINTemplate, healthCareProvider } from "./healthCareProvider.js";
 import fieldMapping from '../fieldToConceptIdMapping.js';
 
-export const renderDashboard = async (data, fromUserProfile, collections) => {    
+export const renderDashboard = async (data, fromUserProfile, collections) => {
     const mainContent = document.getElementById('root');
 
     // Check for UTM parameters in sessionStorage and store them if not already present
@@ -19,10 +19,10 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
     // Completed healthcareProvider and heardAboutStudy forms
     if (data[fieldMapping.healthcareProvider] && data[fieldMapping.heardAboutStudyForm]) {
         localStorage.eligibilityQuestionnaire = JSON.stringify({[fieldMapping.healthcareProvider]: data[fieldMapping.healthcareProvider]})
-        if(data[fieldMapping.consentSubmitted] === fieldMapping.yes) {
+        if (data[fieldMapping.consentSubmitted] === fieldMapping.yes) {
 
-            let topMessage = ""; 
-            if(data[fieldMapping.userProfileSubmittedAutogen] && data[fieldMapping.userProfileSubmittedAutogen] === fieldMapping.yes){
+            let topMessage = "";
+            if (data[fieldMapping.userProfileSubmittedAutogen] && data[fieldMapping.userProfileSubmittedAutogen] === fieldMapping.yes) {
 
                 let template = `
                     ${renderWelcomeHeader(data)}
@@ -35,26 +35,26 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                 let finalMessage = "";
                 const defaultMessage = '<p/><br><span data-i18n="mytodolist.withdrawnConnect">You have withdrawn from Connect. We will not collect any more data from you. If you have any questions, please contact the Connect Support Center by calling 1-877-505-0253 or by emailing <a href="mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a>.</span><br>';
 
-                if (isParticipantDataDestroyed(data)){
+                if (isParticipantDataDestroyed(data)) {
                     finalMessage += '<span data-i18n="mytodolist.deletedData">At your request, we have deleted your Connect data. If you have any questions, please contact the Connect Support Center by calling 1-877-505-0253 or by emailing  <a href="mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a>.</span>'
                 }
                 else if (data[fieldMapping.destroyData] === fieldMapping.yes) {
-                    if (!data[fieldMapping.destroyDataSigned] || data[fieldMapping.destroyDataSigned] == fieldMapping.no){
+                    if (!data[fieldMapping.destroyDataSigned] || data[fieldMapping.destroyDataSigned] == fieldMapping.no) {
                         finalMessage += '<span data-i18n="mytodolist.newFormSign">You have a new <a href="#forms">form</a> to sign.</span>' + defaultMessage
                     }
-                    else if((data[fieldMapping.consentWithdrawn] && data[fieldMapping.consentWithdrawn] !== fieldMapping.no) && (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] == fieldMapping.no)){
+                    else if ((data[fieldMapping.consentWithdrawn] && data[fieldMapping.consentWithdrawn] !== fieldMapping.no) && (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] == fieldMapping.no)) {
                         finalMessage += '<span data-i18n="mytodolist.newFormSign">You have a new <a href="#forms">form</a> to sign.</span>' + defaultMessage
                     }
-                    else{
+                    else {
                         finalMessage += defaultMessage
                     }
                 }
-                else if ((data[fieldMapping.consentWithdrawn] && data[fieldMapping.consentWithdrawn] !== fieldMapping.no)){
-                    
-                    if (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] == fieldMapping.no){
+                else if ((data[fieldMapping.consentWithdrawn] && data[fieldMapping.consentWithdrawn] !== fieldMapping.no)) {
+
+                    if (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] == fieldMapping.no) {
                         finalMessage += '<span data-i18n="mytodolist.newFormSign">You have a new <a href="#forms">form</a> to sign.</span>' + defaultMessage
                     }
-                    else{
+                    else {
                         finalMessage += defaultMessage
                     }
                 }
@@ -64,7 +64,7 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                     hideAnimation();
                     return;
                 }
-                if(finalMessage.trim() !== ""){
+                if (finalMessage.trim() !== "") {
                     template += `
                     <div class="alert alert-warning" role="alert" aria-live="polite" id="verificationMessage" style="margin-top:10px;">
                         ${finalMessage}
@@ -74,28 +74,28 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                     hideAnimation();
                     return;
                 }
-                
-                if(!data[fieldMapping.verification] || data[fieldMapping.verification] == fieldMapping.notYetVerified){
-                    if(data['unverifiedSeen'] && data['unverifiedSeen'] === true){
+
+                if (!data[fieldMapping.verification] || data[fieldMapping.verification] == fieldMapping.notYetVerified) {
+                    if (data['unverifiedSeen'] && data['unverifiedSeen'] === true) {
                         topMessage += '';
                     }
-                    else{
+                    else {
                         topMessage = '';
                     }
                     topMessage += `
-                        ${fromUserProfile ? 
+                        ${fromUserProfile ?
                             `<span data-i18n="mytodolist.completingProfile">Thank you for completing your profile for the Connect for Cancer Prevention Study. Next, the Connect team at your health care system will check that you are eligible to be part of the study. We will contact you within a few business days.
                             <br>
                             In the meantime, please begin by completing your first Connect survey.</span>`:
                             `<span data-i18n="mytodolist.checkEligibility">The Connect team at your health care system is working to check that you are eligible to be part of the study.</span> 
-                            ${checkIfComplete(data) ? '<span data-i18n="mytodolist.thankYouCompleting">Thank you for completing your first Connect survey! We will be in touch with next steps.</span>': '<span data-i18n="mytodolist.firstSurvey">In the meantime, please begin by completing your first Connect survey.</span>'}`}
+                            ${checkIfComplete(data) ? '<span data-i18n="mytodolist.thankYouCompleting">Thank you for completing your first Connect survey! We will be in touch with next steps.</span>' : '<span data-i18n="mytodolist.firstSurvey">In the meantime, please begin by completing your first Connect survey.</span>'}`}
                     `
                 }
-                else if(data[fieldMapping.verification] && data[fieldMapping.verification] == fieldMapping.verified) {
-                    if(data['verifiedSeen'] && data['verifiedSeen'] === true){
-                        if(checkIfComplete(data)) {
-                            if(!data['firstSurveyCompletedSeen']) {
-                                topMessage += '<span data-i18n="mytodolist.thankYouCompleting">Thank you for completing your first Connect survey! We will be in touch with next steps.</span>' 
+                else if (data[fieldMapping.verification] && data[fieldMapping.verification] == fieldMapping.verified) {
+                    if (data['verifiedSeen'] && data['verifiedSeen'] === true) {
+                        if (checkIfComplete(data)) {
+                            if (!data['firstSurveyCompletedSeen']) {
+                                topMessage += '<span data-i18n="mytodolist.thankYouCompleting">Thank you for completing your first Connect survey! We will be in touch with next steps.</span>'
                                 let formData = {};
                                 formData['firstSurveyCompletedSeen'] = true;
                                 storeResponse(formData);
@@ -105,11 +105,11 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                             }
                         }
                     }
-                    else{
+                    else {
                         topMessage += `
                             <span data-i18n="mytodolist.confirmedEligibility">Great news! We have confirmed that you are eligible for the Connect for Cancer Prevention Study. You are now an official Connect participant.</span>
                             <br>
-                            ${checkIfComplete(data) ? '<span data-i18n="mytodolist.thankYouCompleting">Thank you for completing your first Connect survey! We will be in touch with next steps.</span>':'<span data-i18n="mytodolist.completeFirstSurvey">The next step is to complete your first Connect survey.</span>'}
+                            ${checkIfComplete(data) ? '<span data-i18n="mytodolist.thankYouCompleting">Thank you for completing your first Connect survey! We will be in touch with next steps.</span>' : '<span data-i18n="mytodolist.completeFirstSurvey">The next step is to complete your first Connect survey.</span>'}
                             <br>
                             <span data-i18n="mytodolist.thankYouBeingPart">Thank you for being a part of Connect and for your commitment to help us learn more about how to prevent cancer.</span>
                             <br>
@@ -119,7 +119,7 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                         storeResponse(formData);
                     }
                 }
-                else if(data[fieldMapping.verification] && data[fieldMapping.verification] == fieldMapping.cannotBeVerified) {
+                else if (data[fieldMapping.verification] && data[fieldMapping.verification] == fieldMapping.cannotBeVerified) {
                     template += `
                     <div class="alert alert-warning" role="alert" aria-live="polite" id="verificationMessage" style="margin-top:10px;"  data-i18n="mytodolist.notEligibleMessage">
                         Based on our records you are not eligible for the Connect for Cancer Prevention Study. Thank you for your interest. Any information that you have already provided will remain private. We will not use any information you shared for our research.
@@ -135,7 +135,7 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                     hideAnimation();
                     return;
                 }
-                else if(data[fieldMapping.verification] && data[fieldMapping.verification] == fieldMapping.duplicate) {
+                else if (data[fieldMapping.verification] && data[fieldMapping.verification] == fieldMapping.duplicate) {
                     template += `
                     <div class="alert alert-warning" role="alert" aria-live="polite" id="verificationMessage" style="margin-top:10px;" data-i18n="mytodolist.alreadyHaveAccount">
                         Our records show that you already have another account with a different email or phone number. Please try signing in again. Contact the Connect Support Center by emailing <a href = "mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a> or calling <span style="white-space:nowrap;overflow:hidden">1-877-505-0253</span> if you need help accessing your account.
@@ -152,31 +152,31 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                 else if (data[fieldMapping.verification] && data[fieldMapping.verification] == fieldMapping.outreachTimedOut) {
                     let site = data[fieldMapping.healthcareProvider]
                     let body = `<span data-i18n="mytodolist.bodyConnectSupport">the Connect Support Center by emailing <a href = "mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a> or calling 1-877-505-0253</span>`;
-                    if (site === fieldMapping.healthPartners){
+                    if (site === fieldMapping.healthPartners) {
                         body = `<span data-i18n="mytodolist.bodyHealthPartners">HealthPartners by emailing <a href = "mailto:ConnectStudy@healthpartners.com">ConnectStudy@healthpartners.com</a> or calling 952-967-5067</span>`
                     }
-                    if (site === fieldMapping.henryFordHealth){
+                    if (site === fieldMapping.henryFordHealth) {
                         body = `<span data-i18n="mytodolist.bodyHenryFord">Henry Ford Health by emailing <a href = "mailto:ConnectStudy@hfhs.org">ConnectStudy@hfhs.org</a></span>`
                     }
-                    if(site === fieldMapping.kaiserPermanenteCO){
+                    if (site === fieldMapping.kaiserPermanenteCO) {
                         body = `<span data-i18n="mytodolist.bodyKPColorado">KP Colorado by emailing <a href = "mailto:Connect-Study-KPCO@kp.org">Connect-Study-KPCO@kp.org</a> or calling 833-630-0007</span>`
                     }
-                    if (site === fieldMapping.kaiserPermanenteGA){
+                    if (site === fieldMapping.kaiserPermanenteGA) {
                         body = `<span data-i18n="mytodolist.bodyKPGeorgia">KP Georgia by emailing <a href = "mailto:Connect-Study-KPGA@kp.org">Connect-Study-KPGA@kp.org</a> or calling 404-504-5660</span>`
                     }
-                    if (site === fieldMapping.kaiserPermanenteHI){
+                    if (site === fieldMapping.kaiserPermanenteHI) {
                         body = `<span data-i18n="mytodolist.bodyKPHawaii">KP Hawaii by emailing <a href = "mailto:Connect-Study-KPHI@kp.org">Connect-Study-KPHI@kp.org</a> or calling 833-417-0846</span>`
                     }
-                    if (site === fieldMapping.kaiserPermanenteNW){
+                    if (site === fieldMapping.kaiserPermanenteNW) {
                         body = `<span data-i18n="mytodolist.bodyKPNorthwest">KP Northwest by emailing <a href = "mailto:Connect-Study-KPNW@kp.org">Connect-Study-KPNW@kp.org</a> or calling 1-866-554-6039 (toll-free) or 503-528-3985</span>`
                     }
-                    if (site === fieldMapping.marshfieldClinical){
+                    if (site === fieldMapping.marshfieldClinical) {
                         body = `<span data-i18n="mytodolist.bodyMarshfieldClinic">Marshfield Clinic by emailing <a href = "mailto:connectstudy@marshfieldresearch.org">connectstudy@marshfieldresearch.org</a> or calling 715-898-9444</span>`
                     }
-                    if (site === fieldMapping.sanfordHealth){
+                    if (site === fieldMapping.sanfordHealth) {
                         body = `<span data-i18n="mytodolist.bodySanfordHealth">Sanford Health by emailing <a href = "mailto:ConnectStudy@sanfordhealth.org">ConnectStudy@sanfordhealth.org</a> or calling 605-312-6100</span>`
                     }
-                    if (site === fieldMapping.uChicagoMedicine){
+                    if (site === fieldMapping.uChicagoMedicine) {
                         body = `<span data-i18n="mytodolist.bodyConnectSupport">the Connect Support Center by emailing <a href = "mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a> or calling 1-877-505-0253</span>`
                     }
                     if (site === fieldMapping.baylorScottAndWhiteHealth) {
@@ -193,18 +193,18 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                     </div>
                     `;
                     mainContent.innerHTML = translateHTML(template);
-                    window.scrollTo(0,0)
+                    window.scrollTo(0, 0)
                     hideAnimation();
                     return;
                 }
-                
+
                 const surveyMessage = await checkForNewSurveys(data, collections);
 
-                if(surveyMessage) {
+                if (surveyMessage) {
                     template += surveyMessage;
                 }
 
-                if(topMessage.trim() !== ""){
+                if (topMessage.trim() !== "") {
                     template += `
                     <div class="alert alert-warning" role="alert" aria-live="polite" id="verificationMessage" style="margin-top:10px;">
                         ${topMessage}
@@ -219,7 +219,7 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                     </div>
                 </div>
                 `
-                
+
                 mainContent.innerHTML = translateHTML(template);
                 hideAnimation();
                 return;
@@ -232,20 +232,20 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
         consentTemplate();
         hideAnimation();
         return;
-                  }
+    }
     // Completed healthcareProvider form. Did not complete heardAboutStudy form.
-    else if(data[fieldMapping.healthcareProvider] && !data[fieldMapping.heardAboutStudyForm] && !isParticipantDataDestroyed(data)){
-        mainContent.innerHTML =  heardAboutStudy();
+    else if (data[fieldMapping.healthcareProvider] && !data[fieldMapping.heardAboutStudyForm] && !isParticipantDataDestroyed(data)) {
+        mainContent.innerHTML = heardAboutStudy();
         addEventHeardAboutStudy();
         hideAnimation();
     }
     // Completed PIN entry form by either entering a PIN number or specifying no PIN number (passive recruit).
-    else if (data[fieldMapping.pinNumber] || data[fieldMapping.dontHavePinNumber] === fieldMapping.yes){
+    else if (data[fieldMapping.pinNumber] || data[fieldMapping.dontHavePinNumber] === fieldMapping.yes) {
         mainContent.innerHTML = healthCareProvider();
         addEventHealthCareProviderSubmit();
         addEventHealthProviderModalSubmit();
     }
-    else{
+    else {
         // Data Destroyed
         if (isParticipantDataDestroyed(data)) {
             mainContent.innerHTML = `
@@ -260,7 +260,7 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                     </div>
                 </div>
             `;
-        // None of the above. Start at PIN entry form.
+            // None of the above. Start at PIN entry form.
         } else {
             mainContent.innerHTML = requestPINTemplate();
             addEventPinAutoUpperCase();
@@ -275,10 +275,10 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
 const renderWelcomeHeader = (data) => {
     let template = `<div class="row welcome-header">
         <div class="col text-center">
-        <span data-i18n="shared.welcomeText">Welcome</span>${data[fieldMapping.fName] ? ', '+data[fieldMapping.fName]  : ''} 
+        <span data-i18n="shared.welcomeText">Welcome</span>${data[fieldMapping.fName] ? ', ' + data[fieldMapping.fName] : ''} 
         </div>
     </div>`;
-    
+
     return translateHTML(template);
 }
 
@@ -291,7 +291,7 @@ const renderMainBody = async (data, collections) => {
             ${renderFormsCard(data)}
         </div>
     </div>`;
-    
+
     return translateHTML(template);
 };
 
@@ -304,7 +304,7 @@ const renderSurveysCard = async (data, collections) => {
 }
 
 const renderFormsCard = (data) => {
-    let newForm = ((data[fieldMapping.revokeHipaa] === fieldMapping.yes)) && 
+    let newForm = ((data[fieldMapping.revokeHipaa] === fieldMapping.yes)) &&
         (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] === fieldMapping.no);
     let icon = '../../images/agreements-icon.svg';
     let href = "#forms"
@@ -322,9 +322,8 @@ const renderReportsCard = async (data) => {
 
 const renderSamplesCard = (data) => {
     let template = ``;
-    if (data[fieldMapping.userProfileSubmittedAutogen] === fieldMapping.yes && 
-        data[fieldMapping.consentSubmitted] === fieldMapping.yes)
-    {
+    if (data[fieldMapping.userProfileSubmittedAutogen] === fieldMapping.yes &&
+        data[fieldMapping.consentSubmitted] === fieldMapping.yes) {
         let icon = '../../images/samples-icon.svg';
         let href = '#samples';
         let type = 'samples';
@@ -358,7 +357,7 @@ const renderCard = (icon, type, href, newFlag) => {
 }
 
 const checkIfComplete = (data) => {
-    
+
     let module1Complete = data[fieldMapping.Module1.statusFlag] === fieldMapping.moduleStatus.submitted;
     let module2Complete = data[fieldMapping.Module2.statusFlag] === fieldMapping.moduleStatus.submitted;
     let module3Complete = data[fieldMapping.Module3.statusFlag] === fieldMapping.moduleStatus.submitted;
@@ -377,16 +376,16 @@ const checkForNewSurveys = async (data, collections) => {
     let knownCompletedStandaloneSurveys;
 
     Object.keys(modules).forEach(mod => {
-        if(modules[mod].moduleId) {
-            if(modules[mod].enabled && !modules[mod].unreleased) enabledSurveys++;
-            if(modules[mod].enabled && !modules[mod].unreleased && modules[mod].completed === true) completedSurveys++;
-            if(data[fieldMapping[modules[mod].moduleId].completeTs] && fieldMapping[modules[mod].moduleId].standaloneSurvey) completedStandaloneSurveys++;
+        if (modules[mod].moduleId) {
+            if (modules[mod].enabled && !modules[mod].unreleased) enabledSurveys++;
+            if (modules[mod].enabled && !modules[mod].unreleased && modules[mod].completed === true) completedSurveys++;
+            if (data[fieldMapping[modules[mod].moduleId].completeTs] && fieldMapping[modules[mod].moduleId].standaloneSurvey) completedStandaloneSurveys++;
         }
     });
 
-    if(data[fieldMapping.completedStandaloneSurveys] || data[fieldMapping.completedStandaloneSurveys] === 0) {
+    if (data[fieldMapping.completedStandaloneSurveys] || data[fieldMapping.completedStandaloneSurveys] === 0) {
         knownCompletedStandaloneSurveys = data[fieldMapping.completedStandaloneSurveys];
-        if(knownCompletedStandaloneSurveys < completedStandaloneSurveys) {
+        if (knownCompletedStandaloneSurveys < completedStandaloneSurveys) {
             template += `
             <div class="alert alert-warning" id="verificationMessage" style="margin-top:10px;" data-i18n="mytodolist.submittedSurvey">
             Thank you for submitting your survey. If you are using a shared device, please remember to sign out of MyConnect and any email accounts you used to sign into MyConnect.
@@ -414,23 +413,23 @@ const checkForNewSurveys = async (data, collections) => {
     return template;
 };
 
-const hasNewSurvey =  async (data, collections) => {
+const hasNewSurvey = async (data, collections) => {
     let modules = questionnaireModules();
     modules = await setModuleAttributes(data, modules, collections);
     let enabledSurveys = 0;
     let newSurvey = false;
     let knownSurveys;
 
-        Object.keys(modules).forEach(mod => {
-        if(modules[mod].moduleId) {
-            if(modules[mod].enabled && !modules[mod].unreleased) enabledSurveys++;
+    Object.keys(modules).forEach(mod => {
+        if (modules[mod].moduleId) {
+            if (modules[mod].enabled && !modules[mod].unreleased) enabledSurveys++;
         }
     });
 
 
-    if(data[fieldMapping.enabledSurveys]) {
+    if (data[fieldMapping.enabledSurveys]) {
         knownSurveys = data[fieldMapping.enabledSurveys];
-        if(knownSurveys < enabledSurveys) {
+        if (knownSurveys < enabledSurveys) {
             newSurvey = true;
         }
     }
@@ -449,14 +448,14 @@ const checkForNewReports = async (data) => {
     let knownReports;
 
     Object.keys(reports).forEach(rep => {
-        if(reports[rep].reportId) {
-            if(reports[rep].enabled) availableReports++;
+        if (reports[rep].reportId) {
+            if (reports[rep].enabled) availableReports++;
         }
     });
 
-    if(data[fieldMapping.reports.knownReports]) {
+    if (data[fieldMapping.reports.knownReports]) {
         knownReports = data[fieldMapping.reports.knownReports];
-        if(knownReports < availableReports) {
+        if (knownReports < availableReports) {
             newReport = true;
         }
     }
@@ -477,29 +476,29 @@ const setModuleAttributes = async (data, modules, collections) => {
     modules['First Survey'].description = 'mytodolist.mainHeaderFirstSurveyDescription';
     modules['First Survey'].hasIcon = false;
     modules['First Survey'].noButton = true;
-    
-    modules['Background and Overall Health'].header = 'Background and Overall Health'; 
+
+    modules['Background and Overall Health'].header = 'Background and Overall Health';
     modules['Background and Overall Health'].description = 'mytodolist.mainBodyBackgroundDescription';
     modules['Background and Overall Health'].estimatedTime = 'mytodolist.20_30minutes';
-    
-    modules['Medications, Reproductive Health, Exercise, and Sleep'].header = 'Medications, Reproductive Health, Exercise, and Sleep'; 
+
+    modules['Medications, Reproductive Health, Exercise, and Sleep'].header = 'Medications, Reproductive Health, Exercise, and Sleep';
     modules['Medications, Reproductive Health, Exercise, and Sleep'].description = 'mytodolist.mainBodyMedicationsDescription';
     modules['Medications, Reproductive Health, Exercise, and Sleep'].estimatedTime = 'mytodolist.20_30minutes';
-    
-    modules['Smoking, Alcohol, and Sun Exposure'].header = 'Smoking, Alcohol, and Sun Exposure'; 
+
+    modules['Smoking, Alcohol, and Sun Exposure'].header = 'Smoking, Alcohol, and Sun Exposure';
     modules['Smoking, Alcohol, and Sun Exposure'].description = 'mytodolist.mainBodySmokingDescription';
     modules['Smoking, Alcohol, and Sun Exposure'].estimatedTime = 'mytodolist.20_30minutes';
-    
+
     modules["Where You Live and Work"].header = 'Where You Live and Work';
-    modules["Where You Live and Work"].description  = 'mytodolist.mainBodyLiveWorkDescription';
+    modules["Where You Live and Work"].description = 'mytodolist.mainBodyLiveWorkDescription';
     modules["Where You Live and Work"].estimatedTime = 'mytodolist.20_30minutes';
-    
+
     modules['Enter SSN'].header = 'Your Social Security Number (SSN)';
     modules['Enter SSN'].description = 'mytodolist.mainBodySSNDescription';
     modules['Enter SSN'].hasIcon = false;
     modules['Enter SSN'].noButton = false;
     modules['Enter SSN'].estimatedTime = 'mytodolist.less5minutes';
-    
+
     modules['Covid-19'].header = 'COVID-19 Survey';
     modules['Covid-19'].description = 'mytodolist.mainBodyCovid19Description';
     modules['Covid-19'].hasIcon = false;
@@ -509,7 +508,7 @@ const setModuleAttributes = async (data, modules, collections) => {
     modules['Biospecimen Survey'].header = 'Baseline Blood, Urine, and Mouthwash Sample Survey';
     modules['Biospecimen Survey'].description = 'mytodolist.mainBodyBiospecimenDescription';
     modules['Biospecimen Survey'].estimatedTime = 'mytodolist.5minutes';
-    
+
     modules['Clinical Biospecimen Survey'].header = 'Baseline Blood and Urine Sample Survey';
     modules['Clinical Biospecimen Survey'].description = 'mytodolist.mainBodyClinicalBiospecimenDescription';
     modules['Clinical Biospecimen Survey'].estimatedTime = 'mytodolist.5minutes';
@@ -539,13 +538,13 @@ const setModuleAttributes = async (data, modules, collections) => {
     modules['Diet History Questionnaire III (DHQ III)'].estimatedTime = 'mytodolist.45_60minutes';
 
     const currentTime = new Date();
-    
-    if(data['331584571']?.['266600170']?.['840048338']) {
+
+    if (data['331584571']?.['266600170']?.['840048338']) {
         modules['Biospecimen Survey'].enabled = true;
         modules['Covid-19'].enabled = true;
     }
 
-    if(collections && collections.filter(collection => collection['650516960'] === 664882224).length > 0) {
+    if (collections && collections.filter(collection => collection['650516960'] === 664882224).length > 0) {
         modules['Clinical Biospecimen Survey'].enabled = true;
         modules['Covid-19'].enabled = true;
     }
@@ -585,7 +584,7 @@ const setModuleAttributes = async (data, modules, collections) => {
     if (
         data[fieldMapping.verification] === fieldMapping.verified &&
         data[fieldMapping.PROMIS.statusFlag] !==
-            fieldMapping.moduleStatus.submitted
+        fieldMapping.moduleStatus.submitted
     ) {
         modules["PROMIS"].enabled = true;
 
@@ -596,65 +595,65 @@ const setModuleAttributes = async (data, modules, collections) => {
             modules["PROMIS"].enabled = false;
         }
     }
-    
-    if (data[fieldMapping.Module1.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+
+    if (data[fieldMapping.Module1.statusFlag] === fieldMapping.moduleStatus.submitted) {
         modules['Background and Overall Health'].completed = true;
-        
+
         modules["Smoking, Alcohol, and Sun Exposure"].enabled = true;
         modules["Where You Live and Work"].enabled = true;
         modules['Medications, Reproductive Health, Exercise, and Sleep'].enabled = true;
     }
 
-    if (data[fieldMapping.Module2.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+    if (data[fieldMapping.Module2.statusFlag] === fieldMapping.moduleStatus.submitted) {
         modules['Medications, Reproductive Health, Exercise, and Sleep'].completed = true;
     }
 
-    if (data[fieldMapping.Module3.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+    if (data[fieldMapping.Module3.statusFlag] === fieldMapping.moduleStatus.submitted) {
         modules['Smoking, Alcohol, and Sun Exposure'].completed = true;
     }
 
-    if (data[fieldMapping.Module4.statusFlag] === fieldMapping.moduleStatus.submitted) { 
-        modules["Where You Live and Work"].completed  = true;
+    if (data[fieldMapping.Module4.statusFlag] === fieldMapping.moduleStatus.submitted) {
+        modules["Where You Live and Work"].completed = true;
     }
 
-    if ((data[fieldMapping.verification] && data[fieldMapping.verification] === fieldMapping.verified)) { 
+    if ((data[fieldMapping.verification] && data[fieldMapping.verification] === fieldMapping.verified)) {
         modules['Enter SSN'].enabled = true;
     }
 
-    if (data[fieldMapping.ModuleSsn.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+    if (data[fieldMapping.ModuleSsn.statusFlag] === fieldMapping.moduleStatus.submitted) {
         modules['Enter SSN'].completed = true;
     }
-    
-    if (data[fieldMapping.ModuleCovid19.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+
+    if (data[fieldMapping.ModuleCovid19.statusFlag] === fieldMapping.moduleStatus.submitted) {
         modules['Covid-19'].completed = true;
     }
 
-    if (data[fieldMapping.Biospecimen.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+    if (data[fieldMapping.Biospecimen.statusFlag] === fieldMapping.moduleStatus.submitted) {
         modules['Biospecimen Survey'].completed = true;
     }
 
-    if (data[fieldMapping.MenstrualCycle.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+    if (data[fieldMapping.MenstrualCycle.statusFlag] === fieldMapping.moduleStatus.submitted) {
         modules['Menstrual Cycle'].completed = true;
     }
 
-    if (data[fieldMapping.ClinicalBiospecimen.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+    if (data[fieldMapping.ClinicalBiospecimen.statusFlag] === fieldMapping.moduleStatus.submitted) {
         modules['Clinical Biospecimen Survey'].completed = true;
     }
 
     const mouthwashData = data[fieldMapping.collectionDetails]?.[fieldMapping.baseline]?.[fieldMapping.bioKitMouthwash];
     if (
-      mouthwashData?.[fieldMapping.kitType] === fieldMapping.kitTypeValues.mouthwash &&
-      (mouthwashData?.[fieldMapping.kitStatus] === fieldMapping.kitStatusValues.shipped ||
-        mouthwashData?.[fieldMapping.kitStatus] === fieldMapping.kitStatusValues.received)
+        mouthwashData?.[fieldMapping.kitType] === fieldMapping.kitTypeValues.mouthwash &&
+        (mouthwashData?.[fieldMapping.kitStatus] === fieldMapping.kitStatusValues.shipped ||
+            mouthwashData?.[fieldMapping.kitStatus] === fieldMapping.kitStatusValues.received)
     ) {
-      modules.Mouthwash.enabled = true;
+        modules.Mouthwash.enabled = true;
     }
 
-    if (data[fieldMapping.Mouthwash.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+    if (data[fieldMapping.Mouthwash.statusFlag] === fieldMapping.moduleStatus.submitted) {
         modules['Mouthwash'].completed = true;
     }
 
-    if (data[fieldMapping.PROMIS.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+    if (data[fieldMapping.PROMIS.statusFlag] === fieldMapping.moduleStatus.submitted) {
         modules['PROMIS'].enabled = true;
         modules['PROMIS'].completed = true;
     }
@@ -662,22 +661,22 @@ const setModuleAttributes = async (data, modules, collections) => {
     if (data[fieldMapping.Experience2024.statusFlag]) {
         modules["Connect Experience 2024"].enabled = true;
     }
-    if (data[fieldMapping.Experience2024.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+    if (data[fieldMapping.Experience2024.statusFlag] === fieldMapping.moduleStatus.submitted) {
         modules['Connect Experience 2024'].completed = true;
     }
 
     if (
-      data[fieldMapping.verification] === fieldMapping.verified &&
-      data[fieldMapping.verifiedDate] &&
-      currentTime > getAdjustedTime(data[fieldMapping.verifiedDate], 270)
+        data[fieldMapping.verification] === fieldMapping.verified &&
+        data[fieldMapping.verifiedDate] &&
+        currentTime > getAdjustedTime(data[fieldMapping.verifiedDate], 270)
     ) {
-      if (data[fieldMapping.CancerScreeningHistory.statusFlag]) {
-        modules["Cancer Screening History"].enabled = true;
-      }
-      
-      if (data[fieldMapping.CancerScreeningHistory.statusFlag] === fieldMapping.moduleStatus.submitted) {
-        modules["Cancer Screening History"].completed = true;
-      }
+        if (data[fieldMapping.CancerScreeningHistory.statusFlag]) {
+            modules["Cancer Screening History"].enabled = true;
+        }
+
+        if (data[fieldMapping.CancerScreeningHistory.statusFlag] === fieldMapping.moduleStatus.submitted) {
+            modules["Cancer Screening History"].completed = true;
+        }
     }
 
     if (
@@ -707,7 +706,7 @@ const setModuleAttributes = async (data, modules, collections) => {
             modules["Diet History Questionnaire III (DHQ III)"].completed = true;
         }
     }
-    
+
     return modules;
 };
 
@@ -749,15 +748,15 @@ const addDHQListener = (currentDHQ3SurveyStatus, ConnectID) => {
     if (dhq3Link && !dhq3Link.hasClickListener) {
         dhq3Link.addEventListener('click', async () => {
             const surveyUrlFromLink = dhq3Link.getAttribute('href');
-            
+
             // If status is not started, update it to 'started' in Firestore.
             if (currentDHQ3SurveyStatus === fieldMapping.moduleStatus.notStarted) {
                 try {
                     await updateStartDHQParticipantData();
-                    
+
                 } catch (error) {
                     console.error("Error calling updateStartDHQParticipantData:", error);
-                    
+
                     logDDRumError(error, 'UpdateDHQStatusError', {
                         connectID: ConnectID,
                         moduleId: 'DHQ3',

@@ -79,18 +79,6 @@ export const addMessageCounterToNavBar = () => {
     }
 }
 
-export const signOutNavBarTemplate = () => {
-    return translateHTML(`
-        <ul class="navbar-nav ms-auto pe-3">
-            <li class="nav-item">
-                <a class="nav-link" href="#sign_out" id="signOut" title="Sign Out" data-i18n="navbar.signOutLink">
-                    <i class="fas fa-sign-out-alt"></i> Sign Out
-                </a>
-            </li>
-        </ul>
-    `);
-}
-
 export const homeNavBar = () => {
     return translateHTML(`
         <div class="navbar-nav transparent-border">

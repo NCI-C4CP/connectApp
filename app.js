@@ -537,7 +537,6 @@ const toggleNavBar = (route, data) => {
             document.getElementById('userNavBarContainer').innerHTML = userNavBar(data);
             document.getElementById('headerNavBarContainer').innerHTML = userHeaderNavBar(data);
             addMessageCounterToNavBar();
-            // document.getElementById('signOutContainer').innerHTML = signOutNavBarTemplate();
             document.getElementById('joinNow') ? document.getElementById('joinNow').innerHTML = joinNowBtn(false) : ``; 
             document.getElementById('signInWrapperDiv') ? document.getElementById('signInWrapperDiv').style.display = "none" :'';
             document.getElementById('nextStepWarning') ? document.getElementById('nextStepWarning').innerHTML = await whereAmIInDashboard() : '';
@@ -550,7 +549,6 @@ const toggleNavBar = (route, data) => {
             showAnimation();
             document.getElementById('userNavBarContainer').innerHTML = homeNavBar();
             document.getElementById('headerNavBarContainer').innerHTML = '';
-            // document.getElementById('signOutContainer').innerHTML = '';
             document.getElementById('joinNow') ? document.getElementById('joinNow').innerHTML = joinNowBtn(true) : ``;
             document.getElementById('nextStepWarning') ? document.getElementById('nextStepWarning').style.display="none": '';
             await toggleCurrentPageNoUser(route);
