@@ -318,17 +318,23 @@ const en = {
     },
     "navbar": {
         "dashboardLink": " Dashboard",
-        "messagesLink": "Messages<!--<span class=\"badge\">2</span>-->",
+        "messagesLink": "Messages",
+        "messagesIcon": {
+            "title": "Messages"
+        },
         "formsLink": "Forms",
         "profileLink": "My Profile",
+        "profileLinkPre": " ",
+        "profileLinkPost": "'s Profile",
         "reportsLink": "My Reports",
         "paymentLink": " My Payment",
         "samplesLink": " My Samples",
         "supportLink": " Support",
         "signOutLink": {
             "title": "Sign Out",
-            "innerHTML": "<i class=\"fas fa-sign-out-alt\"></i> Sign Out"
+            "innerHTML": "Sign Out"
         },
+        "editProfileLink": "Edit My Profile",
         "homeLink": "<a class=\"nav-link\" href=\"#\" id=\"home\" title=\"Home\"> Home</a>",
         "aboutLink": "<a class=\"nav-link\" href=\"#about\" id=\"about\" title=\"About\"> About</a>",
         "expectationsLink": "<a class=\"nav-link\" href=\"#expectations\" id=\"expectations\" title=\"Expectations\"> What to expect</a>",
@@ -1820,7 +1826,9 @@ const en = {
         "sessionInactive": "You were inactive for 20 minutes, would you like to extend your session?<div class=\"modal-footer\"><button type=\"button\" title=\"Close\" class=\"btn btn-dark log-out-user\" data-bs-dismiss=\"modal\">Log Out</button><button type=\"button\" title=\"Continue\" class=\"btn btn-primary extend-user-session\" data-bs-dismiss=\"modal\">Continue</button></div>",
         "homeTitle": "My Connect - Home",
         "dashboardTitle": "My Connect - Dashboard",
-        "signInPhone": "Sign in with phone number"
+        "surveyTitle": "My Connect - Surveys",
+        "signInPhone": "Sign in with phone number",
+        "welcomeText": "Welcome",
     },
     "languageSelector": {
         "title": "Language",
@@ -2185,6 +2193,17 @@ const en = {
         "ymd": "YEMEN, DEMOCRATIC",
         "zmb": "ZAMBIA",
         "zwe": "ZIMBABWE"
+    },
+    "dashboard": {
+        "newText": "New",
+        "surveyTitle": "Surveys",
+        "surveyText": "View surveys and complete required surveys for this study.",
+        "samplesTitle": "Samples",
+        "samplesText": "View samples and learn how to submit samples.",
+        "reportTitle": "My Reports",
+        "reportText": "View and decline reports about your data.",
+        "formTitle": "Forms",
+        "formText": "Review and download the forms you have completed"
     }
 }
 

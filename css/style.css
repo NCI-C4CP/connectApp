@@ -191,6 +191,7 @@ a{
     color: rgba(0,0,0,.5) !important;
 }
 
+#headerNavBarContainer .dropdown-menu .dropdown-item.disabled,
 .nav-item > a.disabled {
     pointer-events: none;
     cursor: default;
@@ -847,11 +848,8 @@ input:checked + .slider:before {
 }
 
 .nci-connect-logo-width {
-    width: 456px;
-}
-
-.nci-connect-logo-width-small {
     width: 100%;
+    max-width: 456px;
 }
 
 .nav-link {
@@ -1587,3 +1585,124 @@ span.my-samples-indent-text {
     margin-left: 20px;
 }
 
+.welcome-header {
+    background-image: url(../images/header-bg-squares.png);
+    background-repeat: no-repeat;
+    background-color: #1c5d86;
+    background-position: 0 0;
+    background-size: 500px 90px;
+    color: white;
+    font-size: 1.75rem;
+    font-weight: bold;
+    padding: 1.75rem;
+}
+
+.card {
+    padding: 2rem;
+    padding-right: calc(var(--bs-gutter-x) * .5);
+    padding-left: calc(var(--bs-gutter-x) * .5);
+    margin-top: var(--bs-gutter-y);
+    border-color: gray !important;
+    text-decoration: none !important;
+    cursor: pointer;
+    color: #595959;
+}
+
+.card > .card-body .card-title,
+.card > .card-body {
+    color: #595959;
+}
+
+.card > * {
+  text-decoration: none !important;   
+}
+
+.card.new {
+    padding-top: 0;
+}
+
+.new-text {
+    display: none;
+    margin-left: calc(var(--bs-gutter-x) * -0.5);
+    background-color: #ffbf17;
+    padding: .25rem 1.25rem .25rem .25rem;
+    border-radius: var(--bs-card-border-radius) 0 0 0;
+}
+
+.card .card-title {
+    font-size: 1.5rem;
+}
+
+.new .new-text {
+    display: inline-block;
+}
+
+#headerNavBarContainer .dropdown-menu {
+    color: white;
+    background-color: #1c5d86;
+}
+
+#headerNavBarContainer .dropdown-menu .dropdown-item {
+    color: white !important;
+}
+
+#headerNavBarContainer .dropdown-menu .dropdown-item:hover {
+    color: white !important;
+    background-color: #2a72a5 !important;
+}
+
+#headerNavBarContainer .profile-icon {
+
+    color: #1c5d86;
+    background-color: white;
+    padding: 3px;
+    border-radius: .75rem;
+    display: inline-block;
+    width: 1.5rem;
+    height: 1.5rem;
+}
+
+#headerNavBarContainer .profile-icon-sm {
+
+    color: #1c5d86;
+    background-color: white;
+    padding: 3px;
+    border-radius: .5rem;
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    font-size: .5rem;
+}
+
+#headerNavBarContainer .message-count {
+    display: inline-block;
+    font-size: .5rem;
+    background-color: red;
+    padding: 1px;
+    width: 1rem;
+    height: 1rem;
+    border-radius: .5rem;
+    text-align: center;
+    border: 1px solid white;
+    position: absolute;
+    left: 0.8rem;
+    padding-top: .2rem;
+
+}
+
+#headerNavBarContainer .header-vr {
+    background-color: white;
+    margin: .5rem;
+    width: 2px;
+}
+
+#headerNavBarContainer .dropdown-divider {
+    border-color: white;
+}
+
+@media (max-width: 767.98px) {
+    #headerNavBarContainer  .nav-item:hover {
+        color: white !important;
+        background-color: #2a72a5 !important;
+    }
+}
