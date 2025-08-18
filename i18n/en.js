@@ -1828,7 +1828,7 @@ const en = {
         "dashboardTitle": "My Connect - Dashboard",
         "surveyTitle": "My Connect - Surveys",
         "signInPhone": "Sign in with phone number",
-        "welcomeText": "Welcome, ",
+        "welcomeText": "Welcome",
     },
     "languageSelector": {
         "title": "Language",

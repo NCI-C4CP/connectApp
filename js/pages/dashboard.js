@@ -275,7 +275,7 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
 const renderWelcomeHeader = (data) => {
     let template = `<div class="row welcome-header">
         <div class="col text-center">
-        <span data-i18n="shared.welcomeText">Welcome, </span>${data[fieldMapping.fName]} 
+        <span data-i18n="shared.welcomeText">Welcome</span>${data[fieldMapping.fName] ? ', '+data[fieldMapping.fName]  : ''} 
         </div>
     </div>`;
     

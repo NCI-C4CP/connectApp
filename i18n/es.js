@@ -1831,7 +1831,7 @@
         "dashboardTitle": "My Connect - Panel",
         "surveyTitle": "My Connect - Encuestas",
         "signInPhone": "Iniciar sesión con el número de teléfono",
-        "welcomeText": "Le damos la bienvenida, ",
+        "welcomeText": "Le damos la bienvenida",
     },
     "languageSelector": {
         "title": "Idioma",
