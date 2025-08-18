@@ -191,6 +191,7 @@ a{
     color: rgba(0,0,0,.5) !important;
 }
 
+#headerNavBarContainer .dropdown-menu .dropdown-item.disabled,
 .nav-item > a.disabled {
     pointer-events: none;
     cursor: default;
@@ -1655,10 +1656,22 @@ span.my-samples-indent-text {
     color: #1c5d86;
     background-color: white;
     padding: 3px;
-    border-radius: 12px;
+    border-radius: .75rem;
     display: inline-block;
     width: 1.5rem;
     height: 1.5rem;
+}
+
+#headerNavBarContainer .profile-icon-sm {
+
+    color: #1c5d86;
+    background-color: white;
+    padding: 3px;
+    border-radius: .5rem;
+    display: inline-block;
+    width: 1rem;
+    height: 1rem;
+    font-size: .5rem;
 }
 
 #headerNavBarContainer .message-count {
@@ -1675,4 +1688,21 @@ span.my-samples-indent-text {
     left: 0.8rem;
     padding-top: .2rem;
 
+}
+
+#headerNavBarContainer .header-vr {
+    background-color: white;
+    margin: .5rem;
+    width: 2px;
+}
+
+#headerNavBarContainer .dropdown-divider {
+    border-color: white;
+}
+
+@media (max-width: 767.98px) {
+    #headerNavBarContainer  .nav-item:hover {
+        color: white !important;
+        background-color: #2a72a5 !important;
+    }
 }

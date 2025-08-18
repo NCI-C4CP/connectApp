@@ -26,16 +26,24 @@ export const userHeaderNavBar = (response) => {
             <li class="nav-item flex-row">
                 <a class="nav-link" href="#messages" id="messagesLink" title="Messages"><span id="messagesIcon" data-i18n="navbar.messagesIcon" class="fa-solid fa-bell" style="position: relative"></span><span class="d-md-none" style="margin-left: .8rem" data-i18n="navbar.messagesLink"></span></a>
             </li>
-            <li class="nav-item">
+            <div class="header-vr d-none d-md-block"></div>
+            <li class="nav-item d-none d-md-block">
                 <div class="dropdown">
                 <button class="btn btn-link dropdown-toggle nav-link" type="button" id="dropdownUserMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span class="fas fa-user profile-icon"></span><span data-i18n="navbar.profileLinkPre"></span>${response.data[fieldMapping.fName]}<span data-i18n="navbar.profileLinkPost">'s Profile</span>
                 </button>
                 <div class="dropdown-menu" aria-labelledby="dropdownUserMenuButton">
-                    <a class="dropdown-item" href="#myprofile" >Edit My Profile</a>
+                    <a class="dropdown-item ${disabledClass}" href="#myprofile" >Edit My Profile</a>
+                    <hr class="dropdown-divider" />
                     <a class="dropdown-item" href="#sign_out" data-i18n="navbar.signOutLink">Sign Out</a>
                 </div>
                 </div>
+            </li>
+            <li class="nav-item d-md-none ${disabledClass}">
+                <a class="nav-link d-flex align-items-center  ${disabledClass}" href="#myprofile" ><span class="fas fa-user profile-icon-sm"></span> &nbsp;<span>Edit My Profile</span></a>
+            </li>
+            <li class="nav-item d-md-none">
+                <a class="nav-link" href="#sign_out"><span class="fas fa-sign-out-alt"></span> <span data-i18n="navbar.signOutLink">Sign Out</span></a>
             </li>
         </ul>
     `);
