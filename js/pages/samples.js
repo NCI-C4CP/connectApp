@@ -308,8 +308,7 @@ export const renderSamplesPage = async () => {
                             </div>
                         </div>
             `);
-        } 
-        else {
+        } else {
             template = translateHTML(`
             <br>
             
