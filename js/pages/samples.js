@@ -10,7 +10,13 @@ export const renderSamplesPage = async () => {
         let site = locations.filter(location => location.concept == res.data[conceptId.healthcareProvider])[0];
         let template;
 
-        if (site && site !== kpga && site !== kphi && site !== kpco && site !== kpnw) {
+        if (site && 
+            site !== kpga && 
+            site !== kphi && 
+            site !== kpco && 
+            site !== kpnw && 
+            site !== u_chicago
+        ) {
             const locationTemplate = renderLocations(site);
 
             template = translateHTML(`
@@ -281,8 +287,28 @@ export const renderSamplesPage = async () => {
                 </div>
             </div>     
             `);
-        }
-        else {
+        } else if (site && site === u_chicago) {
+            template = translateHTML(`
+                        <div class="row" style="width:100%">
+                            <div class="col-md-2">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="consentHeadersFont" style="color:#606060;width:100%">
+                                    <div>
+                                        <span data-i18n="samples.donatingSamplesConnectMessage"/></span>
+                                    </div>
+                                </div>
+                                <div class="messagesBodyFont" style="width:100%">
+                                    <div data-i18n="samples.noSamplesCollection">
+                                        ${site.noSamplesCollection}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                            </div>
+                        </div>
+            `);
+        } else {
             template = translateHTML(`
             <br>
             
@@ -492,6 +518,7 @@ const u_chicago = {
     concept: '809703864',
     name: 'UChicago Medicine',
     donatingSamples: '<span data-i18n="samples.u_chicago.donatingSamples">As part of  Connect, we ask you to donate blood, urine, and saliva samples and complete a short survey.</span>',
+    noSamplesCollection: '<span data-i18n="samples.u_chicago.noSamplesCollection">Thank you for being part of Connect! UChicago Medicine is currently not collecting samples from Connect participants. There is nothing you need to do right now. <br><br> We hope to offer Connect participants from UChicago opportunities to donate samples in the future and will let you know when those options become available. <br><br> In the meantime, please check to see if you have any surveys left to complete. <br><br> If you have any questions, please contact our team at the Connect Support Center at MyConnect.cancer.gov/support, emailing <a href=\"mailto:ConnectSupport@NORC.org\">ConnectSupport@NORC.org</a>, or calling 1-877-505-0253.</p><br><br>We look forward to your continued participation!</span>',
     whenToDonate: '<span data-i18n="samples.u_chicago.whenToDonate">The Connect team will send you an email when it is time to donate your samples. Be sure to check your spam or junk folder. After you receive the email, it is important to donate your samples as soon as you can.<br><br><span class="site-info-bold">Note:</span> If you have recently had a blood transfusion or donated blood please wait at least <span class="site-info-bold">eight weeks</span> from your transfusion or donation before donating your samples for Connect. If you have recently donated plasma, please wait at least <span class="site-info-bold">four weeks</span> from your plasma donation before donating samples for Connect. If you have recently donated platelets, please wait at least <span class="site-info-bold">one week</span> from your platelet donation before donating samples for Connect. If you have an upcoming colonoscopy, please be sure that you <span class="site-info-bold">do not</span> donate samples for Connect on the <span class="site-info-bold">same day</span> as your colonoscopy.</span>',
     howToDonate: '<span data-i18n="samples.u_chicago.howToDonate">Connect participants at UChicago have two options for donating samples. You can choose the most convenient option for you. For questions and assistance with transportation, please call UChicago at (773) 834-5804 or email Connect@bsd.uchicago.edu.<br><br> <span class="site-info-bold">Option 1:</span> Make an appointment to come into one of our Connect Research Labs to donate your samples.<br><br> <span class="site-info-bold">Option 2:</span> A study team member can request a lab order be placed for you. After you receive the order confirmation email, you can donate samples by visiting a participating UChicago Medicine (UCM) Outpatient Clinical Lab Location during normal hours of operation.<br><br> The table below includes more information about these options.<br><br> ' +
         '<table style="border: 1px solid">' +
