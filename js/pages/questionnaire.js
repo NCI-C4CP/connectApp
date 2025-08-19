@@ -423,17 +423,35 @@ async function buildDynamicEndScreen(module, response, question) {
     }
 }
 
-export const blockParticipant = () => {
-    
+/**
+ * Blocks a participant from accessing the surveys until they are verified.
+ * @param {number} healthCareProvider - The healthcare provider's concept id.
+ * @returns {string} - Returns general thank you message for completing the profile or a specific message for UChicago participants.
+ */
+export const blockParticipant = (healthCareProvider) => {
     const mainContent = document.getElementById('root');
     mainContent.innerHTML = translateHTML(`
     <div class = "row" style="margin-top:25px">
         <div class = "col-lg-2">
         </div>
-        <div class = "col" data-i18n="questionnaire.thankYouCompleting">
-            Thank you for completing your profile for the Connect for Cancer Prevention Study. Next, the Connect team at your health care system will check that you are eligible to be part of the study. We will contact you within a few business days to share information about next steps.
-            </br>Questions? Please contact the <a href= "https://norcfedramp.servicenowservices.com/participant" target="_blank">Connect Support Center.</a>
-        </div>
+        ${
+            healthCareProvider === fieldMapping.uChicagoMedicine 
+                ? `
+                    <div class = "col" data-i18n="questionnaire.thankYouCompletingUChicago">
+                        "Thank you for completing your profile for the Connect for Cancer Prevention Study. Next, the Connect team at University of Chicago Medicine will check that you are eligible to be part of the study. This step may take up to a few weeks. We will contact you as soon as possible to share information about next steps. 
+                        <br>
+                        <br> 
+                        Questions? Please contact the <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\" rel=\"noopener noreferrer\"> Connect Support Center.</a>
+                    </div>`
+                :
+                    `<div class = "col" data-i18n="questionnaire.thankYouCompleting">
+                        Thank you for completing your profile for the Connect for Cancer Prevention Study. Next, the Connect team at your health care system will check that you are eligible to be part of the study. We will contact you within a few business days to share information about next steps.
+                        <br>
+                        <br>
+                        Questions? Please contact the <a href= "https://norcfedramp.servicenowservices.com/participant" target="_blank">Connect Support Center.</a>
+                    </div>
+                `
+        }
         <div class="col-lg-2">
         </div>
     `);
