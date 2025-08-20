@@ -59,7 +59,8 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                     }
                 }
                 else if (data[fieldMapping.recruitmentType] === fieldMapping.recruitmentTypePassive && data[fieldMapping.verification] === fieldMapping.notYetVerified) {
-                    blockParticipant();
+                    const healthcareProvider = data[fieldMapping.healthcareProvider] || '';
+                    blockParticipant(healthcareProvider);
                     hideAnimation();
                     return;
                 }
