@@ -14,7 +14,7 @@ const en = {
         "joinNowTrue": "<span class=\"join-now-heading\">What causes and prevents cancer? Help researchers answer this question for future generations</span></br><a class=\"btn join-now-btn\" href=\"#sign_in\">Join Now</a>",
         "joinNowFalse": "<span class=\"join-now-heading\">Thanks for joining Connect Cohort Study!</span>",
         "awaitVerification": "You are awaiting verification",
-        "doSurveys": "Please go fill out your surveys <a href=\"#dashboard\">Here</a>",
+        "doSurveys": "Please go fill out your surveys <a href=\"#surveys\">Here</a>",
         "fillProfile": "Please go and fill out your user profile <a href=\"#dashboard\">Here</a>",
         "signConsent": "Please go and sign the e-consent form <a href=\"#dashboard\">Here</a>",
         "heardStudy": "Where did you hear about this study <a href=\"#dashboard\">Here</a>",
@@ -1836,7 +1836,7 @@ const en = {
         "spanishOption": "Español"
     },
     "reports": {
-        "pageTitle": "My Reports",
+        "pageTitle": "Reports",
         "new": "New",
         "viewed": "Viewed",
         "declined": "Declined",
@@ -2200,7 +2200,7 @@ const en = {
         "surveyText": "View surveys and complete required surveys for this study.",
         "samplesTitle": "Samples",
         "samplesText": "View samples and learn how to submit samples.",
-        "reportTitle": "My Reports",
+        "reportTitle": "Reports",
         "reportText": "View and decline reports about your data.",
         "formTitle": "Forms",
         "formText": "Review and download the forms you have completed"

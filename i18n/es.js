@@ -14,7 +14,7 @@
         "joinNowTrue": "<span class=\"join-now-heading\">¿Qué causa y previene el cáncer? Ayude a los investigadores a responder esta pregunta para las generaciones futuras</span><a class=\"btn join-now-btn\" href=\"#sign_in\">Participe ya</a>",
         "joinNowFalse": "<span class=\"join-now-heading\">¡Gracias por participar en el Estudio de Cohorte Connect!</span>",
         "awaitVerification": "Está esperando la verificación",
-        "doSurveys": "Complete sus encuestas <a href=\"#dashboard\">aquí</a>",
+        "doSurveys": "Complete sus encuestas <a href=\"#surveys\">aquí</a>",
         "fillProfile": "Vaya a completar su perfil de usuario <a href=\"#dashboard\">aquí</a>",
         "signConsent": "Vaya a firmar el formulario de consentimiento electrónico <a href=\"#dashboard\">aquí</a>",
         "heardStudy": "Indique dónde se enteró de este estudio <a href=\"#dashboard\">aquí</a>",
@@ -1839,7 +1839,7 @@
         "spanishOption": "Español"
     },
     "reports": {
-        "pageTitle": "Mis informes",
+        "pageTitle": "Informes",
         "new": 'Nuevo',
         "viewed": "Vistos",
         "declined": "Rechazados",
@@ -2203,7 +2203,7 @@
         "surveyText": "Ver encuestas y completar las encuestas requeridas para este estudio",
         "samplesTitle": "Muestras",
         "samplesText": "Vea muestras y aprenda cómo enviarlas.",
-        "reportTitle": "Mis Informes",
+        "reportTitle": "Informes",
         "reportText": "Ver y rechazar informes sobre sus datos.",
         "formTitle": "Formularios",
         "formText": "Revise y descargue los formularios que ha completado"
