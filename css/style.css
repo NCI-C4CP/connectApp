@@ -1588,8 +1588,8 @@ span.my-samples-indent-text {
 .welcome-header {
     background-image: url(../images/header-bg-squares.png);
     background-repeat: no-repeat;
-    background-color: #1c5d86;
-    background-position: 0 0;
+    background-color: #1e547f;
+    background-position: center left;
     background-size: 500px 90px;
     color: white;
     font-size: 1.75rem;
