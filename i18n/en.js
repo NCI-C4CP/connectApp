@@ -2197,13 +2197,15 @@ const en = {
     "dashboard": {
         "newText": "New",
         "surveyTitle": "Surveys",
-        "surveyText": "View surveys and complete required surveys for this study.",
+        "surveyText": "Check for new surveys and see what surveys you’ve already finished.",
         "samplesTitle": "Samples",
-        "samplesText": "View samples and learn how to submit samples.",
+        "samplesText": "Read details about donating samples for Connect.",
         "reportTitle": "Reports",
-        "reportText": "View and decline reports about your data.",
+        "reportText": "View or decline available results reports based on your information.",
         "formTitle": "Forms",
-        "formText": "Review and download the forms you have completed"
+        "formText": "Review and download copies of the forms you’ve completed, or sign new forms.",
+        "paymentTitle": "Payment",
+        "paymentText": "Review information about payments for Connect participants."
     }
 }
 

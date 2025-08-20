@@ -2200,13 +2200,15 @@
     "dashboard": {
         "newText": "Nuevo",
         "surveyTitle": "Encuestas",
-        "surveyText": "Ver encuestas y completar las encuestas requeridas para este estudio",
+        "surveyText": "Revise si hay nuevas encuestas y vea cuáles ya ha completado.",
         "samplesTitle": "Muestras",
-        "samplesText": "Vea muestras y aprenda cómo enviarlas.",
+        "samplesText": "Lea los detalles sobre cómo donar muestras para Connect.",
         "reportTitle": "Informes",
-        "reportText": "Ver y rechazar informes sobre sus datos.",
+        "reportText": "Ver o rechazar los informes de resultados disponibles basados en su información.",
         "formTitle": "Formularios",
-        "formText": "Revise y descargue los formularios que ha completado"
+        "formText": "Revise y descargue copias de los formularios que ha completado, o firme nuevos formularios.",
+        "paymentTitle": "Pago",
+        "paymentText": "Revise la información sobre los pagos para los participantes de Connect."
     }
 }
 
