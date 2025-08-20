@@ -68,10 +68,18 @@ export const addMessageCounterToNavBar = () => {
                         unreadCount++;
                     }
                 }
-                let countSpan = document.createElement('span');
-                countSpan.className = 'message-count';
-                countSpan.innerText = unreadCount+'';
-                messagesIcon.appendChild(countSpan);
+                if (unreadCount > 0) {
+                    let countSpan = document.createElement('span');
+                    countSpan.id = 'messageCount';
+                    countSpan.className = 'message-count';
+                    countSpan.innerText = unreadCount+'';
+                    messagesIcon.appendChild(countSpan);
+                } else {
+                    let countSpan = document.getElementById('messageCount');
+                    if (countSpan) {
+                        countSpan.parentNode.removeChild(countSpan);
+                    }
+                }
             })
             .catch((error) => {
                 console.error(error)
