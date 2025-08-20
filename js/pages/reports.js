@@ -53,11 +53,13 @@ export const renderReportsPage = async () => {
     if (declined.length > 1) declined = sortReportsByAvailableDate(declined);
 
     if (unread.length === 0 && read.length === 0 && declined.length === 0) {
+        template += '<div class="row">';
         if (myData[fieldMapping.consentWithdrawn] && myData[fieldMapping.consentWithdrawn] === fieldMapping.yes) {
             template += '<div data-i18n="reports.withdrawn"></div>';
         } else {
             template += '<div data-i18n="reports.empty"></div>';
         }
+        template += '</div>';
     } else {
         template += '<ul class="nav nav-tabs" style="border-bottom:none; margin-top:20px">';
         if (unread.length > 0) {

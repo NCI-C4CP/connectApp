@@ -14,7 +14,7 @@
         "joinNowTrue": "<span class=\"join-now-heading\">¿Qué causa y previene el cáncer? Ayude a los investigadores a responder esta pregunta para las generaciones futuras</span><a class=\"btn join-now-btn\" href=\"#sign_in\">Participe ya</a>",
         "joinNowFalse": "<span class=\"join-now-heading\">¡Gracias por participar en el Estudio de Cohorte Connect!</span>",
         "awaitVerification": "Está esperando la verificación",
-        "doSurveys": "Complete sus encuestas <a href=\"#dashboard\">aquí</a>",
+        "doSurveys": "Complete sus encuestas <a href=\"#surveys\">aquí</a>",
         "fillProfile": "Vaya a completar su perfil de usuario <a href=\"#dashboard\">aquí</a>",
         "signConsent": "Vaya a firmar el formulario de consentimiento electrónico <a href=\"#dashboard\">aquí</a>",
         "heardStudy": "Indique dónde se enteró de este estudio <a href=\"#dashboard\">aquí</a>",
@@ -1842,7 +1842,7 @@
         "spanishOption": "Español"
     },
     "reports": {
-        "pageTitle": "Mis informes",
+        "pageTitle": "Informes",
         "new": 'Nuevo',
         "viewed": "Vistos",
         "declined": "Rechazados",
@@ -2203,13 +2203,15 @@
     "dashboard": {
         "newText": "Nuevo",
         "surveyTitle": "Encuestas",
-        "surveyText": "Ver encuestas y completar las encuestas requeridas para este estudio",
+        "surveyText": "Revise si hay nuevas encuestas y vea cuáles ya ha completado.",
         "samplesTitle": "Muestras",
-        "samplesText": "Vea muestras y aprenda cómo enviarlas.",
-        "reportTitle": "Mis Informes",
-        "reportText": "Ver y rechazar informes sobre sus datos.",
+        "samplesText": "Lea los detalles sobre cómo donar muestras para Connect.",
+        "reportTitle": "Informes",
+        "reportText": "Ver o rechazar los informes de resultados disponibles basados en su información.",
         "formTitle": "Formularios",
-        "formText": "Revise y descargue los formularios que ha completado"
+        "formText": "Revise y descargue copias de los formularios que ha completado, o firme nuevos formularios.",
+        "paymentTitle": "Pago",
+        "paymentText": "Revise la información sobre los pagos para los participantes de Connect."
     }
 }
 

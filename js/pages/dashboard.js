@@ -289,6 +289,7 @@ const renderMainBody = async (data, collections) => {
             ${renderSamplesCard(data)}
             ${await renderReportsCard(data)}
             ${renderFormsCard(data)}
+            ${renderPaymentCard(data)}
         </div>
     </div>`;
 
@@ -333,6 +334,13 @@ const renderSamplesCard = (data) => {
     return template;
 }
 
+const renderPaymentCard = (data) => {
+    let icon = './images/payments-icon.svg';
+    let href = "#payment";
+    let type = "payment";
+    return renderCard(icon, type, href, false);
+}
+
 const renderCard = (icon, type, href, newFlag) => {
     let template = `<div class=" col-sm-6 col-lg-4 col-xs-12">
         <div class="card${newFlag ? ' new' : ''} h-100 text-center" id="${type}Card" onClick="javascript:window.location.href='${href}'">
@@ -341,7 +349,7 @@ const renderCard = (icon, type, href, newFlag) => {
             </div>
             <div class="card-body">
                 <div>
-                    <img src="${icon}" />
+                    <img class="card-icon" src="${icon}" />
                 </div>
                 <div class="card-title" data-i18n="dashboard.${type}Title">
                     Card Header Here!

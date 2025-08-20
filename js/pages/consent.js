@@ -549,10 +549,10 @@ const consentIndigenousOtherPage = () => {
                 <ul class="consentBodyFont2" style="margin-left:32px" data-i18n="consent.indigenousOtherPageBody1List">
                     <li>Reading more about participation and the details of what it means to take part in Connect <a target="__blank" href="https://www.cancer.gov/connect-prevention-study/what-to-expect">here</a>.</li>
                     <li>Speaking with your community members, leaders, and family about participating in Connect.</li>
-                    <li>Contacting the Connect Support Center with any questions you have. Our team is happy to speak with you and discuss any concerns you may have about taking part in the study. (<a target="__blank" href="https://norcfedramp.servicenowservices.com/recruit">Cancer.gov/connectstudy/support</a>, or call 1-866-462-6621 8:00 a.m.-10:00 p.m. CT on weekdays, and 9:00 a.m.-6:00 p.m. CT on weekends).</li>
+                    <li>Contacting the Connect Support Center with any questions you have. Our team is happy to speak with you and discuss any concerns you may have about taking part in the study. (<a target="__blank" href="https://norcfedramp.servicenowservices.com/recruit">Cancer.gov/connectstudy/support</a>, or call 1-877-505-0253 8:00 a.m.-10:00 p.m. CT on weekdays, and 9:00 a.m.-6:00 p.m. CT on weekends).</li>
                 </ul>
                 <p class="consentBodyFont2" data-i18n="consent.indigenousOtherPageBody2">If you join now and later decide to leave the study, you can do so at any time, for any reason.</p>
-                <p class="consentBodyFont2" data-i18n="consent.indigenousOtherPageBody3">The decision to join Connect is yours to make. Please choose what you are most comfortable with. We respect your decision and your privacy, and welcome any feedback that you would like to share with us. Please call us at 1-866-462-6621 8:00 a.m.-10:00 p.m. CT on weekdays, and 9:00 a.m.-6:00 p.m. CT on weekends, or write to us at ConnectStudy@norc.org.</p>
+                <p class="consentBodyFont2" data-i18n="consent.indigenousOtherPageBody3">The decision to join Connect is yours to make. Please choose what you are most comfortable with. We respect your decision and your privacy, and welcome any feedback that you would like to share with us. Please call us at 1-877-505-0253 8:00 a.m.-10:00 p.m. CT on weekdays, and 9:00 a.m.-6:00 p.m. CT on weekends, or write to us at ConnectStudy@norc.org.</p>
                 <p class="consentBodyFont2" data-i18n="consent.indigenousOtherPageBody4">Thank you for learning about how Connect will engage with Indigenous Peoples. On the next screen, you can view the full consent form and electronic health records release form to continue the consent process.</p>
 
                 <div class="row" style="padding:0; margin-top:40px;margin-bottom:40px">
@@ -601,7 +601,7 @@ const consentConsentPage = async () => {
             </div>
             <div class="col-lg-8">
                 <p class="consentHeadersFont" data-i18n="consent.consentPageHeader">Informed Consent</p>
-                <p class="consentBodyFont1" data-i18n="consent.consentPageBody1">To join Connect, we need you to review the full informed consent form and electronic health records release (HIPAA Authorization) form below. If you have any questions, contact the Connect Support Center at <a target="_blank" href="https://norcfedramp.servicenowservices.com/recruit">Cancer.gov/connectstudy/support</a> or call 1-866-462-6621. Once you are comfortable with the study and decide to join, please sign the forms electronically by scrolling to the bottom of this screen and clicking, “Yes, I agree to join Connect.” Then, please type your name into the fields that appear and click “Next” to view and download copies of your signed forms.</p>
+                <p class="consentBodyFont1" data-i18n="consent.consentPageBody1">To join Connect, we need you to review the full informed consent form and electronic health records release (HIPAA Authorization) form below. If you have any questions, contact the Connect Support Center at <a target="_blank" href="https://norcfedramp.servicenowservices.com/recruit">Cancer.gov/connectstudy/support</a> or call 1-877-505-0253. Once you are comfortable with the study and decide to join, please sign the forms electronically by scrolling to the bottom of this screen and clicking, “Yes, I agree to join Connect.” Then, please type your name into the fields that appear and click “Next” to view and download copies of your signed forms.</p>
             
                 <div style="width:80%; margin:auto">
                     <h4 class="consentSubheader" style="margin-top:50px" data-i18n="consent.consentPageSubheader1">Informed Consent Form</h4>
@@ -622,7 +622,7 @@ const consentConsentPage = async () => {
                     <ol class="consentBodyFont2" data-i18n="consent.consentPageBody6List">
                         <li>I have read these forms.</li>
                         <li>As  stated  in  the  consent  and  HIPAA  Authorization,  I  will allow  the  use,  storage, and  disclosure  (release) of  my  survey  answers, samples,  and  health  information for the research as described above.</li>
-                        <li>If I have questions, I can contact the Connect Support Center at <a target="_blank" href="https://norcfedramp.servicenowservices.com/recruit">Cancer.gov/connectstudy/support</a> or by calling 1-866-462-6621</li>
+                        <li>If I have questions, I can contact the Connect Support Center at <a target="_blank" href="https://norcfedramp.servicenowservices.com/recruit">Cancer.gov/connectstudy/support</a> or by calling 1-877-505-0253</li>
                         <li>If I decide to leave the study, I can contact the Connect Support Center at <a target="_blank" href="https://norcfedramp.servicenowservices.com/recruit">Cancer.gov/connectstudy/support</a></li>
                     </ol>
                     <input type="checkbox" name="consentAnswer" value="consentYes" id="CSConsentYesCheck">
