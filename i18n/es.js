@@ -14,7 +14,7 @@
         "joinNowTrue": "<span class=\"join-now-heading\">¿Qué causa y previene el cáncer? Ayude a los investigadores a responder esta pregunta para las generaciones futuras</span><a class=\"btn join-now-btn\" href=\"#sign_in\">Participe ya</a>",
         "joinNowFalse": "<span class=\"join-now-heading\">¡Gracias por participar en el Estudio de Cohorte Connect!</span>",
         "awaitVerification": "Está esperando la verificación",
-        "doSurveys": "Complete sus encuestas <a href=\"#dashboard\">aquí</a>",
+        "doSurveys": "Complete sus encuestas <a href=\"#surveys\">aquí</a>",
         "fillProfile": "Vaya a completar su perfil de usuario <a href=\"#dashboard\">aquí</a>",
         "signConsent": "Vaya a firmar el formulario de consentimiento electrónico <a href=\"#dashboard\">aquí</a>",
         "heardStudy": "Indique dónde se enteró de este estudio <a href=\"#dashboard\">aquí</a>",
@@ -318,17 +318,23 @@
     },
     "navbar": {
         "dashboardLink": " Panel",
-        "messagesLink": "Mensajes<!--<span class=\"badge\">2</span>-->",
+        "messagesLink": "Mensajes",
+        "messagesIcon": {
+            title: "Mensajes"
+        },
         "formsLink": "Formularios",
         "profileLink": "Mi perfil",
+        "profileLinkPre": "Perfil de ",
+        "profileLinkPost": " ",
         "reportsLink": "Mis Informes",
         "paymentLink": " Mi pago",
         "samplesLink": " Mis muestras",
         "supportLink": " Asistencia",
         "signOutLink": {
             "title": "Cerrar sesión",
-            "innerHTML": "<i class=\"fas fa-sign-out-alt\"></i> Cerrar sesión"
+            "innerHTML": "Cerrar sesión"
         },
+        "editProfileLink": "Editar mi perfil",
         "homeLink": "<a class=\"nav-link\" href=\"#\" id=\"home\" title=\"Inicio\"> Inicio</a>",
         "aboutLink": "<a class=\"nav-link\" href=\"#about\" id=\"about\" title=\"Acerca de\"> Acerca de</a>",
         "expectationsLink": "<a class=\"nav-link\" href=\"#expectations\" id=\"expectations\" title=\"Expectativas\"> Qué esperar</a>",
@@ -692,6 +698,7 @@
         "enterPin": {
             "placeholder": "Ingresar PIN"
         },
+        "noPinMsg": `<strong>Si no tiene un PIN, haga clic en el botón de abajo para continuar.</strong>`,
         "noPin": "No tengo PIN",
         "submitText": "Enviar",
         "modalCancel": "No",
@@ -738,10 +745,11 @@
         "bodyConnectSupport": "escriba al Centro de Asistencia de Connect a <a href=\"mailto:ConnectAyuda@norc.org\">ConnectAyuda@norc.org</a> o llame al 1-877-775-7004.",
         "bodyHealthPartners": "Escriba a HealthPartners a <a href=\"mailto:ConnectStudy@healthpartners.com\">ConnectStudy@healthpartners.com</a> o llame al 952-967-5067",
         "bodyHenryFord": "Escriba a Henry Ford Health a <a href=\"mailto:ConnectStudy@hfhs.org\">ConnectStudy@hfhs.org</a>",
-        "bodyKPColorado": "Escriba a KP Colorado a <a href=\"mailto:Connect-Study-KPCO@kp.org\">Connect-Study-KPCO@kp.org</a> o llame al 303-636-3126",
-        "bodyKPGeorgia": "Escriba a KP Georgia a <a href=\"mailto:Connect-Study-KPGA@kp.org\">Connect-Study-KPGA@kp.org</a> o llame al 404-745-5115",
+        "bodyKPColorado": "Escriba a KP Colorado a <a href=\"mailto:Connect-Study-KPCO@kp.org\">Connect-Study-KPCO@kp.org</a> o llame al 833-630-0007",
+        "bodyKPGeorgia": "Escriba a KP Georgia a <a href=\"mailto:Connect-Study-KPGA@kp.org\">Connect-Study-KPGA@kp.org</a> o llame al 404-504-5660",
         "bodyKPHawaii": "Escriba a KP Hawaii a <a href=\"mailto:Connect-Study-KPHI@kp.org\">Connect-Study-KPHI@kp.org</a> o llame al 833-417-0846",
         "bodyKPNorthwest": "Escriba a KP Northwest a <a href=\"mailto:Connect-Study-KPNW@kp.org\">Connect-Study-KPNW@kp.org</a> o llame al 1-866-554-6039 (sin cargo) o al 503-528-3985",
+        "bodyMarshfieldClinic": `Escriba a Marshfield Clinic a <a href="mailto:connectstudy@marshfieldresearch.org">connectstudy@marshfieldresearch.org</a> o llame al 715-898-9444`,
         "bodySanfordHealth": "Escriba a Sanford Health a <a href=\"mailto:ConnectStudy@sanfordhealth.org\">ConnectStudy@sanfordhealth.org</a> o llame al 605-312-6100",
         "bodyBaylorScottAndWhiteHealth": "Escriba a Baylor Scott &amp; White Health a <a href=\"mailto:ConnectStudy@bswhealth.org\">ConnectStudy@bswhealth.org</a> o llame al 214-865-2427",
         "tryingContact": "Nuestro equipo del estudio ha estado intentando comunicarse con usted sobre su posibilidad de participar en el Estudio Connect para la Prevención del Cáncer. Necesitamos más información sobre usted para verificar si puede formar parte de Connect. Póngase en contacto con ",
@@ -848,7 +856,8 @@
         "okButton": "Aceptar",
         "identifyOccupation": "Identifique la categoría laboral que mejor describa este trabajo.",
         "noneAbove": "NINGUNA DE LAS OPCIONES ANTERIORES",
-        "thankYouCompleting": "Gracias por completar su perfil del Estudio Connect para la Prevención del Cáncer. A continuación, el equipo de Connect de su sistema de atención médica verificará si reúne los requisitos para participar en el estudio. Nos pondremos en contacto con usted dentro de unos días hábiles para darle información sobre los próximos pasos. ¿Tiene alguna pregunta? Póngase en contacto con el <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Centro de Asistencia de Connect.</a>",
+        "thankYouCompleting": "Gracias por completar su perfil del Estudio Connect para la Prevención del Cáncer. A continuación, el equipo de Connect de su sistema de atención médica verificará si reúne los requisitos para participar en el estudio. Nos pondremos en contacto con usted dentro de unos días hábiles para darle información sobre los próximos pasos. <br><br> ¿Tiene alguna pregunta? Póngase en contacto con el <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Centro de Asistencia de Connect.</a>",
+        "thankYouCompletingUChicago": "Gracias por completar su perfil para el Estudio Connect para la Prevencion del Cancer. A continuación el equipo Connect el la Universidad de Chicago de Medicina verificará que usted es elegible para formar parte del estudio. Este paso podrá tomar hasta unas semanas. Nosotros nos comunicaremos con usted lo mas pronto posible para compartir información sobre los próximos pasos. <br><br> ¿Preguntas? Por favor comuníquese con el <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\" rel=\"noopener noreferrer\">Centro de Asistencia de Connect.</a>",
         "somethingWrong": "Algo salió mal. Por favor, inténtelo de nuevo. Si sigue teniendo este problema, póngase en contacto con el <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Centro de Asistencia de Connect</a>."
     },
     "samples": {
@@ -858,6 +867,7 @@
             "href": "mailto:ConnectAyuda@norc.org"
         },
         "donatingSamples": "Donación de sus muestras en ",
+        "donatingSamplesConnectMessage": "Un mensaje sobre la donación de muestras para Connect",
         "whenToDonate": "¿Cuándo debería donar mis muestras de sangre y de orina?",
         "howToDonate": "¿Cómo dono mis muestras?",
         "whereToDonate": "¿Dónde dono mis muestras?",
@@ -973,6 +983,7 @@
         },
         "u_chicago": {
             "donatingSamples": "Como parte de Connect, le pedimos que done muestras de sangre, orina y saliva, y que complete una breve encuesta.",
+            "noSamplesCollection": "¡Gracias por formar parte de Connect! UChicago Medicine actualmente no esta colectando muestras de participantes de Connect. No hay nada que usted tiene que hacer ahorita. <br><br> Esperamos poder ofrecer participantes de Connect de Chicago oportunidades para donar muestras en el futuro y le haremos saber cuando esas opciones sean disponibles. Mientras tanto, por favor consulte para ver si tiene alguna encuesta demás para completar. <br><br> Si tiene cualquier pregunta, por favor contacte nuestro equipo en el Centro de Asistencia de Connect en <a href=\"https://MyConnect.cancer.gov/support\" target=\"_blank\" rel=\"noopener noreferrer\">MyConnect.cancer.gov/support</a>, a <a href=\"mailto:ConnectAyuda@NORC.org\">ConnectAyuda@NORC.org</a>, o 1-877-775-7004. <br><br> ¡Estamos ansiosos por su participación continua!",
             "whenToDonate": "Cuando llegue el momento de donar sus muestras, le escribiremos por correo electrónico. Es importante que done sus muestras lo antes posible después de recibir el mensaje.<br/><br/><span class=\"site-info-bold\">Nota:</span> Si hace poco tiempo le han hecho una transfusión de sangre o ha donado sangre, espere <span class=\"site-info-bold\">al menos ocho semanas</span> desde su donación o transfusión antes de donar muestras para Connect. Si hace poco tiempo ha donado plasma, espere <span class=\"site-info-bold\">al menos cuatro semanas</span> desde su donación de plasma antes de donar muestras para Connect. Si hace poco tiempo ha donado plaquetas, espere <span class=\"site-info-bold\">al menos una semana</span> desde su última donación de plaquetas antes de donar muestras para Connect. Si van a hacerle una colonoscopia dentro de poco tiempo, <span class=\"site-info-bold\">no</span> done muestras para Connect el <span class=\"site-info-bold\">mismo día</span> de la colonoscopia.",
             "howToDonate": "Los participantes de Connect que pertenecen a UChicago tienen dos opciones para donar muestras. Usted puede elegir la que más le convenga. Si tiene dudas o necesita ayuda con el transporte, llame a UChicago al (773) 834-5804 o escriba a Connect@bsd.uchicago.edu.<br/><br/> <span class=\"site-info-bold\">Opción 1:</span> Pida una cita para ir a uno de nuestros laboratorios de investigación de Connect y donar sus muestras.<br/><br/> <span class=\"site-info-bold\">Opción 2:</span> Un miembro del equipo del estudio puede solicitar que se le haga una orden de estudios en laboratorio. Después de recibir la confirmación de la orden por correo electrónico, puede ir a donar muestras a un laboratorio clínico ambulatorio participante de UChicago Medicine (UCM) durante el horario normal de atención.<br/><br/> La siguiente tabla incluye más información sobre estas opciones.<br/><br/> <table style=\"border: 1px solid\"><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; padding-left: 10px\" class=\"site-info-bold\">Opción 1: Laboratorio de investigación de Connect</td><td style=\"border: 1px solid; padding-left: 10px\" class=\"site-info-bold\">Opción 2: Laboratorio clínico ambulatorio de UCM</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; padding-left: 10px\">El equipo de Connect lo recibirá y lo guiará durante su visita. </td><td style=\"border: 1px solid; padding-left: 10px\">Más horas y más centros, sin necesidad de pedir cita.</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; padding-left: 10px\">El equipo le extraerá sangre, recogerá una muestra de orina y le pedirá que haga buches con enjuague bucal para tomar una muestra de saliva.  </td><td style=\"border: 1px solid; padding-left: 10px\">Durante su visita, el personal del laboratorio tomará muestras de sangre y orina. Le enviaremos un kit de recolección de enjuague bucal e instrucciones para tomar la muestra de saliva en su casa.\n</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; padding-left: 10px\">Para programar su cita, use el enlace del mensaje que le enviamos por correo electrónico o llame al personal de Connect al 773-834-5804.</td><td style=\"border: 1px solid; padding-left: 10px\">Solicite una orden para estudio de laboratorio desde el enlace que le enviamos por correo electrónico. La orden la enviará el personal de Connect. <span class=\"site-info-bold\">Espere hasta 48 horas para recibir la confirmación de la orden por correo electrónico</span>. Cuando reciba la confirmación, visite un laboratorio clínico ambulatorio participante de UCM. Las órdenes son válidas durante 180 días.\n</td></tr></table>",
             "howLong": "<span class=\"site-info-bold\">Opción 1: Laboratorio de investigación de Connect de UChicago</span><br/> Espere dedicar entre 30 y 45 minutos a su cita para donar las muestras. Durante la cita, le pediremos que complete una breve encuesta relacionada con las muestras que tomamos.<br/><br/> <span class=\"site-info-bold\">Opción 2: Laboratorio clínico ambulatorio de UCM</span><br/> Los tiempos de espera para donar muestras pueden variar según el laboratorio. Espere dedicar entre 10 y 15 minutos a su cita para donar las muestras de sangre y orina.",
@@ -1073,7 +1084,7 @@
             "whenToDonate": "Cuando llegue el momento de donar sus muestras, le escribiremos por correo electrónico. Es importante que done sus muestras lo antes posible después de recibir el mensaje.<br/><br/><span class=\"site-info-bold\">Nota:</span> Si hace poco tiempo le han hecho una transfusión de sangre o ha donado sangre, espere <span class=\"site-info-bold\">al menos ocho semanas</span> desde su donación o transfusión antes de donar muestras para Connect. Si hace poco tiempo ha donado plasma, espere <span class=\"site-info-bold\">al menos cuatro semanas</span> desde su donación de plasma antes de donar muestras para Connect. Si hace poco tiempo ha donado plaquetas, espere <span class=\"site-info-bold\">al menos una semana</span> desde su última donación de plaquetas antes de donar muestras para Connect. Si van a hacerle una colonoscopia dentro de poco tiempo, <span class=\"site-info-bold\">no</span> done muestras para Connect el <span class=\"site-info-bold\">mismo día</span> de la colonoscopia.",
             "howToDonate": "<p>Para programar su cita, llame al equipo de Connect de BSWH al 214-865-2427 o escriba a <a href=\"mailto:ConnectStudy@bswhealth.org\">ConnectStudy@bswhealth.org</a>.</p>",
             "support": "Llame al 1-877-775-7004 (de lunes a viernes de 8:00 a. m. a 10:00 p. m. y los fines de semana de 9:00 a. m. a 6:00 p. m., hora del centro de EE. UU.)",
-            "locationNotes": "<div style=\"margin-bottom:2rem;\"><div><span class=\"site-info-bold\">Centro de salud y bienestar Baylor Scott &amp; White - Dallas</span><p>4500 Spring Ave<br>Dallas, TX 75210<br><br>Instrucciones de estacionamiento: El Health and Wellness Center ofrece estacionamiento gratuito a nivel de la calle.</p></div><div><span class=\"site-info-bold\">Cuidado comunitario Baylor Scott & White (BCC, por sus siglas en ingles) - Fort Worth*</span><p>1307 8th Ave, Ste 305<br>Fort Worth, TX 76104<br><br>Instrucciones de estacionamiento: El Health and Wellness Center ofrece estacionamiento gratuito a nivel de la calle.<br><span style=\"font-size:1rem\" class=\"site-info-underline-italic\">*Nota: Solo los pacientes de la clínica Baylor Scott &amp; White Health Community Care - Fort Worth pueden programar citas en este centro.</span></p></div><div><span class=\"site-info-bold\">Hospital de todos los santos Baylor Scott &amp; White - Fort Worth</span><p>1400 8th Avenue Fort Worth, TX 76104<br>6.° piso, Edificio C<br><br>Instrucciones de estacionamiento: Use la estructura de estacionamiento para pacientes que está junto al hospital.</p></div><div><span class=\"site-info-bold\">Cuidado comunitario Baylor Scott & White (BCC, por sus siglas en ingles) - Clínica de Worth Street</span><p>4001 Worth St.<br>Dallas, TX 75246<br><br>Instrucciones de estacionamiento: El centro ofrece estacionamiento gratuito a nivel de la calle.<br><span style=\"font-size:1rem;\" class=\"site-info-underline-italic\">*Nota: Solo los pacientes de la clínica Baylor Scott & White Health Community Care - Worth Street pueden programar una cita en este lugar.</span></p></div><div><span class=\"site-info-bold\">Centro de cáncer Baylor Scott &amp; White Sammons</span><p>3410 Worth St, Suite 530<br>Dallas, TX 75246<br><br>Instrucciones de estacionamiento: Conduzca a la parte trasera del edificio del Sammons Cancer Center y estacione en la cochera subterránea. La máquina le emitirá un tíquet cuando ingrese a la cochera. Consérvelo. Durante su visita, el equipo de Connect le dará un cupón de estacionamiento gratuito.</p></div><div><span class=\"site-info-bold\">Baylor Scott & White - Clínica de N. Garland</span><p>7217 Telecom Pkwy, Suite 100<br>Garland, TX 75044<br><br>Instrucciones de estacionamiento: El sitio ofrece estacionamiento gratuito a nivel de superficie.</p></div><div><span class=\"site-info-bold\">Centro Médico Baylor Scott &amp; White - Irving</span><p>1901 N. MacArthur Blvd, Suite 115<br>Irving, TX 75061<br><br>Instrucciones de estacionamiento: El sitio ofrece estacionamiento gratuito en el nivel de la superficie. La Suite 115 se encuentra dentro del Hospital de Irving, en el laboratorio PAT.</p></div><div><span class=\"site-info-bold\">Centro de Medicina Diagnóstica Baylor Scott & White – Temple CDM</span><p>1605 S 31st St <br>Temple, TX 76508<br><br>Instrucciones de Estacionamiento: El sitio ofrece estacionamiento gratuito a nivel de superficie.</p></div><div><span class=\"site-info-bold\">Baylor Scott & White, Temple Roney Bone & Joint – Temple Roney</span><p>2401 S 31st St, Edificio 35<br>Temple, TX 76508<br><br>Instrucciones de Estacionamiento: El sitio ofrece estacionamiento gratuito a nivel de superficie.</p></div></div>",
+            "locationNotes": "<div style=\"margin-bottom:2rem;\"><div><span class=\"site-info-bold\">Centro de salud y bienestar Baylor Scott &amp; White - Dallas</span><p>4500 Spring Ave<br>Dallas, TX 75210<br><br>Instrucciones de estacionamiento: El Health and Wellness Center ofrece estacionamiento gratuito a nivel de la calle.</p></div><div><span class=\"site-info-bold\">Cuidado comunitario Baylor Scott & White (BCC, por sus siglas en ingles) - Fort Worth*</span><p>1307 8th Ave, Ste 305<br>Fort Worth, TX 76104<br><br>Instrucciones de estacionamiento: El Health and Wellness Center ofrece estacionamiento gratuito a nivel de la calle.<br><span style=\"font-size:1rem\" class=\"site-info-underline-italic\">*Nota: Solo los pacientes de la clínica Baylor Scott &amp; White Health Community Care - Fort Worth pueden programar citas en este centro.</span></p></div><div><span class=\"site-info-bold\">Hospital de todos los santos Baylor Scott &amp; White - Fort Worth</span><p>1400 8th Avenue Fort Worth, TX 76104<br>6.° piso, Edificio C<br><br>Instrucciones de estacionamiento: Use la estructura de estacionamiento para pacientes que está junto al hospital.</p></div><div><span class=\"site-info-bold\">Cuidado comunitario Baylor Scott & White (BCC, por sus siglas en ingles) - Clínica de Worth Street</span><p>4001 Worth St.<br>Dallas, TX 75246<br><br>Instrucciones de estacionamiento: El centro ofrece estacionamiento gratuito a nivel de la calle.<br><span style=\"font-size:1rem;\" class=\"site-info-underline-italic\">*Nota: Solo los pacientes de la clínica Baylor Scott & White Health Community Care - Worth Street pueden programar una cita en este lugar.</span></p></div><div><span class=\"site-info-bold\">Centro de cáncer Baylor Scott &amp; White Sammons</span><p>3410 Worth St, Suite 530<br>Dallas, TX 75246<br><br>Instrucciones de estacionamiento: Conduzca a la parte trasera del edificio del Sammons Cancer Center y estacione en la cochera subterránea. La máquina le emitirá un tíquet cuando ingrese a la cochera. Consérvelo. Durante su visita, el equipo de Connect le dará un cupón de estacionamiento gratuito.</p></div><div><span class=\"site-info-bold\">Baylor Scott & White - Clínica de N. Garland</span><p>7217 Telecom Pkwy, Suite 100<br>Garland, TX 75044<br><br>Instrucciones de estacionamiento: El sitio ofrece estacionamiento gratuito a nivel de superficie.</p></div><div><span class=\"site-info-bold\">Centro Médico Baylor Scott &amp; White - Irving</span><p>1901 N. MacArthur Blvd, Suite 115<br>Irving, TX 75061<br><br>Instrucciones de estacionamiento: El sitio ofrece estacionamiento gratuito en el nivel de la superficie. La Suite 115 se encuentra dentro del Hospital de Irving, en el laboratorio PAT.</p></div><div><span class=\"site-info-bold\">Centro de Medicina Diagnóstica Baylor Scott & White – Temple CDM</span><p>1605 S 31st St <br>Temple, TX 76508<br><br>Instrucciones de Estacionamiento: El sitio ofrece estacionamiento gratuito a nivel de superficie.</p></div><div><span class=\"site-info-bold\">Baylor Scott & White, Temple Roney Bone & Joint – Temple Roney</span><p>2401 S 31st St, Edificio 35<br>Temple, TX 76508<br><br>Instrucciones de Estacionamiento: El sitio ofrece estacionamiento gratuito a nivel de superficie.</p></div><div><span class=\"site-info-bold\">Clínica Baylor Scott & White - Temple Westfield </span><p>7556 Honeysuckle <br>Temple, TX 76502 <br><br> Instrucciones de Estacionamiento: El sitio ofrece estacionamiento gratuito a nivel de superficie.</p></div></div>",
             "howLong": "Si completa su primera encuesta de Connect antes de su cita, espere dedicar unos 45 minutos a su cita para donar sus muestras y completar una breve encuesta sobre muestras.",
             "prepareInstructions": "<p>El día de la cita, no es necesario que haga ayuno. Beba mucha agua para mantenerse hidratado, pero <span class=\"site-info-bold\">deje de beber agua una hora antes de la cita</span>.</p> <p><span class=\"site-info-bold\">Una hora antes de la cita:</span> <span class=\"site-info-bold\">No</span> coma, no beba ningún líquido (ni siquiera agua) ni masque chicle, fume, vapee o masque producto alguno (incluido tabaco), no se enjuague la boca ni se cepille los dientes.</p> <p class=\"site-info-bold\">Qué debe llevar y recordar</p><ul><li>Recuerde llevar un documento de identidad con foto válido que no esté vencido (licencia de conducir, pasaporte, identificación con foto del lugar donde estudie u otra identificación con foto).</li><li>Asegúrese de conocer su información de inicio de sesión de MyConnect.</li><li>Cuando done sus muestras, le pediremos que complete una breve encuesta. Puede ser útil tener esta información a mano:</li><ul><li>La última vez que comió o bebió antes de su cita, y la hora a la que se fue a dormir la noche anterior a la cita y a la que se despertó el día de la cita.</li><li>Si está menstruando, la fecha de inicio de su período menstrual más reciente en los últimos 12 meses.</li></ul></li></ul>",
             "whatHappens": "<p>El equipo de investigación lo registrará para su cita y luego tomará sus muestras. Al final de su visita, el equipo de investigación registrará la salida de su cita.</p><p>Tomaremos una muestra de sangre y una muestra de orina, y le pediremos que haga buches con enjuague bucal para tomar una muestra de saliva.</p><p>También le pediremos que complete una breve encuesta en MyConnect con su teléfono celular. Para completar la encuesta, necesitará su información de inicio de sesión de MyConnect. Si no tiene teléfono celular, le daremos una tableta electrónica para completar la encuesta. Le recomendamos completar la encuesta durante su cita. Si decide completarla después de salir de la cita, es importante que lo haga lo antes posible.</p><div class=\"consentHeadersFont\" style=\"color:#606060;width:100%;padding-top:1rem;\">¿Cuándo recibiré mi pago de $25?</div><br/>Recibirá su pago de $25 después de donar una muestra de sangre y completar las cuatro secciones de su primera encuesta de Connect.<br/><br/>Puede encontrar las cuatro secciones de su primera encuesta en su panel de control de MyConnect. Las secciones son las siguientes:<br/><br/><ol><li class=\"site-list-item-spacing\">Antecedentes y estado general de salud</li><li class=\"site-list-item-spacing\">Medicamentos, salud reproductiva, ejercicio y sueño</li><li class=\"site-list-item-spacing\">Consumo de tabaco y alcohol, y exposición al sol</li><li class=\"site-list-item-spacing\">Dónde vive y trabaja</li>"
@@ -1821,7 +1832,9 @@
         "sessionInactive": "Ha estado inactivo durante 20 minutos, ¿desea extender la sesión?<div class=\"modal-footer\"><button type=\"button\" title=\"Cerrar\" class=\"btn btn-dark log-out-user\" data-bs-dismiss=\"modal\">Cerrar sesión</button><button type=\"button\" title=\"Continuar\" class=\"btn btn-primary extend-user-session\" data-bs-dismiss=\"modal\">Continuar</button></div>",
         "homeTitle": "My Connect - Inicio",
         "dashboardTitle": "My Connect - Panel",
-        "signInPhone": "Iniciar sesión con el número de teléfono"
+        "surveyTitle": "My Connect - Encuestas",
+        "signInPhone": "Iniciar sesión con el número de teléfono",
+        "welcomeText": "Le damos la bienvenida",
     },
     "languageSelector": {
         "title": "Idioma",
@@ -1829,7 +1842,7 @@
         "spanishOption": "Español"
     },
     "reports": {
-        "pageTitle": "Mis informes",
+        "pageTitle": "Informes",
         "new": 'Nuevo',
         "viewed": "Vistos",
         "declined": "Rechazados",
@@ -2186,6 +2199,19 @@
         "ymd": "YEMEN, DEMOCRATIC",
         "zmb": "ZAMBIA",
         "zwe": "ZIMBABWE"
+    },
+    "dashboard": {
+        "newText": "Nuevo",
+        "surveyTitle": "Encuestas",
+        "surveyText": "Revise si hay nuevas encuestas y vea cuáles ya ha completado.",
+        "samplesTitle": "Muestras",
+        "samplesText": "Lea los detalles sobre cómo donar muestras para Connect.",
+        "reportTitle": "Informes",
+        "reportText": "Ver o rechazar los informes de resultados disponibles basados en su información.",
+        "formTitle": "Formularios",
+        "formText": "Revise y descargue copias de los formularios que ha completado, o firme nuevos formularios.",
+        "paymentTitle": "Pago",
+        "paymentText": "Revise la información sobre los pagos para los participantes de Connect."
     }
 }
 
