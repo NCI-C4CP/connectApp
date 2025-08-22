@@ -28,9 +28,10 @@ export const renderReportsPage = async () => {
     let unread = [];
     let read = [];
     let declined = [];
-
+    let availableReports = 0;
     Object.keys(reports).forEach((key) => {
         if (reports[key].enabled) {
+            availableReports++;
             switch (reports[key].status) {
                 case fieldMapping.reports.unread: {
                     unread.push(reports[key]);
@@ -47,6 +48,13 @@ export const renderReportsPage = async () => {
             }
         }
     });
+
+    let obj = {
+        [fieldMapping.reports.knownReports]: availableReports
+    };
+
+    //Update the available reports stored on the user to clear any new reports banner now that the page has been loaded
+    await storeResponse(obj);
 
     if (unread.length > 1) unread = sortReportsByAvailableDate(unread);
     if (read.length > 1) read = sortReportsByAvailableDate(read);
