@@ -857,7 +857,7 @@
         "identifyOccupation": "Identifique la categoría laboral que mejor describa este trabajo.",
         "noneAbove": "NINGUNA DE LAS OPCIONES ANTERIORES",
         "thankYouCompleting": "Gracias por completar su perfil del Estudio Connect para la Prevención del Cáncer. A continuación, el equipo de Connect de su sistema de atención médica verificará si reúne los requisitos para participar en el estudio. Nos pondremos en contacto con usted dentro de unos días hábiles para darle información sobre los próximos pasos. <br><br> ¿Tiene alguna pregunta? Póngase en contacto con el <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Centro de Asistencia de Connect.</a>",
-        "thankYouCompletingUChicago": "Gracias por completar su perfil para el Estudio Connect para la Prevencion del Cancer. A continuación el equipo Connect el la Universidad de Chicago de Medicina verificará que usted es elegible para formar parte del estudio. Este paso podrá tomar hasta unas semanas. Nosotros nos comunicaremos con usted lo mas pronto posible para compartir información sobre los próximos pasos. <br><br> ¿Preguntas? Por favor comuníquese con el <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\" rel=\"noopener noreferrer\">Centro de Asistencia de Connect.</a>",
+        "thankYouCompletingUChicago": "Gracias por completar su perfil para el Estudio Connect para la Prevención del Cáncer. A continuación el equipo Connect el la Universidad de Chicago de Medicina verificará que usted es elegible para formar parte del estudio. Este paso podrá tomar hasta unas semanas. Nosotros nos comunicaremos con usted lo mas pronto posible para compartir información sobre los próximos pasos. <br><br> ¿Preguntas? Por favor comuníquese con el <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\" rel=\"noopener noreferrer\">Centro de Asistencia de Connect.</a>",
         "somethingWrong": "Algo salió mal. Por favor, inténtelo de nuevo. Si sigue teniendo este problema, póngase en contacto con el <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Centro de Asistencia de Connect</a>."
     },
     "samples": {
@@ -1093,6 +1093,7 @@
     "settings": {
         "title": "My Connect - Mi perfil",
         "joinMessage": "Gracias por participar en el Estudio Connect para la Prevención del Cáncer del Instituto Nacional del Cáncer. Su participación es muy importante. Estamos verificando tu perfil, lo que puede tardar hasta 3 días hábiles.",
+        "uChicagoJoinMessage": "Gracias por participar en el Estudio Connect para la Prevención del Cáncer del Instituto Nacional del Cáncer. Su participación es muy importante. Estamos verificando tu perfil, lo que puede tardar unas semanas.",
         "deleteInfoMessage": "Hemos eliminado su información después de haber recibido de usted una solicitud de destrucción de datos. Si tiene alguna pregunta, póngase en contacto con el <a href=\"#support\">Centro de Asistencia de Connect</a>.",
         "myProfile": "Mi perfil",
         "accountNotFound": "No se encontró la cuenta",
