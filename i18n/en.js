@@ -14,7 +14,7 @@ const en = {
         "joinNowTrue": "<span class=\"join-now-heading\">What causes and prevents cancer? Help researchers answer this question for future generations</span></br><a class=\"btn join-now-btn\" href=\"#sign_in\">Join Now</a>",
         "joinNowFalse": "<span class=\"join-now-heading\">Thanks for joining Connect Cohort Study!</span>",
         "awaitVerification": "You are awaiting verification",
-        "doSurveys": "Please go fill out your surveys <a href=\"#dashboard\">Here</a>",
+        "doSurveys": "Please go fill out your surveys <a href=\"#surveys\">Here</a>",
         "fillProfile": "Please go and fill out your user profile <a href=\"#dashboard\">Here</a>",
         "signConsent": "Please go and sign the e-consent form <a href=\"#dashboard\">Here</a>",
         "heardStudy": "Where did you hear about this study <a href=\"#dashboard\">Here</a>",
@@ -71,7 +71,7 @@ const en = {
         "accountNotFoundemailEnd": ") cannot be found.",
         "accountNotFoundphonenumber": "Your phone (",
         "accountNotFoundphonenumberEnd": ") cannot be found.",
-        "signInTrouble": "If you’re having trouble signing in or don’t remember your account information, please contact the Connect Support Center at <a href=\"tel:+18664626621\">1-866-462-6621</a> or <a href=\"mailto:ConnectStudy@norc.org\">ConnectStudy@norc.org</a> before creating a new account.",
+        "signInTrouble": "If you’re having trouble signing in or don’t remember your account information, please contact the Connect Support Center at <a href=\"tel:+18775050253\">1-877-505-0253</a> or <a href=\"mailto:ConnectStudy@norc.org\">ConnectStudy@norc.org</a> before creating a new account.",
         "anotherAccount": "Use another account? ",
         "anotherAccountClick": "Click here",
         "noAccount": "Don't have an account?",
@@ -318,17 +318,23 @@ const en = {
     },
     "navbar": {
         "dashboardLink": " Dashboard",
-        "messagesLink": "Messages<!--<span class=\"badge\">2</span>-->",
+        "messagesLink": "Messages",
+        "messagesIcon": {
+            "title": "Messages"
+        },
         "formsLink": "Forms",
         "profileLink": "My Profile",
+        "profileLinkPre": " ",
+        "profileLinkPost": "'s Profile",
         "reportsLink": "My Reports",
         "paymentLink": " My Payment",
         "samplesLink": " My Samples",
         "supportLink": " Support",
         "signOutLink": {
             "title": "Sign Out",
-            "innerHTML": "<i class=\"fas fa-sign-out-alt\"></i> Sign Out"
+            "innerHTML": "Sign Out"
         },
+        "editProfileLink": "Edit My Profile",
         "homeLink": "<a class=\"nav-link\" href=\"#\" id=\"home\" title=\"Home\"> Home</a>",
         "aboutLink": "<a class=\"nav-link\" href=\"#about\" id=\"about\" title=\"About\"> About</a>",
         "expectationsLink": "<a class=\"nav-link\" href=\"#expectations\" id=\"expectations\" title=\"Expectations\"> What to expect</a>",
@@ -452,12 +458,12 @@ const en = {
         "indigenousProtectPageBody7": "If a participant passes away during their time in the study, we will work with the participant’s family or other community members to determine a plan for return or destruction of their samples, if requested.",
         "indigenousOtherPageHeader": "What else should I know?",
         "indigenousOtherPageBody1": "If you identify as an Indigenous Person and want to join Connect, please consider:",
-        "indigenousOtherPageBody1List": "<li>Reading more about participation and the details of what it means to take part in Connect <a target=\"__blank\" href=\"https://www.cancer.gov/connect-prevention-study/what-to-expect\">here</a>.</li><li>Speaking with your community members, leaders, and family about participating in Connect.</li><li>Contacting the Connect Support Center with any questions you have. Our team is happy to speak with you and discuss any concerns you may have about taking part in the study. (<a target=\"__blank\" href=\"https://norcfedramp.servicenowservices.com/recruit\">Cancer.gov/connectstudy/support</a>, or call 1-866-462-6621 8:00 a.m.-10:00 p.m. CT on weekdays, and 9:00 a.m.-6:00 p.m. CT on weekends).</li>",
+        "indigenousOtherPageBody1List": "<li>Reading more about participation and the details of what it means to take part in Connect <a target=\"__blank\" href=\"https://www.cancer.gov/connect-prevention-study/what-to-expect\">here</a>.</li><li>Speaking with your community members, leaders, and family about participating in Connect.</li><li>Contacting the Connect Support Center with any questions you have. Our team is happy to speak with you and discuss any concerns you may have about taking part in the study. (<a target=\"__blank\" href=\"https://norcfedramp.servicenowservices.com/recruit\">Cancer.gov/connectstudy/support</a>, or call 1-877-505-0253 8:00 a.m.-10:00 p.m. CT on weekdays, and 9:00 a.m.-6:00 p.m. CT on weekends).</li>",
         "indigenousOtherPageBody2": "If you join now and later decide to leave the study, you can do so at any time, for any reason.",
-        "indigenousOtherPageBody3": "The decision to join Connect is yours to make. Please choose what you are most comfortable with. We respect your decision and your privacy, and welcome any feedback that you would like to share with us. Please call us at 1-866-462-6621 8:00 a.m.-10:00 p.m. CT on weekdays, and 9:00 a.m.-6:00 p.m. CT on weekends, or write to us at ConnectStudy@norc.org.",
+        "indigenousOtherPageBody3": "The decision to join Connect is yours to make. Please choose what you are most comfortable with. We respect your decision and your privacy, and welcome any feedback that you would like to share with us. Please call us at 1-877-505-0253 8:00 a.m.-10:00 p.m. CT on weekdays, and 9:00 a.m.-6:00 p.m. CT on weekends, or write to us at ConnectStudy@norc.org.",
         "indigenousOtherPageBody4": "Thank you for learning about how Connect will engage with Indigenous Peoples. On the next screen, you can view the full consent form and electronic health records release form to continue the consent process.",
         "consentPageHeader": "Informed Consent",
-        "consentPageBody1": "To join Connect, we need you to review the full informed consent form and electronic health records release (HIPAA Authorization) form below. If you have any questions, contact the Connect Support Center at <a target=\"_blank\" href=\"https://norcfedramp.servicenowservices.com/recruit\">Cancer.gov/connectstudy/support</a> or call 1-866-462-6621. Once you are comfortable with the study and decide to join, please sign the forms electronically by scrolling to the bottom of this screen and clicking, “Yes, I agree to join Connect.” Then, please type your name into the fields that appear and click “Submit” to view and download copies of your signed forms.",
+        "consentPageBody1": "To join Connect, we need you to review the full informed consent form and electronic health records release (HIPAA Authorization) form below. If you have any questions, contact the Connect Support Center at <a target=\"_blank\" href=\"https://norcfedramp.servicenowservices.com/recruit\">Cancer.gov/connectstudy/support</a> or call 1-877-505-0253. Once you are comfortable with the study and decide to join, please sign the forms electronically by scrolling to the bottom of this screen and clicking, “Yes, I agree to join Connect.” Then, please type your name into the fields that appear and click “Submit” to view and download copies of your signed forms.",
         "consentPageSubheader1": "Informed Consent Form",
         "consentPageBody2": "This form explains in detail what it means to take part in Connect. To join the study, please scroll down to the bottom of this screen to electronically consent. You do not need to download and sign the form the join the study.",
         "consentPageBody3": "If you have trouble viewing the consent form in the window at the bottom of this screen, you can download an unsigned copy by scrolling down and selecting that option below.",
@@ -642,7 +648,7 @@ const en = {
         "consentPageBody4": "This allows Connect to access your electronic health records. To join the study, please scroll down to the bottom of this screen to electronically consent. You do not need to download and sign the form to join the study.",
         "consentPageBody5": "If you have trouble viewing the electronic health records release form in the window at the bottom of this screen, you can download an unsigned copy by scrolling down and selecting that option below.",
         "consentPageBody6": "By clicking “Yes, I agree to join Connect” and typing your name, you confirm the following:",
-        "consentPageBody6List": "<li>I have read these forms.</li><li>As  stated  in  the  consent  and  HIPAA  Authorization,  I  will allow  the  use,  storage, and  disclosure  (release) of  my  survey  answers, samples,  and  health  information for the research as described above.</li><li>If I have questions, I can contact the Connect Support Center at <a target=\"_blank\" href=\"https://norcfedramp.servicenowservices.com/recruit\">Cancer.gov/connectstudy/support</a> or by calling 1-866-462-6621</li><li>If I decide to leave the study, I can contact the Connect Support Center at <a target=\"_blank\" href=\"https://norcfedramp.servicenowservices.com/recruit\">Cancer.gov/connectstudy/support</a></li>",
+        "consentPageBody6List": "<li>I have read these forms.</li><li>As  stated  in  the  consent  and  HIPAA  Authorization,  I  will allow  the  use,  storage, and  disclosure  (release) of  my  survey  answers, samples,  and  health  information for the research as described above.</li><li>If I have questions, I can contact the Connect Support Center at <a target=\"_blank\" href=\"https://norcfedramp.servicenowservices.com/recruit\">Cancer.gov/connectstudy/support</a> or by calling 1-877-505-0253</li><li>If I decide to leave the study, I can contact the Connect Support Center at <a target=\"_blank\" href=\"https://norcfedramp.servicenowservices.com/recruit\">Cancer.gov/connectstudy/support</a></li>",
         "consentPageAgree": "Yes, I agree to join Connect",
         "consentPageFormFirstName": "First Name<span class=\"required\">*</span>",
         "consentPageFormMiddleName": "Middle Name<span></span>",
@@ -688,6 +694,7 @@ const en = {
         "enterPin": {
             "placeholder": "Enter PIN"
         },
+        "noPinMsg": `<strong>If you don't have a PIN, click the button below to continue.</strong>`,
         "noPin": "I do not have a PIN",
         "submitText": "Submit",
         "modalCancel": "No",
@@ -734,10 +741,11 @@ const en = {
         "bodyConnectSupport": "the Connect Support Center by emailing <a href = \"mailto:ConnectSupport@norc.org\">ConnectSupport@norc.org</a> or calling 1-877-505-0253",
         "bodyHealthPartners": "HealthPartners by emailing <a href = \"mailto:ConnectStudy@healthpartners.com\">ConnectStudy@healthpartners.com</a> or calling 952-967-5067",
         "bodyHenryFord": "Henry Ford Health by emailing <a href = \"mailto:ConnectStudy@hfhs.org\">ConnectStudy@hfhs.org</a>",
-        "bodyKPColorado": "KP Colorado by emailing <a href = \"mailto:Connect-Study-KPCO@kp.org\">Connect-Study-KPCO@kp.org</a> or calling 303-636-3126",
-        "bodyKPGeorgia": "KP Georgia by emailing <a href = \"mailto:Connect-Study-KPGA@kp.org\">Connect-Study-KPGA@kp.org</a> or calling 404-745-5115",
+        "bodyKPColorado": "KP Colorado by emailing <a href = \"mailto:Connect-Study-KPCO@kp.org\">Connect-Study-KPCO@kp.org</a> or calling 833-630-0007",
+        "bodyKPGeorgia": "KP Georgia by emailing <a href = \"mailto:Connect-Study-KPGA@kp.org\">Connect-Study-KPGA@kp.org</a> or calling 404-504-5660",
         "bodyKPHawaii": "KP Hawaii by emailing <a href = \"mailto:Connect-Study-KPHI@kp.org\">Connect-Study-KPHI@kp.org</a> or calling 833-417-0846",
         "bodyKPNorthwest": "KP Northwest by emailing <a href = \"mailto:Connect-Study-KPNW@kp.org\">Connect-Study-KPNW@kp.org</a> or calling 1-866-554-6039 (toll-free) or 503-528-3985",
+        "bodyMarshfieldClinic": `Marshfield Clinic by emailing <a href = "mailto:connectstudy@marshfieldresearch.org">connectstudy@marshfieldresearch.org</a> or calling 715-898-9444`,
         "bodySanfordHealth": "Sanford Health by emailing <a href = \"mailto:ConnectStudy@sanfordhealth.org\">ConnectStudy@sanfordhealth.org</a> or calling 605-312-6100",
         "bodyBaylorScottAndWhiteHealth": "Baylor Scott & White Health by emailing <a href = \"mailto:ConnectStudy@bswhealth.org\">ConnectStudy@bswhealth.org</a> or calling 214-865-2427",
         "tryingContact": "Our study team has been trying to contact you about your eligibility for the Connect for Cancer Prevention Study. We need more information from you to check that you can be part of Connect. Please contact ",
@@ -844,7 +852,8 @@ const en = {
         "okButton": "OK",
         "identifyOccupation": "Please identify the occupation category that best describes this job.",
         "noneAbove": "NONE OF THE ABOVE",
-        "thankYouCompleting": "Thank you for completing your profile for the Connect for Cancer Prevention Study. Next, the Connect team at your health care system will check that you are eligible to be part of the study. We will contact you within a few business days to share information about next steps.</br>Questions? Please contact the <a href= \"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Connect Support Center.</a>",
+        "thankYouCompleting": "Thank you for completing your profile for the Connect for Cancer Prevention Study. Next, the Connect team at your health care system will check that you are eligible to be part of the study. We will contact you within a few business days to share information about next steps.<br><br> Questions? Please contact the <a href= \"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Connect Support Center.</a>",
+        "thankYouCompletingUChicago": "Thank you for completing your profile for the Connect for Cancer Prevention Study. Next, the Connect team at University of Chicago Medicine will check that you are eligible to be part of the study. This step may take up to a few weeks. We will contact you as soon as possible to share information about next steps. <br><br> Questions? Please contact the <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\" rel=\"noopener noreferrer\"> Connect Support Center.</a>",
         "somethingWrong": "Something went wrong. Please try again. Contact the <a href= \"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Connect Support Center</a> if you continue to experience this problem."
     },
     "samples": {
@@ -854,6 +863,7 @@ const en = {
             "href": "mailto:ConnectSupport@norc.org"
         },
         "donatingSamples": "Donating Your Samples at ",
+        "donatingSamplesConnectMessage": "A Message About Donating Samples for Connect",
         "whenToDonate": "When Should I Donate My Samples?",
         "howToDonate": "How Do I Donate My Samples?",
         "whereToDonate": "Where Do I Donate My Samples?",
@@ -970,6 +980,7 @@ const en = {
         },
         "u_chicago": {
             "donatingSamples": "As part of  Connect, we ask you to donate blood, urine, and saliva samples and complete a short survey.",
+            "noSamplesCollection":"Thank you for being part of Connect! UChicago Medicine is currently not collecting samples from Connect participants. There is nothing you need to do right now. <br><br> We hope to offer Connect participants from UChicago opportunities to donate samples in the future and will let you know when those options become available. <br><br> In the meantime, please check to see if you have any surveys left to complete. <br><br> If you have any questions, please contact our team at the Connect Support Center at <a href=\"https://MyConnect.cancer.gov/support\" target=\"_blank\" rel=\"noopener noreferrer\">MyConnect.cancer.gov/support</a>, <a href=\"mailto:ConnectSupport@NORC.org\">ConnectSupport@NORC.org</a>, or 1-877-505-0253. <br><br> We look forward to your continued participation!",
             "whenToDonate": "The Connect team will send you an email when it is time to donate your samples. Be sure to check your spam or junk folder. After you receive the email, it is important to donate your samples as soon as you can.<br><br><span class=\"site-info-bold\">Note:</span> If you have recently had a blood transfusion or donated blood please wait at least <span class=\"site-info-bold\">eight weeks</span> from your transfusion or donation before donating your samples for Connect. If you have recently donated plasma, please wait at least <span class=\"site-info-bold\">four weeks</span> from your plasma donation before donating samples for Connect. If you have recently donated platelets, please wait at least <span class=\"site-info-bold\">one week</span> from your platelet donation before donating samples for Connect. If you have an upcoming colonoscopy, please be sure that you <span class=\"site-info-bold\">do not</span> donate samples for Connect on the <span class=\"site-info-bold\">same day</span> as your colonoscopy.",
             "howToDonate": "Connect participants at UChicago have two options for donating samples. You can choose the most convenient option for you. For questions and assistance with transportation, please call UChicago at (773) 834-5804 or email Connect@bsd.uchicago.edu.<br><br> <span class=\"site-info-bold\">Option 1:</span> Make an appointment to come into one of our Connect Research Labs to donate your samples.<br><br> <span class=\"site-info-bold\">Option 2:</span> A study team member can request a lab order be placed for you. After you receive the order confirmation email, you can donate samples by visiting a participating UChicago Medicine (UCM) Outpatient Clinical Lab Location during normal hours of operation.<br><br> The table below includes more information about these options.<br><br> <table style=\"border: 1px solid\"><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; padding-left: 10px\" class=\"site-info-bold\">Option 1: Connect Research Lab</td><td style=\"border: 1px solid; padding-left: 10px\" class=\"site-info-bold\">Option 2: UCM Outpatient Clinical Lab Location</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; padding-left: 10px\">Connect team will greet you and walk you through your visit. </td><td style=\"border: 1px solid; padding-left: 10px\">More hours and more locations, no need to schedule an appointment.</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; padding-left: 10px\">The team will draw blood, collect urine, and collect a saliva sample by asking you to swish with mouthwash.  </td><td style=\"border: 1px solid; padding-left: 10px\">Lab staff will collect blood and urine samples at your visit. \nWe will send a mouthwash collection kit and instructions to you to complete your saliva sample at home.\n</td></tr><tr style=\"border: 1px solid\"><td style=\"border: 1px solid; padding-left: 10px\">Schedule your appointment using the link in the email we send or schedule with Connect staff by calling 773-834-5804.</td><td style=\"border: 1px solid; padding-left: 10px\">Request a lab order using the link in the email we send.  \nThe order will be placed by Connect staff. <span class=\"site-info-bold\">Please allow up to 48 hours to receive order confirmation via email</span>.  Once you receive the confirmation email, visit a participating UCM Outpatient Clinical Lab Location.\nOrders expire after 180 days.\n</td></tr></table>",
             "howLong": "<span class=\"site-info-bold\">Option 1: UChicago Connect Research Lab Location</span><br> Please expect to spend about 30-45 minutes at your appointment to donate your samples. During your appointment, we will ask you to complete a short survey related to the samples we collect.<br><br> <span class=\"site-info-bold\">Option 2: UCM Outpatient Clinical Lab  Location</span><br> Wait times to donate samples may vary by location. Please expect to spend about 10-15 minutes at your appointment to donate your blood and urine samples.",
@@ -1070,7 +1081,7 @@ const en = {
             "whenToDonate": "<p>The Connect team will send you an email when it is time to donate your samples. Be sure to check your spam or junk folder. After you receive the email, it is important to donate your samples as soon as you can. It is easy to donate all of your samples in one visit.<p/><p> <span class=\"site-info-bold\">Note:</span> If you have recently had a blood transfusion or donated blood, please wait at least <span class=\"site-info-bold\">eight weeks</span> from your donation or transfusion before donating your samples for Connect. If you have recently donated plasma, please wait at least <span class=\"site-info-bold\">four weeks</span> from your plasma donation before donating samples for Connect. If you have recently donated platelets, please wait at least <span class=\"site-info-bold\">one week</span> from your platelet donation before donating samples for Connect. If you have an upcoming colonoscopy, please be sure that you <span class=\"site-info-bold\">do not</span> donate samples for Connect on the <span class=\"site-info-bold\">same day</span> as your colonoscopy.<p/>",
             "howToDonate": "<p>Contact the BSWH Connect team at 214-865-2427 or by email at <a href=\"mailto:ConnectStudy@bswhealth.org\">ConnectStudy@bswhealth.org</a> to schedule your appointment.</p>",
             "support": "Call 1-877-505-0253 (8:00 a.m. - 10:00 p.m. CT on weekdays and 9:00 a.m. - 6:00 p.m. CT on weekends).",
-            "locationNotes": "<div style=\"margin-bottom:2rem;\"><div><span class=\"site-info-bold\">Baylor Scott & White Health and Wellness Center - Dallas</span><p>4500 Spring Ave<br>Dallas, TX 75210<br><br>Parking Instructions: The site offers free surface level parking.</p></div><div><span class=\"site-info-bold\">Baylor Scott & White Community Care (BCC) - Fort Worth*</span><p>1307 8th Ave, Ste 305<br>Fort Worth, TX 76104<br><br>Parking Instructions: The site offers free surface level parking.<br><span style=\"font-size:1rem\" class=\"site-info-underline-italic\">*Note: Only patients of Baylor Scott & White Health Community Care - Fort Worth clinic can schedule an appointment at this location.</span></p></div><div><span class=\"site-info-bold\">Baylor Scott & White All Saints Hospital - Fort Worth </span><p>1400 8th Avenue Fort Worth, TX 76104<br>6th Floor, C Building<br><br>Parking Instructions: Use the patient parking structure by the hospital.</p></div><div><span class=\"site-info-bold\">Baylor Scott & White Community Care (BCC) - Worth Street Clinic*</span><p>4001 Worth St.<br>Dallas, TX 75246<br><br>Parking Instructions: The site offers free surface level parking.<br><span style=\"font-size:1rem\" class=\"site-info-underline-italic\">*Note: Only patients of Baylor Scott & White Health Community Care - Worth Street clinic can schedule an appointment at this location.</span></p></div><div><span class=\"site-info-bold\">Baylor Scott & White Sammons Cancer Center</span><p>3410 Worth St, Suite 530<br>Dallas, TX 75246<br><br>Parking Instructions: Drive to the back of the Sammons Cancer Center Building and park in the underground garage. You will get a ticket from the machine as you enter the garage. Please keep the ticket. During your visit, the Connect team will give you a voucher for free parking.</p></div><div><span class=\"site-info-bold\">Baylor Scott & White - N. Garland Clinic</span><p>7217 Telecom Pkwy, Suite 100<br>Garland, TX 75044<br><br>Parking Instructions: The site offers free surface level parking.</p></div><div><span class=\"site-info-bold\">Baylor Scott & White Medical Center - Irving</span><p>1901 N. MacArthur Blvd, Suite 115<br>Irving, TX 75061<br><br>Parking Instructions: The site offers free surface level parking.<br>Suite 115 is located within the Irving Hospital in the PAT lab.</p></div><div><span class=\"site-info-bold\">Baylor Scott & White Center for Diagnostic Medicine – Temple CDM</span><p>1605 S 31st St<br>Temple, TX 76508<br><br>Parking Instructions: The site offers free surface level parking.</p></div></div><div><span class=\"site-info-bold\">Baylor Scott & White, Temple Roney Bone & Joint – Temple Roney </span><p>2401 S 31st St, Bldg 35<br>Temple, TX 76508<br><br>Parking Instructions: The site offers free surface level parking.</p></div></div>",
+            "locationNotes": "<div style=\"margin-bottom:2rem;\"><div><span class=\"site-info-bold\">Baylor Scott & White Health and Wellness Center - Dallas</span><p>4500 Spring Ave<br>Dallas, TX 75210<br><br>Parking Instructions: The site offers free surface level parking.</p></div><div><span class=\"site-info-bold\">Baylor Scott & White Community Care (BCC) - Fort Worth*</span><p>1307 8th Ave, Ste 305<br>Fort Worth, TX 76104<br><br>Parking Instructions: The site offers free surface level parking.<br><span style=\"font-size:1rem\" class=\"site-info-underline-italic\">*Note: Only patients of Baylor Scott & White Health Community Care - Fort Worth clinic can schedule an appointment at this location.</span></p></div><div><span class=\"site-info-bold\">Baylor Scott & White All Saints Hospital - Fort Worth </span><p>1400 8th Avenue Fort Worth, TX 76104<br>6th Floor, C Building<br><br>Parking Instructions: Use the patient parking structure by the hospital.</p></div><div><span class=\"site-info-bold\">Baylor Scott & White Community Care (BCC) - Worth Street Clinic*</span><p>4001 Worth St.<br>Dallas, TX 75246<br><br>Parking Instructions: The site offers free surface level parking.<br><span style=\"font-size:1rem\" class=\"site-info-underline-italic\">*Note: Only patients of Baylor Scott & White Health Community Care - Worth Street clinic can schedule an appointment at this location.</span></p></div><div><span class=\"site-info-bold\">Baylor Scott & White Sammons Cancer Center</span><p>3410 Worth St, Suite 530<br>Dallas, TX 75246<br><br>Parking Instructions: Drive to the back of the Sammons Cancer Center Building and park in the underground garage. You will get a ticket from the machine as you enter the garage. Please keep the ticket. During your visit, the Connect team will give you a voucher for free parking.</p></div><div><span class=\"site-info-bold\">Baylor Scott & White - N. Garland Clinic</span><p>7217 Telecom Pkwy, Suite 100<br>Garland, TX 75044<br><br>Parking Instructions: The site offers free surface level parking.</p></div><div><span class=\"site-info-bold\">Baylor Scott & White Medical Center - Irving</span><p>1901 N. MacArthur Blvd, Suite 115<br>Irving, TX 75061<br><br>Parking Instructions: The site offers free surface level parking.<br>Suite 115 is located within the Irving Hospital in the PAT lab.</p></div><div><span class=\"site-info-bold\">Baylor Scott & White Center for Diagnostic Medicine – Temple CDM</span><p>1605 S 31st St<br>Temple, TX 76508<br><br>Parking Instructions: The site offers free surface level parking.</p></div></div><div><span class=\"site-info-bold\">Baylor Scott & White, Temple Roney Bone & Joint – Temple Roney </span><p>2401 S 31st St, Bldg 35<br>Temple, TX 76508<br><br>Parking Instructions: The site offers free surface level parking.</p></div><div><span class=\"site-info-bold\">Baylor Scott & White Temple Westfield Clinic</span><p>7556 Honeysuckle <br>Temple, TX 76502 <br><br> Parking Instructions: The site offers free surface level parking.</p></div></div>",
             "howLong": "If you complete your first Connect survey before your appointment, please expect to spend about 45 minutes at your appointment to donate your samples and complete a short sample survey.",
             "prepareInstructions": "<p>On the day of your appointment, you do not need to fast. Drink plenty of water to keep hydrated, but <span class=\"site-info-bold\">stop drinking water one hour before your appointment.</span></p> <p><span class=\"site-info-bold\">One hour before your appointment:</span> Please <span class=\"site-info-bold\">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.</p> <p class=\"site-info-bold\">Things to bring and remember</p><ul><li>Please remember to bring a valid photo ID that is not expired (driver’s license, passport, school photo ID, or other photo ID)</li><li>Make sure you know your login information for MyConnect</li><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:</li><ul><li>The last time you ate or drank before your appointment, and the times you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></li></ul>",
             "whatHappens": "<p>The research team will check you in for your appointment and then collect your samples. At the end of your visit, the research team will check you out of your appointment.</p><p>We will draw a blood sample, collect a urine sample, and collect a saliva sample by asking you to swish with mouthwash.</p><p>We will also ask you to complete a short survey on MyConnect using your mobile phone. You will need your MyConnect login information to complete the survey. If you do not have a mobile phone, we will provide you with a tablet to complete your survey. We strongly encourage you to complete your survey at your appointment. If you choose to complete it after you leave your appointment, it is important to do so as soon as possible.</p><div class=\"consentHeadersFont\" style=\"color:#606060;width:100%;padding-top:1rem;\">When Will I Receive My $25 Payment?</div><br>You will receive your $25 payment after you donate a blood sample and complete all four sections of your first Connect survey.<br><br>You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<br><br><ol><li class=\"site-list-item-spacing\">Background and Overall Health</li><li class=\"site-list-item-spacing\">Medications, Reproductive Health, Exercise, and Sleep</li><li class=\"site-list-item-spacing\">Smoking, Alcohol, and Sun Exposure</li><li class=\"site-list-item-spacing\">Where you Live and Work</li>"
@@ -1079,6 +1090,7 @@ const en = {
     "settings": {
         "title": "My Connect - My Profile",
         "joinMessage": "Thank you for joining the National Cancer Institute's Connect for Cancer Prevention Study. Your involvement is very important. We are currently verifying your profile, which may take up to 3 business days.",
+        "uChicagoJoinMessage": "Thank you for joining the National Cancer Institute's Connect for Cancer Prevention Study. Your involvement is very important. We are currently verifying your profile, which may take a few weeks.",
         "deleteInfoMessage": "We have deleted your information based on the data destruction request we received from you. If you have any questions, please contact the <a href=\"#support\">Connect Support Center</a>.",
         "myProfile": "My Profile",
         "accountNotFound": "Account Not Found",
@@ -1222,7 +1234,7 @@ const en = {
         "loginUpdateSuccess": "Login Update Success!",
         "loginUpdateFailed": "Login Update Failed!",
         "signInVerification": "Sign In Verification",
-        "reauthBody": "To update your sign in method, please first verify your identity by signing in with your existing account email or phone number.<br /><br />If you're having trouble signing in or don't remember your account information, please contact the Connect Support Center at <a href=\"tel:+18664626621\">1-866-462-6621</a> or <a href=\"mailto:ConnectSupport@norc.org\">ConnectSupport@norc.org</a>.",
+        "reauthBody": "To update your sign in method, please first verify your identity by signing in with your existing account email or phone number.<br /><br />If you're having trouble signing in or don't remember your account information, please contact the Connect Support Center at <a href=\"tel:+18775050253\">1-877-505-0253</a> or <a href=\"mailto:ConnectSupport@norc.org\">ConnectSupport@norc.org</a>.",
         "signIn": "Sign In",
         "emailOrPhone": "Email or Phone<br /><span style=\"font-size: 0.8rem; color:gray\">Phone Format: 123-456-7890</span>",
         "validEmailOrPhone": "Please enter a valid email or phone number",
@@ -1305,7 +1317,7 @@ const en = {
         "alsoEmail": " or email ",
         "defaultPhone": "1-877-505-0253",
         "defaultEmail": "<a href=\"mailto:ConnectSupport@norc.org\">ConnectSupport@norc.org</a>",
-        "signedInPhone": "1-866-462-6621",
+        "signedInPhone": "1-877-505-0253",
         "payments": "Payments",
         "bioSamples": "Biological Samples",
         "policyConfidential": "Policy and Confidentiality",
@@ -1818,7 +1830,9 @@ const en = {
         "sessionInactive": "You were inactive for 20 minutes, would you like to extend your session?<div class=\"modal-footer\"><button type=\"button\" title=\"Close\" class=\"btn btn-dark log-out-user\" data-bs-dismiss=\"modal\">Log Out</button><button type=\"button\" title=\"Continue\" class=\"btn btn-primary extend-user-session\" data-bs-dismiss=\"modal\">Continue</button></div>",
         "homeTitle": "My Connect - Home",
         "dashboardTitle": "My Connect - Dashboard",
-        "signInPhone": "Sign in with phone number"
+        "surveyTitle": "My Connect - Surveys",
+        "signInPhone": "Sign in with phone number",
+        "welcomeText": "Welcome",
     },
     "languageSelector": {
         "title": "Language",
@@ -1826,7 +1840,7 @@ const en = {
         "spanishOption": "Español"
     },
     "reports": {
-        "pageTitle": "My Reports",
+        "pageTitle": "Reports",
         "new": "New",
         "viewed": "Viewed",
         "declined": "Declined",
@@ -2183,6 +2197,19 @@ const en = {
         "ymd": "YEMEN, DEMOCRATIC",
         "zmb": "ZAMBIA",
         "zwe": "ZIMBABWE"
+    },
+    "dashboard": {
+        "newText": "New",
+        "surveyTitle": "Surveys",
+        "surveyText": "Check for new surveys and see what surveys you’ve already finished.",
+        "samplesTitle": "Samples",
+        "samplesText": "Read details about donating samples for Connect.",
+        "reportTitle": "Reports",
+        "reportText": "View or decline available results reports based on your information.",
+        "formTitle": "Forms",
+        "formText": "Review and download copies of the forms you’ve completed, or sign new forms.",
+        "paymentTitle": "Payment",
+        "paymentText": "Review information about payments for Connect participants."
     }
 }
 

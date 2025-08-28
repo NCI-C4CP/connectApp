@@ -1,7 +1,7 @@
 import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues, escapeHTML } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
 import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, requestPINTemplate } from "./pages/healthCareProvider.js";
-import { myToDoList } from "./pages/myToDoList.js";
+import { renderDashboard } from "./pages/dashboard.js";
 import { suffixToTextMap, getFormerNameData, formerNameOptions } from "./settingsHelpers.js";
 import fieldMapping from "./fieldToConceptIdMapping.js";
 import {signUpRender} from "./pages/homePage.js";
@@ -2090,7 +2090,7 @@ const verifyUserDetails = (formData) => {
                 modal.hide(); // Close modal after successful response
                 const myData = await getMyData();
                 if (hasUserData(myData)) {
-                    myToDoList(myData.data, true);
+                    renderDashboard(myData.data, true);
                 }
             }
         } catch (error) {
@@ -2447,13 +2447,7 @@ export const toggleCurrentPage = async (route) => {
     });
     if(route === '#' && document.getElementById('home')) document.getElementById('home').click();
     if(route === '#dashboard') document.getElementById('userDashboard').click();
-    if(route === '#messages') document.getElementById('Notifications').click();
-    if(route === '#forms') document.getElementById('userAgreements').click();
-    if(route === '#myprofile') document.getElementById('userSettings').click();
-    if(route === '#reports') document.getElementById('reports').click();
     if(route === '#support') document.getElementById('connectSupport').click();
-    if(route === '#samples') document.getElementById('connectSamples').click();
-    if(route === '#payment') document.getElementById('connectPayment').click();
 }
 
 export const toggleCurrentPageNoUser = async () => {

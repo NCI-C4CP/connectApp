@@ -136,7 +136,11 @@ export const renderSettingsPage = async () => {
       let headerMessage = '';
       if (!isParticipantDataDestroyed) {
         if (userData[cId.verification] !== cId.verified && userData[cId.consentWithdrawn] !== cId.yes) {
-            headerMessage = 'settings.joinMessage';
+            if (userData[cId.healthcareProvider] === cId.uChicagoMedicine) { // UChicago specific message
+                headerMessage = 'settings.uChicagoJoinMessage';
+            } else { // general message for other sites, not UChicago
+                headerMessage = 'settings.joinMessage';
+            }
         }
       } else {
         headerMessage = 'settings.deleteInfoMessage';
@@ -2213,7 +2217,7 @@ const renderReauthModal = () => {
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p data-i18n="settings.reauthBody">To update your sign in method, please first verify your identity by signing in with your existing account email or phone number.<br /><br />If you're having trouble signing in or don't remember your account information, please contact the Connect Support Center at <a href="tel:+18664626621">1-866-462-6621</a> or <a href="mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a>.</p>
+                    <p data-i18n="settings.reauthBody">To update your sign in method, please first verify your identity by signing in with your existing account email or phone number.<br /><br />If you're having trouble signing in or don't remember your account information, please contact the Connect Support Center at <a href="tel:+18775050253">1-877-505-0253</a> or <a href="mailto:ConnectSupport@norc.org">ConnectSupport@norc.org</a>.</p>
                     <div class="signInWrapper" id="signInWrapperDiv">
                         <p class="loginTitleFont" style="text-align:center;" data-i18n="settings.signIn">Sign In</p>
                         <div id="signInDiv">
