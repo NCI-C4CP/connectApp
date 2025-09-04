@@ -813,9 +813,11 @@ export function addEventDownloadSignedConsentAndHipaa(anchorIdArray, data) {
     isDownloading = true;
     try {
       if (!evt.target.href) {
+        evt.preventDefault();
         evt.target.href = await generateSignedPdf(data, evt.target.dataset.file);
         evt.target.click();
       } else if (isMobile && evt.target.href) {
+        evt.preventDefault();
         openNewTab(evt.target.href);
       }
     } catch (err) {
