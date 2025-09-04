@@ -136,7 +136,11 @@ export const renderSettingsPage = async () => {
       let headerMessage = '';
       if (!isParticipantDataDestroyed) {
         if (userData[cId.verification] !== cId.verified && userData[cId.consentWithdrawn] !== cId.yes) {
-            headerMessage = 'settings.joinMessage';
+            if (userData[cId.healthcareProvider] === cId.uChicagoMedicine) { // UChicago specific message
+                headerMessage = 'settings.uChicagoJoinMessage';
+            } else { // general message for other sites, not UChicago
+                headerMessage = 'settings.joinMessage';
+            }
         }
       } else {
         headerMessage = 'settings.deleteInfoMessage';

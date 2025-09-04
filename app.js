@@ -540,6 +540,10 @@ const toggleNavBar = (route, data) => {
             showAnimation();
             document.getElementById('userNavBarContainer').innerHTML = userNavBar(data);
             document.getElementById('headerNavBarContainer').innerHTML = userHeaderNavBar(data);
+            document.getElementById('headerNavBarToggler').classList.remove("d-none");
+            document.getElementById('userNavBarToggler').classList.add("d-none");
+            document.getElementById('userNavBarToggler').parentNode.parentNode.classList.add("navbar-expand");
+            document.getElementById('userNavBarToggler').parentNode.parentNode.classList.remove("navbar-expand-md");
             addMessageCounterToNavBar();
             document.getElementById('joinNow') ? document.getElementById('joinNow').innerHTML = joinNowBtn(false) : ``; 
             document.getElementById('signInWrapperDiv') ? document.getElementById('signInWrapperDiv').style.display = "none" :'';
@@ -553,6 +557,10 @@ const toggleNavBar = (route, data) => {
             showAnimation();
             document.getElementById('userNavBarContainer').innerHTML = homeNavBar();
             document.getElementById('headerNavBarContainer').innerHTML = '';
+            document.getElementById('headerNavBarToggler').classList.add("d-none");
+            document.getElementById('userNavBarToggler').classList.remove("d-none");
+            document.getElementById('userNavBarToggler').parentNode.parentNode.classList.add("navbar-expand-md");
+            document.getElementById('userNavBarToggler').parentNode.parentNode.classList.remove("navbar-expand");
             document.getElementById('joinNow') ? document.getElementById('joinNow').innerHTML = joinNowBtn(true) : ``;
             document.getElementById('nextStepWarning') ? document.getElementById('nextStepWarning').style.display="none": '';
             await toggleCurrentPageNoUser(route);

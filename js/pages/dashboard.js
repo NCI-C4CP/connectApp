@@ -305,8 +305,19 @@ const renderSurveysCard = async (data, collections) => {
 }
 
 const renderFormsCard = (data) => {
-    let newForm = ((data[fieldMapping.revokeHipaa] === fieldMapping.yes)) &&
-        (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] === fieldMapping.no);
+    let newForm = false;
+    //If hippa is revoked or consent is revoked
+    if ((data[fieldMapping.revokeHipaa] === fieldMapping.yes  || data[fieldMapping.consentWithdrawn] === fieldMapping.yes) &&
+        (!data[fieldMapping.hipaaRevocationSigned] || data[fieldMapping.hipaaRevocationSigned] === fieldMapping.no)) {
+        newForm = true;
+    }
+       
+    //If data destroy is requested
+    if ((data[fieldMapping.destroyData] === fieldMapping.yes) && 
+        (!data[fieldMapping.destroyDataSigned] || data[fieldMapping.destroyDataSigned] == fieldMapping.no)) {
+        newForm = true;
+    }
+
     let icon = './images/agreements-icon.svg';
     let href = "#forms"
     let type = "form";
@@ -413,11 +424,6 @@ const checkForNewSurveys = async (data, collections) => {
         `;
     }
 
-    let obj = {};
-    obj[fieldMapping.enabledSurveys] = enabledSurveys;
-    obj[fieldMapping.completedStandaloneSurveys] = completedStandaloneSurveys;
-
-    await storeResponse(obj);
     return template;
 };
 
@@ -471,11 +477,6 @@ const checkForNewReports = async (data) => {
         newReport = true;
     }
 
-    let obj = {
-        [fieldMapping.reports.knownReports]: availableReports
-    };
-
-    await storeResponse(obj);
     return newReport;
 };
 
