@@ -375,15 +375,19 @@ export const storeSocial = async (formData) => {
 }
 
 export const getMyData = async () => {
-
+  try {
     const idToken = await getIdToken();
     const response = await fetch(`${api}?api=getUserProfile`, {
-        headers: {
-            Authorization: 'Bearer ' + idToken,
-        },
+      headers: {
+        Authorization: "Bearer " + idToken,
+      },
     });
 
     return await response.json();
+  } catch (err) {
+    console.error("Error calling getMyData(): ", err);
+    return { code: 500, data: null, message: "Error occurred when calling getMyData()" };
+  }
 };
 
 export const retrievePhysicalActivityReport = async () => {
