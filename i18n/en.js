@@ -1090,6 +1090,7 @@ const en = {
     "settings": {
         "title": "My Connect - My Profile",
         "joinMessage": "Thank you for joining the National Cancer Institute's Connect for Cancer Prevention Study. Your involvement is very important. We are currently verifying your profile, which may take up to 3 business days.",
+        "uChicagoJoinMessage": "Thank you for joining the National Cancer Institute's Connect for Cancer Prevention Study. Your involvement is very important. We are currently verifying your profile, which may take a few weeks.",
         "deleteInfoMessage": "We have deleted your information based on the data destruction request we received from you. If you have any questions, please contact the <a href=\"#support\">Connect Support Center</a>.",
         "myProfile": "My Profile",
         "accountNotFound": "Account Not Found",
