@@ -256,10 +256,6 @@ const router = async () => {
     }
     else{
         const data = await getMyData();
-        if (!data.data) {
-            await signOut();
-            return;
-        }
 
         renderLanguageSelector()
         

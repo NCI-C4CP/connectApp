@@ -385,7 +385,11 @@ export const getMyData = async () => {
 
     return await response.json();
   } catch (err) {
-    console.error("Error calling getMyData(): ", err);
+    logDDRumError(err, "getMyDataError", {
+      userAction: "Get participant data",
+      timestamp: new Date().toISOString(),
+    });
+    
     return { code: 500, data: null, message: "Error occurred when calling getMyData()" };
   }
 };
