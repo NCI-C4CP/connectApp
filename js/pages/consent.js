@@ -1,7 +1,7 @@
 import { todaysDate, storeResponse, dataSavingBtn, dateTime, errorMessageConsent, siteAcronyms, getMyData, hasUserData, isMobile, openNewTab, languageSuffix, getSelectedLanguage, translateHTML, translateText, validNameFormat} from "../shared.js";
 import { renderUserProfile } from "../components/form.js";
 import { removeAllErrors } from "../event.js";
-import { downloadSignedPdf } from "./agreements.js";
+import { addEventDownloadSignedConsentAndHipaa } from "./agreements.js";
 import { heardAboutStudy } from "./healthCareProvider.js";
 import {addEventHeardAboutStudy} from "../event.js";
 import fieldMapping from "../fieldToConceptIdMapping.js";
@@ -797,20 +797,7 @@ export const consentFinishedPage = async () => {
         consentToProfilePage();
     })
 
-    const anchorIdArray= ['consentDownload', 'healthRecordsDownload'];
-    for (const anchorId of anchorIdArray) {
-      const anchorElement = document.getElementById(anchorId);
-      if (!anchorElement) continue;
-
-      anchorElement.addEventListener('click', async (e) => {
-        await downloadSignedPdf(data, e);
-      });
-
-      // Handle touch events in iPhone/iPad
-      anchorElement.addEventListener('touchend', (e) => {
-        anchorElement.click();
-      });
-    }
+    addEventDownloadSignedConsentAndHipaa(["consentDownload", "healthRecordsDownload"], data);
 }
 
 export const consentToProfilePage = () => {

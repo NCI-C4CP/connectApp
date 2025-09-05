@@ -1,4 +1,4 @@
-import { getMyData, hasUserData, hideAnimation, showAnimation, siteAcronyms, dateTime, storeResponse, isMobile, openNewTab, languageSuffix, getSelectedLanguage, translateHTML, translateText, appState } from "../shared.js";
+import { getMyData, hasUserData, hideAnimation, showAnimation, siteAcronyms, dateTime, storeResponse, isMobile, openNewTab, languageSuffix, getSelectedLanguage, translateHTML, translateText, appState, logDDRumError } from "../shared.js";
 import { initializeCanvas } from './consent.js'
 import fieldMapping from '../fieldToConceptIdMapping.js';
 import {suffixToTextMap, suffixToTextMapDropdown} from '../settingsHelpers.js'
@@ -449,19 +449,7 @@ export const renderAgreements = async () => {
 
 const addEventAgreementOptions = (myData) => {
     const anchorIdArray = ['downloadConsent', 'downloadHIPAA'];
-    for (const anchorId of anchorIdArray) {
-      const anchorElement = document.getElementById(anchorId);
-      if (!anchorElement) continue;
-
-      anchorElement.addEventListener('click', async (e) => {
-        await downloadSignedPdf(myData.data, e);
-      });
-
-      // Handle touch events in iPhone/iPad
-      anchorElement.addEventListener('touchend', () => {
-        anchorElement.click();
-      });
-    }
+    addEventDownloadSignedConsentAndHipaa(anchorIdArray, myData.data);
 
     const downloadRevoke = document.getElementById('downloadRevoke');
     if(downloadRevoke){
@@ -815,21 +803,37 @@ async function generateSignedPdf(data, file) {
   
 /**
  * 
- * @param {object} data 
- * @param {MouseEvent} evt mouse click event
- * @returns 
+ * @param {string[]} anchorIdArray 
+ * @param {object} data participant data
  */
-export async function downloadSignedPdf(data, evt) {
-  if (!evt.target.href) {
-    evt.preventDefault();
-    evt.target.href = await generateSignedPdf(data, evt.target.dataset.file);
-    evt.target.click();
-    return;
-  }
+export function addEventDownloadSignedConsentAndHipaa(anchorIdArray, data) {
+  let isDownloading = false;
+  const handleDownload = async (evt) => {
+    if (isDownloading) return;
+    isDownloading = true;
+    try {
+      if (!evt.target.href) {
+        evt.preventDefault();
+        evt.target.href = await generateSignedPdf(data, evt.target.dataset.file);
+        evt.target.click();
+      } else if (isMobile && evt.target.href) {
+        evt.preventDefault();
+        openNewTab(evt.target.href);
+      }
+    } catch (err) {
+      logDDRumError(err, "downloadSignedConsentHipaa", { elementId: evt.target.id, timeStamp: new Date().toISOString() });
+    } finally {
+      setTimeout(() => {
+        isDownloading = false;
+      }, 1000);
+    }
+  };
 
-  if (isMobile && evt.target.href) {
-    evt.preventDefault();
-    openNewTab(evt.target.href);
-    return;
+  for (const anchorId of anchorIdArray) {
+    const anchorElement = document.getElementById(anchorId);
+    if (!anchorElement || anchorElement.hasClickListener) continue;
+    anchorElement.hasClickListener = true;
+    anchorElement.addEventListener("click", handleDownload);
+    anchorElement.addEventListener("touchstart", handleDownload, { passive: true });
   }
-}
+};
