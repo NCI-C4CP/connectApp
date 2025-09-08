@@ -204,7 +204,10 @@ const socialSecurityNineDigits = () => {
             return;
         }
 
-        if(ssnNineDigits.length > 0 && !checkNineDigitValid(ssnNineDigits)) displayError(ssnNineError, hardErrorNineFormat);
+        if(ssnNineDigits.length > 0 && !checkNineDigitValid(ssnNineDigits)) {
+            displayError(ssnNineError, hardErrorNineFormat);
+            return;
+        }
 
         endMessageOne();
     });
@@ -302,7 +305,11 @@ const socialSecurityFourDigits = () => {
 
         clearError(ssnFourError);
 
-        if(ssnFourDigits.length > 0 && !checkFourDigitValid(ssnFourDigits)) displayError(ssnFourError, hardErrorFourFormat);
+        if(ssnFourDigits.length > 0 && !checkFourDigitValid(ssnFourDigits)) {
+            displayError(ssnFourError, hardErrorFourFormat);
+            return;
+        }
+
     });
 
     document.getElementById('socialSecurityFourDigitsPrevious').addEventListener('click', () => {
