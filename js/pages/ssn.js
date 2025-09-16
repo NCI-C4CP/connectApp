@@ -305,10 +305,7 @@ const socialSecurityFourDigits = () => {
 
         clearError(ssnFourError);
 
-        if(ssnFourDigits.length > 0 && !checkFourDigitValid(ssnFourDigits)) {
-            displayError(ssnFourError, hardErrorFourFormat);
-            return;
-        }
+        if(ssnFourDigits.length > 0 && !checkFourDigitValid(ssnFourDigits)) displayError(ssnFourError, hardErrorFourFormat);
 
     });
 
@@ -335,7 +332,10 @@ const socialSecurityFourDigits = () => {
             return;
         }
 
-        if(ssnFourDigits.length > 0 && !checkFourDigitValid(ssnFourDigits)) displayError(ssnFourError, hardErrorFourFormat);
+        if(ssnFourDigits.length > 0 && !checkFourDigitValid(ssnFourDigits)) {
+            displayError(ssnFourError, hardErrorFourFormat);
+            return;
+        }
 
         endMessageOne();
     });
