@@ -363,7 +363,7 @@ const health_partners = {
             '<span data-i18n="samples.health_partners.locations.NicolletName">Park Nicollet Clinic Chanhassen</span>',
             '<span data-i18n="samples.health_partners.locations.NicolletAddress">300 Lake Dr E<br>Chanhassen, MN 55317 <br><br>Upon arrival, please take the stairs or elevator to the 2nd floor and check in for your appointment at the lab check in desk.</span>',
             '',
-            '<span data-i18n="samples.health_partners.locations.NicolletParking">Parking is free in the Chanhassen Clinic parking lot.<br><br><div class="messagesHeaderFont">Scheduling Information</div><br>Self-scheduling is not currently available for the Chanhassen location. For questions and scheduling, please call 952-967-5067.</span>',
+            '<span data-i18n="samples.health_partners.locations.NicolletParking">Parking is not free in the Chanhassen Clinic parking lot.<br><br><div class="messagesHeaderFont">Scheduling Information</div><br>Self-scheduling is not currently available for the Chanhassen location. For questions and scheduling, please call 952-967-5067.</span>',
         ],
         [
             '<span data-i18n="samples.health_partners.locations.NicolletMinneapolisName">Park Nicollet Clinic Minneapolis</span>',
