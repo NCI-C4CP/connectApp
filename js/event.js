@@ -1,4 +1,4 @@
-import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues, escapeHTML } from "./shared.js";
+import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, sitesNotEnrolling, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues, escapeHTML } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
 import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, noLongerEnrollingRender,  requestPINTemplate } from "./pages/healthCareProvider.js";
 import { renderDashboard } from "./pages/dashboard.js";
@@ -205,11 +205,21 @@ export const addEventHealthCareProviderSubmit = () => {
         e.preventDefault();
         
         const value = parseInt(document.getElementById('827220437').value);
+
+        if (sitesNotEnrolling()[value]) {
+            let modalBody = document.getElementById('HealthProviderNotEnrollingModalBody');
+            let modalButton = document.getElementById('openNotEnrollingModal');
+            modalBody.innerHTML = translateHTML(`<span data-i18n="provider.noLongerEnrollingStart">Thanks for your interest in Connect. Unfortunately, we are no longer enrolling participants from </span>${sites()[value]}<span data-i18n="provider.noLongerEnrollingEnd">. We're sorry, but this means that you won't be able to join the study. If you have any questions, please feel free to contact our team at the Connect Support Center.
+                <br><br>
+                If you are already a Connect participant and forgot your login information or need help accessing your account, please contact the Connect Support Center so our team can assist.</span>`);
+            modalButton.click();
+        } else {
+            let modalBody = document.getElementById('HealthProviderModalBody');
+            let modalButton = document.getElementById('openModal');
+            modalBody.innerHTML = translateHTML(`<span data-i18n="event.sureAboutProvider">Are you sure </span>${sites()[value]}<span data-i18n="event.sureAboutProviderEnd"> is your healthcare provider?</span>`);
+            modalButton.click();
+        }
         
-        let modalBody = document.getElementById('HealthProviderModalBody');
-        let modalButton = document.getElementById('openModal');
-        modalBody.innerHTML = translateHTML(`<span data-i18n="event.sureAboutProvider">Are you sure </span>${sites()[value]}<span data-i18n="event.sureAboutProviderEnd"> is your healthcare provider?</span>`);
-        modalButton.click();
     });
 }
 
@@ -2137,7 +2147,7 @@ export const addEventRequestPINForm = () => {
         let pathAfterPINSubmission;
         let validatePinResponse;
         let createParticipantRecordResponse;
-        let healthcareProvider;
+        let healthCareProviderId;
 
         try {
             showAnimation();
@@ -2163,7 +2173,7 @@ export const addEventRequestPINForm = () => {
                 pathAfterPINSubmission = 'duplicateAccountReminder';
 
             // No Longer Enrolling at this Location
-            } else if (validatePinResponse && validatePinResponse.code === 204) {
+            } else if (validatePinResponse && validatePinResponse.code === 286) {
                 pathAfterPINSubmission = 'noLongerEnrolling';
                 healthCareProviderId = validatePinResponse.message;
 

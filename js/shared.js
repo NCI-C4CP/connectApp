@@ -606,6 +606,25 @@ export const sites = () => {
     }
 }
 
+export const sitesNotEnrolling = () => {
+    if(location.host === urls.prod) {
+        return {
+            809703864: 'University of Chicago Medicine',
+        }
+    }
+    else if (location.host === urls.stage) {
+        return {
+            809703864: 'University of Chicago Medicine',
+        }
+        //return allIHCS
+    }
+    else{
+        return { 
+             809703864: 'University of Chicago Medicine',
+         }
+    }
+}
+
 export const siteAcronyms = () => {
     return {
         531629870: 'HP',
