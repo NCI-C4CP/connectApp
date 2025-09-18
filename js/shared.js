@@ -616,7 +616,6 @@ export const sitesNotEnrolling = () => {
         return {
             809703864: 'University of Chicago Medicine',
         }
-        //return allIHCS
     }
     else{
         return { 
