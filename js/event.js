@@ -2137,6 +2137,7 @@ export const addEventRequestPINForm = () => {
         let pathAfterPINSubmission;
         let validatePinResponse;
         let createParticipantRecordResponse;
+        let healthcareProvider;
 
         try {
             showAnimation();
@@ -2160,6 +2161,11 @@ export const addEventRequestPINForm = () => {
             // Duplicate account. Route participant to the duplicate account reminder form.
             } else if (validatePinResponse && validatePinResponse.code === 202) {
                 pathAfterPINSubmission = 'duplicateAccountReminder';
+
+            // No Longer Enrolling at this Location
+            } else if (validatePinResponse && validatePinResponse.code === 204) {
+                pathAfterPINSubmission = 'noLongerEnrolling';
+                healthCareProvider = validatePinResponse.message;
 
             // Invalid PIN, no PIN entered, or error (validatePIN failed). Create a new participant record and store the entered PIN regardless of its validity.
             } else {
@@ -2195,7 +2201,7 @@ export const addEventRequestPINForm = () => {
         } finally {
             await storeParameters();
             hideAnimation();
-            loadPathFromPINForm(pathAfterPINSubmission);
+            loadPathFromPINForm(pathAfterPINSubmission, healthCareProvider);
         }
     });
 }
@@ -2296,6 +2302,10 @@ const loadPathFromPINForm = (path) => {
 
         case 'duplicateAccountReminder':
             duplicateAccountReminderRender();
+            break;
+
+        case 'noLongerEnrolling':
+            noLongerEnrollingRender();
             break;
 
         case 'heardAboutStudy':

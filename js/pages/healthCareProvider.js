@@ -11,6 +11,20 @@ export const duplicateAccountReminderRender = () => {
   `);
 };
 
+export const noLongerEnrollingRender = (healthCareProviderId) => {
+  let site = sites()[healthCareProviderId];
+  document.getElementById('root').innerHTML = translateHTML(`
+    <div class="row justify-content-cent er mt-3">
+      <div class="col-lg-8 alert alert-warning" data-i18n="provider.noLongerEnrolling">
+        <span data-i18n="provider.noLongerEnrollingStart">Thanks for your interest in Connect. Unfortunately, we are no longer enrolling participants from </span>${site}
+        <span data-i18n="provider.noLongerEnrollingEnd">. We're sorry, but this means that you won't be able to join the study. If you have any questions, please feel free to contact our team at the Connect Support Center.
+        <br><br>
+        If you are already a Connect participant and forgot your login information or need help accessing your account, please contact the Connect Support Center so our team can assist.</span>
+      </div>
+    </div>
+  `);
+};
+
 export const requestPINTemplate = () => {
     return translateHTML(`
         <br>
