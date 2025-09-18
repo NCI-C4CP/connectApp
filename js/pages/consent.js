@@ -1037,8 +1037,8 @@ const consentSubmit = async e => {
     formData['query.firstName'] = [CSFirstName.value.trim().toLowerCase()];
     formData['query.lastName'] = [CSLastName.value.trim().toLowerCase()];
     formData[fieldMapping.consentSubmitted] = fieldMapping.yes;
-    formData['454445267'] = dateTime();
-    formData['262613359'] = dateTime();
+    formData[fieldMapping.consentDate] = dateTime();
+    formData[fieldMapping.hipaaTimestamp] = dateTime();
     formData['558435199'] = 353358909;
     //consent and hipaa forms
     let siteDict = siteAcronyms();

@@ -1,12 +1,14 @@
 import { allStates, escapeHTML, showAnimation, hideAnimation, getMyData, hasUserData, firebaseSignInRender, validEmailFormat, validPhoneNumberFormat, checkAccount, translateHTML, translateText, languageTranslations } from '../shared.js';
-import { attachTabEventListeners, addOrUpdateAuthenticationMethod, changeAltContactInformation, changeContactInformation, changeMailingAddress, changeName, formatFirebaseAuthPhoneNumber, FormTypes, getCheckedRadioButtonValue, handleContactInformationRadioButtonPresets, handleOptionalFieldVisibility, hideOptionalElementsOnShowForm, hideSuccessMessage, openUpdateLoginForm, showAndPushElementToArrayIfExists, showEditButtonsOnUserVerified, suffixList, suffixToTextMap, toggleElementVisibility, togglePendingVerificationMessage, unlinkFirebaseAuthProvider, updatePhoneNumberInputFocus, validateAltContactInformation, validateContactInformation, validateLoginEmail, validateLoginPhone, validateMailingAddress, validateName, showMailAddressSuggestionMyProfile, showRiskyEmailWarningMyProfile, showClearAddressConfirmation } from '../settingsHelpers.js';
+import { attachTabEventListeners, addOrUpdateAuthenticationMethod, changeAltContactInformation, changeContactInformation, changePreferredLanguage, changeMailingAddress, changeName, formatFirebaseAuthPhoneNumber, FormTypes, getCheckedRadioButtonValue, handleContactInformationRadioButtonPresets, handleOptionalFieldVisibility, hideOptionalElementsOnShowForm, hideSuccessMessage, openUpdateLoginForm, showAndPushElementToArrayIfExists, showEditButtonsOnUserVerified, suffixList, suffixToTextMap, toggleElementVisibility, togglePendingVerificationMessage, unlinkFirebaseAuthProvider, updatePhoneNumberInputFocus, validateAltContactInformation, validateContactInformation, validateLoginEmail, validateLoginPhone, validateMailingAddress, validateName, showMailAddressSuggestionMyProfile, showRiskyEmailWarningMyProfile, showClearAddressConfirmation } from '../settingsHelpers.js';
 import { addEventAddressAutoComplete } from '../event.js';
+import {addEventAgreementOptions} from './agreements.js';
 import cId from '../fieldToConceptIdMapping.js';
 
 const nameElementArray = [];
 const mailingAddressElementArray = [];
 const physicalMailingAddressElementArray = [];
 const contactInformationElementArray = [];
+const preferredLanguageElementArray = [];
 const altAddressElementArray = [];
 const altContactElementArray = [];
 const loginElementArray = [];
@@ -14,6 +16,7 @@ const loginElementArray = [];
 const btnObj = {
     changeNameButton: null,
     changeContactInformationButton: null,
+    changePreferredLanguageButton: null,
     changeMailingAddressButton: null,
     changePhysicalMailingAddressButton: null,
     changeAltMailingAddressButton: null,
@@ -47,6 +50,7 @@ const optVars = {
 const formVisBools = {
     isNameFormDisplayed: null,
     isContactInformationFormDisplayed: null,
+    isPreferredLanguageFormDisplayed: null,
     isMailingAddressFormDisplayed: null,
     isPhysicalMailingAddressFormDisplayed: null,
     isAltAddressFormDisplayed: null,
@@ -74,7 +78,6 @@ const optRowEles = {
     altContactEmailRow: null,
     loginEmailRow: null,
     loginPhoneRow: null,
-    preferredLanguageRow: null,
 };
 
 let firebaseAuthUser; // eslint-disable-line no-unused-vars
@@ -126,31 +129,39 @@ export const renderSettingsPage = async () => {
 
     formVisBools.isNameFormDisplayed = false;
     formVisBools.isContactInformationFormDisplayed = false;
+    formVisBools.isPreferredLanguageFormDisplayed = false;
     formVisBools.isMailingAddressFormDisplayed = false;
     formVisBools.isPhysicalMailingAddressFormDisplayed = false;
     formVisBools.isAltAddressFormDisplayed = false;
     formVisBools.isAltContactInfoFormDisplayed = false;
     formVisBools.isLoginFormDisplayed = false;
 
-    if (userData[cId.userProfileSubmittedAutogen] === cId.yes) {
-      let headerMessage = '';
-      if (!isParticipantDataDestroyed) {
-        if (userData[cId.verification] !== cId.verified && userData[cId.consentWithdrawn] !== cId.yes) {
-            if (userData[cId.healthcareProvider] === cId.uChicagoMedicine) { // UChicago specific message
-                headerMessage = 'settings.uChicagoJoinMessage';
-            } else { // general message for other sites, not UChicago
-                headerMessage = 'settings.joinMessage';
-            }
-        }
-      } else {
-        headerMessage = 'settings.deleteInfoMessage';
-      }
+    const profileIsComplete = userData[cId.userProfileSubmittedAutogen] === cId.yes;
+    const hasAgreements = (userData[cId.consentSubmitted] === cId.yes ||
+        userData[cId.revokeHipaa] === cId.yes || 
+        userData[cId.destroyData] == cId.yes);
 
-      template += `
-            <div class="row" style="margin-top:58px">
-                <div class="col-lg-3">
+    let headerMessage = '';
+    if (profileIsComplete) {
+        if (!isParticipantDataDestroyed) {
+          if (userData[cId.verification] !== cId.verified && userData[cId.consentWithdrawn] !== cId.yes) {
+              if (userData[cId.healthcareProvider] === cId.uChicagoMedicine) { // UChicago specific message
+                  headerMessage = 'settings.uChicagoJoinMessage';
+              } else { // general message for other sites, not UChicago
+                  headerMessage = 'settings.joinMessage';
+              }
+          }
+        } else {
+          headerMessage = 'settings.deleteInfoMessage';
+        }
+    };
+
+    //Top Header
+    template += `
+            <div class="row" style="margin-top:18px">
+                <div class="col-lg-2 col-xl-3">
                 </div>
-                <div class="col-lg-6" id="myProfileHeader">
+                <div class="col-lg-8 col-xl-6" id="myProfileHeader">
                     <p id="pendingVerification" style="color:${!isParticipantDataDestroyed ? '#1c5d86' : 'red'}; display:none;"${headerMessage ? ' data-i18n="'+headerMessage+'"' : ''}>
                     ${headerMessage ? translateText(headerMessage) : ''}
                     <br>
@@ -158,52 +169,113 @@ export const renderSettingsPage = async () => {
                     <p class="consentHeadersFont" id="myProfileTextContainer" style="color:#606060; display:none;" data-i18n="settings.myProfile">
                         ${translateText('settings.myProfile')}
                     </p>
+                </div>
+                <div class="col-lg-2 col-xl-3">
+                </div>
+            </div>
+    `;
                 
-                    <div class="userProfileBox" id="nameDiv" style="display:none">
-                        ${renderNameHeadingAndButton()}
-                        ${renderUserNameData()}
-                        ${renderChangeNameGroup()} 
-                    </div>
-                    <div class="userProfileBox" id="contactInformationDiv" style="display:none">
-                        ${renderContactInformationHeadingAndButton()}
-                        ${renderContactInformationData()}
-                        ${renderChangeContactInformationGroup()}
-                    </div>    
-                        
-                    <div class="userProfileBox" id="mailingAddressDiv" style="display:none">
-                        ${renderMailingAddressHeadingAndButton()}
-                        ${renderMailingAddressData(1)}
-                        ${renderChangeMailingAddressGroup(1)}
-                    </div>
-                    <div class="userProfileBox" id="physicalMailingAddressDiv" style="display:none">
-                        ${renderPhysicalMailingAddressHeadingAndButton()}
-                        ${renderPhysicalMailingAddressData(2)}
-                        ${renderChangeMailingAddressGroup(2)}
-                    </div>
-                    <div class="userProfileBox" id="altAddressDiv" style="display:none">
-                        ${renderAltAddressHeadingAndButton()}
-                        ${renderAlternateAddressData(3)}
-                        ${renderChangeMailingAddressGroup(3)}
-                    </div>
-                    <div class="userProfileBox" id="altContactDiv" style="display:none">
-                        ${renderAltContactInformationHeadingAndButton()}
-                        ${renderAlternateContactInformationData()}
-                        ${renderChangeAltContactInformationGroup()}
-                    </div>
-                    <div class="userProfileBox" id="signInInformationDiv" style="display:none">
+    //In page Navigation
+    template += `<div class="row">
+        <div class="col-lg-2 col-xl-3"></div>
+        <div class="col-lg-8 col-xl-6">
+            <p class="consentHeadersFont" style="color:#606060; font-size: 1.25em;" data-i18n="settings.pageNav">
+                ${translateText('settings.pageNav')}
+            </p>
+            <ul>
+            ${!isParticipantDataDestroyed ? "<li><a href=\"javascript:document.getElementById('contactInformation').scrollIntoView(true)\" data-i18n=\"settings.contactInfo\">"+translateText('settings.contactInfo')+"</a></li>" : ''}
+            <li><a href="javascript:document.getElementById('signInInformationDiv').scrollIntoView(true);" data-i18n="settings.signInInfo">${translateText('settings.signInInfo')}</a></li>
+            ${hasAgreements ? "<li><a href=\"javascript:document.getElementById('agreementsDiv').scrollIntoView(true)\" data-i18n=\"settings.agreements\">"+translateText('settings.agreements')+"</a></li>" : ''}
+            </ul>
+        </div>
+        <div class="col-lg-2 col-xl-3">
+        </div>
+    </div>`;
+
+    template += `
+           <div class="row">
+               <div class="col-lg-2 col-xl-3"></div>
+               <div class="col-lg-8 col-xl-6">`;
+    if (!isParticipantDataDestroyed) {
+        template += `
+                        <div class="userProfileBox" id="contactInformation">
+                             <div class="row">
+                                <div class="col-12 col-sm-6">
+                                    <span class="userProfileLabels" data-i18n="settings.contactInfo">
+                                        ${translateText('settings.contactInfo')}
+                                    </span>
+                                </div>
+                            </div>`
+        if (profileIsComplete) {
+            template += `
+                            <div class="" id="nameDiv" style="display:none">
+                                ${renderNameHeadingAndButton()}
+                                ${renderUserNameData()}
+                                ${renderChangeNameGroup()} 
+                            </div>
+                            <hr style="margin: auto; width: 95%;">
+                            <div class="" id="contactInformationDiv" style="display:none">
+                                ${renderContactInformationHeadingAndButton()}
+                                ${renderChangeContactInformationGroup()}
+                                ${renderContactInformationData()}
+                            </div>
+                            <hr style="margin: auto; width: 95%;">    
+                            <div class="" id="preferredLanguageDiv" style="display:none">
+                                ${renderPreferredLanguageHeadingAndButton()}
+                                ${renderChangePreferredLanguageGroup()}
+                                ${renderPreferredLanguageData()}
+                            </div>    
+                            <hr style="margin: auto; width: 95%;">    
+                            <div class="" id="mailingAddressDiv" style="display:none">
+                                ${renderMailingAddressHeadingAndButton()}
+                                ${renderMailingAddressData(1)}
+                                ${renderChangeMailingAddressGroup(1)}
+                            </div>
+                            <hr style="margin: auto; width: 95%;">
+                            <div class="" id="physicalMailingAddressDiv" style="display:none">
+                                ${renderPhysicalMailingAddressHeadingAndButton()}
+                                ${renderPhysicalMailingAddressData(2)}
+                                ${renderChangeMailingAddressGroup(2)}
+                            </div>
+                            <hr style="margin: auto; width: 95%;">
+                            <div class="" id="altAddressDiv" style="display:none">
+                                ${renderAltAddressHeadingAndButton()}
+                                ${renderAlternateAddressData(3)}
+                                ${renderChangeMailingAddressGroup(3)}
+                            </div>
+                            <hr style="margin: auto; width: 95%;">
+                            <div class="" id="altContactDiv" style="display:none">
+                                ${renderAltContactInformationHeadingAndButton()}
+                                ${renderAlternateContactInformationData()}
+                                ${renderChangeAltContactInformationGroup()}
+                            </div>
+                    `;  
+        } else {
+          template += `${profileIsIncomplete()}`;
+        }
+        template += '</div>';
+    }
+    template += `
+                    <div class="userProfileBox" id="signInInformationDiv">
                         ${renderSignInInformationHeadingAndButton()}
                         ${renderSignInInformationData()}
                         ${renderChangeSignInInformationGroup()}
                         ${renderReauthModal()}
-                    </div>
-                </div>    
-                <div class="col-lg-3">
-                </div>
-            </div>
-                `;  
-    } else {
-      template += `${profileIsIncomplete()}`;
+                    </div>`
+
+    if (hasAgreements) {
+        template += `
+                    <div class="userProfileBox" id="agreementsDiv">
+                        ${renderAgreementsHeading()}
+                        ${renderUnsignedAgreements()}
+                        ${renderSignedAgreements()}
+                    </div>`
     }
+    template += `
+                </div>
+                <div class="col-lg-2 col-xl-3">
+            </div>`;
+
     
     buildPageTemplate();  
       
@@ -216,23 +288,29 @@ export const renderSettingsPage = async () => {
     if (userData[cId.verification] == cId.verified && userData[cId.consentWithdrawn] !== cId.yes) {
       btnObj.changeNameButton = document.getElementById('changeNameButton');
       btnObj.changeContactInformationButton = document.getElementById('changeContactInformationButton');
+      btnObj.changePreferredLanguageButton = document.getElementById('changePreferredLanguageButton');
       btnObj.changeMailingAddressButton = document.getElementById('changeMailingAddressButton');
       btnObj.changePhysicalMailingAddressButton = document.getElementById('changePhysicalMailingAddressButton');
       btnObj.changeAltAddressButton = document.getElementById('changeAltAddressButton');
       btnObj.changeAltContactInfoButton = document.getElementById('changeAltContactButton');
-      btnObj.changeLoginButton = document.getElementById('changeLoginButton');
+      
       showEditButtonsOnUserVerified();
       handleEditNameSection();
       handleEditContactInformationSection();
+      handleEditPreferredLanguageSection();
       handleEditMailingAddressSection();
       handleEditPhysicalMailingAddressSection();
       handleEditAltAddressSection();
       handleEditAltContactSection();
-      handleEditSignInInformationSection();
       handleClearPhysicalAddress();
       handleClearAlternateAddress();
       attachTabEventListeners();
-      attachLoginEditFormButtons();
+    }
+    btnObj.changeLoginButton = document.getElementById('changeLoginButton');
+    attachLoginEditFormButtons();
+    handleEditSignInInformationSection();
+    if (hasAgreements) {
+        addEventAgreementOptions(userData, renderSettingsPage);
     }
 
     if (localStorage.getItem('signInUpdate') === 'yes') {
@@ -253,14 +331,15 @@ const buildPageTemplate = () => {
   if (userData && userData[cId.userProfileSubmittedAutogen] === cId.yes) {
       loadNameElements();
       loadContactInformationElements();
+      loadPreferredLanguageElements();
       loadMailingAddressElements();
       loadPhysicalMailingAddressElements();
       loadAltAddressElements();
       loadAltContactElements();
-      loadSignInInformationElements();
       showMajorFormDivs();
       togglePendingVerificationMessage(userData);
   }
+  loadSignInInformationElements();
   hideAnimation();
 };
 
@@ -268,6 +347,7 @@ const showMajorFormDivs = () => {
   document.getElementById('myProfileTextContainer').style.display = 'block';
   document.getElementById('nameDiv').style.display = 'block';
   document.getElementById('contactInformationDiv').style.display = 'block';
+  document.getElementById('preferredLanguageDiv').style.display = 'block';
   document.getElementById('mailingAddressDiv').style.display = 'block';
   document.getElementById('physicalMailingAddressDiv').style.display = 'block';
   document.getElementById('altAddressDiv').style.display = 'block';
@@ -359,7 +439,6 @@ const loadContactInformationElements = () => {
   optRowEles.otherPhoneVoicemailRow = document.getElementById('otherPhoneVoicemailRow');
   optRowEles.additionalEmail1Row = document.getElementById('additionalEmail1Row');
   optRowEles.additionalEmail2Row = document.getElementById('additionalEmail2Row');
-  optRowEles.preferredLanguageRow = document.getElementById('preferredLanguageRow');
 
   showAndPushElementToArrayIfExists(optVars.mobilePhoneNumberComplete, optRowEles.mobilePhoneRow, !!optVars.mobilePhoneNumberComplete, contactInformationElementArray);
   showAndPushElementToArrayIfExists(optVars.canWeVoicemailMobile, optRowEles.mobilePhoneVoicemailRow, !!optVars.mobilePhoneNumberComplete, contactInformationElementArray);
@@ -370,7 +449,18 @@ const loadContactInformationElements = () => {
   showAndPushElementToArrayIfExists(optVars.canWeVoicemailOther, optRowEles.otherPhoneVoicemailRow, !!optVars.otherPhoneNumberComplete, contactInformationElementArray);
   showAndPushElementToArrayIfExists(optVars.additionalEmail1, optRowEles.additionalEmail1Row, !!optVars.additionalEmail1, contactInformationElementArray);
   showAndPushElementToArrayIfExists(optVars.additionalEmail2, optRowEles.additionalEmail2Row, !!optVars.additionalEmail2, contactInformationElementArray);
-  showAndPushElementToArrayIfExists(optVars.preferredLanguage, optRowEles.preferredLanguageRow, !!optVars.preferredLanguage, contactInformationElementArray);
+};
+
+/**
+ * Handle Contact information - all fields required
+ * push elements to array for visibility toggling
+ * Validate client-side
+ * It if validates, update firestore (re-validate server-side) and hide the form
+ * If it doesn't validate, alert the user about the error
+ */
+const loadPreferredLanguageElements = () => {
+  preferredLanguageElementArray.push(document.getElementById('preferredLanguageRow'));
+  preferredLanguageElementArray.push(document.getElementById('changePreferredLanguageGroup'));
 };
 
 const handleEditContactInformationSection = () => {
@@ -379,7 +469,7 @@ const handleEditContactInformationSection = () => {
     formVisBools.isContactInformationFormDisplayed = toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed);
     if (formVisBools.isContactInformationFormDisplayed) {
 
-      hideOptionalElementsOnShowForm([optRowEles.mobilePhoneRow, optRowEles.mobilePhoneVoicemailRow, optRowEles.mobilePhoneTextRow, optRowEles.homePhoneRow, optRowEles.homePhoneVoicemailRow, optRowEles.otherPhoneRow, optRowEles.otherPhoneVoicemailRow, optRowEles.additionalEmail1Row, optRowEles.additionalEmail2Row, optRowEles.preferredLanguageRow]);  
+      hideOptionalElementsOnShowForm([optRowEles.mobilePhoneRow, optRowEles.mobilePhoneVoicemailRow, optRowEles.mobilePhoneTextRow, optRowEles.homePhoneRow, optRowEles.homePhoneVoicemailRow, optRowEles.otherPhoneRow, optRowEles.otherPhoneVoicemailRow, optRowEles.additionalEmail1Row, optRowEles.additionalEmail2Row]);  
       toggleActiveForm(FormTypes.CONTACT);
     }
     toggleButtonText();
@@ -410,8 +500,6 @@ const handleEditContactInformationSection = () => {
     optVars.additionalEmail1 = document.getElementById('newadditionalEmail1').value.toLowerCase().trim();
     optVars.additionalEmail2 = document.getElementById('newadditionalEmail2').value.toLowerCase().trim();
     
-    optVars.preferredLanguage = document.getElementById('newpreferredLanguage').value.toLowerCase().trim();
-
       const { hasError, riskyEmails } = await validateContactInformation(optVars.mobilePhoneNumberComplete, optVars.homePhoneNumberComplete, preferredEmail, optVars.otherPhoneNumberComplete, optVars.additionalEmail1, optVars.additionalEmail2);
       if (!hasError) {
           const submit = () => {
@@ -428,9 +516,43 @@ const handleEditContactInformationSection = () => {
   });
 };
 
+
+const handleEditPreferredLanguageSection = () => {
+  btnObj.changePreferredLanguageButton.addEventListener('click', () => {
+    successMessageElement = hideSuccessMessage(successMessageElement);
+    formVisBools.isPreferredLanguageFormDisplayed = toggleElementVisibility(preferredLanguageElementArray, formVisBools.isPreferredLanguageFormDisplayed);
+    if (formVisBools.isPreferredLanguageFormDisplayed) {
+      toggleActiveForm(FormTypes.LANGUAGE);
+    }
+    toggleButtonText();
+  });
+
+  document.getElementById('changePreferredLanguageSubmit').addEventListener('click', e => {
+    const preferredLanguageField = document.getElementById('newpreferredLanguage');
+    const preferredLanguage = escapeHTML(preferredLanguageField.value.trim());
+    formVisBools.isPreferredLanguageFormDisplayed = toggleElementVisibility(preferredLanguageElementArray, formVisBools.isPreferredLanguageFormDisplayed);
+      toggleButtonText();
+      submitNewPreferredLanguage(preferredLanguage);
+  });
+};
+
+const submitNewPreferredLanguage = async (preferredLanguage) => {
+  const isSuccess = await changePreferredLanguage(preferredLanguage, userData).catch(function (error) {
+    document.getElementById('changePreferredLanguageFail').style.display = 'block';
+    document.getElementById('changePreferredLanguageError').innerHTML = error.message;
+  });
+  if (isSuccess) {
+    successMessageElement = document.getElementById('changePreferredLanguageSuccess');
+    successMessageElement.style.display = 'block';
+    document.getElementById('profilepreferredLanguage').textContent = translateText(languageTranslations()[preferredLanguage]);
+    document.getElementById('profilepreferredLanguage').dataset.i18n= languageTranslations()[preferredLanguage];
+    await refreshUserDataAfterEdit();
+  }
+};
+
 const submitNewContactInformation = async preferredEmail => {
 
-  const isSuccess = await changeContactInformation(optVars.mobilePhoneNumberComplete, optVars.homePhoneNumberComplete, optVars.canWeVoicemailMobile, optVars.canWeText, optVars.canWeVoicemailHome, preferredEmail, optVars.otherPhoneNumberComplete, optVars.canWeVoicemailOther, optVars.additionalEmail1, optVars.additionalEmail2, optVars.preferredLanguage, userData).catch(function (error) {
+  const isSuccess = await changeContactInformation(optVars.mobilePhoneNumberComplete, optVars.homePhoneNumberComplete, optVars.canWeVoicemailMobile, optVars.canWeText, optVars.canWeVoicemailHome, preferredEmail, optVars.otherPhoneNumberComplete, optVars.canWeVoicemailOther, optVars.additionalEmail1, optVars.additionalEmail2, userData).catch(function (error) {
     document.getElementById('changeContactInformationFail').style.display = 'block';
     document.getElementById('changeContactInformationError').innerHTML = error.message;
   });
@@ -444,7 +566,6 @@ const submitNewContactInformation = async preferredEmail => {
     handleOptionalFieldVisibility(optVars.canWeVoicemailOther, 'profileOtherVoicemailPermission', optRowEles.otherPhoneVoicemailRow, contactInformationElementArray[0], 'radio', !!optVars.otherPhoneNumberComplete);
     handleOptionalFieldVisibility(optVars.additionalEmail1, 'profileadditionalEmail1', optRowEles.additionalEmail1Row, contactInformationElementArray[0], 'text');
     handleOptionalFieldVisibility(optVars.additionalEmail2, 'profileadditionalEmail2', optRowEles.additionalEmail2Row, contactInformationElementArray[0], 'text');
-    handleOptionalFieldVisibility(optVars.preferredLanguage, 'profilepreferredLanguage', optRowEles.preferredLanguageRow, contactInformationElementArray[0], 'languageSelector');
 
     successMessageElement = document.getElementById('changeContactInformationSuccess');
     successMessageElement.style.display = 'block';
@@ -971,6 +1092,10 @@ const formMapping = {
         boolKey: 'isContactInformationFormDisplayed',
         elements: contactInformationElementArray,
     },
+    [FormTypes.LANGUAGE]: {
+        boolKey: 'isPreferredLanguageFormDisplayed',
+        elements: preferredLanguageElementArray,
+    },
     [FormTypes.MAILING]: {
         boolKey: 'isMailingAddressFormDisplayed',
         elements: mailingAddressElementArray,
@@ -1004,8 +1129,10 @@ const toggleActiveForm = clickedFormType => {
 export const toggleButtonText = () => {
   btnObj.changeNameButton.textContent = formVisBools.isNameFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateName');
   btnObj.changeNameButton.setAttribute('data-i18n', formVisBools.isNameFormDisplayed ? 'settings.cancel' : 'settings.updateName');
-  btnObj.changeContactInformationButton.textContent = formVisBools.isContactInformationFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateContact');
-  btnObj.changeContactInformationButton.setAttribute('data-i18n',formVisBools.isContactInformationFormDisplayed ? 'settings.cancel' : 'settings.updateContact');
+  btnObj.changeContactInformationButton.textContent = formVisBools.isContactInformationFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateContactText');
+  btnObj.changeContactInformationButton.setAttribute('data-i18n',formVisBools.isContactInformationFormDisplayed ? 'settings.cancel' : 'settings.updateContactText');
+  btnObj.changePreferredLanguageButton.textContent = formVisBools.isPreferredLanguageFormDisplayed ? translateText('settings.cancel') : translateText('settings.updatePreferredLanguage');
+  btnObj.changePreferredLanguageButton.setAttribute('data-i18n',formVisBools.isPreferredLanguageFormDisplayed ? 'settings.cancel' : 'settings.updatePreferredLanguage');
   btnObj.changeMailingAddressButton.textContent = formVisBools.isMailingAddressFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateAddress');
   btnObj.changeMailingAddressButton.setAttribute('data-i18n',formVisBools.isMailingAddressFormDisplayed ? 'settings.cancel' : 'settings.updateAddress');
   btnObj.changePhysicalMailingAddressButton.textContent = formVisBools.isPhysicalMailingAddressFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateAddress');
@@ -1197,7 +1324,7 @@ export const renderNameHeadingAndButton = () => {
         <span class="userProfileLabels" data-i18n="form.nameSubheader">Name</span>
       </div>
       <div class="col-12 col-sm-6 d-flex justify-content-end">
-        <button id="changeNameButton" class="btn btn-primary save-data consentNextButton px-3" style="float:right; display:none;" data-i18n="settings.updateName">
+        <button id="changeNameButton" class="btn btn-outline-primary save-data px-3" style="float:right; display:none;" data-i18n="settings.updateName">
           Update Name
         </button>
       </div>
@@ -1207,59 +1334,9 @@ export const renderNameHeadingAndButton = () => {
 
 export const renderUserNameData = () => {
   return `
-      ${
-        userData[cId.fName]
-          ? `
-          <div class="row userProfileLinePaddings" id="firstNameRow">
-              <div class="col">
-                  <span class="userProfileBodyFonts">
-                      <span data-i18n="settings.firstName">${translateText('settings.firstName')}</span>
-                  <br>
-                      <b>
-                      <div id="profileFirstName">
-                          ${userData[cId.fName]}
-                        </div>    
-                      </b>
-                  </span>
-              </div>
-          </div>
-      `
-          : ''
-      }    
-      <div class="row userProfileLinePaddings" id="middleNameRow" style="display:none">
-          <div class="col">
-              <span class="userProfileBodyFonts">
-                <span data-i18n="settings.middleName">${translateText('settings.middleName')}</span>
-              <br>
-                  <b>
-                  <div id="profileMiddleName">
-                      ${optVars.middleName}
-                    </div>
-                  </b>
-              </span>
-          </div>
-      </div>
-      ${
-        userData[cId.lName]
-          ? `
-      <div class="row userProfileLinePaddings" id="lastNameRow">
-          <div class="col">
-              <span class="userProfileBodyFonts">
-              <span data-i18n="settings.lastName">${translateText('settings.lastName')}</span>
-              <br>
-                  <b>
-                  <div id="profileLastName">
-                      ${userData[cId.lName] ? userData[cId.lName] : '<br>'}
-                    </div>
-                  </b>
-              </span>
-          </div>
-      </div>
-      `
-          : ''
-      }    
-      <div class="row userProfileLinePaddings" id="suffixRow" style="display:none">
-          <div class="col">
+      <div class="container userProfileLinePaddings" id="suffixRow" style="display:none">
+        <div class="row">
+          <div class="col-12">
               <span class="userProfileBodyFonts">
               <span data-i18n="settings.suffix">${translateText('settings.suffix')}</span>
               <br>
@@ -1270,43 +1347,78 @@ export const renderUserNameData = () => {
                   </b>
               </span>
           </div>
+        </div>
       </div>
-      
-      <div class="row userProfileLinePaddings" id="preferredFirstNameRow" style="display:none">
-          <div class="col">
-              <span class="userProfileBodyFonts">
-              <span data-i18n="settings.preferredFirstName">${translateText('settings.preferredFirstName')}</span>
-              <br>
-                  <b>
-                  <div id="profilePreferredFirstName">
-                        ${optVars.preferredFirstName}
-                    </div>
-                  </b>
-              </span>
-          </div>
+      <div class="container">
+        <div class="row gy-3">
+            ${
+                userData[cId.fName]
+                ? `
+                <div class="col-12 col-xl-4 userProfileLinePaddings" id="firstNameRow">
+                        <span class="userProfileBodyFonts">
+                            <span data-i18n="settings.firstName">${translateText('settings.firstName')}</span>
+                        <br>
+                            <b>
+                            <div id="profileFirstName">
+                                ${userData[cId.fName]}
+                                </div>    
+                            </b>
+                        </span>
+                </div>
+            `
+                : ''
+            }    
+            <div class="col-12 col-xl-4 userProfileLinePaddings" id="middleNameRow" style="display:none">
+                    <span class="userProfileBodyFonts">
+                        <span data-i18n="settings.middleName">${translateText('settings.middleName')}</span>
+                    <br>
+                        <b>
+                        <div id="profileMiddleName">
+                            ${optVars.middleName}
+                            </div>
+                        </b>
+                    </span>
+            </div>
+            ${
+                userData[cId.lName]
+                ? `
+                <div class="col-12 col-xl-4 userProfileLinePaddings" id="lastNameRow">
+                    <span class="userProfileBodyFonts">
+                    <span data-i18n="settings.lastName">${translateText('settings.lastName')}</span>
+                    <br>
+                        <b>
+                        <div id="profileLastName">
+                            ${userData[cId.lName] ? userData[cId.lName] : '<br>'}
+                            </div>
+                        </b>
+                    </span>
+            </div>
+            `
+                : ''
+            }    
+        </div>
+        <div class="row userProfileLinePaddings" id="preferredFirstNameRow" style="display:none">
+            <div class="col-12">
+                <span class="userProfileBodyFonts">
+                <span data-i18n="settings.preferredFirstName">${translateText('settings.preferredFirstName')}</span>
+                <br>
+                    <b>
+                    <div id="profilePreferredFirstName">
+                            ${optVars.preferredFirstName}
+                        </div>
+                    </b>
+                </span>
+            </div>
+        </div>
       </div>
       `;
 };
 
 export const renderChangeNameGroup = () => {
   return eval('`'+translateHTML(`
-      <div class="row userProfileLinePaddings" id="changeNameGroup" style="display:none;">
-            <div class="col">
-                <label for="newFirstNameField" class="custom-form-label" data-i18n="settings.firstNameFieldLabel">First Name <span class="required">*</span></label>
-                <input type="text" value="${userData[cId.fName]}" class="form-control input-validation row ms-1" data-validation-pattern="alphabets" data-error-validation="Your first name should contain only uppercase and lowercase letters and can contain some special characters." id="newFirstNameField" placeholder="Enter first name" style="margin-left:0px; max-width:215px; !important;" data-i18n="settings.firstNameField">
-            </div>
-            <br>
-            <div class="col">
-                <label  data-i18n="settings.middleNameFieldLabel" for="newMiddleNameField" class="custom-form-label">Middle Name </label><span data-i18n="settings.optional"> (optional)</span>
-                <input  data-i18n="settings.middleNameField" type="text" value="${userData[cId.mName] ? userData[cId.mName] : ''}" class="form-control input-validation row ms-1" data-validation-pattern="alphabets" data-error-validation="Your middle name should contain only uppercase and lowercase letters and can contain some special characters." id="newMiddleNameField" placeholder="Enter middle name (optional)" style="margin-left:0px; max-width:215px; !important;">
-            </div>
-            <br>
-            <div class="col">
-                <label for="newLastNameField" class="custom-form-label" data-i18n="settings.lastNameFieldLabel">Last Name <span class="required">*</span></label>
-                <input type="text" value="${userData[cId.lName]}" class="form-control input-validation row  ms-1" data-validation-pattern="alphabets" data-error-validation="${translateText("settings.lastNameFieldValidation")}" id="newLastNameField" placeholder="${translateText("settings.lastNameFieldPlaceholder")}" style="margin-left:0px; max-width:304px; !important;">
-            </div>
-            <br>
-            <div class="col">
+      <div class="container userProfileLinePaddings" id="changeNameGroup" style="display:none;">
+        <div class="row gy-3">
+            <div class="col-12">
                 <label data-i18n="settings.suffixFieldLabel" for="newSuffixNameField" class="custom-form-label">Suffix </label><span data-i18n="settings.optional"> (optional)</span>
                     <select class="form-control  ms-1" style="max-width:152px;" id="newSuffixNameField">
                         <option value="" data-i18n="form.selectOption">-- Select --</option>
@@ -1322,15 +1434,33 @@ export const renderChangeNameGroup = () => {
                         <option value="${cId.suffixValue.eighth}" ${userData[cId.suffix] ? (suffixList[userData[cId.suffix]] == 9 ? 'selected':'') : ''} data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(cId.suffixValue.eighth).replace('.', '')}">${translateText('settingsHelpers.suffix'+suffixToTextMap.get(cId.suffixValue.eighth).replace('.', ''))}</option>
                     </select>
             </div>
+            <div class="col-12 col-lg-4">
+                <label for="newFirstNameField" class="custom-form-label" data-i18n="settings.firstNameFieldLabel">First Name <span class="required">*</span></label>
+                <input type="text" value="${userData[cId.fName]}" class="form-control input-validation row ms-1" data-validation-pattern="alphabets" data-error-validation="Your first name should contain only uppercase and lowercase letters and can contain some special characters." id="newFirstNameField" placeholder="Enter first name" style="margin-left:0px; max-width:215px; !important;" data-i18n="settings.firstNameField">
+            </div>
             <br>
-            <div class="col">
+            <div class="col-12 col-lg-4">
+                <label  data-i18n="settings.middleNameFieldLabel" for="newMiddleNameField" class="custom-form-label">Middle Name </label><span data-i18n="settings.optional"> (optional)</span>
+                <input  data-i18n="settings.middleNameField" type="text" value="${userData[cId.mName] ? userData[cId.mName] : ''}" class="form-control input-validation row ms-1" data-validation-pattern="alphabets" data-error-validation="Your middle name should contain only uppercase and lowercase letters and can contain some special characters." id="newMiddleNameField" placeholder="Enter middle name (optional)" style="margin-left:0px; max-width:215px; !important;">
+            </div>
+            <br>
+            <div class="col-12 col-lg-4">
+                <label for="newLastNameField" class="custom-form-label" data-i18n="settings.lastNameFieldLabel">Last Name <span class="required">*</span></label>
+                <input type="text" value="${userData[cId.lName]}" class="form-control input-validation row  ms-1" data-validation-pattern="alphabets" data-error-validation="${translateText("settings.lastNameFieldValidation")}" id="newLastNameField" placeholder="${translateText("settings.lastNameFieldPlaceholder")}" style="margin-left:0px; max-width:304px; !important;">
+            </div>
+            <br>
+            
+            <br>
+            <div class="col-12">
                 <label data-i18n="settings.preferredFirstNameFieldLabel" for="newPreferredFirstNameField" class="custom-form-label">Preferred First Name </label><span data-i18n="settings.optional"> (optional)</span>
                 <input data-i18n="settings.preferredFirstNameField" type="text" value="${userData[cId.prefName] ? userData[cId.prefName] : ''}" class="form-control input-validation row  ms-1" data-validation-pattern="alphabets" data-error-validation="${translateText("settings.preferredFirstNameFieldValidation")}" id="newPreferredFirstNameField" placeholder="${translateText("settings.preferredFirstNameFieldPlaceholder")}" style="margin-left:0px; max-width:215px; !important;">
             </div>
-            <br>
+        </div>
+        <div class="row">
             <div class="col">
-                <button id="changeNameSubmit" class="btn btn-primary save-data consentNextButton" data-i18n="settings.submitNameUpdate">Submit Name Update</button>
+                <button id="changeNameSubmit" class="btn btn-outline-primary save-data" data-i18n="settings.submitNameUpdate">Submit Name Update</button>
             </div>
+        </div>
       </div>
       <div class="row userProfileLinePaddings" id="changeNameSuccess" style="display:none;">
           <div class="col">
@@ -1353,12 +1483,12 @@ export const renderContactInformationHeadingAndButton = () => {
   return translateHTML(`
         <div class="row">
             <div class="col-12 col-sm-6">
-                <span class="userProfileLabels" data-i18n="settings.contactInfo">
-                    Contact Information
+                <span class="userProfileLabels" data-i18n="settings.emailAndPhone">
+                    Email and Phone
                 </span>
             </div>
             <div class="col-12 col-sm-6 d-flex justify-content-end">
-                <button id="changeContactInformationButton" class="btn btn-primary save-data consentNextButton px-3" style="float:right; display:none;" data-i18n="settings.updateContactText">
+                <button id="changeContactInformationButton" class="btn btn-outline-primary save-data px-3" style="float:right; display:none;" data-i18n="settings.updateContactText">
                     Update Contact Info
                 </button>
             </div>
@@ -1368,188 +1498,202 @@ export const renderContactInformationHeadingAndButton = () => {
 
 export const renderContactInformationData = () => {
   return translateHTML(`
-        <div class="row userProfileLinePaddings" id="mobilePhoneRow" style="display:none;">
-            <div class="col">
-                <span class="userProfileBodyFonts"> 
-                <span data-i18n="settings.mobilePhone">
-                    Mobile Phone
-                </span>
-                <br>
-                    <b>
-                    <div id="profileMobilePhoneNumber">
-                        ${optVars.mobilePhoneNumberComplete ? `${optVars.mobilePhoneNumberComplete.substr(0, 3)}-${optVars.mobilePhoneNumberComplete.substr(3, 3)}-${optVars.mobilePhoneNumberComplete.substr(6, 4)}` : ''}
-                    </div>    
-                    </b>
-                </span>
+        <div class="container">
+        <div class="row gy-3">
+            <div class="col-12 col-xl-6 userProfileLinePaddings" id="preferredEmailRow">
+                <div>
+                    <span class="userProfileBodyFonts">
+                    <span data-i18n="settings.preferredEmail">
+                        Preferred Email
+                    </span>
+                    <br>
+                        <b>
+                        <div id="profilePreferredEmail"  ${!isParticipantDataDestroyed ? '' : 'data-i18n="settings.dataDeleted"'}>
+                            ${!isParticipantDataDestroyed ? userData[cId.prefEmail] : translateText('settings.dataDeleted')}
+                        </div>
+                        </b>
+                    </span>
+                </div>
+            </div>
+            <div class="col-12 col-xl-6 userProfileLinePaddings" id="additionalEmail1Row" style="display:none">
+                <div>
+                    <span class="userProfileBodyFonts">
+                    <span data-i18n="settings.additionalEmail1">
+                        Additional Email 1
+                    </span>
+                    <br>
+                        <b>
+                        <div id="profileadditionalEmail1">
+                            ${optVars.additionalEmail1}
+                        </div>
+                        </b>
+                    </span>
+                </div>
+            </div>
+            <div class="col-12 col-xl-6 userProfileLinePaddings" id="additionalEmail2Row" style="display:none">
+                <div>
+                    <span class="userProfileBodyFonts">
+                    <span data-i18n="settings.additionalEmail2">
+                        Additional Email 2
+                    </span>
+                    <br>
+                        <b>
+                        <div id="profileadditionalEmail2">
+                            ${optVars.additionalEmail2}
+                        </div>
+                        </b>
+                    </span>
+                </div>
+            </div>  
+        </div>
+        <div class="row gy-3">
+            <div class="col-12 col-xl-6 userProfileLinePaddings" id="mobilePhoneRow" style="display:none;">
+                <div>
+                    <span class="userProfileBodyFonts"> 
+                    <span data-i18n="settings.mobilePhone">
+                        Mobile Phone
+                    </span>
+                    <br>
+                        <b>
+                        <div id="profileMobilePhoneNumber">
+                            ${optVars.mobilePhoneNumberComplete ? `${optVars.mobilePhoneNumberComplete.substr(0, 3)}-${optVars.mobilePhoneNumberComplete.substr(3, 3)}-${optVars.mobilePhoneNumberComplete.substr(6, 4)}` : ''}
+                        </div>    
+                        </b>
+                    </span>
+                </div>
+            </div>
+            <div class="col-12 col-xl-3  userProfileLinePaddings" id="mobilePhoneVoicemailRow" style="display:none;">
+                <div>
+                    <span class="userProfileBodyFonts">
+                    <span data-i18n="settings.leaveVoicemail">
+                        Can we leave a voicemail at this number?
+                    </span>
+                    <br>
+                        <b>
+                        <div id="profileMobileVoicemailPermission" data-i18n="${optVars.canWeVoicemailMobile ? 'settings.optYes' : 'settings.optNo'}">
+                            ${optVars.canWeVoicemailMobile ? translateText('settings.optYes') : translateText('settings.optNo')}
+                        </div>    
+                        </b>
+                    </span>
+                </div>
+            </div>
+            <div class="col-12 col-xl-3  userProfileLinePaddings" id="mobilePhoneTextRow"  style="display:none;">
+                <div>
+                    <span class="userProfileBodyFonts">
+                    <span data-i18n="settings.textNumber">
+                        Can we text this number?
+                    </span>
+                    <br>
+                        <b>
+                        <div id="profileMobileTextPermission" data-i18n="${optVars.canWeText ? 'settings.optYes' : 'settings.optNo'}">
+                            ${optVars.canWeText ? translateText('settings.optYes') : translateText('settings.optNo')}
+                        </div>    
+                        </b>
+                    </span>
+                </div>
             </div>
         </div>
-        <div class="row userProfileLinePaddings" id="mobilePhoneVoicemailRow" style="display:none;">
-            <div class="col">
-                <span class="userProfileBodyFonts">
-                <span data-i18n="settings.leaveVoicemail">
-                    Can we leave a voicemail at this number?
-                </span>
-                <br>
-                    <b>
-                    <div id="profileMobileVoicemailPermission" data-i18n="${optVars.canWeVoicemailMobile ? 'settings.optYes' : 'settings.optNo'}">
-                        ${optVars.canWeVoicemailMobile ? translateText('settings.optYes') : translateText('settings.optNo')}
-                    </div>    
-                    </b>
-                </span>
+        <div class="row gy-3">
+            <div class="col-12 col-xl-6 userProfileLinePaddings" id="homePhoneRow" style="display:none;">
+                <div>
+                    <span class="userProfileBodyFonts">
+                    <span data-i18n="settings.homePhone">
+                        Home Phone
+                    </span>
+                    <br>
+                        <b>
+                        <div id="profileHomePhoneNumber">
+                            ${optVars.homePhoneNumberComplete ? `${optVars.homePhoneNumberComplete.substr(0, 3)}-${optVars.homePhoneNumberComplete.substr(3, 3)}-${optVars.homePhoneNumberComplete.substr(6, 4)}` : ''}
+                        </div>    
+                        </b>
+                    </span>
+                </div>
+            </div>
+            <div class="col-12 col-xl-3 userProfileLinePaddings" id="homePhoneVoicemailRow" style="display:none;">
+                <div>
+                    <span class="userProfileBodyFonts">
+                    <span data-i18n="settings.leaveVoicemail">
+                        Can we leave a voicemail at this number?
+                    </span>
+                    <br>
+                        <b>
+                        <div id="profileHomeVoicemailPermission" data-i18n="${optVars.canWeVoicemailHome ? 'settings.optYes' : 'settings.optNo'}">
+                            ${optVars.canWeVoicemailHome ? translateText('settings.optYes') : translateText('settings.optNo')}
+                        </div>    
+                        </b>
+                    </span>
+                </div>          
             </div>
         </div>
-        <div class="row userProfileLinePaddings" id="mobilePhoneTextRow"  style="display:none;">
-            <div class="col">
-                <span class="userProfileBodyFonts">
-                <span data-i18n="settings.textNumber">
-                    Can we text this number?
-                </span>
-                <br>
-                    <b>
-                    <div id="profileMobileTextPermission" data-i18n="${optVars.canWeText ? 'settings.optYes' : 'settings.optNo'}">
-                        ${optVars.canWeText ? translateText('settings.optYes') : translateText('settings.optNo')}
-                    </div>    
-                    </b>
-                </span>
+        <div class="row gy-3">
+            <div class="col-12 col-xl-6 userProfileLinePaddings" id="otherPhoneRow" style="display:none;">
+                <div>
+                    <span class="userProfileBodyFonts">
+                    <span data-i18n="settings.otherNumber">
+                        Other Phone Number
+                    </span>
+                    <br>
+                        <b>
+                        <div id="profileOtherPhoneNumber">
+                            ${optVars.otherPhoneNumberComplete ? `${optVars.otherPhoneNumberComplete.substr(0, 3)}-${optVars.otherPhoneNumberComplete.substr(3, 3)}-${optVars.otherPhoneNumberComplete.substr(6, 4)}` : ''}
+                        </div>    
+                        </b>
+                    </span>
+                </div>
             </div>
-        </div>
-        <div class="row userProfileLinePaddings" id="homePhoneRow" style="display:none;">
-            <div class="col">
-                <span class="userProfileBodyFonts">
-                <span data-i18n="settings.homePhone">
-                    Home Phone
-                </span>
-                <br>
-                    <b>
-                    <div id="profileHomePhoneNumber">
-                        ${optVars.homePhoneNumberComplete ? `${optVars.homePhoneNumberComplete.substr(0, 3)}-${optVars.homePhoneNumberComplete.substr(3, 3)}-${optVars.homePhoneNumberComplete.substr(6, 4)}` : ''}
-                    </div>    
-                    </b>
-                </span>
-            </div>
-        </div>
-        <div class="row userProfileLinePaddings" id="homePhoneVoicemailRow" style="display:none;">
-            <div class="col">
-                <span class="userProfileBodyFonts">
-                <span data-i18n="settings.leaveVoicemail">
-                    Can we leave a voicemail at this number?
-                </span>
-                <br>
-                    <b>
-                    <div id="profileHomeVoicemailPermission" data-i18n="${optVars.canWeVoicemailHome ? 'settings.optYes' : 'settings.optNo'}">
-                        ${optVars.canWeVoicemailHome ? translateText('settings.optYes') : translateText('settings.optNo')}
-                    </div>    
-                    </b>
-                </span>
-            </div>          
-        </div>
-        <div class="row userProfileLinePaddings" id="otherPhoneRow" style="display:none;">
-            <div class="col">
-                <span class="userProfileBodyFonts">
-                <span data-i18n="settings.otherNumber">
-                    Other Phone Number
-                </span>
-                <br>
-                    <b>
-                    <div id="profileOtherPhoneNumber">
-                        ${optVars.otherPhoneNumberComplete ? `${optVars.otherPhoneNumberComplete.substr(0, 3)}-${optVars.otherPhoneNumberComplete.substr(3, 3)}-${optVars.otherPhoneNumberComplete.substr(6, 4)}` : ''}
-                    </div>    
-                    </b>
-                </span>
-            </div>
-        </div>
 
-        <div class="row userProfileLinePaddings" id="otherPhoneVoicemailRow" style="display:none">
-            <div class="col">
-                <span class="userProfileBodyFonts">
-                <span data-i18n="settings.leaveVoicemail">
-                    Can we leave a voicemail at this number?
-                </span>
-                <br>
-                    <b>
-                    <div id="profileOtherVoicemailPermission" data-i18n="${optVars.canWeVoicemailOther ? 'settings.optYes' : 'settings.optNo'}">
-                        ${optVars.canWeVoicemailOther ? translateText('settings.optYes') : translateText('settings.optNo')}
-                    </div>    
-                    </b>
-                </span>
-            </div>          
-        </div>
-
-        <div class="row userProfileLinePaddings" id="preferredEmailRow">
-            <div class="col">
-                <span class="userProfileBodyFonts">
-                <span data-i18n="settings.preferredEmail">
-                    Preferred Email
-                </span>
-                <br>
-                    <b>
-                    <div id="profilePreferredEmail"  ${!isParticipantDataDestroyed ? '' : 'data-i18n="settings.dataDeleted"'}>
-                        ${!isParticipantDataDestroyed ? userData[cId.prefEmail] : translateText('settings.dataDeleted')}
-                    </div>
-                    </b>
-                </span>
+            <div class="col-12 col-xl-3 userProfileLinePaddings" id="otherPhoneVoicemailRow" style="display:none">
+                <div>
+                    <span class="userProfileBodyFonts">
+                    <span data-i18n="settings.leaveVoicemail">
+                        Can we leave a voicemail at this number?
+                    </span>
+                    <br>
+                        <b>
+                        <div id="profileOtherVoicemailPermission" data-i18n="${optVars.canWeVoicemailOther ? 'settings.optYes' : 'settings.optNo'}">
+                            ${optVars.canWeVoicemailOther ? translateText('settings.optYes') : translateText('settings.optNo')}
+                        </div>    
+                        </b>
+                    </span>
+                </div>          
             </div>
         </div>
-        <div class="row userProfileLinePaddings" id="additionalEmail1Row" style="display:none">
-            <div class="col">
-                <span class="userProfileBodyFonts">
-                <span data-i18n="settings.additionalEmail1">
-                    Additional Email 1
-                </span>
-                <br>
-                    <b>
-                    <div id="profileadditionalEmail1">
-                        ${optVars.additionalEmail1}
-                    </div>
-                    </b>
-                </span>
-            </div>
         </div>
-        <div class="row userProfileLinePaddings" id="additionalEmail2Row" style="display:none">
-            <div class="col">
-                <span class="userProfileBodyFonts">
-                <span data-i18n="settings.additionalEmail2">
-                    Additional Email 2
-                </span>
-                <br>
-                    <b>
-                    <div id="profileadditionalEmail2">
-                        ${optVars.additionalEmail2}
-                    </div>
-                    </b>
-                </span>
-            </div>
-        </div>  
-        <div class="row userProfileLinePaddings" id="preferredLanguageRow" style="display:none">
-            <div class="col">
-                <span class="userProfileBodyFonts">
-                <span data-i18n="languageSelector.title">
-                    Preferred Language
-                </span>
-                <br>
-                    <b>
-                    <div id="profilepreferredLanguage" ${optVars.preferredLanguage ? 'data-i18n="' + languageTranslations()[optVars.preferredLanguage] + '"' : ''}>
-                        ${optVars.preferredLanguage ? translateText(languageTranslations()[optVars.preferredLanguage]) : ''}
-                    </div>
-                    </b>
-                </span>
-            </div>
-        </div>  
       `);
 };
 
 export const renderChangeContactInformationGroup = () => {
   return translateHTML(`
-      <div class="row userProfileLinePaddings" id="changeContactInformationGroup" style="display:none;">
-          <div class="col">
-                  <div class="form-group row">
+      <div class="container userProfileLinePaddings" id="changeContactInformationGroup" style="display:none;">
+          <div class="row gy-3">
+                  <div class="form-group col-12 col-xl-6">
                       <div class="col">
-                          </br>
+                          <label for="newPreferredEmail" class="custom-form-label" data-i18n="settings.preferredEmailLabel">Preferred Email <span class="required">*</span></label>
+                          <input max-width:382px;" value="${userData[cId.prefEmail]}" type="email" class="form-control ms-1" id="newPreferredEmail" placeholder="abc@mail.com">
+                      </div>
+                  </div>
+
+                  <div class="form-group col-12 col-xl-6">
+                      <div class="col">
+                          <label for="newadditionalEmail1" class="custom-form-label" data-i18n="settings.additionalEmail1Label">Additional Email 1 (optional)</label>
+                          <input max-width:382px;" value="${optVars.additionalEmail1 ? `${optVars.additionalEmail1}` : ''}" type="email" class="form-control ms-1" id="newadditionalEmail1" placeholder="abc@mail.com">
+                      </div>
+                  </div>
+
+                  <div class="form-group col-12 col-xl-6">
+                      <div class="col">
+                          <label for="newadditionalEmail2" class="custom-form-label" data-i18n="settings.additionalEmail2Label">Additional Email 2 (optional)</label>
+                          <input max-width:382px;" value="${optVars.additionalEmail2 ? `${optVars.additionalEmail2}` : ''}" type="email" class="form-control ms-1" id="newadditionalEmail2" placeholder="abc@mail.com">
+                      </div>
+                  </div>
+                  <div class="w-100"></div>
+                  <div class="form-group col-12 col-xl-6">
+                      <div>
                           <label for"editMobilePhone" class="custom-form-label" data-i18n="settings.mobilePhone">
                               Mobile phone
                           </label>
                           <br>
-                          <div class="btn-group col-md-4" id="editMobilePhone">
+                          <div class="btn-group" id="editMobilePhone">
                               <input type="tel" class="form-control num-val-phone" value="${optVars.mobilePhoneNumberComplete && optVars.mobilePhoneNumberComplete.length === 10 ? optVars.mobilePhoneNumberComplete.substr(0, 3) : ''}" data-val-pattern="[1-9]{1}[0-9]{2}" data-i18n="settings.onlyNumbersField"  title="${translateText('settings.onlyNumbers')}" id="mobilePhoneNumber1" data-error-validation="${translateText('settings.onlyNumbers')}" size="3" maxlength="3" Placeholder="999" style="margin-left:0px"> <span class="hyphen">-</span>
                               <input type="tel" class="form-control num-val-phone" value="${optVars.mobilePhoneNumberComplete && optVars.mobilePhoneNumberComplete.length === 10 ? optVars.mobilePhoneNumberComplete.substr(3, 3) : ''}" data-val-pattern="[0-9]{3}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" id="mobilePhoneNumber2" data-error-validation="${translateText('settings.onlyNumbers')}" size="3" maxlength="3" Placeholder="999"> <span class="hyphen">-</span>
                               <input type="tel" class="form-control num-val-phone" value="${optVars.mobilePhoneNumberComplete && optVars.mobilePhoneNumberComplete.length === 10 ? optVars.mobilePhoneNumberComplete.substr(6, 4) : ''}" data-val-pattern="[0-9]{4}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" id="mobilePhoneNumber3" data-error-validation="${translateText('settings.onlyNumbers')}" size="4" maxlength="4" Placeholder="9999">
@@ -1557,7 +1701,7 @@ export const renderChangeContactInformationGroup = () => {
                       </div>
                   </div>
   
-                  <div class="form-group row">
+                  <div class="form-group col-12 col-xl-3">
                       <div class="col">
                           <label for="mobileVoicemailRadio" class="custom-form-label" data-i18n="settings.leaveVoicemail">
                               Can we leave a voicemail at this number?
@@ -1569,7 +1713,7 @@ export const renderChangeContactInformationGroup = () => {
                           </div>
                       </div>
                   </div>
-                  <div class="form-group row">
+                  <div class="form-group col-12 col-xl-3">
                       <div class="col">
                           <label for="mobileTextRadio" class="custom-form-label" data-i18n="settings.textNumber">
                               Can we text this number?
@@ -1583,13 +1727,13 @@ export const renderChangeContactInformationGroup = () => {
                       </div>
                   </div>
   
-                  <div class="form-group row">
-                      <div class="col">
+                  <div class="form-group col-12 col-xl-6">
+                      <div>
                           <label for="editHomePhone" class="custom-form-label" data-i18n="settings.homePhone">
                               Home phone
                           </label>
                           <br>
-                          <div class="btn-group col-md-4" id="editHomePhone">
+                          <div class="btn-group" id="editHomePhone">
                             <input type="tel" class="form-control num-val-phone" value="${optVars.homePhoneNumberComplete && optVars.homePhoneNumberComplete.length === 10 ? optVars.homePhoneNumberComplete.substr(0, 3) : ''}" id="homePhoneNumber1" data-val-pattern="[1-9]{1}[0-9]{2}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" size="3" maxlength="3" Placeholder="999"> <span class="hyphen">-</span>
                             <input type="tel" class="form-control num-val-phone" value="${optVars.homePhoneNumberComplete && optVars.homePhoneNumberComplete.length === 10 ? optVars.homePhoneNumberComplete.substr(3, 3) : ''}" id="homePhoneNumber2" data-val-pattern="[0-9]{3}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" size="3" maxlength="3" Placeholder="999"> <span class="hyphen">-</span>
                             <input type="tel" class="form-control num-val-phone" value="${optVars.homePhoneNumberComplete && optVars.homePhoneNumberComplete.length === 10 ? optVars.homePhoneNumberComplete.substr(6, 4) : ''}" id="homePhoneNumber3" data-val-pattern="[0-9]{4}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" size="4" maxlength="4" Placeholder="9999">
@@ -1597,26 +1741,26 @@ export const renderChangeContactInformationGroup = () => {
                       </div>
                   </div>
   
-                  <div class="form-group row">
+                  <div class="form-group col-12 col-xl-3">
                       <div class="col">
                           <label for="homeVoicemailRadio" class="custom-form-label" data-i18n="settings.leaveVoicemail">
                               Can we leave a voicemail at this number?
                           </label>
                           <br>
-                          <div class="btn-group btn-group-toggle col-md-4" id="homeVoicemailRadio">
+                          <div class="btn-group btn-group-toggle" id="homeVoicemailRadio">
                               <label for="homeVoicemailPermissionYesRadio" class="ms-1" id="homeVoicemailPermissionYes"><input type="radio" id="homeVoicemailPermissionYesRadio" name="homeVoicemailPermission" value="${cId.yes}"> <span data-i18n="settings.optYes">${translateText('settings.optYes')}</span></label>
                               <label for="homeVoicemailPermissionNoRadio" style = "margin-left:20px;" id="homeVoicemailPermissionNo"><input type="radio" id="homeVoicemailPermissionNoRadio" name="homeVoicemailPermission" value="${cId.no}"> <span data-i18n="settings.optNo">${translateText('settings.optNo')}</span></label>
                           </div>
                       </div>
                   </div>
 
-                  <div class="form-group row">
-                      <div class="col">
+                  <div class="form-group col-12 col-xl-6">
+                      <div>
                           <label for="editOtherPhone" class="custom-form-label" data-i18n="settings.otherPhone">
                               Other phone
                           </label>
                           <br>
-                          <div class="btn-group col-md-4" id="editOtherPhone">
+                          <div class="btn-group" id="editOtherPhone">
                             <input type="tel" class="form-control num-val-phone" value="${optVars.otherPhoneNumberComplete && optVars.otherPhoneNumberComplete.length === 10 ? `${optVars.otherPhoneNumberComplete.substr(0, 3)}` : ''}" id="otherPhoneNumber1" data-val-pattern="[1-9]{1}[0-9]{2}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" size="3" maxlength="3" Placeholder="999"> <span class="hyphen">-</span>
                             <input type="tel" class="form-control num-val-phone" value="${optVars.otherPhoneNumberComplete && optVars.otherPhoneNumberComplete.length === 10 ? `${optVars.otherPhoneNumberComplete.substr(3, 3)}` : ''}" id="otherPhoneNumber2" data-val-pattern="[0-9]{3}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" size="3" maxlength="3" Placeholder="999"> <span class="hyphen">-</span>
                             <input type="tel" class="form-control num-val-phone" value="${optVars.otherPhoneNumberComplete && optVars.otherPhoneNumberComplete.length === 10 ? `${optVars.otherPhoneNumberComplete.substr(6, 4)}` : ''}" id="otherPhoneNumber3" data-val-pattern="[0-9]{4}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" size="4" maxlength="4" Placeholder="9999">
@@ -1624,13 +1768,13 @@ export const renderChangeContactInformationGroup = () => {
                       </div>
                   </div>
 
-                  <div class="form-group row">
+                  <div class="form-group  col-12 col-xl-3">
                       <div class="col">
                           <label for="otherVoicemailRadio" class="custom-form-label" data-i18n="settings.leaveVoicemail">
                               Can we leave a voicemail at this number?
                           </label>
                           <br>
-                          <div class="btn-group btn-group-toggle col-md-4" id="otherVoicemailRadio">
+                          <div class="btn-group btn-group-toggle" id="otherVoicemailRadio">
                               <label for="otherVoicemailPermissionYesRadio" class="ms-1" id="otherVoicemailPermissionYes"><input type="radio" id="otherVoicemailPermissionYesRadio" name="otherVoicemailPermission" value="${cId.yes}"> <span data-i18n="settings.optYes">${translateText('settings.optYes')}</span></label>
                               <label for="otherVoicemailPermissionNoRadio" style = "margin-left:20px;" id="otherVoicemailPermissionNo"><input type="radio" id="otherVoicemailPermissionNoRadio" name="otherVoicemailPermission" value="${cId.no}"> <span data-i18n="settings.optNo">${translateText('settings.optNo')}</span></label>
                           </div>
@@ -1639,37 +1783,7 @@ export const renderChangeContactInformationGroup = () => {
                   
                   <div class="form-group row">
                       <div class="col">
-                          <label for="newPreferredEmail" class="custom-form-label" data-i18n="settings.preferredEmailLabel">Preferred Email <span class="required">*</span></label>
-                          <input max-width:382px;" value="${userData[cId.prefEmail]}" type="email" class="form-control ms-1" id="newPreferredEmail" placeholder="abc@mail.com">
-                      </div>
-                  </div>
-
-                  <div class="form-group row">
-                      <div class="col">
-                          <label for="newadditionalEmail1" class="custom-form-label" data-i18n="settings.additionalEmail1Label">Additional Email 1 (optional)</label>
-                          <input max-width:382px;" value="${optVars.additionalEmail1 ? `${optVars.additionalEmail1}` : ''}" type="email" class="form-control ms-1" id="newadditionalEmail1" placeholder="abc@mail.com">
-                      </div>
-                  </div>
-
-                  <div class="form-group row">
-                      <div class="col">
-                          <label for="newadditionalEmail2" class="custom-form-label" data-i18n="settings.additionalEmail2Label">Additional Email 2 (optional)</label>
-                          <input max-width:382px;" value="${optVars.additionalEmail2 ? `${optVars.additionalEmail2}` : ''}" type="email" class="form-control ms-1" id="newadditionalEmail2" placeholder="abc@mail.com">
-                      </div>
-                  </div>
-                  <div class="form-group row">
-                      <div class="col">
-                          <label for="newpreferredLanguage" class="custom-form-label" data-i18n="languageSelector.title">Additional Email 2 (optional)</label>
-                          <select max-width:382px;" class="form-control ms-1" id="newpreferredLanguage">
-                            <option value="" data-i18n="form.selectOption">-- Select --</option>
-                            <option value="${cId.language.en}" ${optVars.preferredLanguage === cId.language.en ? "selected" : ""} data-i18n="languageSelector.englishOption">${translateText("languageSelector.englishOption")}</option>
-                            <option value="${cId.language.es}" ${optVars.preferredLanguage === cId.language.es ? "selected" : ""} data-i18n="languageSelector.spanishOption">${translateText("languageSelector.spanishOption")}</option>
-                          </select>
-                      </div>
-                  </div>
-                  <div class="form-group row">
-                      <div class="col">
-                          <button id="changeContactInformationSubmit" class="btn btn-primary save-data consentNextButton" data-i18n="settings.submitContactInfoUpdate">Submit Contact Info Update</button>
+                          <button id="changeContactInformationSubmit" class="btn btn-outline-primary save-data" data-i18n="settings.submitPhoneEmail">Submit Phone and Email</button>
                       </div>
                   </div>
           </div>
@@ -1691,6 +1805,83 @@ export const renderChangeContactInformationGroup = () => {
         </div>
       `);
 };
+export const renderPreferredLanguageHeadingAndButton = () => {
+  return translateHTML(`
+        <div class="row">
+            <div class="col-12 col-sm-6">
+                <span class="userProfileLabels" data-i18n="settings.preferredLanguage">
+                    Preferred Language
+                </span>
+            </div>
+            <div class="col-12 col-sm-6 d-flex justify-content-end">
+                <button id="changePreferredLanguageButton" class="btn btn-outline-primary save-data px-3" style="float:right; display:none;" data-i18n="settings.updatePreferredLanguage">
+                    Update Preferred Language
+                </button>
+            </div>
+        </div>
+    `);
+};
+
+export const renderPreferredLanguageData = () => {
+  return translateHTML(`
+        <div class="container">
+        <div class="row userProfileLinePaddings" id="preferredLanguageRow">
+            <div class="col">
+                <span class="userProfileBodyFonts">
+                <span data-i18n="languageSelector.title">
+                    Preferred Language
+                </span>
+                <br>
+                    <b>
+                    <div id="profilepreferredLanguage" ${userData[cId.preferredLanguage] ? 'data-i18n="' + languageTranslations()[userData[cId.preferredLanguage]] + '"' : ''}>
+                        ${userData[cId.preferredLanguage] ? translateText(languageTranslations()[userData[cId.preferredLanguage]]) : ''}
+                    </div>
+                    </b>
+                </span>
+            </div>
+        </div>
+        </div>
+      `);
+};
+
+export const renderChangePreferredLanguageGroup = () => {
+  return translateHTML(`
+      <div class="container userProfileLinePaddings" id="changePreferredLanguageGroup" style="display:none;">
+          <div class="row gy-3">
+                  <div class="form-group row">
+                      <div class="col">
+                          <label for="newpreferredLanguage" class="custom-form-label" data-i18n="languageSelector.title">Additional Email 2 (optional)</label>
+                          <select max-width:382px;" class="form-control ms-1" id="newpreferredLanguage">
+                            <option value="" data-i18n="form.selectOption">-- Select --</option>
+                            <option value="${cId.language.en}" ${userData[cId.preferredLanguage] === cId.language.en ? "selected" : ""} data-i18n="languageSelector.englishOption">${translateText("languageSelector.englishOption")}</option>
+                            <option value="${cId.language.es}" ${userData[cId.preferredLanguage] === cId.language.es ? "selected" : ""} data-i18n="languageSelector.spanishOption">${translateText("languageSelector.spanishOption")}</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div class="form-group row">
+                      <div class="col">
+                          <button id="changePreferredLanguageSubmit" class="btn btn-outline-primary save-data" data-i18n="settings.submitPreferredLanguage">Submit Preferred Language</button>
+                      </div>
+                  </div>
+          </div>
+      </div>
+      <div class="row userProfileLinePaddings" id="changePreferredLanguageSuccess" style="display:none;">
+            <div class="col">
+                <span class="userProfileBodyFonts" data-i18n="settings.successPreferredLanguageUpdate">
+                    Success! Your preferred language has been updated.
+                </span>
+            </div>
+        </div>
+
+        <div class="row userProfileLinePaddings" id="changePreferredLanguageFail" style="display:none;">
+            <div class="col">
+                <span id="changePreferredLanguageError" class="userProfileBodyFonts" style="color:red;" data-i18n="settings.failPreferredLanguageUpdate">
+                    Preferred Language Update Failed!
+                </span>
+            </div>
+        </div>
+      `);
+};
 
 export const renderMailingAddressHeadingAndButton = () => {
   return translateHTML(`
@@ -1701,7 +1892,7 @@ export const renderMailingAddressHeadingAndButton = () => {
               </span>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-end">
-              <button id="changeMailingAddressButton" class="btn btn-primary save-data consentNextButton px-3" style="float:right; display:none;" data-i18n="settings.updateAddressText">Update Address</button>
+              <button id="changeMailingAddressButton" class="btn btn-outline-primary save-data px-3" style="float:right; display:none;" data-i18n="settings.updateAddressText">Update Address</button>
           </div>
       </div>
       `);
@@ -1717,7 +1908,7 @@ export const renderPhysicalMailingAddressHeadingAndButton = () => {
               <i data-i18n="settings.physicalMailAddressNote">If different from mailing address</i>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-end">
-              <button id="changePhysicalMailingAddressButton" class="btn btn-primary save-data consentNextButton px-3" style="float:right; display:none;" data-i18n="settings.updateAddressText">Update Address</button>
+              <button id="changePhysicalMailingAddressButton" class="btn btn-outline-primary save-data px-3" style="float:right; display:none;" data-i18n="settings.updateAddressText">Update Address</button>
           </div>
       </div>
       `);
@@ -1733,7 +1924,7 @@ const renderAltAddressHeadingAndButton = () => {
               <i data-i18n="settings.altAddressNote">For any other mailing addresses you have</i>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-end">
-              <button id="changeAltAddressButton" class="btn btn-primary save-data consentNextButton px-3" style="float:right; display:none;" data-i18n="settings.updateAddressText">Update Address</button>
+              <button id="changeAltAddressButton" class="btn btn-outline-primary save-data px-3" style="float:right; display:none;" data-i18n="settings.updateAddressText">Update Address</button>
           </div>
       </div>
       `);
@@ -1785,7 +1976,7 @@ export const renderPhysicalMailingAddressData = (id) => {
                 </div>
                 <div class="row">
                     <div class="col-md-4"">
-                        <button class="btn btn-primary save-data consentNextButton px-3" id="clearPhysicalAddrBtn" data-i18n="settingsHelpers.clearButtonText" style="display:none">Clear</button>
+                        <button class="btn btn-outline-primary save-data px-3" id="clearPhysicalAddrBtn" data-i18n="settingsHelpers.clearButtonText" style="display:none">Clear</button>
                     </div>
                 </div>
             </div>
@@ -1827,7 +2018,7 @@ const renderAlternateAddressData = (id) => {
                 </div>
                 <div class="row">
                     <div class="col-md-4"">
-                        <button class="btn btn-primary save-data consentNextButton px-3" id="clearAlternateAddrBtn" data-i18n="settingsHelpers.clearButtonText" style="display:none">Clear</button>
+                        <button class="btn btn-outline-primary save-data px-3" id="clearAlternateAddrBtn" data-i18n="settingsHelpers.clearButtonText" style="display:none">Clear</button>
                     </div>
                 </div>
             </div>
@@ -1919,7 +2110,7 @@ const renderChangeMailingAddressGroup = (id) => {
                 ${checkboxHTML}
                 <div class="form-group row">
                         <div class="col">
-                            <button id="changeMailingAddressSubmit${id}" class="btn btn-primary save-data consentNextButton" data-i18n="settings.submit${idText}Update">Submit ${idTerm} Address Update</button>
+                            <button id="changeMailingAddressSubmit${id}" class="btn btn-outline-primary save-data" data-i18n="settings.submit${idText}Update">Submit ${idTerm} Address Update</button>
                         </div>
                     </div>
                 </div>
@@ -1960,7 +2151,7 @@ const renderAltContactInformationHeadingAndButton = () => {
                 <i data-i18n="settings.altContactNote">To help us get in touch with you if we lose contact</i>
             </div>
             <div class="col-12 col-sm-6 d-flex justify-content-end">
-                <button id="changeAltContactButton" class="btn btn-primary save-data consentNextButton px-3" style="float:right; display:none;" data-i18n="settings.updateContactText">
+                <button id="changeAltContactButton" class="btn btn-outline-primary save-data px-3" style="float:right; display:none;" data-i18n="settings.updateContact">
                     Update Contact Info
                 </button>
             </div>
@@ -1969,111 +2160,114 @@ const renderAltContactInformationHeadingAndButton = () => {
 };
 
 const renderAlternateContactInformationData = () => {
-    return translateHTML(`        
-        <div class="row userProfileLinePaddings" id="altContactFirstNameRow" style="display:none;">
-            <div class="col">
-                <span class="userProfileBodyFonts">
-                    <span data-i18n="settings.firstName">${translateText('settings.firstName')}</span>
-                <br>
-                    <b>
-                    <div id="altContactFirstName">
-                        ${optVars.altContactFirstName || ''}
-                    </div>    
-                    </b>
-                </span>
-            </div>
-        </div>
-
-        <div class="row userProfileLinePaddings" id="altContactLastNameRow" style="display:none;">
-            <div class="col">
-                <span class="userProfileBodyFonts">
-                <span data-i18n="settings.lastName">${translateText('settings.lastName')}</span>
-                <br>
-                    <b>
-                    <div id="altContactLastName">
-                        ${optVars.altContactLastName || ''}
+    return translateHTML(`
+        <div class="container">
+            <div class="row gy-3">        
+                <div class="col-12 col-xl-6 userProfileLinePaddings" id="altContactFirstNameRow" style="display:none;">
+                    <div>
+                        <span class="userProfileBodyFonts">
+                            <span data-i18n="settings.firstName">${translateText('settings.firstName')}</span>
+                        <br>
+                            <b>
+                            <div id="altContactFirstName">
+                                ${optVars.altContactFirstName || ''}
+                            </div>    
+                            </b>
+                        </span>
                     </div>
-                    </b>
-                </span>
-            </div>
-        </div>
+                </div>
 
-        <div class="row userProfileLinePaddings" id="altContactMobilePhoneRow" style="display:none;">
-            <div class="col">
-                <span class="userProfileBodyFonts">
-                <span data-i18n="settings.mobilePhone">
-                    Mobile Phone
-                </span>
-                <br>
-                    <b>
-                    <div id="altContactMobilePhoneNumber">
-                        ${optVars.altContactMobilePhoneNumberComplete ? `${optVars.altContactMobilePhoneNumberComplete.substr(0, 3)}-${optVars.altContactMobilePhoneNumberComplete.substr(3, 3)}-${optVars.altContactMobilePhoneNumberComplete.substr(6, 4)}` : ''}
-                    </div>    
-                    </b>
-                </span>
-            </div>
-        </div>
-
-        <div class="row userProfileLinePaddings" id="altContactHomePhoneRow" style="display:none;">
-            <div class="col">
-                <span class="userProfileBodyFonts">
-                <span data-i18n="settings.homePhone">
-                    Home Phone
-                </span>
-                <br>
-                    <b>
-                    <div id="altContactHomePhoneNumber">
-                        ${optVars.altContactHomePhoneNumberComplete ? `${optVars.altContactHomePhoneNumberComplete.substr(0, 3)}-${optVars.altContactHomePhoneNumberComplete.substr(3, 3)}-${optVars.altContactHomePhoneNumberComplete.substr(6, 4)}` : ''}
-                    </div>    
-                    </b>
-                </span>
-            </div>
-        </div>            
-
-        <div class="row userProfileLinePaddings" id="altContactEmailRow" style="display:none;">
-            <div class="col">
-                <span class="userProfileBodyFonts">
-                <span data-i18n="settings.altContactEmail">
-                    Email
-                </span>
-                <br>
-                    <b>
-                    <div id="altContactEmail"  ${!isParticipantDataDestroyed ? '' : 'data-i18n="settings.dataDeleted"'}>
-                        ${!isParticipantDataDestroyed ? optVars.altContactEmail : translateText('settings.dataDeleted')}
+                <div class="col-12 col-xl-6  userProfileLinePaddings" id="altContactLastNameRow" style="display:none;">
+                    <div>
+                        <span class="userProfileBodyFonts">
+                        <span data-i18n="settings.lastName">${translateText('settings.lastName')}</span>
+                        <br>
+                            <b>
+                            <div id="altContactLastName">
+                                ${optVars.altContactLastName || ''}
+                            </div>
+                            </b>
+                        </span>
                     </div>
-                    </b>
-                </span>
+                </div>
+
+                <div class="col-12 col-xl-4 userProfileLinePaddings" id="altContactMobilePhoneRow" style="display:none;">
+                    <div>
+                        <span class="userProfileBodyFonts">
+                        <span data-i18n="settings.mobilePhone">
+                            Mobile Phone
+                        </span>
+                        <br>
+                            <b>
+                            <div id="altContactMobilePhoneNumber">
+                                ${optVars.altContactMobilePhoneNumberComplete ? `${optVars.altContactMobilePhoneNumberComplete.substr(0, 3)}-${optVars.altContactMobilePhoneNumberComplete.substr(3, 3)}-${optVars.altContactMobilePhoneNumberComplete.substr(6, 4)}` : ''}
+                            </div>    
+                            </b>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="col-12 col-xl-4 userProfileLinePaddings" id="altContactHomePhoneRow" style="display:none;">
+                    <div>
+                        <span class="userProfileBodyFonts">
+                        <span data-i18n="settings.homePhone">
+                            Home Phone
+                        </span>
+                        <br>
+                            <b>
+                            <div id="altContactHomePhoneNumber">
+                                ${optVars.altContactHomePhoneNumberComplete ? `${optVars.altContactHomePhoneNumberComplete.substr(0, 3)}-${optVars.altContactHomePhoneNumberComplete.substr(3, 3)}-${optVars.altContactHomePhoneNumberComplete.substr(6, 4)}` : ''}
+                            </div>    
+                            </b>
+                        </span>
+                    </div>
+                </div>            
+
+                <div class="col-12 col-xl-4 userProfileLinePaddings" id="altContactEmailRow" style="display:none;">
+                    <div>
+                        <span class="userProfileBodyFonts">
+                        <span data-i18n="settings.altContactEmail">
+                            Email
+                        </span>
+                        <br>
+                            <b>
+                            <div id="altContactEmail"  ${!isParticipantDataDestroyed ? '' : 'data-i18n="settings.dataDeleted"'}>
+                                ${!isParticipantDataDestroyed ? optVars.altContactEmail : translateText('settings.dataDeleted')}
+                            </div>
+                            </b>
+                        </span>
+                    </div>
+                </div>
             </div>
-        </div>
-        `
+        </div>`
     );
 }
 
 const renderChangeAltContactInformationGroup = () => {
     return translateHTML(`
-        <div class="row userProfileLinePaddings" id="changeAltContactInformationGroup" style="display:none;">
-            <div class="col">
-                <div class="form-group row">
+        <div class="container userProfileLinePaddings" id="changeAltContactInformationGroup" style="display:none;">
+            <div class="row gy-3">
+                <div class="form-group col-12 col-xl-6">
                     <div class="col">
                         <label for="newAltContactFirstNameField" class="custom-form-label" data-i18n="settings.altContactFirstNameFieldLabel">First Name</label>
                         <input type="text" value="${optVars.altContactFirstName || ''}" class="form-control input-validation row ms-1" data-validation-pattern="alphabets" data-error-validation="Your first name should contain only uppercase and lowercase letters and can contain some special characters." id="newAltContactFirstNameField" placeholder="Enter first name" style="margin-left:0px; max-width:215px; !important;" data-i18n="settings.altContactFirstNameField">
                     </div>
                 </div>
                 
-                <div class="form-group row">
+                <div class="form-group col-12 col-xl-6">
                     <div class="col">
                         <label for="newAltContactLastNameField" class="custom-form-label" data-i18n="settings.altContactLastNameFieldLabel">Last Name</label>
                         <input type="text" value="${optVars.altContactLastName || ''}" class="form-control input-validation row  ms-1" data-validation-pattern="alphabets" data-error-validation="${translateText("settings.altContactLastNameFieldValidation")}" id="newAltContactLastNameField" placeholder="${translateText("settings.altContactLastNameFieldPlaceholder")}" style="margin-left:0px; max-width:304px; !important;" data-i18n="settings.altContactLastNameField">
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group col-12 col-xl-4">
                     <div class="col">
                         <label for"editAltContactMobilePhone" class="custom-form-label" data-i18n="settings.mobilePhone">
                             Mobile phone
                         </label>
                         <br>
-                        <div class="btn-group col-md-4" id="editAltContactMobilePhone">
+                        <div class="btn-group" id="editAltContactMobilePhone">
                             <input type="tel" class="form-control num-val-phone" value="${optVars?.altContactMobilePhoneNumberComplete?.length === 10 ? optVars?.altContactMobilePhoneNumberComplete.substr(0, 3) : ''}" id="altContactMobilePhoneNumber1" data-val-pattern="[1-9]{1}[0-9]{2}" data-i18n="settings.onlyNumbersField"  title="${translateText('settings.onlyNumbers')}" data-error-validation="${translateText('settings.onlyNumbers')}" size="3" maxlength="3" Placeholder="999" style="margin-left:0px"> <span class="hyphen">-</span>
                             <input type="tel" class="form-control num-val-phone" value="${optVars?.altContactMobilePhoneNumberComplete?.length === 10 ? optVars?.altContactMobilePhoneNumberComplete.substr(3, 3) : ''}" id="altContactMobilePhoneNumber2" data-val-pattern="[0-9]{3}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" data-error-validation="${translateText('settings.onlyNumbers')}" size="3" maxlength="3" Placeholder="999"> <span class="hyphen">-</span>
                             <input type="tel" class="form-control num-val-phone" value="${optVars?.altContactMobilePhoneNumberComplete?.length === 10 ? optVars?.altContactMobilePhoneNumberComplete.substr(6, 4) : ''}" id="altContactMobilePhoneNumber3" data-val-pattern="[0-9]{4}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" data-error-validation="${translateText('settings.onlyNumbers')}" size="4" maxlength="4" Placeholder="9999">
@@ -2081,13 +2275,13 @@ const renderChangeAltContactInformationGroup = () => {
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group  col-12 col-xl-4">
                     <div class="col">
                         <label for="editAltContactHomePhone" class="custom-form-label" data-i18n="settings.homePhone">
                             Home phone
                         </label>
                         <br>
-                        <div class="btn-group col-md-4" id="editAltContactHomePhone">
+                        <div class="btn-group" id="editAltContactHomePhone">
                             <input type="tel" class="form-control num-val-phone" value="${optVars?.altContactHomePhoneNumberComplete?.length === 10 ? optVars?.altContactHomePhoneNumberComplete.substr(0, 3) : ''}" id="altContactHomePhoneNumber1" data-val-pattern="[1-9]{1}[0-9]{2}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" size="3" maxlength="3" Placeholder="999"> <span class="hyphen">-</span>
                             <input type="tel" class="form-control num-val-phone" value="${optVars?.altContactHomePhoneNumberComplete?.length === 10 ? optVars?.altContactHomePhoneNumberComplete.substr(3, 3) : ''}" id="altContactHomePhoneNumber2" data-val-pattern="[0-9]{3}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" size="3" maxlength="3" Placeholder="999"> <span class="hyphen">-</span>
                             <input type="tel" class="form-control num-val-phone" value="${optVars?.altContactHomePhoneNumberComplete?.length === 10 ? optVars?.altContactHomePhoneNumberComplete.substr(6, 4) : ''}" id="altContactHomePhoneNumber3" data-val-pattern="[0-9]{4}" data-i18n="settings.onlyNumbersField" title="${translateText('settings.onlyNumbers')}" size="4" maxlength="4" Placeholder="9999">
@@ -2095,7 +2289,7 @@ const renderChangeAltContactInformationGroup = () => {
                     </div>
                 </div>
 
-                <div class="form-group row">
+                <div class="form-group  col-12 col-xl-4">
                     <div class="col">
                         <label for="newAltContactEmail" class="custom-form-label" data-i18n="settings.altContactEmail">Email</label>
                         <input max-width:382px;" value="${optVars.altContactEmail || ''}" type="email" class="form-control ms-1" id="newAltContactEmail" placeholder="abc@mail.com">
@@ -2104,7 +2298,7 @@ const renderChangeAltContactInformationGroup = () => {
 
                 <div class="form-group row">
                     <div class="col">
-                        <button id="changeAltContactInformationSubmit" class="btn btn-primary save-data consentNextButton" data-i18n="settings.submitContactInfoUpdate">Submit Contact Info Update</button>
+                        <button id="changeAltContactInformationSubmit" class="btn btn-outline-primary save-data" data-i18n="settings.submitContactInfoUpdate">Submit Contact Info Update</button>
                     </div>
                 </div>
             </div>
@@ -2137,7 +2331,7 @@ export const renderSignInInformationHeadingAndButton = () => {
               </span>
           </div>
           <div class="col-12 col-sm-6 d-flex justify-content-end">
-              <button id="changeLoginButton" class="btn btn-primary save-data consentNextButton px-3" style="float:right; display:none;" data-i18n="settings.updateSignIn">Update Sign In</button>
+              <button id="changeLoginButton" class="btn btn-outline-primary save-data px-3" style="float:right;" data-i18n="settings.updateSignIn">Update Sign In</button>
           </div>
       </div>
       `);
@@ -2276,7 +2470,7 @@ const renderTabbedForm = () => {
             ${renderEmailOrPhoneInput('email')}
             ${renderConfirmationModal('Email')}
             <br>
-            <button id="changeEmailSubmit" class="btn btn-primary save-data consentNextButton" data-i18n="settings.submitNewEmail">Submit new sign in email</button>
+            <button id="changeEmailSubmit" class="btn btn-outline-primary save-data" data-i18n="settings.submitNewEmail">Submit new sign in email</button>
         </div>
         
         <div id="form2" class="tabcontent">
@@ -2298,7 +2492,7 @@ const renderTabbedForm = () => {
             <br>
             ${renderConfirmationModal('Phone')}
             <p style="color:#1c5d86;" data-i18n="settings.afterClicking">After you click, “Submit,” a pop-up box will display and ask you to enter the verification code sent to your mobile device. Please enter this code and click “OK” to verify your phone number.</p>
-            <button id="changePhoneSubmit" class="btn btn-primary save-data consentNextButton" data-i18n="settings.submitNewPhone">Submit new sign in phone number</button>
+            <button id="changePhoneSubmit" class="btn btn-outline-primary save-data" data-i18n="settings.submitNewPhone">Submit new sign in phone number</button>
             <br>
             <div style="margin-left:10px" id="recaptcha-container"></div>
         </div> 
@@ -2350,3 +2544,182 @@ const renderConfirmationModal = (removalType) => {
     </div>
     `);
 };
+
+const renderAgreementsHeading = () => {
+  return translateHTML(`
+      <div class="row">
+          <div class="col-12 col-sm-6">
+              <span class="userProfileLabels" data-i18n="settings.agreements">
+              Agreements
+              </span>
+          </div>
+      </div>
+      `);
+};
+
+const renderUnsignedAgreements = () => {
+    return translateHTML(`${((((userData.hasOwnProperty(cId.revokeHipaa) && userData[cId.revokeHipaa] == cId.yes)  || (userData[cId.consentWithdrawn] && userData[cId.consentWithdrawn] == cId.yes)) && (!userData[cId.hipaaRevocationSigned] || userData[cId.hipaaRevocationSigned] == cId.no) || (userData.hasOwnProperty(cId.destroyData) && userData[cId.destroyData] == cId.yes && (!userData[cId.destroyDataSigned] || userData[cId.destroyDataSigned] == cId.no)))) ?`
+            <div class="row">
+                <div class="w-100">
+                    <div class="row">
+                        <div class="col">
+                        <span class="userProfileLabels" data-i18n="agreements.formsToSign">
+                            Forms To Sign
+                        </span>
+                        <br>
+                        </div>
+                    </div>
+                    ${(userData.hasOwnProperty(cId.destroyData) && userData[cId.destroyData] == cId.yes && (!userData[cId.destroyDataSigned] || userData[cId.destroyDataSigned] == cId.no)) ?`
+                        <div class="row">
+                            <div class="col px-2">
+                                <div class="row gy-3">
+                                    <div class="col-12 cnnsentBodyFont2">
+                                        <span class="userProfileLabels" style="font-size: 1.25em">
+                                            <b data-i18n="agreements.destroyFormTitle">Sign data destruction request form</b>
+                                        </span>
+                                        <br>
+                                        <span class = "consentBodyFont2" data-i18n="agreements.destroyFormDescription">
+                                            Your request for Connect to destroy the information and samples you donated to the study, when possible.
+                                        </span>
+                                        <br>
+                                        <br>
+                                        <button data-i18n="agreements.signForm" class="btn btn-agreement consentNextButton" style="" id="signDataDestroy">Sign Form</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `:''}
+                    ${(((userData.hasOwnProperty(cId.revokeHipaa) && userData[cId.revokeHipaa] == cId.yes) || (userData[cId.consentWithdrawn] && userData[cId.consentWithdrawn] == cId.yes)) && (!userData[cId.hipaaRevocationSigned] || userData[cId.hipaaRevocationSigned] == cId.no)) ?`
+                        <div class="row">
+                            <div class="col px-2">
+                                <div class="row gy-3">
+                                    <div class="col-md-12 cnnsentBodyFont2" >
+                                        <span class="userProfileLabels" style="font-size: 1.25em">
+                                            <b data-i18n="agreements.revocateShareTitle">Sign revocation of electronic health records release (HIPAA Revocation) form</b>
+                                        </span>
+                                        <br>
+                                        <span class = "consentBodyFont2" data-i18n="agreements.revocateShareDescription">
+                                            Your request for your health care provider to stop sharing your electronic health and medical records with Connect.
+                                        </span>
+                                        <br>
+                                        <br>
+                                        <button data-i18n="agreements.signForm" class="btn btn-agreement consentNextButton" style="" id="signHIPAARevoke">Sign Form</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>    
+                    `:''}
+                </div>
+            </div><hr style="margin: auto; width: 95%;">`:''}`);
+}
+
+const renderSignedAgreements = () => {
+    return translateHTML(`<div class="row">
+                <div class="w-100">
+                    <div class="row">
+                        <div class="col">
+                        <span class="userProfileLabels" data-i18n="agreements.signedFormsText">
+                            Signed Agreements
+                        </span>
+                        <br>
+                        </div>
+                    </div>
+                    ${userData['119449326'] ? `
+                        <div class="row">
+                                <div class="col px-2">
+                                    <div class="row gy-3">
+                                        <div class="col-12 col-md-8 cnnsentBodyFont2">
+                                            <span class="userProfileLabels" style="font-size: 1.25em" data-i18n="agreements.samplesDestructionTitle">
+                                                <b>Data destruction request form</b>
+                                            </span>
+                                            <br>
+                                            <span class = "consentBodyFont2" data-i18n="agreements.samplesDestructionDescription">
+                                                Your request for Connect to destroy the information and samples you donated to the study, when possible       
+                                            </span>
+                                            <br>
+                                            <br>
+                                            <span data-i18n="agreements.signed">Signed: </span>${new Date(userData['119449326']).toDateString()}
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <button data-i18n="agreements.downloadSigned" class="btn btn-outline-primary btn-agreement" style="" id="downloadDestroy"><i class="fas fa-file-download" ></i> Download Signed Form</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        
+                    `:''}
+                    
+                    ${userData['613641698'] ? `
+                        <div class="row">
+                            <div class="col px-2">
+                                <div class="row gy-3">
+                                    <div class="col-12 col-md-8 cnnsentBodyFont2">
+                                        <span class="userProfileLabels" style="font-size: 1.25em"  data-i18n="agreements.stopSharingRecordsTitle">
+                                            <b>Revocation of electronic health records release (HIPAA Revocation) form</b>
+                                        </span>
+                                        <br>
+                                        <span class = "consentBodyFont2"  data-i18n="agreements.stopSharingRecordsDescription">
+                                            Your request for your health care provider to stop sharing your electronic health and medical records with Connect.                                                
+                                        </span>
+                                        <br>
+                                        <br>
+                                        <span data-i18n="agreements.signed">Signed: </span>${new Date(userData['613641698']).toDateString()}
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <button data-i18n="agreements.downloadSigned" class="btn btn-outline-primary btn-agreement" style="" id="downloadRevoke"><i class="fas fa-file-download" ></i> Download Signed Form</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    `:''}
+                    
+                    ${userData[cId.consentDate] ?`
+                        <div class="row">
+                            <div class="col px-2">
+                                <div class="row gy-3">
+                                    <div class="col-12 col-md-8 cnnsentBodyFont2">
+                                        <span class="userProfileLabels" style="font-size: 1.25em" data-i18n="agreements.consentFormTitle">
+                                            <b>Consent form to participate in Connect</b>
+                                        </span>
+                                        <br>
+                                        <span class = "consentBodyFont2" data-i18n="agreements.consentFormDescription">
+                                            Your signed agreement to participate in the Connect for Cancer Prevention Study. This form has important information about your privacy and what you will be asked to do as a Connect participant
+                                        </span>
+                                        <br>
+                                        <br>
+                                        <span data-i18n="agreements.signed">Signed: </span>${new Date(userData[cId.consentDate]).toDateString()}
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <a data-i18n="agreements.downloadSigned" class="btn btn-outline-primary btn-agreement" id="downloadConsent" download="signed_consent.pdf" data-file="signed-consent"><i class="fas fa-file-download" ></i> Download Signed Form</a>
+                                    </div> 
+                                </div>
+                            </div>
+                        </div>
+                    `:''}
+                    
+                    ${userData[cId.hipaaTimestamp] ? `
+                        <div class="row">
+                            <div class="col px-2">
+                                <div class="row gy-2">
+                                    <div class="col-12 col-md-8 cnnsentBodyFont2">
+                                        <span class="userProfileLabels" style="font-size: 1.25em" data-i18n="agreements.releaseFormTitle">
+                                            <b>Electronic health records release (HIPAA Authorization) form </b>
+                                        </span>
+                                        <br>
+                                        <span class = "consentBodyFont2" data-i18n="agreements.releaseFormDescription">
+                                            Your signed agreement to allow your health care provider to share your electronic health and medical records with Connect.                                                </span>
+                                        <br>
+                                        <br>
+                                        <span data-i18n="agreements.signed">Signed: </span>${new Date(userData[cId.hipaaTimestamp]).toDateString()}
+                                    </div>
+                                    <div class="col-12 col-md-4">
+                                        <a data-i18n="agreements.downloadSigned" class="btn btn-outline-primary btn-agreement" id="downloadHIPAA" download="signed_hipaa.pdf" data-file="signed-HIPAA"><i class="fas fa-file-download" ></i> Download Signed Form</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `:''}
+                </div>
+            </div>`);
+}

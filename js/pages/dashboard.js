@@ -283,7 +283,7 @@ const renderWelcomeHeader = (data) => {
 }
 
 const renderMainBody = async (data, collections) => {
-    let template = `<div class="container">
+    let template = `<div class="container connect-container">
         <div class="row gy-3">
             ${await renderSurveysCard(data, collections)}
             ${renderSamplesCard(data)}
