@@ -238,7 +238,6 @@ export const renderAgreements = async () => {
     document.title = translateText('agreements.formsTitle');
     showAnimation();
     const myData = await getMyData();
-    myData.data[fieldMapping.revokeHipaa] = fieldMapping.yes;
     let template = '';
     if (hasUserData(myData) && myData.data[fieldMapping.consentSubmitted] !== undefined && myData.data[fieldMapping.consentSubmitted] === fieldMapping.yes) {
         template += translateHTML(`

@@ -7,8 +7,7 @@ export const renderSamplesPage = async () => {
 
         if (!hasUserData(res)) return;
         
-        // let site = locations.filter(location => location.concept == res.data[conceptId.healthcareProvider])[0];
-        let site = locations.filter(location => location.concept == 657167265)[0];
+        let site = locations.filter(location => location.concept == res.data[conceptId.healthcareProvider])[0];
         let template;
 
         if (site && 
