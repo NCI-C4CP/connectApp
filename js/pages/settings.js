@@ -2573,7 +2573,7 @@ const renderUnsignedAgreements = () => {
                         <div class="row">
                             <div class="col px-2">
                                 <div class="row gy-3">
-                                    <div class="col-12 cnnsentBodyFont2">
+                                    <div class="col-12 consentBodyFont2">
                                         <span class="userProfileLabels" style="font-size: 1.25em">
                                             <b data-i18n="agreements.destroyFormTitle">Sign data destruction request form</b>
                                         </span>
@@ -2593,7 +2593,7 @@ const renderUnsignedAgreements = () => {
                         <div class="row">
                             <div class="col px-2">
                                 <div class="row gy-3">
-                                    <div class="col-md-12 cnnsentBodyFont2" >
+                                    <div class="col-md-12 consentBodyFont2" >
                                         <span class="userProfileLabels" style="font-size: 1.25em">
                                             <b data-i18n="agreements.revocateShareTitle">Sign revocation of electronic health records release (HIPAA Revocation) form</b>
                                         </span>
@@ -2628,7 +2628,7 @@ const renderSignedAgreements = () => {
                         <div class="row">
                                 <div class="col px-2">
                                     <div class="row gy-3">
-                                        <div class="col-12 col-md-8 cnnsentBodyFont2">
+                                        <div class="col-12 col-md-8 consentBodyFont2">
                                             <span class="userProfileLabels" style="font-size: 1.25em" data-i18n="agreements.samplesDestructionTitle">
                                                 <b>Data destruction request form</b>
                                             </span>
@@ -2653,7 +2653,7 @@ const renderSignedAgreements = () => {
                         <div class="row">
                             <div class="col px-2">
                                 <div class="row gy-3">
-                                    <div class="col-12 col-md-8 cnnsentBodyFont2">
+                                    <div class="col-12 col-md-8 consentBodyFont2">
                                         <span class="userProfileLabels" style="font-size: 1.25em"  data-i18n="agreements.stopSharingRecordsTitle">
                                             <b>Revocation of electronic health records release (HIPAA Revocation) form</b>
                                         </span>
@@ -2678,7 +2678,7 @@ const renderSignedAgreements = () => {
                         <div class="row">
                             <div class="col px-2">
                                 <div class="row gy-3">
-                                    <div class="col-12 col-md-8 cnnsentBodyFont2">
+                                    <div class="col-12 col-md-8 consentBodyFont2">
                                         <span class="userProfileLabels" style="font-size: 1.25em" data-i18n="agreements.consentFormTitle">
                                             <b>Consent form to participate in Connect</b>
                                         </span>
@@ -2702,7 +2702,7 @@ const renderSignedAgreements = () => {
                         <div class="row">
                             <div class="col px-2">
                                 <div class="row gy-2">
-                                    <div class="col-12 col-md-8 cnnsentBodyFont2">
+                                    <div class="col-12 col-md-8 consentBodyFont2">
                                         <span class="userProfileLabels" style="font-size: 1.25em" data-i18n="agreements.releaseFormTitle">
                                             <b>Electronic health records release (HIPAA Authorization) form </b>
                                         </span>
