@@ -267,7 +267,7 @@ export const renderAgreements = async () => {
                                             <div class="col-md-2" data-i18n="agreements.surveyIcon">
                                                 <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
                                             </div>
-                                            <div class="col-md-10 cnnsentBodyFont2">
+                                            <div class="col-md-10 consentBodyFont2">
                                                 <span class = "consentHeadersFont" style="color:#5c2d93">
                                                     <b data-i18n="agreements.destroyFormTitle">Sign data destruction request form</b>
                                                 </span>
@@ -290,7 +290,7 @@ export const renderAgreements = async () => {
                                             <div class="col-md-2" data-i18n="agreements.surveyIcon">
                                                 <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
                                             </div>
-                                            <div class="col-md-10 cnnsentBodyFont2" >
+                                            <div class="col-md-10 consentBodyFont2" >
                                                 <span class = "consentHeadersFont" style="color:#5c2d93">
                                                     <b data-i18n="agreements.revocateShareTitle">Sign revocation of electronic health records release (HIPAA Revocation) form</b>
                                                 </span>
@@ -319,14 +319,14 @@ export const renderAgreements = async () => {
                                 <br>
                                 </div>
                             </div>
-                            ${myData.data['119449326'] ?`
+                            ${myData.data[fieldMapping.dataDestructionSignedDT] ?`
                                 <div class="row">
                                         <div class="col px-2">
                                             <div class="row"  style="border:1px solid lightgrey; border-radius:5px;">
                                                 <div class="col-md-2" data-i18n="agreements.surveyIcon">
                                                     <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
                                                 </div>
-                                                <div class="col-md-10 cnnsentBodyFont2">
+                                                <div class="col-md-10 consentBodyFont2">
                                                     <span class = "consentHeadersFont" style="color:#5c2d93" data-i18n="agreements.samplesDestructionTitle">
                                                         <b>Data destruction request form</b>
                                                     </span>
@@ -336,7 +336,7 @@ export const renderAgreements = async () => {
                                                     </span>
                                                     <br>
                                                     <br>
-                                                    <span data-i18n="agreements.signed">Signed: </span>${new Date(myData.data['119449326']).toDateString()}
+                                                    <span data-i18n="agreements.signed">Signed: </span>${new Date(myData.data[fieldMapping.dataDestructionSignedDT]).toDateString()}
                                                     <br>
                                                     <br>
                                                     <button data-i18n="agreements.downloadSigned" class="btn btn-agreement consentNextButton" style="" id="downloadDestroy"><i class="fas fa-file-download" ></i> Download Signed Form</button>
@@ -347,14 +347,14 @@ export const renderAgreements = async () => {
                                 
                             `:''}
                             
-                            ${myData.data['613641698'] ?`
+                            ${myData.data[fieldMapping.hipaaRevocationSignedDT] ?`
                                 <div class="row">
                                     <div class="col px-2">
                                         <div class="row"  style="border:1px solid lightgrey; border-radius:5px;">
                                             <div class="col-md-2" data-i18n="agreements.surveyIcon">
                                                 <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
                                             </div>
-                                            <div class="col-md-10 cnnsentBodyFont2">
+                                            <div class="col-md-10 consentBodyFont2">
                                                 <span class = "consentHeadersFont" style="color:#5c2d93"  data-i18n="agreements.stopSharingRecordsTitle">
                                                     <b>Revocation of electronic health records release (HIPAA Revocation) form</b>
                                                 </span>
@@ -364,7 +364,7 @@ export const renderAgreements = async () => {
                                                 </span>
                                                 <br>
                                                 <br>
-                                                <span data-i18n="agreements.signed">Signed: </span>${new Date(myData.data['613641698']).toDateString()}
+                                                <span data-i18n="agreements.signed">Signed: </span>${new Date(myData.data[fieldMapping.hipaaRevocationSignedDT]).toDateString()}
                                                 <br>
                                                 <br>
                                                 <button data-i18n="agreements.downloadSigned" class="btn btn-agreement consentNextButton" style="" id="downloadRevoke"><i class="fas fa-file-download" ></i> Download Signed Form</button>
@@ -375,14 +375,14 @@ export const renderAgreements = async () => {
                                 
                             `:''}
                             
-                            ${myData.data['454445267'] ?`
+                            ${myData.data[fieldMapping.consentDate] ?`
                                 <div class="row">
                                     <div class="col px-2">
                                         <div class="row"  style="border:1px solid lightgrey; border-radius:5px;">
                                             <div class="col-md-2" data-i18n="agreements.surveyIcon">
                                                 <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
                                             </div>
-                                            <div class="col-md-10 cnnsentBodyFont2">
+                                            <div class="col-md-10 consentBodyFont2">
                                                 <span class = "consentHeadersFont" style="color:#5c2d93" data-i18n="agreements.consentFormTitle">
                                                     <b>Consent form to participate in Connect</b>
                                                 </span>
@@ -392,7 +392,7 @@ export const renderAgreements = async () => {
                                                 </span>
                                                 <br>
                                                 <br>
-                                                <span data-i18n="agreements.signed">Signed: </span>${new Date(myData.data['454445267']).toDateString()}
+                                                <span data-i18n="agreements.signed">Signed: </span>${new Date(myData.data[fieldMapping.consentDate]).toDateString()}
                                                 <br>
                                                 <br>
                                                 <a data-i18n="agreements.downloadSigned" class="btn btn-agreement consentNextButton" id="downloadConsent" download="signed_consent.pdf" data-file="signed-consent"><i class="fas fa-file-download" ></i> Download Signed Form</a>
@@ -402,14 +402,14 @@ export const renderAgreements = async () => {
                                 </div>
                             `:''}
                             
-                            ${myData.data['262613359'] ? `
+                            ${myData.data[fieldMapping.hipaaTimestamp] ? `
                                 <div class="row">
                                     <div class="col px-2">
                                         <div class="row"  style="border:1px solid lightgrey; border-radius:5px;">
                                             <div class="col-md-2" data-i18n="agreements.surveyIcon">
                                                 <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
                                             </div>
-                                            <div class="col-md-10 cnnsentBodyFont2">
+                                            <div class="col-md-10 consentBodyFont2">
                                                 <span class = "consentHeadersFont" style="color:#5c2d93" data-i18n="agreements.releaseFormTitle">
                                                     <b>Electronic health records release (HIPAA Authorization) form </b>
                                                 </span>
@@ -418,7 +418,7 @@ export const renderAgreements = async () => {
                                                     Your signed agreement to allow your health care provider to share your electronic health and medical records with Connect.                                                </span>
                                                 <br>
                                                 <br>
-                                                <span data-i18n="agreements.signed">Signed: </span>${new Date(myData.data['262613359']).toDateString()}
+                                                <span data-i18n="agreements.signed">Signed: </span>${new Date(myData.data[fieldMapping.hipaaTimestamp]).toDateString()}
                                                 <br>
                                                 <br>
                                                 <a data-i18n="agreements.downloadSigned" class="btn btn-agreement consentNextButton" id="downloadHIPAA" download="signed_hipaa.pdf" data-file="signed-HIPAA"><i class="fas fa-file-download" ></i> Download Signed Form</a>
@@ -443,25 +443,25 @@ export const renderAgreements = async () => {
     }
     
     document.getElementById('root').innerHTML = template;
-    addEventAgreementOptions(myData);
+    addEventAgreementOptions(myData.data, renderAgreements);
     hideAnimation();
 }
 
-const addEventAgreementOptions = (myData) => {
+export const addEventAgreementOptions = (userData, pageRenderFunction) => {
     const anchorIdArray = ['downloadConsent', 'downloadHIPAA'];
-    addEventDownloadSignedConsentAndHipaa(anchorIdArray, myData.data);
+    addEventDownloadSignedConsentAndHipaa(anchorIdArray, userData);
 
     const downloadRevoke = document.getElementById('downloadRevoke');
     if(downloadRevoke){
         downloadRevoke.addEventListener('click', () => {
-            renderDownloadRevoke(myData.data)
+            renderDownloadRevoke(userData)
         })
     }
 
     const downloadDestroy = document.getElementById('downloadDestroy');
     if(downloadDestroy){
         downloadDestroy.addEventListener('click', () => {
-            renderDownloadDestroy(myData.data)
+            renderDownloadDestroy(userData)
         })
     }
 
@@ -469,7 +469,7 @@ const addEventAgreementOptions = (myData) => {
     if(signDataDestroy) {
         signDataDestroy.addEventListener('click', () => {
             
-            renderSignDataDestroy(myData.data);
+            renderSignDataDestroy(pageRenderFunction);
         })
     }
 
@@ -477,7 +477,7 @@ const addEventAgreementOptions = (myData) => {
     if(signHIPAARevoke) {
         signHIPAARevoke.addEventListener('click', () => {
             
-            renderSignHIPAARevoke(myData.data);
+            renderSignHIPAARevoke(pageRenderFunction);
         })
     }
 }
@@ -508,14 +508,14 @@ const renderDownloadDestroy = async (data) => {
     const versionArray  = data[fieldMapping.dataDestructionVersion].split('_');
     const version = versionArray[2];
     const lang = versionArray[3] ? versionArray[3] : 'Eng';
-    const currentTime = new Date(data[119449326]).toLocaleDateString();
+    const currentTime = new Date(data[fieldMapping.dataDestructionSignedDT]).toLocaleDateString();
 
     const coords = dataDestructionSignPosMap[version][lang];
 
     renderDownload(participantSignature, currentTime, pdfLocation, {x: coords.nameX ,y: coords.nameY}, {x:coords.signatureX,y: coords.signatureY}, {x:coords.dateX,y:coords.dateY},20,15,20);
 }
 
-const renderSignDataDestroy = async () =>{
+const renderSignDataDestroy = async (pageRenderFunction) =>{
     document.getElementById('root').innerHTML = translateHTML(`
     <div class="row justify-content-center">
         <div class="col-lg-8">
@@ -531,10 +531,12 @@ const renderSignDataDestroy = async () =>{
     const selectedLanguage = appState.getState().language;
     const langSuffix = languageSuffix()[selectedLanguage];
     initializeCanvas(`./forms/Data_Destruction_${consentVersions['DataDestruction']}${(langSuffix ? '_'+langSuffix : '')}.pdf`, 1, 'canvasContainer');
+    document.getElementById('root').scrollIntoView(true);
     document.getElementById('backToAgreements').addEventListener('click', async () =>{
         showAnimation();
-        await renderAgreements();
+        await pageRenderFunction();
         hideAnimation();
+        document.getElementById('root').scrollIntoView(true);
     })
     const consentForm = document.getElementById('consentForm');
     consentForm.addEventListener('submit', async (e) => {
@@ -544,7 +546,7 @@ const renderSignDataDestroy = async () =>{
         const langSuffix = languageSuffix()[selectedLanguage];
         let formData = {};
         formData[fieldMapping.destroyDataSigned] = fieldMapping.yes;
-        formData['119449326'] = dateTime();      
+        formData[fieldMapping.dataDestructionSignedDT] = dateTime();      
         formData['883668444'] = 704529432;
         formData['304438543'] = `Data_Destruction_${consentVersions['DataDestruction']}${(langSuffix ? '_'+langSuffix : '')}`;  
         formData['104278817'] = document.getElementById('CSFirstName').value;
@@ -554,13 +556,14 @@ const renderSignDataDestroy = async () =>{
 
         const response = await storeResponse(formData);
         if(response.code === 200) {
-            await renderAgreements();
+            await pageRenderFunction();
         }
         hideAnimation();
+        document.getElementById('root').scrollIntoView(true);
     })
 }
 
-const renderSignHIPAARevoke = async () =>{
+const renderSignHIPAARevoke = async (pageRenderFunction) =>{
     document.getElementById('root').innerHTML = translateHTML(`
     <div class="row justify-content-center">
         <div class="col-lg-8">
@@ -577,10 +580,12 @@ const renderSignHIPAARevoke = async () =>{
     const langSuffix = languageSuffix()[selectedLanguage];
     
     initializeCanvas('./forms/HIPAA_Revocation_V1.0'+(langSuffix ? '_'+langSuffix : '')+'.pdf', 1, 'canvasContainer');
+    document.getElementById('root').scrollIntoView(true);
     document.getElementById('backToAgreements').addEventListener('click', async () =>{
         showAnimation();
-        await renderAgreements();
+        await pageRenderFunction();
         hideAnimation();
+        document.getElementById('root').scrollIntoView(true);
     })
     const consentForm = document.getElementById('consentForm');
     consentForm.addEventListener('submit', async (e) => {
@@ -590,7 +595,7 @@ const renderSignHIPAARevoke = async () =>{
         const selectedLanguage = appState.getState().language;
         const langSuffix = languageSuffix()[selectedLanguage];
         formData[fieldMapping.hipaaRevocationSigned] = fieldMapping.yes;
-        formData['613641698'] = dateTime();
+        formData[fieldMapping.hipaaRevocationSignedDT] = dateTime();
         formData['577794331'] = 121454001;
         formData['407743866'] = `HIPAA_Revocation_${consentVersions['Revocation']}${(langSuffix ? '_'+langSuffix : '')}`;  
         formData['765336427'] = document.getElementById('CSFirstName').value;
@@ -600,9 +605,10 @@ const renderSignHIPAARevoke = async () =>{
 
         const response = await storeResponse(formData);
         if(response.code === 200) {
-            await renderAgreements();
+            await pageRenderFunction();
         }
         hideAnimation();
+        document.getElementById('root').scrollIntoView(true);
     })
 }
 
@@ -718,7 +724,7 @@ const consentSignTemplate = () => {
  * @param {'signed-consent'| 'signed-HIPAA'} file
  * @returns Promise<string>
  */
-async function generateSignedPdf(data, file) {
+export async function generateSignedPdf(data, file) {
   let sourcePdfLocation;
   let coords;
   let dateStr;
@@ -731,7 +737,7 @@ async function generateSignedPdf(data, file) {
   
   if (file === 'signed-consent') {
     sourcePdfLocation = './forms/consent/' + data[fieldMapping.consentVersion] + '.pdf';
-    dateStr = new Date(data[454445267]).toLocaleDateString();
+    dateStr = new Date(data[fieldMapping.consentDate]).toLocaleDateString();
     const versionArray = data[fieldMapping.consentVersion].split('_');
     const version = versionArray[2];
     const lang = versionArray[3] ? versionArray[3] : 'Eng';
@@ -747,7 +753,7 @@ async function generateSignedPdf(data, file) {
   } 
   else if (file === 'signed-HIPAA') {
     sourcePdfLocation = './forms/HIPAA/' + data[fieldMapping.hipaaVersion] + '.pdf';
-    dateStr = new Date(data[262613359]).toLocaleDateString();
+    dateStr = new Date(data[fieldMapping.hipaaTimestamp]).toLocaleDateString();
     const versionArray  = data[fieldMapping.hipaaVersion].split('_');
     const version = versionArray[2];
     const lang = versionArray[3] ? versionArray[3] : 'Eng';

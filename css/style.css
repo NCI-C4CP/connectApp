@@ -6,11 +6,6 @@ a{
     color: red;
 }
 
-.container {
-    min-height: calc(100vh - 128px);
-    padding-top: 3rem;
-}
-
 #root {
     height: 100%;
     margin-top:1px;
@@ -1053,7 +1048,7 @@ consentNextButton:hover{
         text-align:center;
         height:150px;
     }
-    .container {
+    .connect-container {
         padding-top: 1rem;
     }
 }
@@ -1710,4 +1705,12 @@ span.my-samples-indent-text {
         color: white !important;
         background-color: #2a72a5 !important;
     }
+}
+
+[aria-expanded="true"] .fa-plus {
+    display: none;
+}
+
+[aria-expanded="false"] .fa-minus {
+    display: none;
 }
