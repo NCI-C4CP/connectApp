@@ -319,7 +319,7 @@ export const renderAgreements = async () => {
                                 <br>
                                 </div>
                             </div>
-                            ${myData.data['119449326'] ?`
+                            ${myData.data[fieldMapping.dataDestructionSignedDT] ?`
                                 <div class="row">
                                         <div class="col px-2">
                                             <div class="row"  style="border:1px solid lightgrey; border-radius:5px;">
@@ -336,7 +336,7 @@ export const renderAgreements = async () => {
                                                     </span>
                                                     <br>
                                                     <br>
-                                                    <span data-i18n="agreements.signed">Signed: </span>${new Date(myData.data['119449326']).toDateString()}
+                                                    <span data-i18n="agreements.signed">Signed: </span>${new Date(myData.data[fieldMapping.dataDestructionSignedDT]).toDateString()}
                                                     <br>
                                                     <br>
                                                     <button data-i18n="agreements.downloadSigned" class="btn btn-agreement consentNextButton" style="" id="downloadDestroy"><i class="fas fa-file-download" ></i> Download Signed Form</button>
@@ -347,7 +347,7 @@ export const renderAgreements = async () => {
                                 
                             `:''}
                             
-                            ${myData.data['613641698'] ?`
+                            ${myData.data[fieldMapping.hipaaRevocationSignedDT] ?`
                                 <div class="row">
                                     <div class="col px-2">
                                         <div class="row"  style="border:1px solid lightgrey; border-radius:5px;">
@@ -364,7 +364,7 @@ export const renderAgreements = async () => {
                                                 </span>
                                                 <br>
                                                 <br>
-                                                <span data-i18n="agreements.signed">Signed: </span>${new Date(myData.data['613641698']).toDateString()}
+                                                <span data-i18n="agreements.signed">Signed: </span>${new Date(myData.data[fieldMapping.hipaaRevocationSignedDT]).toDateString()}
                                                 <br>
                                                 <br>
                                                 <button data-i18n="agreements.downloadSigned" class="btn btn-agreement consentNextButton" style="" id="downloadRevoke"><i class="fas fa-file-download" ></i> Download Signed Form</button>
@@ -508,7 +508,7 @@ const renderDownloadDestroy = async (data) => {
     const versionArray  = data[fieldMapping.dataDestructionVersion].split('_');
     const version = versionArray[2];
     const lang = versionArray[3] ? versionArray[3] : 'Eng';
-    const currentTime = new Date(data[119449326]).toLocaleDateString();
+    const currentTime = new Date(data[fieldMapping.dataDestructionSignedDT]).toLocaleDateString();
 
     const coords = dataDestructionSignPosMap[version][lang];
 
@@ -546,7 +546,7 @@ const renderSignDataDestroy = async (pageRenderFunction) =>{
         const langSuffix = languageSuffix()[selectedLanguage];
         let formData = {};
         formData[fieldMapping.destroyDataSigned] = fieldMapping.yes;
-        formData['119449326'] = dateTime();      
+        formData[fieldMapping.dataDestructionSignedDT] = dateTime();      
         formData['883668444'] = 704529432;
         formData['304438543'] = `Data_Destruction_${consentVersions['DataDestruction']}${(langSuffix ? '_'+langSuffix : '')}`;  
         formData['104278817'] = document.getElementById('CSFirstName').value;
@@ -595,7 +595,7 @@ const renderSignHIPAARevoke = async (pageRenderFunction) =>{
         const selectedLanguage = appState.getState().language;
         const langSuffix = languageSuffix()[selectedLanguage];
         formData[fieldMapping.hipaaRevocationSigned] = fieldMapping.yes;
-        formData['613641698'] = dateTime();
+        formData[fieldMapping.hipaaRevocationSignedDT] = dateTime();
         formData['577794331'] = 121454001;
         formData['407743866'] = `HIPAA_Revocation_${consentVersions['Revocation']}${(langSuffix ? '_'+langSuffix : '')}`;  
         formData['765336427'] = document.getElementById('CSFirstName').value;

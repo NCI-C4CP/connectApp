@@ -2624,7 +2624,7 @@ const renderSignedAgreements = () => {
                         <br>
                         </div>
                     </div>
-                    ${userData['119449326'] ? `
+                    ${userData[cId.dataDestructionSignedDT] ? `
                         <div class="row">
                                 <div class="col px-2">
                                     <div class="row gy-3">
@@ -2638,7 +2638,7 @@ const renderSignedAgreements = () => {
                                             </span>
                                             <br>
                                             <br>
-                                            <span data-i18n="agreements.signed">Signed: </span>${new Date(userData['119449326']).toDateString()}
+                                            <span data-i18n="agreements.signed">Signed: </span>${new Date(userData[cId.dataDestructionSignedDT]).toDateString()}
                                         </div>
                                         <div class="col-12 col-md-4">
                                             <button data-i18n="agreements.downloadSigned" class="btn btn-outline-primary btn-agreement" style="" id="downloadDestroy"><i class="fas fa-file-download" ></i> Download Signed Form</button>
@@ -2649,7 +2649,7 @@ const renderSignedAgreements = () => {
                         
                     `:''}
                     
-                    ${userData['613641698'] ? `
+                    ${userData[cId.hipaaRevocationSignedDT] ? `
                         <div class="row">
                             <div class="col px-2">
                                 <div class="row gy-3">
@@ -2663,7 +2663,7 @@ const renderSignedAgreements = () => {
                                         </span>
                                         <br>
                                         <br>
-                                        <span data-i18n="agreements.signed">Signed: </span>${new Date(userData['613641698']).toDateString()}
+                                        <span data-i18n="agreements.signed">Signed: </span>${new Date(userData[cId.hipaaRevocationSignedDT]).toDateString()}
                                     </div>
                                     <div class="col-12 col-md-4">
                                         <button data-i18n="agreements.downloadSigned" class="btn btn-outline-primary btn-agreement" style="" id="downloadRevoke"><i class="fas fa-file-download" ></i> Download Signed Form</button>
