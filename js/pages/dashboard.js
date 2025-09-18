@@ -104,6 +104,7 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                                 topMessage += '';
                             }
                         }
+
                     }
                     else {
                         topMessage += `
@@ -196,6 +197,20 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                     window.scrollTo(0, 0)
                     hideAnimation();
                     return;
+                }
+                if ((!data['updatesSeen'] || data['updatesSeen'] !== true) && topMessage.trim() === "") {
+                    topMessage += `
+                            <span data-i18n="mytodolist.newUpdates"><span style="font-weight: bold">We've Updated MyConnect!</span><br>
+                                You may notice things look a little different here. While nothing about the study has changed, we've made some design improvements to give MyConnect a fresh new look and make it easier navigate.
+                                <br><br>
+                                We’ll be rolling out other design updates over the next few months, so stay tuned for even more improvements! If you have any questions about the changes, feel free to contact our team at the Connect Support Center (hyperlink CSC with MyConnect.cancer.gov/support).
+                                <br><br>
+                                We hope you enjoy the new experience!
+                            </span>
+                        `
+                        let formData = {};
+                        formData['updatesSeen'] = true;
+                        storeResponse(formData);
                 }
 
                 const surveyMessage = await checkForNewSurveys(data, collections);
