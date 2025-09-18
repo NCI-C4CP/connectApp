@@ -288,7 +288,6 @@ const renderMainBody = async (data, collections) => {
             ${await renderSurveysCard(data, collections)}
             ${renderSamplesCard(data)}
             ${await renderReportsCard(data)}
-            ${renderFormsCard(data)}
             ${renderPaymentCard(data)}
         </div>
     </div>`;
