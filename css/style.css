@@ -1706,3 +1706,11 @@ span.my-samples-indent-text {
         background-color: #2a72a5 !important;
     }
 }
+
+[aria-expanded="true"] .fa-plus {
+    display: none;
+}
+
+[aria-expanded="false"] .fa-minus {
+    display: none;
+}
