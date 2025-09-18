@@ -1,6 +1,6 @@
 import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues, escapeHTML } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
-import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, requestPINTemplate } from "./pages/healthCareProvider.js";
+import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, noLongerEnrollingRender,  requestPINTemplate } from "./pages/healthCareProvider.js";
 import { renderDashboard } from "./pages/dashboard.js";
 import { suffixToTextMap, getFormerNameData, formerNameOptions } from "./settingsHelpers.js";
 import fieldMapping from "./fieldToConceptIdMapping.js";
@@ -2165,7 +2165,7 @@ export const addEventRequestPINForm = () => {
             // No Longer Enrolling at this Location
             } else if (validatePinResponse && validatePinResponse.code === 204) {
                 pathAfterPINSubmission = 'noLongerEnrolling';
-                healthCareProvider = validatePinResponse.message;
+                healthCareProviderId = validatePinResponse.message;
 
             // Invalid PIN, no PIN entered, or error (validatePIN failed). Create a new participant record and store the entered PIN regardless of its validity.
             } else {
@@ -2201,7 +2201,7 @@ export const addEventRequestPINForm = () => {
         } finally {
             await storeParameters();
             hideAnimation();
-            loadPathFromPINForm(pathAfterPINSubmission, healthCareProvider);
+            loadPathFromPINForm(pathAfterPINSubmission, healthCareProviderId);
         }
     });
 }
@@ -2284,7 +2284,7 @@ export const getFirstSignInISOTime = async () => {
  * @param { string } path - The path to load after the PIN form.
  */
 
-const loadPathFromPINForm = (path) => {
+const loadPathFromPINForm = (path, healthCareProviderId) => {
     const mainContent = document.getElementById('root');
     if (!mainContent) {
         console.error('loadPathFromPINForm(): Could not find mainContent element');
@@ -2305,7 +2305,7 @@ const loadPathFromPINForm = (path) => {
             break;
 
         case 'noLongerEnrolling':
-            noLongerEnrollingRender();
+            noLongerEnrollingRender(healthCareProviderId);
             break;
 
         case 'heardAboutStudy':
