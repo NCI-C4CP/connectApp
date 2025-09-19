@@ -1,4 +1,4 @@
-import { getMyData, hasUserData, hideAnimation, showAnimation, siteAcronyms, dateTime, storeResponse, isMobile, openNewTab, languageSuffix, getSelectedLanguage, translateHTML, translateText, appState, logDDRumError } from "../shared.js";
+import { getMyData, hasUserData, hideAnimation, showAnimation, siteAcronyms, dateTime, storeResponse, languageSuffix, getSelectedLanguage, translateHTML, translateText, appState, logDDRumError } from "../shared.js";
 import { initializeCanvas } from './consent.js'
 import fieldMapping from '../fieldToConceptIdMapping.js';
 import {suffixToTextMap, suffixToTextMapDropdown} from '../settingsHelpers.js'
@@ -806,40 +806,78 @@ export async function generateSignedPdf(data, file) {
 
   return pdfUrl;
 }
-  
+
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+const eleState = new WeakMap();
+
+const handlePdfDownload = async (event, data) => {
+  const ele = event.target;
+  let state = eleState.get(ele);
+  if (!state) {
+    state = { isDownloading: false, window: null };
+    eleState.set(ele, state);
+  }
+
+  if (state.isDownloading) {
+    if (state.window && !state.window.closed) {
+      state.window.focus();
+    }
+    return;
+  }
+
+  state.isDownloading = true;
+  if (!state.window || state.window.closed) {
+    state.window = window.open("", "_blank");
+  }
+
+  try {
+    let href = ele.href;
+    if (!href) {
+      href = await generateSignedPdf(data, ele.dataset.file);
+      ele.href = href;
+    }
+
+    if (state.window.location.href !== href) {
+      state.window.location.href = href;
+    }
+
+    state.window.focus();
+    if (isIOS) return;
+
+    const aEle = document.createElement("a");
+    aEle.href = href;
+    aEle.style.display = "none";
+    aEle.download = ele.download || "download.pdf";
+    document.body.appendChild(aEle);
+    aEle.click();
+    setTimeout(() => document.body.removeChild(aEle), 100);
+  } catch (err) {
+    state.window.close();
+    state.window = null;
+    logDDRumError(err, "downloadSignedConsentHipaa", {
+      elementId: event.target.id,
+      timeStamp: new Date().toISOString(),
+    });
+  } finally {
+    setTimeout(() => {
+      state.isDownloading = false;
+    }, 1000);
+  }
+};
+
 /**
  * 
  * @param {string[]} anchorIdArray 
  * @param {object} data participant data
  */
 export function addEventDownloadSignedConsentAndHipaa(anchorIdArray, data) {
-  let isDownloading = false;
-  const handleDownload = async (evt) => {
-    if (isDownloading) return;
-    isDownloading = true;
-    try {
-      if (!evt.target.href) {
-        evt.preventDefault();
-        evt.target.href = await generateSignedPdf(data, evt.target.dataset.file);
-        evt.target.click();
-      } else if (isMobile && evt.target.href) {
-        evt.preventDefault();
-        openNewTab(evt.target.href);
-      }
-    } catch (err) {
-      logDDRumError(err, "downloadSignedConsentHipaa", { elementId: evt.target.id, timeStamp: new Date().toISOString() });
-    } finally {
-      setTimeout(() => {
-        isDownloading = false;
-      }, 1000);
-    }
-  };
-
   for (const anchorId of anchorIdArray) {
-    const anchorElement = document.getElementById(anchorId);
-    if (!anchorElement || anchorElement.hasClickListener) continue;
-    anchorElement.hasClickListener = true;
-    anchorElement.addEventListener("click", handleDownload);
-    anchorElement.addEventListener("touchstart", handleDownload, { passive: true });
+    const aEle = document.getElementById(anchorId);
+    if (!aEle || aEle.hasClickListener) continue;
+    aEle.hasClickListener = true;
+    aEle.addEventListener("click", async (e) => {
+      e.preventDefault();
+      await handlePdfDownload(e, data);
+    });
   }
 };
