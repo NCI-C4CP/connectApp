@@ -1,6 +1,6 @@
-import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues, escapeHTML } from "./shared.js";
+import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, sitesNotEnrolling, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues, escapeHTML } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
-import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, requestPINTemplate } from "./pages/healthCareProvider.js";
+import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, noLongerEnrollingRender,  requestPINTemplate } from "./pages/healthCareProvider.js";
 import { renderDashboard } from "./pages/dashboard.js";
 import { suffixToTextMap, getFormerNameData, formerNameOptions } from "./settingsHelpers.js";
 import fieldMapping from "./fieldToConceptIdMapping.js";
@@ -205,11 +205,21 @@ export const addEventHealthCareProviderSubmit = () => {
         e.preventDefault();
         
         const value = parseInt(document.getElementById('827220437').value);
+
+        if (sitesNotEnrolling()[value]) {
+            let modalBody = document.getElementById('HealthProviderNotEnrollingModalBody');
+            let modalButton = document.getElementById('openNotEnrollingModal');
+            modalBody.innerHTML = translateHTML(`<span data-i18n="provider.noLongerEnrollingStart">Thanks for your interest in Connect. Unfortunately, we are no longer enrolling participants from </span>${sites()[value]}<span data-i18n="provider.noLongerEnrollingEnd">. We're sorry, but this means that you won't be able to join the study. If you have any questions, please feel free to contact our team at the Connect Support Center.
+                <br><br>
+                If you are already a Connect participant and forgot your login information or need help accessing your account, please contact the Connect Support Center so our team can assist.</span>`);
+            modalButton.click();
+        } else {
+            let modalBody = document.getElementById('HealthProviderModalBody');
+            let modalButton = document.getElementById('openModal');
+            modalBody.innerHTML = translateHTML(`<span data-i18n="event.sureAboutProvider">Are you sure </span>${sites()[value]}<span data-i18n="event.sureAboutProviderEnd"> is your healthcare provider?</span>`);
+            modalButton.click();
+        }
         
-        let modalBody = document.getElementById('HealthProviderModalBody');
-        let modalButton = document.getElementById('openModal');
-        modalBody.innerHTML = translateHTML(`<span data-i18n="event.sureAboutProvider">Are you sure </span>${sites()[value]}<span data-i18n="event.sureAboutProviderEnd"> is your healthcare provider?</span>`);
-        modalButton.click();
     });
 }
 
@@ -2137,6 +2147,7 @@ export const addEventRequestPINForm = () => {
         let pathAfterPINSubmission;
         let validatePinResponse;
         let createParticipantRecordResponse;
+        let healthCareProviderId;
 
         try {
             showAnimation();
@@ -2160,6 +2171,11 @@ export const addEventRequestPINForm = () => {
             // Duplicate account. Route participant to the duplicate account reminder form.
             } else if (validatePinResponse && validatePinResponse.code === 202) {
                 pathAfterPINSubmission = 'duplicateAccountReminder';
+
+            // No Longer Enrolling at this Location
+            } else if (validatePinResponse && validatePinResponse.code === 286) {
+                pathAfterPINSubmission = 'noLongerEnrolling';
+                healthCareProviderId = validatePinResponse.message;
 
             // Invalid PIN, no PIN entered, or error (validatePIN failed). Create a new participant record and store the entered PIN regardless of its validity.
             } else {
@@ -2195,7 +2211,7 @@ export const addEventRequestPINForm = () => {
         } finally {
             await storeParameters();
             hideAnimation();
-            loadPathFromPINForm(pathAfterPINSubmission);
+            loadPathFromPINForm(pathAfterPINSubmission, healthCareProviderId);
         }
     });
 }
@@ -2278,7 +2294,7 @@ export const getFirstSignInISOTime = async () => {
  * @param { string } path - The path to load after the PIN form.
  */
 
-const loadPathFromPINForm = (path) => {
+const loadPathFromPINForm = (path, healthCareProviderId) => {
     const mainContent = document.getElementById('root');
     if (!mainContent) {
         console.error('loadPathFromPINForm(): Could not find mainContent element');
@@ -2296,6 +2312,10 @@ const loadPathFromPINForm = (path) => {
 
         case 'duplicateAccountReminder':
             duplicateAccountReminderRender();
+            break;
+
+        case 'noLongerEnrolling':
+            noLongerEnrollingRender(healthCareProviderId);
             break;
 
         case 'heardAboutStudy':

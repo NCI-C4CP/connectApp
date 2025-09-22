@@ -1,9 +1,9 @@
-import { allocateDHQ3Credential, hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML, translateText, getAdjustedTime, getAppSettings, logDDRumError, reportConfiguration, setReportAttributes, updateStartDHQParticipantData } from "../shared.js";
+import { allocateDHQ3Credential, hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML, translateText, getAdjustedTime, getAppSettings, logDDRumError, reportConfiguration, setReportAttributes, updateStartDHQParticipantData, sitesNotEnrolling } from "../shared.js";
 import { blockParticipant, questionnaire } from "./questionnaire.js";
 import { renderUserProfile } from "../components/form.js";
 import { consentTemplate } from "./consent.js";
 import { addEventHeardAboutStudy, addEventRequestPINForm, addEventHealthCareProviderSubmit, addEventPinAutoUpperCase, addEventHealthProviderModalSubmit, addEventToggleSubmit, storeParameters } from "../event.js";
-import { heardAboutStudy, requestPINTemplate, healthCareProvider } from "./healthCareProvider.js";
+import { heardAboutStudy, requestPINTemplate, healthCareProvider, noLongerEnrollingRender } from "./healthCareProvider.js";
 import fieldMapping from '../fieldToConceptIdMapping.js';
 
 export const renderDashboard = async (data, fromUserProfile, collections) => {
@@ -239,12 +239,21 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                 hideAnimation();
                 return;
             }
-            renderUserProfile();
+
+            if (sitesNotEnrolling()[data[fieldMapping.healthcareProvider]]) {
+                noLongerEnrollingRender(data[fieldMapping.healthcareProvider]);
+            } else {
+                renderUserProfile();
+            }
             hideAnimation();
             return;
         }
 
-        consentTemplate();
+        if (sitesNotEnrolling()[data[fieldMapping.healthcareProvider]]) {
+            noLongerEnrollingRender(data[fieldMapping.healthcareProvider]);
+        } else {
+            consentTemplate();
+        }
         hideAnimation();
         return;
     }
