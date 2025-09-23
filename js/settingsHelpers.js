@@ -5,6 +5,7 @@ import cId from './fieldToConceptIdMapping.js';
 export const showEditButtonsOnUserVerified = () => {
   document.getElementById('changeNameButton').style.display = 'block';
   document.getElementById('changeContactInformationButton').style.display = 'block';
+  document.getElementById('changePreferredLanguageButton').style.display = 'block';
   document.getElementById('changeMailingAddressButton').style.display = 'block';
   document.getElementById('changePhysicalMailingAddressButton').style.display = 'block';
   document.getElementById('changeAltAddressButton').style.display = 'block';
@@ -74,7 +75,7 @@ export const togglePendingVerificationMessage = userData => {
     const isUserSubmitted = userData[cId.userProfileSubmittedAutogen] === cId.yes;
     const isUserVerified = userData[cId.verified] === cId.yes;
     const verificationMessage = document.getElementById('pendingVerification');
-    isUserSubmitted && !isUserVerified ? (verificationMessage.style.display = 'block') : (verificationMessage.style.display = 'none');
+    isUserSubmitted && !isUserVerified && verificationMessage.innerText.trim().length ? (verificationMessage.style.display = 'block') : (verificationMessage.style.display = 'none');
   }
 };
 
@@ -153,6 +154,7 @@ export const handleContactInformationRadioButtonPresets = (mobilePhoneNumberComp
 export const FormTypes = {
   NAME: 'nameForm',
   CONTACT: 'contactForm',
+  LANGUAGE: 'languageForm',
   MAILING: 'mailingForm',
   PHYSICAL_MAILING: 'physicalMailingForm',
   ALT_ADDRESS: 'altAddressForm',
@@ -801,7 +803,7 @@ export const changeName = async (firstName, lastName, middleName, suffix, prefer
   return isSuccess;
 };
 
-export const changeContactInformation = async (mobilePhoneNumberComplete, homePhoneNumberComplete, canWeVoicemailMobile, canWeText, canWeVoicemailHome, preferredEmail, otherPhoneNumberComplete, canWeVoicemailOther, additionalEmail1, additionalEmail2, preferredLanguage, userData) => {
+export const changeContactInformation = async (mobilePhoneNumberComplete, homePhoneNumberComplete, canWeVoicemailMobile, canWeText, canWeVoicemailHome, preferredEmail, otherPhoneNumberComplete, canWeVoicemailOther, additionalEmail1, additionalEmail2, userData) => {
 
   document.getElementById('changeContactInformationFail').style.display = 'none';
   document.getElementById('changeContactInformationGroup').style.display = 'none';
@@ -828,13 +830,26 @@ export const changeContactInformation = async (mobilePhoneNumberComplete, homePh
     [cId.canWeVoicemailOther]: parseInt(canWeVoicemailOther),
     [cId.additionalEmail1]: additionalEmail1,
     [cId.additionalEmail2]: additionalEmail2,
-    [cId.preferredLanguage]: parseInt(preferredLanguage)
   };
 
   let { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValues, userData, 'changeContactInformation');
   changedUserDataForProfile = handleAllPhoneNoField(changedUserDataForProfile, userData);
   changedUserDataForProfile = handleAllEmailField(changedUserDataForProfile, userData);
   const isSuccess = await processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'changeContactInformation');
+  return isSuccess;
+};
+
+export const changePreferredLanguage = async (preferredLanguage, userData) => {
+
+  document.getElementById('changePreferredLanguageFail').style.display = 'none';
+  document.getElementById('changePreferredLanguageGroup').style.display = 'none';
+
+  const newValues = {
+    [cId.preferredLanguage]: parseInt(preferredLanguage)
+  };
+
+  let { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValues, userData, 'changePreferredLanguage');
+  const isSuccess = await processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'changePreferredLanguage');
   return isSuccess;
 };
 

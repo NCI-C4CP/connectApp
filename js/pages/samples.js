@@ -10,7 +10,13 @@ export const renderSamplesPage = async () => {
         let site = locations.filter(location => location.concept == res.data[conceptId.healthcareProvider])[0];
         let template;
 
-        if (site && site !== kpga && site !== kphi && site !== kpco && site !== kpnw) {
+        if (site && 
+            site !== kpga && 
+            site !== kphi && 
+            site !== kpco && 
+            site !== kpnw && 
+            site !== u_chicago
+        ) {
             const locationTemplate = renderLocations(site);
 
             template = translateHTML(`
@@ -33,7 +39,8 @@ export const renderSamplesPage = async () => {
                         </div>
                     </div>
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whenToDonate" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             ${site.whenToDonateHeader ? 
                                 site.whenToDonateHeader :`
                                 <div data-i18n="samples.whenToDonate">
@@ -41,31 +48,35 @@ export const renderSamplesPage = async () => {
                                 </div>
                                 `}
                         </div>
-                        <div class="messagesBodyFont" style="width:100%">
+                        <div class="messagesBodyFont collapse" style="width:100%" id="whenToDonate">
                             <div>
                                 ${site.whenToDonate}
                             </div>
                         </div>
                     </div>
+                    <hr>
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howToDonate" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.howToDonate">
                                 How Do I Donate My Samples?
                             </div>
                         </div>
-                        <div class="messagesBodyFont" style="width:100%">
+                        <div class="messagesBodyFont collapse" style="width:100%" id="howToDonate">
                             <div>
                                 ${site.howToDonate}
                             </div>
                         </div>          
                     </div>
+                    <hr>
                     <div class="row" style="width:100%;">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whereToDonate" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.whereToDonate">
                                 Where Do I Donate My Samples?
                             </div>
                         </div>
-
+                        <div class="messagesBodyFont collapse" style="width:100%" id="whereToDonate">
                         ${site.locationNotes ? `
                         <div class="row" style="width:100%; padding-top:0;">
                             <div class="messagesBodyFont">
@@ -99,56 +110,65 @@ export const renderSamplesPage = async () => {
                             </div>
                         </div>` : ''
                         }
+                        </div>
                     </div>
+                    <hr>
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howLongAppt" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.howLongAppt">
                                 How Long Will My Appointment Take?
                             </div>
                         </div>
-                        <div class="messagesBodyFont" style="width:100%">
+                        <div class="messagesBodyFont  collapse" style="width:100%" id="howLongAppt">
                             <div>
                                 ${site.howLong}
                             </div>
                         </div>
                     </div>
+                    <hr>
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#prepareAppt" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.prepareAppt">
                                 How Should I Prepare On the Day of My Appointment?
                             </div>
                         </div>
-                        <div class="messagesBodyFont" style="width:100%">
+                        <div class="messagesBodyFont collapse" style="width:100%" id="prepareAppt">
                             <div>
                                 ${site.prepareInstructions}
                             </div>
                         </div>
                     </div>
+                    <hr>
 
                     ${site.name !== henry_ford.name && site.name !== health_partners.name ?  `
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#duringAppt" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.duringAppt">
                                 What Will Happen During My Appointment?
                             </div>
                         </div>
-                        <div class="messagesBodyFont" style="width:100%">
+                        <div class="messagesBodyFont collapse" style="width:100%" id="duringAppt">
                             <div>
                                 ${site.whatHappens}
                             </div>
                         </div>
-                    </div>` 
+                    </div>
+                    <hr>` 
                     : '' 
                     }
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%"  data-bs-toggle="collapse" data-bs-target="#supportQuestions" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                          <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                          ${
                              site.questions
                                  ? site.questions
                                  : '<div data-i18n="samples.questions"> Questions? Contact the Connect Support Center </div>'
                          }
                         </div><br>
-                        <div class="messagesBodyFont" style="width:100%">
+                        <div class="messagesBodyFont collapse" style="width:100%" id="supportQuestions">
                             <div>
                             ${
                                 site.contact ||
@@ -159,6 +179,7 @@ export const renderSamplesPage = async () => {
                             </div>
                         </div>
                     </div>
+                    <hr>
                 </div>
                 <div class="col-md-2">
                 </div>
@@ -187,84 +208,97 @@ export const renderSamplesPage = async () => {
                         </div>
                     </div>
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whenToDonateSamples" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.whenToDonateSamples">
                                 When Should I Donate My Blood and Urine Samples?
                             </div>
                         </div>
-                        <div class="messagesBodyFont" style="width:100%">
+                        <div class="messagesBodyFont collapse" style="width:100%" id="whenToDonateSamples">
                             <div>
                                 ${site.whenToDonate}
                             </div>
                         </div>
                     </div>
+                    <hr>
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%">
-                            <div data-i18n="samples.howToDonateSamples">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%;" data-bs-toggle="collapse" data-bs-target="#howToDonateSamples" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
+                            <div data-i18n="samples.howToDonateSamples ">
                                 How Do I Donate My Blood and Urine Samples?
                             </div>
                         </div>
-                        <div class="messagesBodyFont" style="width:100%">
+                        <div class="messagesBodyFont collapse" style="width:100%" id="howToDonateSamples">
                             <div>
                                 ${site.howToDonateBloodAndUrine}
                             </div>
                         </div>          
                     </div>
+                    <hr>
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#prepInstructions" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div>
                             ${site.prepInstructionsHeader}
                             </div>
                         </div>
-                        <div class="messagesBodyFont" style="width:100%">
+                        <div class="messagesBodyFont collapse" style="width:100%" id="prepInstructions">
                             <div>
                                 ${site.prepInstructionsText}
                             </div>
                         </div>          
-                    </div>          
+                    </div>
+                    <hr>          
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whatHappensDuring" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.duringVisit">
                                 What Will Happen During My Visit?
                             </div>
                         </div>
-                        <div class="messagesBodyFont" style="width:100%">
+                        <div class="messagesBodyFont collapse" style="width:100%" id="whatHappensDuring">
                             <div>
                                 ${site.whatHappensDuring}
                             </div>
                         </div>          
-                    </div>  
-                    <div class="row" style="width:100%">
+                    </div> 
+                    <hr>  
+                    <div class="row" style="width:100%"  data-bs-toggle="collapse" data-bs-target="#whatHappensAfter" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
                         <div class="consentHeadersFont" style="color:#606060;width:100%">
+                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.afterVisit">
                                 What Will Happen After My Visit?
                             </div>
                         </div>
-                        <div class="messagesBodyFont" style="width:100%">
+                        <div class="messagesBodyFont collapse" style="width:100%" id="whatHappensAfter">
                             <div>
                                 ${site.whatHappensAfter}
                             </div>
                         </div>          
                     </div>
-                    <div class="row" style="width:100%">
+                    <hr>
+                    <div class="row" style="width:100%" data-bs-toggle="collapse" data-bs-target="#howToDonateMouthwash" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
                         <div class="consentHeadersFont" style="color:#606060;width:100%">
+                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.donatingMouthwashSample">
                                 How Do I Donate My Mouthwash Sample?
                             </div>
                         </div>
-                        <div class="messagesBodyFont" style="width:100%">
+                        <div class="messagesBodyFont collapse" style="width:100%" id="howToDonateMouthwash">
                             <div>
                                 ${site.howToDonateMouthwash}
                             </div>
                         </div>          
                     </div>
-                    <div class="row" style="width:100%">
+                    <hr>
+                    <div class="row" style="width:100%" data-bs-toggle="collapse" data-bs-target="#supportQuestions" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
                         <div class="consentHeadersFont" style="color:#606060;width:100%">
+                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.questions">
                                 Questions? Contact the Connect Support Center
                             </div>
                         </div>
-                        <div class="messagesBodyFont" style="width:100%">
+                        <div class="messagesBodyFont collapse" style="width:100%" id="supportQuestions">
                             <div>
                                 <a href="https://myconnect.cancer.gov/support">MyConnect.cancer.gov/support</a>
                                 <br>
@@ -276,13 +310,34 @@ export const renderSamplesPage = async () => {
                             </div>
                         </div>
                     </div>
+                    <hr>
                 </div>
                 <div class="col-md-2">
                 </div>
             </div>     
             `);
-        }
-        else {
+        } else if (site && site === u_chicago) {
+            template = translateHTML(`
+                        <div class="row" style="width:100%">
+                            <div class="col-md-2">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="consentHeadersFont" style="color:#606060;width:100%">
+                                    <div>
+                                        <span data-i18n="samples.donatingSamplesConnectMessage"/></span>
+                                    </div>
+                                </div>
+                                <div class="messagesBodyFont" style="width:100%">
+                                    <div data-i18n="samples.noSamplesCollection">
+                                        ${site.noSamplesCollection}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                            </div>
+                        </div>
+            `);
+        } else {
             template = translateHTML(`
             <br>
             
@@ -408,14 +463,14 @@ const sanford = {
             ''
         ],
         [
-            '<span data-i18n="samples.sanford.locations.Option2"><span>Option 2: Connect Research Lab</span> <br><br> <span style=" font-family: \'Noto Sans\', sans-serif; font-size: 18px; font-weight: 400; color: #2E2E2E; margin-top: 20px;">Use the link in the message we send to your MyChart or email to schedule an appointment at one of the below locations. You may also schedule an appointment by calling the Connect team at 605-312-6100. <br><br>  Connect Research Lab appointments are available Monday – Thursday 7:00am – 4:00pm and Friday 7:00am – 2:00pm. If you would like to schedule outside of these hours, please contact the Connect team at 605-312-6100 or ConnectStudy@sanfordhealth.org. <span style=" font-family: \'Noto Sans\', sans-serif; font-size: 18px; line-height: 27px; color: #2E2E2E; margin-top: 20px;"></span>',
+            '<span data-i18n="samples.sanford.locations.Option2"><span>Option 2: Connect Research Lab</span> <br><br> <span style=" font-family: \'Noto Sans\', sans-serif; font-size: 18px; font-weight: 400; color: #2E2E2E; margin-top: 20px;">Use the link in the message we send to your MyChart or email to schedule an appointment at one of the below locations. You may also schedule an appointment by calling the Connect team at 605-312-6100. <br><br>  Connect Research Lab appointments are available Monday – Thursday 7:00am – 4:00pm and Friday 7:00am – 2:00pm. If you would like to schedule outside of these hours, please contact the Connect team at 605-312-6100 or ConnectStudy@sanfordhealth.org. <span style=" font-family: \'Noto Sans\', sans-serif; font-size: 18px; line-height: 27px; color: #2E2E2E; margin-top: 20px;"></span></span> </span>',
             '',
             '',
             ''
         ],
         [
             '<span data-i18n="samples.sanford.locations.SiouxFallsName">Sioux Falls, SD: Edith Sanford Breast Center</span>',
-            '<span data-i18n="samples.sanford.locations.SiouxFallsAddress">1210 W. 18th St.<br>Sioux Falls, SD 57104<br><i>Enter Through Door BB</i></span></span>',
+            '<span data-i18n="samples.sanford.locations.SiouxFallsAddress">1210 W. 18th St.<br>Sioux Falls, SD 57104<br><i>Enter Through Door BB</i></span>',
             '',
             '<span data-i18n="samples.sanford.locations.SiouxFallsParking">Free valet parking is available near the front entrance of the Edith Sanford Breast Center. Free patient parking is also available in the lot on the corner of S Grange Ave and W 18th Street. Enter through door BB. No parking validation is needed.</span>'
         ],
@@ -492,6 +547,7 @@ const u_chicago = {
     concept: '809703864',
     name: 'UChicago Medicine',
     donatingSamples: '<span data-i18n="samples.u_chicago.donatingSamples">As part of  Connect, we ask you to donate blood, urine, and saliva samples and complete a short survey.</span>',
+    noSamplesCollection: '<span data-i18n="samples.u_chicago.noSamplesCollection">Thank you for being part of Connect! UChicago Medicine is currently not collecting samples from Connect participants. There is nothing you need to do right now. <br><br> We hope to offer Connect participants from UChicago opportunities to donate samples in the future and will let you know when those options become available. <br><br> In the meantime, please check to see if you have any surveys left to complete. <br><br> If you have any questions, please contact our team at the Connect Support Center at MyConnect.cancer.gov/support, <a href=\"mailto:ConnectSupport@NORC.org\">ConnectSupport@NORC.org</a>, or 1-877-505-0253.</p><br><br>We look forward to your continued participation!</span>',
     whenToDonate: '<span data-i18n="samples.u_chicago.whenToDonate">The Connect team will send you an email when it is time to donate your samples. Be sure to check your spam or junk folder. After you receive the email, it is important to donate your samples as soon as you can.<br><br><span class="site-info-bold">Note:</span> If you have recently had a blood transfusion or donated blood please wait at least <span class="site-info-bold">eight weeks</span> from your transfusion or donation before donating your samples for Connect. If you have recently donated plasma, please wait at least <span class="site-info-bold">four weeks</span> from your plasma donation before donating samples for Connect. If you have recently donated platelets, please wait at least <span class="site-info-bold">one week</span> from your platelet donation before donating samples for Connect. If you have an upcoming colonoscopy, please be sure that you <span class="site-info-bold">do not</span> donate samples for Connect on the <span class="site-info-bold">same day</span> as your colonoscopy.</span>',
     howToDonate: '<span data-i18n="samples.u_chicago.howToDonate">Connect participants at UChicago have two options for donating samples. You can choose the most convenient option for you. For questions and assistance with transportation, please call UChicago at (773) 834-5804 or email Connect@bsd.uchicago.edu.<br><br> <span class="site-info-bold">Option 1:</span> Make an appointment to come into one of our Connect Research Labs to donate your samples.<br><br> <span class="site-info-bold">Option 2:</span> A study team member can request a lab order be placed for you. After you receive the order confirmation email, you can donate samples by visiting a participating UChicago Medicine (UCM) Outpatient Clinical Lab Location during normal hours of operation.<br><br> The table below includes more information about these options.<br><br> ' +
         '<table style="border: 1px solid">' +
@@ -658,8 +714,6 @@ const bswh = {
                                 Suite 115 is located within the Irving Hospital in the PAT lab.
                             </p>
                         </div>
-
-
                         <div>
                             <span class="site-info-bold">Baylor Scott & White Center for Diagnostic Medicine – Temple CDM</span>
                             <p>1605 S 31st St<br>
@@ -667,13 +721,16 @@ const bswh = {
                                 Parking Instructions: The site offers free surface level parking.
                             </p>
                         </div>
-
                         <div>
                             <span class="site-info-bold">Baylor Scott & White, Temple Roney Bone & Joint – Temple Roney</span>
                             <p>2401 S 31st St, Bldg 35<br>
                                 Temple, TX 76508<br>
                                 Parking Instructions: The site offers free surface level parking.<br>
                             </p>
+                        </div>
+                        <div>
+                            <span class=\"site-info-bold\">Baylor Scott & White Temple Westfield Clinic</span>
+                            <p>7556 Honeysuckle <br>Temple, TX 76502 <br><br> Parking Instructions: The site offers free surface level parking.</p>
                         </div>
                     </div>`,
     howLong: '<span data-i18n="samples.bswh.howLong">If you complete your first Connect survey before your appointment, please expect to spend about 45 minutes at your appointment to donate your samples and complete a short sample survey.</span>',
@@ -817,13 +874,15 @@ const renderLocations = (site) => {
                     </div>
                 </div>`
             } else if (site === sanford) {
-                template += !location[1] ? '' : `<div class="row" style="width:100%">
-                <div style="width:100%">
-                    <div class="messagesHeaderFont" data-i18n="samples.directionsText">
-                        Address and Directions
-                    </div>
-                    <div class="messagesBodyFont">
-                        ${location[1]}
+                template += !location[1] ? '' : `
+                <div class="row" style="width:100%">
+                    <div style="width:100%">
+                        <div class="messagesHeaderFont" data-i18n="samples.directionsText">
+                            Address and Directions
+                        </div>
+                        <div class="messagesBodyFont">
+                            ${location[1]}
+                        </div>
                     </div>
                 </div>`
             } else if (site === u_chicago){
@@ -841,16 +900,17 @@ const renderLocations = (site) => {
                                 `;
                 }
             } else {
-                template += `<div class="row" style="width:100%">
-                <div style="width:100%">
-                    <div class="messagesSubHeader" data-i18n="samples.directionsText">
-                        Address and Directions
+                template += `
+                <div class="row" style="width:100%">
+                    <div style="width:100%">
+                        <div class="messagesSubHeader" data-i18n="samples.directionsText">
+                            Address and Directions
+                        </div>
+                        <div class="messagesBodyFont">
+                            ${location[1]}
+                        </div>
                     </div>
-                    <div class="messagesBodyFont">
-                        ${location[1]}
-                    </div>
-                </div>
-            </div>`
+                </div>`
             }
             if(location[2])  {
                 template+=`    

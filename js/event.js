@@ -1,7 +1,7 @@
-import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues, escapeHTML } from "./shared.js";
+import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, sitesNotEnrolling, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues, escapeHTML } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
-import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, requestPINTemplate } from "./pages/healthCareProvider.js";
-import { myToDoList } from "./pages/myToDoList.js";
+import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, noLongerEnrollingRender,  requestPINTemplate } from "./pages/healthCareProvider.js";
+import { renderDashboard } from "./pages/dashboard.js";
 import { suffixToTextMap, getFormerNameData, formerNameOptions } from "./settingsHelpers.js";
 import fieldMapping from "./fieldToConceptIdMapping.js";
 import {signUpRender} from "./pages/homePage.js";
@@ -205,11 +205,21 @@ export const addEventHealthCareProviderSubmit = () => {
         e.preventDefault();
         
         const value = parseInt(document.getElementById('827220437').value);
+
+        if (sitesNotEnrolling()[value]) {
+            let modalBody = document.getElementById('HealthProviderNotEnrollingModalBody');
+            let modalButton = document.getElementById('openNotEnrollingModal');
+            modalBody.innerHTML = translateHTML(`<span data-i18n="provider.noLongerEnrollingStart">Thanks for your interest in Connect. Unfortunately, we are no longer enrolling participants from </span>${sites()[value]}<span data-i18n="provider.noLongerEnrollingEnd">. We're sorry, but this means that you won't be able to join the study. If you have any questions, please feel free to contact our team at the Connect Support Center.
+                <br><br>
+                If you are already a Connect participant and forgot your login information or need help accessing your account, please contact the Connect Support Center so our team can assist.</span>`);
+            modalButton.click();
+        } else {
+            let modalBody = document.getElementById('HealthProviderModalBody');
+            let modalButton = document.getElementById('openModal');
+            modalBody.innerHTML = translateHTML(`<span data-i18n="event.sureAboutProvider">Are you sure </span>${sites()[value]}<span data-i18n="event.sureAboutProviderEnd"> is your healthcare provider?</span>`);
+            modalButton.click();
+        }
         
-        let modalBody = document.getElementById('HealthProviderModalBody');
-        let modalButton = document.getElementById('openModal');
-        modalBody.innerHTML = translateHTML(`<span data-i18n="event.sureAboutProvider">Are you sure </span>${sites()[value]}<span data-i18n="event.sureAboutProviderEnd"> is your healthcare provider?</span>`);
-        modalButton.click();
     });
 }
 
@@ -1135,7 +1145,7 @@ export const addEventUPSubmit = async () => {
         // User Profile Place of Birth
         formData['876546260'] = document.getElementById('cityOfBirth').value;
         formData['337485417'] = document.getElementById('stateOfBirth').value;
-        formData['384576626'] = document.getElementById('countryOfBirth').value;
+        formData[fieldMapping.countryOfOrigin] = document.getElementById('countryOfOrigin').value ? fieldMapping.countries[document.getElementById('countryOfOrigin').value] : '';
 
         const gender = document.getElementsByName('UPRadio');
         Array.from(gender).forEach(radioBtn => {
@@ -1800,8 +1810,8 @@ const verifyUserDetails = (formData) => {
             <div class="col">${formData['337485417']}</div>
         </div>
          <div class="row">
-            <div class="col" data-i18n="form.countryOfBirth.title">Country</div>
-            <div class="col">${formData['384576626']}</div>
+            <div class="col" data-i18n="form.countryOfOrigin.title">Country</div>
+            <div class="col" ${formData[fieldMapping.countryOfOrigin] ? `data-i18n="countries.${Object.keys(fieldMapping.countries).find(key => fieldMapping.countries[key] === formData[fieldMapping.countryOfOrigin])}"` : ''}>${formData[fieldMapping.countryOfOrigin] ? translateText(`countries.${Object.keys(fieldMapping.countries).find(key => fieldMapping.countries[key] === formData[fieldMapping.countryOfOrigin])}`) : ''}</div>
         </div>
         <div class="row">
             <div class="col"><strong data-i18n="event.contactInfo">Contact Information</strong></div>
@@ -2090,7 +2100,7 @@ const verifyUserDetails = (formData) => {
                 modal.hide(); // Close modal after successful response
                 const myData = await getMyData();
                 if (hasUserData(myData)) {
-                    myToDoList(myData.data, true);
+                    renderDashboard(myData.data, true);
                 }
             }
         } catch (error) {
@@ -2137,6 +2147,7 @@ export const addEventRequestPINForm = () => {
         let pathAfterPINSubmission;
         let validatePinResponse;
         let createParticipantRecordResponse;
+        let healthCareProviderId;
 
         try {
             showAnimation();
@@ -2160,6 +2171,11 @@ export const addEventRequestPINForm = () => {
             // Duplicate account. Route participant to the duplicate account reminder form.
             } else if (validatePinResponse && validatePinResponse.code === 202) {
                 pathAfterPINSubmission = 'duplicateAccountReminder';
+
+            // No Longer Enrolling at this Location
+            } else if (validatePinResponse && validatePinResponse.code === 286) {
+                pathAfterPINSubmission = 'noLongerEnrolling';
+                healthCareProviderId = validatePinResponse.message;
 
             // Invalid PIN, no PIN entered, or error (validatePIN failed). Create a new participant record and store the entered PIN regardless of its validity.
             } else {
@@ -2195,7 +2211,7 @@ export const addEventRequestPINForm = () => {
         } finally {
             await storeParameters();
             hideAnimation();
-            loadPathFromPINForm(pathAfterPINSubmission);
+            loadPathFromPINForm(pathAfterPINSubmission, healthCareProviderId);
         }
     });
 }
@@ -2278,7 +2294,7 @@ export const getFirstSignInISOTime = async () => {
  * @param { string } path - The path to load after the PIN form.
  */
 
-const loadPathFromPINForm = (path) => {
+const loadPathFromPINForm = (path, healthCareProviderId) => {
     const mainContent = document.getElementById('root');
     if (!mainContent) {
         console.error('loadPathFromPINForm(): Could not find mainContent element');
@@ -2296,6 +2312,10 @@ const loadPathFromPINForm = (path) => {
 
         case 'duplicateAccountReminder':
             duplicateAccountReminderRender();
+            break;
+
+        case 'noLongerEnrolling':
+            noLongerEnrollingRender(healthCareProviderId);
             break;
 
         case 'heardAboutStudy':
@@ -2447,13 +2467,7 @@ export const toggleCurrentPage = async (route) => {
     });
     if(route === '#' && document.getElementById('home')) document.getElementById('home').click();
     if(route === '#dashboard') document.getElementById('userDashboard').click();
-    if(route === '#messages') document.getElementById('Notifications').click();
-    if(route === '#forms') document.getElementById('userAgreements').click();
-    if(route === '#myprofile') document.getElementById('userSettings').click();
-    if(route === '#reports') document.getElementById('reports').click();
     if(route === '#support') document.getElementById('connectSupport').click();
-    if(route === '#samples') document.getElementById('connectSamples').click();
-    if(route === '#payment') document.getElementById('connectPayment').click();
 }
 
 export const toggleCurrentPageNoUser = async () => {

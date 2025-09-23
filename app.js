@@ -1,5 +1,5 @@
-import { syncDHQ3RespondentInfo, getParameters, userLoggedIn, getMyData, hasUserData, getMyCollections, showAnimation, hideAnimation, storeResponse, isBrowserCompatible, inactivityTime, urls, appState, processAuthWithFirebaseAdmin, showErrorAlert, successResponse, logDDRumError, translateHTML, translateText, languageAcronyms, toggleNavbarMobileView, validateToken } from "./js/shared.js";
-import { userNavBar, homeNavBar, languageSelector, signOutNavBarTemplate } from "./js/components/navbar.js";
+import { syncDHQ3RespondentInfo, getParameters, userLoggedIn, getMyData, hasUserData, getMyCollections, showAnimation, hideAnimation, storeResponse, isBrowserCompatible, inactivityTime, urls, appState, processAuthWithFirebaseAdmin, showErrorAlert, successResponse, logDDRumError, translateHTML, translateText, languageAcronyms, toggleNavbarMobileView, validateToken, retrieveNotifications } from "./js/shared.js";
+import { userNavBar, homeNavBar, languageSelector, userHeaderNavBar, addMessageCounterToNavBar } from "./js/components/navbar.js";
 import { homePage, joinNowBtn, whereAmIInDashboard, renderHomeAboutPage, renderHomeExpectationsPage, renderHomePrivacyPage } from "./js/pages/homePage.js";
 import { addEventPinAutoUpperCase, addEventRequestPINForm, addEventRetrieveNotifications, toggleCurrentPage, toggleCurrentPageNoUser, addEventToggleSubmit, addEventLanguageSelection } from "./js/event.js";
 import { requestPINTemplate, duplicateAccountReminderRender } from "./js/pages/healthCareProvider.js";
@@ -12,6 +12,7 @@ import { renderSupportPage } from "./js/pages/support.js";
 import { renderPaymentPage } from "./js/pages/payment.js";
 import { renderSamplesPage } from "./js/pages/samples.js";
 import { renderVerifiedPage } from "./js/pages/verifiedPage.js";
+import { renderDashboard } from "./js/pages/dashboard.js";
 import { firebaseConfig as devFirebaseConfig } from "./dev/config.js";
 import { firebaseConfig as stageFirebaseConfig } from "./stage/config.js";
 import { firebaseConfig as prodFirebaseConfig } from "./prod/config.js";
@@ -143,7 +144,16 @@ window.onload = async () => {
     !isLocalDev && window.DD_RUM && window.DD_RUM.startSessionReplayRecording();
     
     document.body.appendChild(script)
+
     auth = firebase.auth();
+
+    try {
+        await auth.setPersistence(firebase.auth.Auth.Persistence.SESSION); // SESSION persistence signs out when browser/tab closes
+    } catch (error) {
+        console.error('Error setting auth persistence:', error);
+        showErrorAlert();
+        return;
+    }
 
     let inactivityCleanupFunction = null;
 
@@ -276,6 +286,7 @@ const router = async () => {
             else if (route === '#samples') renderSamplesPage();
             else if (route === '#payment') renderPaymentPage();
             else if (route === '#verified') renderVerifiedPage();
+            else if (route === '#surveys') renderSurveys();
             else window.location.hash = '#';   
         }
     }
@@ -368,7 +379,7 @@ const userProfile = () => {
                         : Promise.resolve(null);
 
                     const [collectionsData] = await Promise.allSettled([myCollectionsPromise, checkFirstSignInPromise, dhqStatusPromise]);
-                    await myToDoList(participantData, false, collectionsData.value?.data || []);
+                    await renderDashboard(participantData, false, collectionsData.value?.data || []);
 
                 } else {
                     // Authenticated user. Firestore profile does not exist (initial sign-up). Show the PIN entry form.
@@ -377,6 +388,51 @@ const userProfile = () => {
                     addEventPinAutoUpperCase();
                     addEventRequestPINForm();
                     addEventToggleSubmit();
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                logDDRumError(error, 'FirestoreError', {
+                    userAction: 'PWA sign in',
+                    timestamp: new Date().toISOString(),
+                    function: 'userProfile',
+                    token: firestoreUserData?.data?.['token'] ?? '',
+                });
+
+                showErrorAlert();
+                
+            } finally {
+                hideAnimation();
+            }
+        }
+        else{
+            document.title = translateText('shared.homeTitle');
+            window.location.hash = '#';
+        }
+    });
+}
+
+const renderSurveys = function () {
+    auth.onAuthStateChanged(async user => {
+        if (user && !user.isAnonymous){
+
+            let firestoreUserData;
+            try {
+                showAnimation();
+                document.title = translateText('shared.surveyTitle');
+            
+                firestoreUserData = await getMyData();
+                if (hasUserData(firestoreUserData)) {
+                    // Authenticated user. Firestore profile exists.
+                    const participantData = firestoreUserData.data;
+
+                    // Need token and healthcare provider to get collections. These exist after the user has signed in and completed the healthcare provider form.
+                    const myCollectionsPromise = participantData?.['token'] && participantData?.[conceptIdMap.healthcareProvider]
+                        ? getMyCollections()
+                        : { data: [] };
+
+                    const [collectionsData] = await Promise.allSettled([myCollectionsPromise]);
+                    await myToDoList(participantData, false, collectionsData.value?.data || []);
+
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);
@@ -479,7 +535,12 @@ const toggleNavBar = (route, data) => {
         if (user && !user.isAnonymous){
             showAnimation();
             document.getElementById('userNavBarContainer').innerHTML = userNavBar(data);
-            document.getElementById('signOutContainer').innerHTML = signOutNavBarTemplate();
+            document.getElementById('headerNavBarContainer').innerHTML = userHeaderNavBar(data);
+            document.getElementById('headerNavBarToggler').classList.remove("d-none");
+            document.getElementById('userNavBarToggler').classList.add("d-none");
+            document.getElementById('userNavBarToggler').parentNode.parentNode.classList.add("navbar-expand");
+            document.getElementById('userNavBarToggler').parentNode.parentNode.classList.remove("navbar-expand-md");
+            addMessageCounterToNavBar();
             document.getElementById('joinNow') ? document.getElementById('joinNow').innerHTML = joinNowBtn(false) : ``; 
             document.getElementById('signInWrapperDiv') ? document.getElementById('signInWrapperDiv').style.display = "none" :'';
             document.getElementById('nextStepWarning') ? document.getElementById('nextStepWarning').innerHTML = await whereAmIInDashboard() : '';
@@ -491,7 +552,11 @@ const toggleNavBar = (route, data) => {
         else{
             showAnimation();
             document.getElementById('userNavBarContainer').innerHTML = homeNavBar();
-            document.getElementById('signOutContainer').innerHTML = '';
+            document.getElementById('headerNavBarContainer').innerHTML = '';
+            document.getElementById('headerNavBarToggler').classList.add("d-none");
+            document.getElementById('userNavBarToggler').classList.remove("d-none");
+            document.getElementById('userNavBarToggler').parentNode.parentNode.classList.add("navbar-expand-md");
+            document.getElementById('userNavBarToggler').parentNode.parentNode.classList.remove("navbar-expand");
             document.getElementById('joinNow') ? document.getElementById('joinNow').innerHTML = joinNowBtn(true) : ``;
             document.getElementById('nextStepWarning') ? document.getElementById('nextStepWarning').style.display="none": '';
             await toggleCurrentPageNoUser(route);
