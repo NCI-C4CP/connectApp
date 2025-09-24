@@ -690,7 +690,7 @@ const en = {
     },
     "provider": {
         "noLongerEnrollingStart": "Thanks for your interest in Connect. Unfortunately, we are no longer enrolling participants from ",
-        "noLongerEnrollingEnd": ". We're sorry, but this means that you won't be able to join the study. If you have any questions, please feel free to contact our team at the Connect Support Center.<br><br>If you are already a Connect participant and forgot your login information or need help accessing your account, please contact the Connect Support Center so our team can assist.",
+        "noLongerEnrollingEnd": ". We're sorry, but this means that you won't be able to join the study. If you have any questions, please feel free to contact our team at the <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Connect Support Center</a>.<br><br>If you are already a Connect participant and forgot your login information or need help accessing your account, please contact the <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\">Connect Support Center</a> so our team can assist.",
         "alertWarning": "Our records show that you already have another account with a different email or phone number. Please try signing in again. Contact the Connect Support Center by emailing <a href=\"mailto:ConnectSupport@norc.org\">ConnectSupport@norc.org</a> or calling <span style=\"white-space:nowrap;overflow:hidden\">1-877-505-0253</span> if you need help accessing your account.",
         "receivedPin": "<strong>If you received a PIN as part of your study invitation, please enter it here.<br>Your PIN should be 6 characters and will include only numbers and uppercase letters.<br></strong>",
         "enterPin": {

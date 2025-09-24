@@ -85,6 +85,7 @@ export default
     "cannotBeVerified": 219863910,
     "duplicate": 922622075,
     "outreachTimedOut": 160161595,
+    "noLongerEnrolling": 290379732,
 
     "verifiedDate": 914594314,
     "firebaseAuthEmail": 421823980,

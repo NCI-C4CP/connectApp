@@ -198,6 +198,10 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                     hideAnimation();
                     return;
                 }
+                else if (data[fieldMapping.verification] && data[fieldMapping.verification] == fieldMapping.noLongerEnrolling) {
+                    noLongerEnrollingRender(data[fieldMapping.healthcareProvider]);
+                    return;
+                }
                 if ((!data['updatesSeen'] || data['updatesSeen'] !== true) && topMessage.trim() === "") {
                     topMessage += `
                             <span data-i18n="mytodolist.newUpdates"><span style="font-weight: bold">We've Updated MyConnect!</span><br>
@@ -259,9 +263,13 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
     }
     // Completed healthcareProvider form. Did not complete heardAboutStudy form.
     else if (data[fieldMapping.healthcareProvider] && !data[fieldMapping.heardAboutStudyForm] && !isParticipantDataDestroyed(data)) {
-        mainContent.innerHTML = heardAboutStudy();
-        addEventHeardAboutStudy();
-        hideAnimation();
+        if (sitesNotEnrolling()[data[fieldMapping.healthcareProvider]]) {
+            noLongerEnrollingRender(data[fieldMapping.healthcareProvider]);
+        } else {
+            mainContent.innerHTML = heardAboutStudy();
+            addEventHeardAboutStudy();
+            hideAnimation();
+        }
     }
     // Completed PIN entry form by either entering a PIN number or specifying no PIN number (passive recruit).
     else if (data[fieldMapping.pinNumber] || data[fieldMapping.dontHavePinNumber] === fieldMapping.yes) {
