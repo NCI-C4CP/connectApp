@@ -460,10 +460,22 @@ canvas {
 	to {transform:rotate(360deg);}
 }
 
+#loadingAnimation::before {
+    content: 'Processing...';
+    position: absolute;
+    left: calc(50% - 15px);
+    top: calc(50% - 30px);
+    font-size: 16px;
+    font-weight: bold;
+    color: #585858;
+}
+
 #loadingAnimation::after {
     content:'';
     position:absolute;
-    left:48%;top:40%;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     width:40px;height:40px;
     border-style:solid;
     border-color:#585858;
