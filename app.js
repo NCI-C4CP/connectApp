@@ -479,7 +479,7 @@ const renderSurveys = function () {
  * @param {firebase.User} user - The current user.
  */
 const userProfileAuthStateUIHandler = async (user) => {
-    //window.history.replaceState({}, 'Dashboard', './#dashboard');
+
     if (user.email && !user.emailVerified && !user.email.startsWith('noreply')) {
         const mainContent = document.getElementById('root');
         mainContent.innerHTML = `
