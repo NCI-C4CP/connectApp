@@ -86,6 +86,9 @@ window.onload = async () => {
     // Check for a continueUrl parameter
     const continueUrlParam = urlParams.get('continueUrl');
 
+    if (urlParams) sessionStorage.setItem('urlParams', urlParams);
+    if (continueUrlParam) sessionStorage.setItem('continueUrlParam', continueUrlParam); 
+
     let utmSource, utmMedium, utmCampaign;
 
     if (continueUrlParam) {
@@ -214,6 +217,14 @@ window.onhashchange = async () => {
 }
 
 const router = async () => {
+
+    // Clean URL if it has UTM parameters and user is authenticated
+    const user = firebase.auth().currentUser;
+    if (user && !user.isAnonymous && window.location.search) {
+        const cleanUrl = `${window.location.origin}${window.location.pathname}${window.location.hash}`;
+        window.history.replaceState({}, document.title, cleanUrl);
+    }
+
     const parameters = getParameters(window.location.href);
     if(parameters && parameters['mode']){
         const mode = parameters['mode'];
@@ -317,9 +328,8 @@ const userProfile = () => {
                 document.title = translateText('shared.dashboardTitle');
 
                 let token = '';
-                
-                const urlParams = new URLSearchParams(window.location.search);
-                const continueUrlParam = urlParams.get('continueUrl');
+
+                const continueUrlParam = sessionStorage.getItem('continueUrlParam');
 
                 if (continueUrlParam) {
                     const decodedContinueUrl = decodeURIComponent(continueUrlParam);
@@ -328,10 +338,17 @@ const userProfile = () => {
                     token = continueUrlObj.searchParams.get('token');
                 }
                 else {
-                    const href = location.href;
-                    const parameters = getParameters(href);
-
-                    token = parameters?.token;
+                    // Get saved URL parameters from session storage
+                    const savedUrlParams = sessionStorage.getItem('urlParams');
+                    if (savedUrlParams) {
+                        const urlParams = new URLSearchParams(savedUrlParams);
+                        token = urlParams.get('token');
+                    } else {
+                        // Fallback to current location if no saved params
+                        const href = location.href;
+                        const parameters = getParameters(href);
+                        token = parameters?.token;
+                    }
                 } 
 
                 if (token) {
@@ -462,7 +479,7 @@ const renderSurveys = function () {
  * @param {firebase.User} user - The current user.
  */
 const userProfileAuthStateUIHandler = async (user) => {
-    window.history.replaceState({}, 'Dashboard', './#dashboard');
+    //window.history.replaceState({}, 'Dashboard', './#dashboard');
     if (user.email && !user.emailVerified && !user.email.startsWith('noreply')) {
         const mainContent = document.getElementById('root');
         mainContent.innerHTML = `
