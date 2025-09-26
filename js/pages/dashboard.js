@@ -391,7 +391,7 @@ const renderCard = (icon, type, href, newFlag) => {
             </div>
             <div class="card-body">
                 <div>
-                    <img class="card-icon" src="${icon}" />
+                    <img class="card-icon" src="${icon}" alt="" />
                 </div>
                 <div class="card-title" data-i18n="dashboard.${type}Title">
                     Card Header Here!
