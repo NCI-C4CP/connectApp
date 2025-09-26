@@ -179,10 +179,10 @@ export const renderSettingsPage = async () => {
     template += `<div class="row">
         <div class="col-lg-2 col-xl-3"></div>
         <div class="col-lg-8 col-xl-6">
-            <p class="consentHeadersFont" style="color:#606060; font-size: 1.25em;" data-i18n="settings.pageNav">
+            <p class="consentHeadersFont" style="color:#606060; font-size: 1.5em;" data-i18n="settings.pageNav">
                 ${translateText('settings.pageNav')}
             </p>
-            <ul>
+            <ul class="onThisPage">
             ${!isParticipantDataDestroyed ? "<li><a href=\"javascript:document.getElementById('contactInformation').scrollIntoView(true)\" data-i18n=\"settings.contactInfo\">"+translateText('settings.contactInfo')+"</a></li>" : ''}
             <li><a href="javascript:document.getElementById('signInInformationDiv').scrollIntoView(true);" data-i18n="settings.signInInfo">${translateText('settings.signInInfo')}</a></li>
             ${hasAgreements ? "<li><a href=\"javascript:document.getElementById('agreementsDiv').scrollIntoView(true)\" data-i18n=\"settings.agreements\">"+translateText('settings.agreements')+"</a></li>" : ''}

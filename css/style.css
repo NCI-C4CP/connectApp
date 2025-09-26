@@ -1714,3 +1714,9 @@ span.my-samples-indent-text {
 [aria-expanded="false"] .fa-minus {
     display: none;
 }
+
+.onThisPage li {
+    padding: .25em;
+    font-size: 1.2em;
+    font-family: 'Montserrat', sans-serif;
+}

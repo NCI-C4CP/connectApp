@@ -39,7 +39,7 @@ export const renderSamplesPage = async () => {
                         </div>
                     </div>
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whenToDonate" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whenToDonate" aria-expanded="true" aria-controls="whenToDonate">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             ${site.whenToDonateHeader ? 
                                 site.whenToDonateHeader :`
@@ -48,7 +48,7 @@ export const renderSamplesPage = async () => {
                                 </div>
                                 `}
                         </div>
-                        <div class="messagesBodyFont collapse" style="width:100%" id="whenToDonate">
+                        <div class="messagesBodyFont collapse show" style="width:100%" id="whenToDonate">
                             <div>
                                 ${site.whenToDonate}
                             </div>
@@ -56,7 +56,7 @@ export const renderSamplesPage = async () => {
                     </div>
                     <hr>
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howToDonate" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                        <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howToDonate" aria-expanded="false" aria-controls="howToDonate">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.howToDonate">
                                 How Do I Donate My Samples?
@@ -70,7 +70,7 @@ export const renderSamplesPage = async () => {
                     </div>
                     <hr>
                     <div class="row" style="width:100%;">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whereToDonate" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                        <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whereToDonate" aria-expanded="false" aria-controls="whereToDonate">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.whereToDonate">
                                 Where Do I Donate My Samples?
@@ -114,7 +114,7 @@ export const renderSamplesPage = async () => {
                     </div>
                     <hr>
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howLongAppt" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                        <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howLongAppt" aria-expanded="false" aria-controls="howLongAppt">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.howLongAppt">
                                 How Long Will My Appointment Take?
@@ -128,7 +128,7 @@ export const renderSamplesPage = async () => {
                     </div>
                     <hr>
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#prepareAppt" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                        <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#prepareAppt" aria-expanded="false" aria-controls="prepareAppt">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.prepareAppt">
                                 How Should I Prepare On the Day of My Appointment?
@@ -144,7 +144,7 @@ export const renderSamplesPage = async () => {
 
                     ${site.name !== henry_ford.name && site.name !== health_partners.name ?  `
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#duringAppt" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                        <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#duringAppt" aria-expanded="false" aria-controls="duringAppt">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.duringAppt">
                                 What Will Happen During My Appointment?
@@ -160,7 +160,7 @@ export const renderSamplesPage = async () => {
                     : '' 
                     }
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%"  data-bs-toggle="collapse" data-bs-target="#supportQuestions" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                        <div class="consentHeadersFont collapsed" style="color:#606060;width:100%"  data-bs-toggle="collapse" data-bs-target="#supportQuestions" aria-expanded="false" aria-controls="supportQuestions">
                           <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                          ${
                              site.questions
@@ -208,13 +208,13 @@ export const renderSamplesPage = async () => {
                         </div>
                     </div>
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whenToDonateSamples" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                        <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whenToDonateSamples" aria-expanded="true" aria-controls="whenToDonateSamples">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.whenToDonateSamples">
                                 When Should I Donate My Blood and Urine Samples?
                             </div>
                         </div>
-                        <div class="messagesBodyFont collapse" style="width:100%" id="whenToDonateSamples">
+                        <div class="messagesBodyFont collapse show" style="width:100%" id="whenToDonateSamples">
                             <div>
                                 ${site.whenToDonate}
                             </div>
@@ -222,7 +222,7 @@ export const renderSamplesPage = async () => {
                     </div>
                     <hr>
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%;" data-bs-toggle="collapse" data-bs-target="#howToDonateSamples" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                        <div class="consentHeadersFont collapsed" style="color:#606060;width:100%;" data-bs-toggle="collapse" data-bs-target="#howToDonateSamples" aria-expanded="false" aria-controls="howToDonateSamples">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.howToDonateSamples ">
                                 How Do I Donate My Blood and Urine Samples?
@@ -236,7 +236,7 @@ export const renderSamplesPage = async () => {
                     </div>
                     <hr>
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#prepInstructions" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                        <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#prepInstructions" aria-expanded="false" aria-controls="prepInstructions">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div>
                             ${site.prepInstructionsHeader}
@@ -250,7 +250,7 @@ export const renderSamplesPage = async () => {
                     </div>
                     <hr>          
                     <div class="row" style="width:100%">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whatHappensDuring" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                        <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whatHappensDuring" aria-expanded="false" aria-controls="whatHappensDuring">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.duringVisit">
                                 What Will Happen During My Visit?
@@ -263,7 +263,7 @@ export const renderSamplesPage = async () => {
                         </div>          
                     </div> 
                     <hr>  
-                    <div class="row" style="width:100%"  data-bs-toggle="collapse" data-bs-target="#whatHappensAfter" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                    <div class="row collapsed" style="width:100%"  data-bs-toggle="collapse" data-bs-target="#whatHappensAfter" aria-expanded="false" aria-controls="whatHappensAfter">
                         <div class="consentHeadersFont" style="color:#606060;width:100%">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.afterVisit">
@@ -277,7 +277,7 @@ export const renderSamplesPage = async () => {
                         </div>          
                     </div>
                     <hr>
-                    <div class="row" style="width:100%" data-bs-toggle="collapse" data-bs-target="#howToDonateMouthwash" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                    <div class="row collapsed" style="width:100%" data-bs-toggle="collapse" data-bs-target="#howToDonateMouthwash" aria-expanded="false" aria-controls="howToDonateMouthwash">
                         <div class="consentHeadersFont" style="color:#606060;width:100%">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.donatingMouthwashSample">
@@ -291,7 +291,7 @@ export const renderSamplesPage = async () => {
                         </div>          
                     </div>
                     <hr>
-                    <div class="row" style="width:100%" data-bs-toggle="collapse" data-bs-target="#supportQuestions" aria-expanded="false" aria-controls="collapseExample" class="collapsed">
+                    <div class="row collapsed" style="width:100%" data-bs-toggle="collapse" data-bs-target="#supportQuestions" aria-expanded="false" aria-controls="supportQuestions">
                         <div class="consentHeadersFont" style="color:#606060;width:100%">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.questions">
