@@ -3,16 +3,16 @@ import { removeAllErrors } from './event.js';
 import cId from './fieldToConceptIdMapping.js';
 
 export const showEditButtonsOnUserVerified = () => {
-  document.getElementById('changeNameButton').style.display = 'block';
-  document.getElementById('changeContactInformationButton').style.display = 'block';
-  document.getElementById('changePreferredLanguageButton').style.display = 'block';
-  document.getElementById('changeMailingAddressButton').style.display = 'block';
-  document.getElementById('changePhysicalMailingAddressButton').style.display = 'block';
-  document.getElementById('changeAltAddressButton').style.display = 'block';
-  document.getElementById('changeAltContactButton').style.display = 'block';
-  document.getElementById('changeLoginButton').style.display = 'block';
-  document.getElementById('clearPhysicalAddrBtn').style.display = 'block';
-  document.getElementById('clearAlternateAddrBtn').style.display = 'block';
+  if ( document.getElementById('changeNameButton') ) { document.getElementById('changeNameButton').style.display = 'block'; }
+  if ( document.getElementById('changeContactInformationButton') ) { document.getElementById('changeContactInformationButton').style.display = 'block'; }
+  if ( document.getElementById('changePreferredLanguageButton') ) { document.getElementById('changePreferredLanguageButton').style.display = 'block'; }
+  if ( document.getElementById('changeMailingAddressButton') ) { document.getElementById('changeMailingAddressButton').style.display = 'block'; }
+  if ( document.getElementById('changePhysicalMailingAddressButton') ) { document.getElementById('changePhysicalMailingAddressButton').style.display = 'block'; }
+  if ( document.getElementById('changeAltAddressButton') ) { document.getElementById('changeAltAddressButton').style.display = 'block'; }
+  if ( document.getElementById('changeAltContactButton') ) { document.getElementById('changeAltContactButton').style.display = 'block'; }
+  if ( document.getElementById('changeLoginButton') ) { document.getElementById('changeLoginButton').style.display = 'block'; }
+  if ( document.getElementById('clearPhysicalAddrBtn') ) { document.getElementById('clearPhysicalAddrBtn').style.display = 'block'; }
+  if ( document.getElementById('clearAlternateAddrBtn') ) { document.getElementById('clearAlternateAddrBtn').style.display = 'block'; }
 };
 
 export const toggleElementVisibility = (elementArray, isFormdisplayed) => {
