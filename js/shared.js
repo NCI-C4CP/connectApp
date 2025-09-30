@@ -1,4 +1,4 @@
-import fieldMapping from './fieldToConceptIdMapping.js'; 
+import fieldMapping from './fieldToConceptIdMapping.js';
 import { signInConfig } from "./pages/signIn.js";
 import { signInCheckRender, signUpRender } from "./pages/homePage.js";
 import { signOut } from "../app.js";
@@ -17,19 +17,19 @@ export const urls = {
 }
 
 function createStore(initialState = {}) {
-  let state = initialState;
+    let state = initialState;
 
-  const setState = (update) => {
-    const currSlice = typeof update === 'function' ? update(state) : update;
+    const setState = (update) => {
+        const currSlice = typeof update === 'function' ? update(state) : update;
 
-    if (currSlice !== state) {
-      state = { ...state, ...currSlice };
-    }
-  };
+        if (currSlice !== state) {
+            state = { ...state, ...currSlice };
+        }
+    };
 
-  const getState = () => state;
+    const getState = () => state;
 
-  return { setState, getState };
+    return { setState, getState };
 }
 
 const initialAppState = {
@@ -40,8 +40,8 @@ export const appState = createStore(initialAppState);
 
 let api = '';
 
-if(location.host === urls.prod) api = 'https://api-myconnect.cancer.gov/app';
-else if(location.host === urls.stage) api = 'https://api-myconnect-stage.cancer.gov/app';
+if (location.host === urls.prod) api = 'https://api-myconnect.cancer.gov/app';
+else if (location.host === urls.stage) api = 'https://api-myconnect-stage.cancer.gov/app';
 else api = 'https://us-central1-nih-nci-dceg-connect-dev.cloudfunctions.net/app';
 
 const afterEmailLinkRender = (email, type) => {
@@ -120,30 +120,30 @@ const troubleGettingEmailRender = (type) => {
 }
 
 const signInFlowRender = async (signInEmail) => {
-  const type = document.getElementById("signInDiv") ? "In" : "Up";
-  document.getElementById("signInWrapperDiv").replaceChildren(afterEmailLinkRender(signInEmail, type));
+    const type = document.getElementById("signInDiv") ? "In" : "Up";
+    document.getElementById("signInWrapperDiv").replaceChildren(afterEmailLinkRender(signInEmail, type));
 
-  document.querySelector('a[class~="firebaseui-id-trouble-getting-email-link"]').addEventListener("click", () => {
-    document.getElementById("signInWrapperDiv").replaceChildren(troubleGettingEmailRender(type));
+    document.querySelector('a[class~="firebaseui-id-trouble-getting-email-link"]').addEventListener("click", () => {
+        document.getElementById("signInWrapperDiv").replaceChildren(troubleGettingEmailRender(type));
 
-    document
-      .querySelector('a[class~="firebaseui-id-resend-email-link"]')
-      .addEventListener("click", () => sendEmailLink());
+        document
+            .querySelector('a[class~="firebaseui-id-resend-email-link"]')
+            .addEventListener("click", () => sendEmailLink());
 
-    document.querySelector('button[class~="firebaseui-id-secondary-link"]').addEventListener("click", async () => {
-      if (type === "In") {
-        signInCheckRender({ });
-      } else {
-        await signUpRender({ signUpType: "email" });
-      }
+        document.querySelector('button[class~="firebaseui-id-secondary-link"]').addEventListener("click", async () => {
+            if (type === "In") {
+                signInCheckRender({});
+            } else {
+                await signUpRender({ signUpType: "email" });
+            }
+        });
     });
-  });
 
-  document.querySelector('button[class~="firebaseui-id-secondary-link"]').addEventListener("click", (e) => {
-    e.preventDefault();
-    window.localStorage.setItem("signInUpdate", "yes");
-    signInCheckRender();
-  });
+    document.querySelector('button[class~="firebaseui-id-secondary-link"]').addEventListener("click", (e) => {
+        e.preventDefault();
+        window.localStorage.setItem("signInUpdate", "yes");
+        signInCheckRender();
+    });
 };
 
 export const sendEmailLink = () => {
@@ -153,17 +153,17 @@ export const sendEmailLink = () => {
     const continueUrl = window.location.href;
 
     const continueUrlWithoutHash = continueUrl.endsWith("#")
-            ? continueUrl.slice(0, -1)
-            : continueUrl;
+        ? continueUrl.slice(0, -1)
+        : continueUrl;
 
     fetch(`${api}?api=sendEmailLink`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
         },
-        body: JSON.stringify({ 
-            email: signInEmail, 
-            continueUrl: continueUrlWithoutHash, 
+        body: JSON.stringify({
+            email: signInEmail,
+            continueUrl: continueUrlWithoutHash,
             preferredLanguage
         })
     }).then(() => {
@@ -229,7 +229,7 @@ export const createParticipantRecord = async (pinEntryFormData) => {
             },
             body: JSON.stringify(pinEntryFormData)
         });
-        
+
         return await response.json();
 
     } catch (error) {
@@ -240,8 +240,8 @@ export const createParticipantRecord = async (pinEntryFormData) => {
 //Store tree function being passed into quest
 // @deprecated. Retain until migration to Quest2 is complete. Quest 2.0+ has tree storage integrated into response saving.
 export const storeResponseTree = async (questName) => {
-    
-    let formData = {[questName]: {treeJSON: questionQueue.toJSON()}};
+
+    let formData = { [questName]: { treeJSON: questionQueue.toJSON() } };
 
     await storeResponse(formData);
 }
@@ -254,12 +254,12 @@ export const storeResponseTree = async (questName) => {
  * @returns {Promise<object>} - The response from the storeResponse API call.
  */
 export const storeResponseQuest = async (formData) => {
-    
+
     let keys = Object.keys(formData);
     let first = keys[0];
     let moduleId = first.slice(0, first.indexOf("."));
 
-    let transformedData = {[moduleId]: {}};
+    let transformedData = { [moduleId]: {} };
     let completedData = {};
 
     keys.forEach(key => {
@@ -279,7 +279,7 @@ export const storeResponseQuest = async (formData) => {
         return await completeSurvey(completedData, moduleId);
     }
 
-    if(Object.keys(transformedData[moduleId]).length > 0) {
+    if (Object.keys(transformedData[moduleId]).length > 0) {
         return await storeResponse(transformedData);
     }
 }
@@ -343,11 +343,11 @@ const completeSurvey = async (data, moduleId) => {
 }
 
 export const storeResponse = async (formData) => {
-    
+
     const idToken = await getIdToken();
     const response = await fetch(`${api}?api=submit`, {
         method: "POST",
-        headers:{
+        headers: {
             Authorization: "Bearer " + idToken,
             "Content-Type": "application/json"
         },
@@ -360,11 +360,11 @@ export const storeResponse = async (formData) => {
 }
 
 export const storeSocial = async (formData) => {
-        
+
     const idToken = await getIdToken();
     const response = await fetch(`${api}?api=submitSocial`, {
         method: "POST",
-        headers:{
+        headers: {
             Authorization: "Bearer " + idToken,
             "Content-Type": "application/json"
         },
@@ -375,23 +375,23 @@ export const storeSocial = async (formData) => {
 }
 
 export const getMyData = async () => {
-  try {
-    const idToken = await getIdToken();
-    const response = await fetch(`${api}?api=getUserProfile`, {
-      headers: {
-        Authorization: "Bearer " + idToken,
-      },
-    });
+    try {
+        const idToken = await getIdToken();
+        const response = await fetch(`${api}?api=getUserProfile`, {
+            headers: {
+                Authorization: "Bearer " + idToken,
+            },
+        });
 
-    return await response.json();
-  } catch (err) {
-    logDDRumError(err, "getMyDataError", {
-      userAction: "Get participant data",
-      timestamp: new Date().toISOString(),
-    });
-    
-    return { code: 500, data: null, message: "Error occurred when calling getMyData()" };
-  }
+        return await response.json();
+    } catch (err) {
+        logDDRumError(err, "getMyDataError", {
+            userAction: "Get participant data",
+            timestamp: new Date().toISOString(),
+        });
+
+        return { code: 500, data: null, message: "Error occurred when calling getMyData()" };
+    }
 };
 
 export const retrievePhysicalActivityReport = async () => {
@@ -496,7 +496,7 @@ export const successResponse = (response) => {
 }
 
 export const getMySurveys = async (data, filter = false) => {
-    
+
     const idToken = await getIdToken();
     const response = await fetch(`${api}?api=getUserSurveys`, {
         method: "POST",
@@ -504,25 +504,25 @@ export const getMySurveys = async (data, filter = false) => {
             Authorization: "Bearer " + idToken,
             "Content-Type": "application/json"
         },
-        body:  JSON.stringify(data)
+        body: JSON.stringify(data)
     })
 
     let surveyData = await response.json();
 
-    if(surveyData.code === 200) {
-        
+    if (surveyData.code === 200) {
+
         let versionNumbers = [];
 
         Object.keys(fieldMapping.conceptToModule).forEach(module => {
-            
+
             let version = fieldMapping[fieldMapping.conceptToModule[module]].version;
 
-            if(version) versionNumbers.push(version);
+            if (version) versionNumbers.push(version);
         });
 
         Object.keys(surveyData.data).forEach(survey => {
             versionNumbers.forEach(versionNumber => {
-                if(surveyData.data[survey][versionNumber]) {
+                if (surveyData.data[survey][versionNumber]) {
                     delete surveyData.data[survey][versionNumber];
                 }
             });
@@ -548,7 +548,7 @@ export const getMyCollections = async () => {
         });
 
         return await response.json();
-        
+
     } catch (error) {
         logDDRumError(error, 'GetMyCollectionsError', {
             userAction: 'get user collections',
@@ -572,7 +572,7 @@ const allIHCS = {
 }
 
 export const sites = () => {
-    if(location.host === urls.prod) {
+    if (location.host === urls.prod) {
         return {
             657167265: 'Sanford Health',
             531629870: 'HealthPartners',
@@ -601,13 +601,13 @@ export const sites = () => {
         }
         //return allIHCS
     }
-    else{
+    else {
         return { ...allIHCS, 13: 'National Cancer Institute' }
     }
 }
 
 export const sitesNotEnrolling = () => {
-    if(location.host === urls.prod) {
+    if (location.host === urls.prod) {
         return {
             809703864: 'University of Chicago Medicine',
         }
@@ -617,10 +617,10 @@ export const sitesNotEnrolling = () => {
             809703864: 'University of Chicago Medicine',
         }
     }
-    else{
-        return { 
-             809703864: 'University of Chicago Medicine',
-         }
+    else {
+        return {
+            809703864: 'University of Chicago Medicine',
+        }
     }
 }
 
@@ -644,16 +644,16 @@ export const siteAcronyms = () => {
 export const todaysDate = () => {
     const today = new Date();
     let dd = today.getDate();
-    let mm = today.getMonth()+1; 
+    let mm = today.getMonth() + 1;
     const yyyy = today.getFullYear();
-    if(dd < 10) {
-        dd='0'+dd;
-    } 
+    if (dd < 10) {
+        dd = '0' + dd;
+    }
 
-    if(mm < 10) {
-        mm='0'+mm;
-    } 
-    return mm+'/'+dd+'/'+yyyy;
+    if (mm < 10) {
+        mm = '0' + mm;
+    }
+    return mm + '/' + dd + '/' + yyyy;
 }
 
 export const dateTime = () => {
@@ -667,11 +667,11 @@ export const getIdToken = () => {
             if (user && !user.isAnonymous) {
                 user.getIdToken().then((idToken) => {
                     resolve(idToken);
-            }, () => {
-                resolve(null);
-            });
+                }, () => {
+                    resolve(null);
+                });
             } else {
-            resolve(null);
+                resolve(null);
             }
         });
     });
@@ -693,21 +693,21 @@ export const userLoggedIn = () => {
 export const getParameters = (URL) => {
     const hash = decodeURIComponent(URL);
     const index = hash.indexOf('?');
-    if(index !== -1){
-        let query = hash.slice(index+1, hash.length);
+    if (index !== -1) {
+        let query = hash.slice(index + 1, hash.length);
         query = query.replace(/#\?/g, "&")
-        if(query.indexOf('#') !== -1) query = query.slice(0, query.indexOf('#'))
+        if (query.indexOf('#') !== -1) query = query.slice(0, query.indexOf('#'))
         const array = query.split('&');
         let obj = {};
         array.forEach(value => {
             let split = value.split('=');
 
-            if(!value || split[1] === undefined|| split[1].trim() === "") return;
+            if (!value || split[1] === undefined || split[1].trim() === "") return;
             obj[split[0]] = split[1];
         });
         return obj;
     }
-    else{
+    else {
         return null;
     }
 }
@@ -720,8 +720,8 @@ export const dataSavingBtn = (className) => {
 export const errorMessage = (id, msg, focus) => {
     const currentElement = document.getElementById(id);
     const parentElement = currentElement.parentNode;
-    if(Array.from(parentElement.querySelectorAll('.form-error')).length > 0) return;
-    if(msg){
+    if (Array.from(parentElement.querySelectorAll('.form-error')).length > 0) return;
+    if (msg) {
         const div = document.createElement('div');
         div.classList = ['error-text'];
         const span = document.createElement('span');
@@ -731,15 +731,15 @@ export const errorMessage = (id, msg, focus) => {
         parentElement.appendChild(div);
     }
     currentElement.classList.add('invalid');
-    if(focus) currentElement.focus();
+    if (focus) currentElement.focus();
 }
 
 export const errorMessageNumbers = (id, msg, focus) => {
     const currentElement = document.getElementById(id);
     const parentElement = currentElement.parentNode;
     const parent1 = parentElement.parentNode
-    if(Array.from(parentElement.querySelectorAll('.form-error')).length > 0) return;
-    if(msg){
+    if (Array.from(parentElement.querySelectorAll('.form-error')).length > 0) return;
+    if (msg) {
         const br = document.createElement('br');
         const div = document.createElement('div');
         div.classList = ['error-text'];
@@ -751,15 +751,15 @@ export const errorMessageNumbers = (id, msg, focus) => {
         parent1.appendChild(div);
     }
     currentElement.classList.add('invalid');
-    if(focus) currentElement.focus();
+    if (focus) currentElement.focus();
 }
 
 
 export const errorMessageConsent = (id, msg, focus) => {
     const currentElement = document.getElementById(id);
     const parentElement = currentElement.parentNode;
-    if(Array.from(parentElement.querySelectorAll('.form-error')).length > 0) return;
-    if(msg){
+    if (Array.from(parentElement.querySelectorAll('.form-error')).length > 0) return;
+    if (msg) {
         const div = document.createElement('div');
         div.classList = ['col-auto'];
         const span = document.createElement('span');
@@ -769,7 +769,7 @@ export const errorMessageConsent = (id, msg, focus) => {
         parentElement.appendChild(div);
     }
     currentElement.classList.add('invalid');
-    if(focus) currentElement.focus();
+    if (focus) currentElement.focus();
 }
 
 
@@ -785,57 +785,57 @@ export const getAge = (dateString) => {
 }
 
 export const allStates = {
-    "Alabama":1,
-    "Alaska":2,
-    "Arizona":3,
-    "Arkansas":4,
-    "California":5,
-    "Colorado":6,
-    "Connecticut":7,
-    "Delaware":8,
+    "Alabama": 1,
+    "Alaska": 2,
+    "Arizona": 3,
+    "Arkansas": 4,
+    "California": 5,
+    "Colorado": 6,
+    "Connecticut": 7,
+    "Delaware": 8,
     "District of Columbia": 9,
-    "Florida":10,
-    "Georgia":11,
-    "Hawaii":12,
-    "Idaho":13,
-    "Illinois":14,
-    "Indiana":15,
-    "Iowa":16,
-    "Kansas":17,
-    "Kentucky":18,
-    "Louisiana":19,
-    "Maine":20,
-    "Maryland":21,
-    "Massachusetts":22,
-    "Michigan":23,
-    "Minnesota":24,
-    "Mississippi":25,
-    "Missouri":26,
-    "Montana":27,
-    "Nebraska":28,
-    "Nevada":29,
-    "New Hampshire":30,
-    "New Jersey":31,
-    "New Mexico":32,
-    "New York":33,
-    "North Carolina":34,
-    "North Dakota":35,
-    "Ohio":36,
-    "Oklahoma":37,
-    "Oregon":38,
-    "Pennsylvania":39,
-    "Rhode Island":40,
-    "South Carolina":41,
-    "South Dakota":42,
-    "Tennessee":43,
-    "Texas":44,
-    "Utah":45,
-    "Vermont":46,
-    "Virginia":47,
-    "Washington":48,
-    "West Virginia":49,
-    "Wisconsin":50,
-    "Wyoming":51,
+    "Florida": 10,
+    "Georgia": 11,
+    "Hawaii": 12,
+    "Idaho": 13,
+    "Illinois": 14,
+    "Indiana": 15,
+    "Iowa": 16,
+    "Kansas": 17,
+    "Kentucky": 18,
+    "Louisiana": 19,
+    "Maine": 20,
+    "Maryland": 21,
+    "Massachusetts": 22,
+    "Michigan": 23,
+    "Minnesota": 24,
+    "Mississippi": 25,
+    "Missouri": 26,
+    "Montana": 27,
+    "Nebraska": 28,
+    "Nevada": 29,
+    "New Hampshire": 30,
+    "New Jersey": 31,
+    "New Mexico": 32,
+    "New York": 33,
+    "North Carolina": 34,
+    "North Dakota": 35,
+    "Ohio": 36,
+    "Oklahoma": 37,
+    "Oregon": 38,
+    "Pennsylvania": 39,
+    "Rhode Island": 40,
+    "South Carolina": 41,
+    "South Dakota": 42,
+    "Tennessee": 43,
+    "Texas": 44,
+    "Utah": 45,
+    "Vermont": 46,
+    "Virginia": 47,
+    "Washington": 48,
+    "West Virginia": 49,
+    "Wisconsin": 50,
+    "Wyoming": 51,
     "NA": 52
 }
 
@@ -895,246 +895,246 @@ export const statesWithAbbreviations = {
 };
 
 export const allCountries = {
-    "United States":1,
-    "Afghanistan":2,
-    "Albania":3,
-    "Algeria":4,
-    "American Samoa":5,
-    "Andorra":6,
-    "Angola":7,
-    "Anguilla":8,
-    "Antarctica":9,
-    "Antigua and Barbuda":10,
-    "Argentina":11,
-    "Armenia":12,
-    "Aruba":13,
-    "Australia":14,
-    "Austria":15,
-    "Azerbaijan":16,
-    "Bahamas":17,
-    "Bahrain":18,
-    "Bangladesh":19,
-    "Barbados":20,
-    "Belarus":21,
-    "Belgium":22,
-    "Belize":23,
-    "Benin":24,
-    "Bermuda":25,
-    "Bhutan":26,
-    "Bolivia":27,
-    "Bosnia and Herzegovina":28,
-    "Botswana":29,
-    "Brazil":30,
-    "British Indian Ocean Territory":31,
-    "British Virgin Islands":32,
-    "Brunei":33,
-    "Bulgaria":34,
-    "Burkina Faso":35,
-    "Burundi":36,
-    "Cambodia":37,
-    "Cameroon":38,
-    "Canada":39,
-    "Cape Verde":40,
-    "Cayman Islands":41,
-    "Central African Republic":42,
-    "Chad":43,
-    "Chile":44,
-    "China":45,
-    "Christmas Island":46,
-    "Cocos Islands":47,
-    "Colombia":48,
-    "Comoros":49,
-    "Cook Island":50,
-    "Costa Rica":51,
-    "Croatia":52,
-    "Cuba":53,
-    "Curacao":54,
-    "Cyprus":55,
-    "Czech Republic":56,
-    "Democratic Republic of the Congo":57,
-    "Denmark":58,
-    "Djibouti":59,
-    "Dominica":60,
-    "Dominican Republic":61,
-    "East Timor":62,
-    "Ecuador":63,
-    "Egypt":64,
-    "El Salvador":65,
-    "Equatorial Guinea":66,
-    "Eritrea":67,
-    "Estonia":68,
-    "Ethiopia":69,
-    "Falkland Islands":70,
-    "Faroe Islands":71,
-    "Fiji":72,
-    "Finland":73,
-    "France":74,
-    "French Polynesia":75,
-    "Gabon":76,
-    "Gambia":77,
-    "Georgia":78,
-    "Germany":79,
-    "Ghana":80,
-    "Gibraltar":81,
-    "Greece":82,
-    "Greenland":83,
-    "Grenada":84,
-    "Guam":85,
-    "Guatemala":86,
-    "Guernsey":87,
-    "Guinea":88,
-    "Guinea-Bissau":89,
-    "Guyana":90,
-    "Haiti":91,
-    "Honduras":92,
-    "Hong Kong":93,
-    "Hungary":94,
-    "Iceland":95,
-    "India":96,
-    "Indonesia":97,
-    "Iran":98,
-    "Iraq":99,
-    "Ireland":100,
-    "Isle of Man":101,
-    "Israel":102,
-    "Italy":103,
-    "Ivory Coast":104,
-    "Jamaica":105,
-    "Japan":106,
-    "Jersey":107,
-    "Jordan":108,
-    "Kazakhstan":109,
-    "Kenya":110,
-    "Kiribati":111,
-    "Kosovo":112,
-    "Kuwait":113,
-    "Kyrgyzstan":114,
-    "Laos":115,
-    "Latvia":116,
-    "Lebanon":117,
-    "Lesotho":118,
-    "Liberia":119,
-    "Libya":120,
-    "Liechtenstein":121,
-    "Lithuania":122,
-    "Luxembourg":123,
-    "Macao":124,
-    "Macedonia":125,
-    "Madagascar":126,
-    "Malawi":127,
-    "Malaysia":128,
-    "Maldives":129,
-    "Mali":130,
-    "Malta":131,
-    "Marshall Islands":132,
-    "Mauritania":133,
-    "Mauritius":134,
-    "Mayotte":135,
-    "Mexico":136,
-    "Micronesia":137,
-    "Moldova":138,
-    "Monaco":139,
-    "Mongolia":140,
-    "Montenegro":141,
-    "Montserrat":142,
-    "Morocco":143,
-    "Mozambique":144,
-    "Myanmar":145,
-    "Namibia":146,
-    "Nauru":147,
-    "Nepal":148,
-    "Netherlands":149,
-    "Netherlands Antilles":150,
-    "New Caledonia":151,
-    "New Zealand":152,
-    "Nicaragua":153,
-    "Niger":154,
-    "Nigeria":155,
-    "Niue":156,
-    "North Korea":157,
-    "Northern Mariana Islands":158,
-    "Norway":159,
-    "Oman":160,
-    "Pakistan":161,
-    "Palau":162,
-    "Palestine":163,
-    "Panama":164,
-    "Papua New Guinea":165,
-    "Paraguay":166,
-    "Peru":167,
-    "Philippines":168,
-    "Pitcairn":169,
-    "Poland":170,
-    "Portugal":171,
-    "Puerto Rico":172,
-    "Qatar":173,
-    "Republic of the Congo":174,
-    "Reunion":175,
-    "Romania":176,
-    "Russia":177,
-    "Rwanda":178,
-    "Saint Barthelemy":179,
-    "Saint Helena":180,
-    "Saint Kitts and Nevis":181,
-    "Saint Lucia":182,
-    "Saint Martin":183,
-    "Saint Pierre and Miquelon":184,
-    "Saint Vincent and the Grenadines":185,
-    "Samoa":186,
-    "San Marino":187,
-    "Sao Tome and Principe":188,
-    "Saudi Arabia":189,
-    "Senegal":190,
-    "Serbia":191,
-    "Seychelles":192,
-    "Sierra Leone":193,
-    "Singapore":194,
-    "Sint Maarten":195,
-    "Slovakia":196,
-    "Slovenia":197,
-    "Solomon Islands":198,
-    "Somalia":199,
-    "South Africa":200,
-    "South Korea":201,
-    "South Sudan":202,
-    "Spain":203,
-    "Sri Lanka":204,
-    "Sudan":205,
-    "Suriname":206,
-    "Svalbard and Jan Mayen":207,
-    "Swaziland":208,
-    "Sweden":209,
-    "Switzerland":210,
-    "Syria":211,
-    "Taiwan":212,
-    "Tajikistan":213,
-    "Tanzania":214,
-    "Thailand":215,
-    "Togo":216,
-    "Tokelau":217,
-    "Tonga":218,
-    "Trinidad and Tobago":219,
-    "Tunisia":220,
-    "Turkey":221,
-    "Turkmenistan":222,
-    "Turks and Caicos Islands":223,
-    "Tuvalu":224,
-    "U.S. Virgin Islands":225,
-    "Uganda":226,
-    "Ukraine":227,
-    "United Arab Emirates":228,
-    "United Kingdom":229,
-    "Uruguay":230,
-    "Uzbekistan":231,
-    "Vanuatu":232,
-    "Vatican":233,
-    "Venezuela":234,
-    "Vietnam":235,
-    "Wallis and Futuna":236,
-    "Western Sahara":237,
-    "Yemen":238,
-    "Zambia":239,
-    "Zimbabwe":240
+    "United States": 1,
+    "Afghanistan": 2,
+    "Albania": 3,
+    "Algeria": 4,
+    "American Samoa": 5,
+    "Andorra": 6,
+    "Angola": 7,
+    "Anguilla": 8,
+    "Antarctica": 9,
+    "Antigua and Barbuda": 10,
+    "Argentina": 11,
+    "Armenia": 12,
+    "Aruba": 13,
+    "Australia": 14,
+    "Austria": 15,
+    "Azerbaijan": 16,
+    "Bahamas": 17,
+    "Bahrain": 18,
+    "Bangladesh": 19,
+    "Barbados": 20,
+    "Belarus": 21,
+    "Belgium": 22,
+    "Belize": 23,
+    "Benin": 24,
+    "Bermuda": 25,
+    "Bhutan": 26,
+    "Bolivia": 27,
+    "Bosnia and Herzegovina": 28,
+    "Botswana": 29,
+    "Brazil": 30,
+    "British Indian Ocean Territory": 31,
+    "British Virgin Islands": 32,
+    "Brunei": 33,
+    "Bulgaria": 34,
+    "Burkina Faso": 35,
+    "Burundi": 36,
+    "Cambodia": 37,
+    "Cameroon": 38,
+    "Canada": 39,
+    "Cape Verde": 40,
+    "Cayman Islands": 41,
+    "Central African Republic": 42,
+    "Chad": 43,
+    "Chile": 44,
+    "China": 45,
+    "Christmas Island": 46,
+    "Cocos Islands": 47,
+    "Colombia": 48,
+    "Comoros": 49,
+    "Cook Island": 50,
+    "Costa Rica": 51,
+    "Croatia": 52,
+    "Cuba": 53,
+    "Curacao": 54,
+    "Cyprus": 55,
+    "Czech Republic": 56,
+    "Democratic Republic of the Congo": 57,
+    "Denmark": 58,
+    "Djibouti": 59,
+    "Dominica": 60,
+    "Dominican Republic": 61,
+    "East Timor": 62,
+    "Ecuador": 63,
+    "Egypt": 64,
+    "El Salvador": 65,
+    "Equatorial Guinea": 66,
+    "Eritrea": 67,
+    "Estonia": 68,
+    "Ethiopia": 69,
+    "Falkland Islands": 70,
+    "Faroe Islands": 71,
+    "Fiji": 72,
+    "Finland": 73,
+    "France": 74,
+    "French Polynesia": 75,
+    "Gabon": 76,
+    "Gambia": 77,
+    "Georgia": 78,
+    "Germany": 79,
+    "Ghana": 80,
+    "Gibraltar": 81,
+    "Greece": 82,
+    "Greenland": 83,
+    "Grenada": 84,
+    "Guam": 85,
+    "Guatemala": 86,
+    "Guernsey": 87,
+    "Guinea": 88,
+    "Guinea-Bissau": 89,
+    "Guyana": 90,
+    "Haiti": 91,
+    "Honduras": 92,
+    "Hong Kong": 93,
+    "Hungary": 94,
+    "Iceland": 95,
+    "India": 96,
+    "Indonesia": 97,
+    "Iran": 98,
+    "Iraq": 99,
+    "Ireland": 100,
+    "Isle of Man": 101,
+    "Israel": 102,
+    "Italy": 103,
+    "Ivory Coast": 104,
+    "Jamaica": 105,
+    "Japan": 106,
+    "Jersey": 107,
+    "Jordan": 108,
+    "Kazakhstan": 109,
+    "Kenya": 110,
+    "Kiribati": 111,
+    "Kosovo": 112,
+    "Kuwait": 113,
+    "Kyrgyzstan": 114,
+    "Laos": 115,
+    "Latvia": 116,
+    "Lebanon": 117,
+    "Lesotho": 118,
+    "Liberia": 119,
+    "Libya": 120,
+    "Liechtenstein": 121,
+    "Lithuania": 122,
+    "Luxembourg": 123,
+    "Macao": 124,
+    "Macedonia": 125,
+    "Madagascar": 126,
+    "Malawi": 127,
+    "Malaysia": 128,
+    "Maldives": 129,
+    "Mali": 130,
+    "Malta": 131,
+    "Marshall Islands": 132,
+    "Mauritania": 133,
+    "Mauritius": 134,
+    "Mayotte": 135,
+    "Mexico": 136,
+    "Micronesia": 137,
+    "Moldova": 138,
+    "Monaco": 139,
+    "Mongolia": 140,
+    "Montenegro": 141,
+    "Montserrat": 142,
+    "Morocco": 143,
+    "Mozambique": 144,
+    "Myanmar": 145,
+    "Namibia": 146,
+    "Nauru": 147,
+    "Nepal": 148,
+    "Netherlands": 149,
+    "Netherlands Antilles": 150,
+    "New Caledonia": 151,
+    "New Zealand": 152,
+    "Nicaragua": 153,
+    "Niger": 154,
+    "Nigeria": 155,
+    "Niue": 156,
+    "North Korea": 157,
+    "Northern Mariana Islands": 158,
+    "Norway": 159,
+    "Oman": 160,
+    "Pakistan": 161,
+    "Palau": 162,
+    "Palestine": 163,
+    "Panama": 164,
+    "Papua New Guinea": 165,
+    "Paraguay": 166,
+    "Peru": 167,
+    "Philippines": 168,
+    "Pitcairn": 169,
+    "Poland": 170,
+    "Portugal": 171,
+    "Puerto Rico": 172,
+    "Qatar": 173,
+    "Republic of the Congo": 174,
+    "Reunion": 175,
+    "Romania": 176,
+    "Russia": 177,
+    "Rwanda": 178,
+    "Saint Barthelemy": 179,
+    "Saint Helena": 180,
+    "Saint Kitts and Nevis": 181,
+    "Saint Lucia": 182,
+    "Saint Martin": 183,
+    "Saint Pierre and Miquelon": 184,
+    "Saint Vincent and the Grenadines": 185,
+    "Samoa": 186,
+    "San Marino": 187,
+    "Sao Tome and Principe": 188,
+    "Saudi Arabia": 189,
+    "Senegal": 190,
+    "Serbia": 191,
+    "Seychelles": 192,
+    "Sierra Leone": 193,
+    "Singapore": 194,
+    "Sint Maarten": 195,
+    "Slovakia": 196,
+    "Slovenia": 197,
+    "Solomon Islands": 198,
+    "Somalia": 199,
+    "South Africa": 200,
+    "South Korea": 201,
+    "South Sudan": 202,
+    "Spain": 203,
+    "Sri Lanka": 204,
+    "Sudan": 205,
+    "Suriname": 206,
+    "Svalbard and Jan Mayen": 207,
+    "Swaziland": 208,
+    "Sweden": 209,
+    "Switzerland": 210,
+    "Syria": 211,
+    "Taiwan": 212,
+    "Tajikistan": 213,
+    "Tanzania": 214,
+    "Thailand": 215,
+    "Togo": 216,
+    "Tokelau": 217,
+    "Tonga": 218,
+    "Trinidad and Tobago": 219,
+    "Tunisia": 220,
+    "Turkey": 221,
+    "Turkmenistan": 222,
+    "Turks and Caicos Islands": 223,
+    "Tuvalu": 224,
+    "U.S. Virgin Islands": 225,
+    "Uganda": 226,
+    "Ukraine": 227,
+    "United Arab Emirates": 228,
+    "United Kingdom": 229,
+    "Uruguay": 230,
+    "Uzbekistan": 231,
+    "Vanuatu": 232,
+    "Vatican": 233,
+    "Venezuela": 234,
+    "Vietnam": 235,
+    "Wallis and Futuna": 236,
+    "Western Sahara": 237,
+    "Yemen": 238,
+    "Zambia": 239,
+    "Zimbabwe": 240
 }
 
 export const country3Codes = [
@@ -1438,11 +1438,11 @@ export const swapKeysAndValues = (obj) => {
 };
 
 export const showAnimation = () => {
-    if(document.getElementById('loadingAnimation')) document.getElementById('loadingAnimation').style.display = '';
+    if (document.getElementById('loadingAnimation')) document.getElementById('loadingAnimation').style.display = '';
 }
 
 export const hideAnimation = () => {
-    if(document.getElementById('loadingAnimation')) document.getElementById('loadingAnimation').style.display = 'none';
+    if (document.getElementById('loadingAnimation')) document.getElementById('loadingAnimation').style.display = 'none';
 }
 
 export const subscribeForNotifications = async (data) => {
@@ -1450,7 +1450,7 @@ export const subscribeForNotifications = async (data) => {
     const response = await fetch(`${api}?api=subscribeToNotification`, {
         method: "POST",
         headers: {
-            Authorization:"Bearer "+idToken,
+            Authorization: "Bearer " + idToken,
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data)
@@ -1458,17 +1458,44 @@ export const subscribeForNotifications = async (data) => {
     return await response;
 }
 
-export const retrieveNotifications = async () => {
-  const idToken = await getIdToken();
-  const response = await fetch(`${api}?api=retrieveNotifications`, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + idToken
-    },
-  });
+let processingRetrieveNotifications = false;
+const retrieveNotificationsEventTarget = new EventTarget();
+export const retrieveNotifications = async (markAsRead) => {
+    if (processingRetrieveNotifications) {
+        console.log('waiting');
+        await waitForRetrieveNotifications();
+    }
+    
+    processingRetrieveNotifications = true;
+    let resultJson = { data: [] };
+    try {
+        const idToken = await getIdToken();
+        let api = 'http://localhost:8080/';
+        const response = await fetch(`${api}?api=retrieveNotifications&markasread=${markAsRead ? 'true' : 'false'}`, {
+            method: "GET",
+            headers: {
+                Authorization: "Bearer " + idToken
+            },
+        });
+        
+        resultJson = await response.json();
 
-  return await response.json();
+    } catch (error) {
+        console.error(error);
+    } finally {
+        processingRetrieveNotifications = false;
+        retrieveNotificationsEventTarget.dispatchEvent(new CustomEvent('done'));
+    }
+    return resultJson;
 };
+
+const waitForRetrieveNotifications = () => {
+    return new Promise((resolve) => {
+        retrieveNotificationsEventTarget.addEventListener('done', () => {
+            resolve();
+        }, {once: true});
+    })
+}
 
 /**
  * Check if account exists
@@ -1480,7 +1507,7 @@ export const checkAccount = async (data) => {
     const response = await fetch(`${api}?api=validateEmailOrPhone&${data.accountType}=${data.accountValue}`, {
         method: "GET",
         headers: {
-            Authorization:"Bearer " + idToken
+            Authorization: "Bearer " + idToken
         },
     });
 
@@ -1502,107 +1529,107 @@ export const toggleNavbarMobileView = () => {
 };
 
 export const questionnaireModules = () => {
-    
-    if(location.host === urls.prod) {
+
+    if (location.host === urls.prod) {
         return {
             'Connect Experience 2024': {
                 path: {
-                    en: 'prod/module2024ConnectExperience.txt', 
+                    en: 'prod/module2024ConnectExperience.txt',
                     es: 'prod/module2024ConnectExperienceSpanish.txt'
                 },
-                moduleId: "Experience2024", 
+                moduleId: "Experience2024",
                 enabled: false
             },
             'Background and Overall Health': {
                 path: {
-                    en: 'prod/module1.txt', 
+                    en: 'prod/module1.txt',
                     es: 'prod/module1Spanish.txt'
                 },
-                moduleId: "Module1", 
+                moduleId: "Module1",
                 enabled: true
             },
             'Medications, Reproductive Health, Exercise, and Sleep': {
                 path: {
-                    en: 'prod/module2.txt', 
+                    en: 'prod/module2.txt',
                     es: 'prod/module2Spanish.txt'
-                }, 
-                moduleId: "Module2", 
+                },
+                moduleId: "Module2",
                 enabled: false
             },
             'Smoking, Alcohol, and Sun Exposure': {
                 path: {
-                    en: 'prod/module3.txt', 
+                    en: 'prod/module3.txt',
                     es: 'prod/module3Spanish.txt'
                 },
-                moduleId: "Module3", 
+                moduleId: "Module3",
                 enabled: false
             },
             'Where You Live and Work': {
                 path: {
-                    en: 'prod/module4.txt', 
+                    en: 'prod/module4.txt',
                     es: 'prod/module4Spanish.txt'
-                }, 
-                moduleId: "Module4", 
+                },
+                moduleId: "Module4",
                 enabled: false
             },
             'Enter SSN': {
-                moduleId: "ModuleSsn", 
+                moduleId: "ModuleSsn",
                 enabled: false
             },
             'Covid-19': {
                 path: {
-                    en: 'prod/moduleCOVID19.txt', 
+                    en: 'prod/moduleCOVID19.txt',
                     es: 'prod/moduleCOVID19Spanish.txt'
                 },
-                moduleId: "ModuleCovid19", 
+                moduleId: "ModuleCovid19",
                 enabled: false
             },
             'Biospecimen Survey': {
                 path: {
-                    en: 'prod/moduleBiospecimen.txt', 
+                    en: 'prod/moduleBiospecimen.txt',
                     es: 'prod/moduleBiospecimenSpanish.txt'
                 },
-                moduleId: "Biospecimen", 
+                moduleId: "Biospecimen",
                 enabled: false
             },
             'Clinical Biospecimen Survey': {
                 path: {
-                    en: 'prod/moduleClinicalBloodUrine.txt', 
+                    en: 'prod/moduleClinicalBloodUrine.txt',
                     es: 'prod/moduleClinicalBloodUrineSpanish.txt'
                 },
-                moduleId: "ClinicalBiospecimen", 
+                moduleId: "ClinicalBiospecimen",
                 enabled: false
             },
             'Menstrual Cycle': {
                 path: {
-                    en: 'prod/moduleMenstrual.txt', 
+                    en: 'prod/moduleMenstrual.txt',
                     es: 'prod/moduleMenstrualSpanish.txt'
                 },
-                moduleId: "MenstrualCycle", 
+                moduleId: "MenstrualCycle",
                 enabled: false
             },
             'Mouthwash': {
                 path: {
-                    en: 'prod/moduleMouthwash.txt', 
+                    en: 'prod/moduleMouthwash.txt',
                     es: 'prod/moduleMouthwashSpanish.txt'
-                }, 
-                moduleId: "Mouthwash", 
+                },
+                moduleId: "Mouthwash",
                 enabled: false
             },
             'PROMIS': {
                 path: {
-                    en: 'prod/moduleQoL.txt', 
+                    en: 'prod/moduleQoL.txt',
                     es: 'prod/moduleQoLSpanish.txt'
                 },
-                moduleId: "PROMIS", 
+                moduleId: "PROMIS",
                 enabled: false
             },
             'Cancer Screening History': {
                 path: {
-                    en: 'prod/moduleCancerScreeningHistory.txt', 
+                    en: 'prod/moduleCancerScreeningHistory.txt',
                     es: 'prod/moduleCancerScreeningHistorySpanish.txt'
                 },
-                moduleId: "CancerScreeningHistory", 
+                moduleId: "CancerScreeningHistory",
                 enabled: false
             },
             // External module (unrelated to Quest)
@@ -1619,103 +1646,103 @@ export const questionnaireModules = () => {
 
     return {
         'Connect Experience 2024': {
-                path: {
-                    en: 'module2024ConnectExperienceStage.txt', 
-                    es: 'module2024ConnectExperienceStageSpanish.txt'
-                },
-                moduleId: "Experience2024", 
-                enabled: false
+            path: {
+                en: 'module2024ConnectExperienceStage.txt',
+                es: 'module2024ConnectExperienceStageSpanish.txt'
             },
+            moduleId: "Experience2024",
+            enabled: false
+        },
         'Background and Overall Health': {
             path: {
                 en: 'module1Stage.txt',
                 es: 'module1StageSpanish.txt'
-            }, 
-            moduleId:"Module1", 
-            enabled:true
+            },
+            moduleId: "Module1",
+            enabled: true
         },
         'Medications, Reproductive Health, Exercise, and Sleep': {
             path: {
                 en: 'module2Stage.txt',
                 es: 'module2StageSpanish.txt'
-            }, 
-            moduleId:"Module2", 
-            enabled:false
+            },
+            moduleId: "Module2",
+            enabled: false
         },
         'Smoking, Alcohol, and Sun Exposure': {
             path: {
                 en: 'module3Stage.txt',
                 es: 'module3StageSpanish.txt'
-            }, 
-            moduleId:"Module3", 
-            enabled:false
+            },
+            moduleId: "Module3",
+            enabled: false
         },
         'Where You Live and Work': {
             path: {
                 en: 'module4Stage.txt',
                 es: 'module4StageSpanish.txt'
-            }, 
-            moduleId:"Module4", 
-            enabled:false
+            },
+            moduleId: "Module4",
+            enabled: false
         },
         'Enter SSN': {
-            moduleId:"ModuleSsn", 
-            enabled:false
+            moduleId: "ModuleSsn",
+            enabled: false
         },
         'Covid-19': {
             path: {
                 en: 'moduleCOVID19Stage.txt',
                 es: 'moduleCOVID19StageSpanish.txt'
-            }, 
-            moduleId:"ModuleCovid19", 
-            enabled:false
+            },
+            moduleId: "ModuleCovid19",
+            enabled: false
         },
         'Biospecimen Survey': {
             path: {
                 en: 'moduleBiospecimenStage.txt',
                 es: 'moduleBiospecimenStageSpanish.txt'
-            }, 
-            moduleId:"Biospecimen", 
-            enabled:false
+            },
+            moduleId: "Biospecimen",
+            enabled: false
         },
         'Clinical Biospecimen Survey': {
             path: {
                 en: 'moduleClinicalBloodUrineStage.txt',
                 es: 'moduleClinicalBloodUrineStageSpanish.txt'
-            }, 
-            moduleId:"ClinicalBiospecimen", 
-            enabled:false
+            },
+            moduleId: "ClinicalBiospecimen",
+            enabled: false
         },
         'Menstrual Cycle': {
             path: {
                 en: 'moduleMenstrualStage.txt',
                 es: 'moduleMenstrualStageSpanish.txt'
-            }, 
-            moduleId:"MenstrualCycle", 
-            enabled:false
+            },
+            moduleId: "MenstrualCycle",
+            enabled: false
         },
         'Mouthwash': {
             path: {
                 en: 'moduleMouthwash.txt',
                 es: 'moduleMouthwashSpanish.txt'
-            }, 
-            moduleId:"Mouthwash", 
-            enabled:false
+            },
+            moduleId: "Mouthwash",
+            enabled: false
         },
         'PROMIS': {
             path: {
                 en: 'moduleQoL.txt',
                 es: 'moduleQoLSpanish.txt'
-            }, 
-            moduleId:"PROMIS", 
-            enabled:false
+            },
+            moduleId: "PROMIS",
+            enabled: false
         },
         'Cancer Screening History': {
             path: {
                 en: 'moduleCancerScreeningHistoryStage.txt',
                 es: 'moduleCancerScreeningHistoryStageSpanish.txt'
             },
-            moduleId: "CancerScreeningHistory", 
+            moduleId: "CancerScreeningHistory",
             enabled: false
         },
         // External module (unrelated to Quest)
@@ -1731,16 +1758,16 @@ export const questionnaireModules = () => {
 }
 
 export const reportConfiguration = () => {
-    
-    if(location.host === urls.prod) {
+
+    if (location.host === urls.prod) {
         return {
             'Physical Activity Report': {
                 dateAvailableField: 'data.d_416831581', // Report generated in BQ
                 path: {
-                    en: 'prod/module2024ConnectExperience.txt', 
+                    en: 'prod/module2024ConnectExperience.txt',
                     es: 'prod/module2024ConnectExperienceSpanish.txt'
                 },
-                reportId: "physicalActivity", 
+                reportId: "physicalActivity",
                 enabled: false
             },
             // External report (not stored on our servers)
@@ -1759,7 +1786,7 @@ export const reportConfiguration = () => {
     return {
         'Physical Activity Report': {
             dateAvailableField: 'data.d_416831581', // Report generated in BQ
-            reportId: "physicalActivity", 
+            reportId: "physicalActivity",
             enabled: false
         },
         // External report (not stored on our servers)
@@ -1780,10 +1807,10 @@ export const reportConfiguration = () => {
  */
 export const setReportAttributes = async (data, reports) => {
     //Does the user have a physical activity report
-    if (data[fieldMapping.reports.physicalActivityReport] && data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] && 
+    if (data[fieldMapping.reports.physicalActivityReport] && data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] &&
         (data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] == fieldMapping.reports.unread ||
             data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] == fieldMapping.reports.viewed ||
-            data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] == fieldMapping.reports.declined 
+            data[fieldMapping.reports.physicalActivityReport][fieldMapping.reports.physicalActivity.status] == fieldMapping.reports.declined
         )
     ) {
         reports['Physical Activity Report'].enabled = true;
@@ -1857,13 +1884,13 @@ export const isBrowserCompatible = () => {
     // else if(userAgent.match(/firefox|fxios/i)){
     //     browserName = "firefox";
     // }
-    if(userAgent.match(/chrome|chromium|crios/i)){
+    if (userAgent.match(/chrome|chromium|crios/i)) {
         browserName = "chrome";
     } else if (userAgent.match(/firefox/i)) {
         browserName = "firefox";
-    } else if(userAgent.match(/safari/i)){
+    } else if (userAgent.match(/safari/i)) {
         browserName = "safari";
-    } else if(userAgent.match(/edg/i)){
+    } else if (userAgent.match(/edg/i)) {
         browserName = "edge";
     } else browserName = 'Not supported'
     const isValidBrowser = /Chrome/i.test(browserName) || /Firefox/i.test(browserName) || /Safari/i.test(browserName) || /Edge/i.test(browserName);
@@ -1879,7 +1906,7 @@ export const isBrowserCompatible = () => {
 
 export const inactivityTime = () => {
     const activityKey = 'lastMyConnectActivityTimestamp';
-    const warningKey = 'myConnectInactivityWarning';   
+    const warningKey = 'myConnectInactivityWarning';
     const inactivityTimeout = 1200000; // 20 minutes (show inactivity warning after 20 minutes)
     const maxResponseTime = 300000;    // 5 minutes (additional time after warning)
     const checkInterval = 60000;       // 1 minute checks
@@ -2102,113 +2129,113 @@ export const renderSyndicate = (url, element, page) => {
     const mainContent = document.getElementById(element);
 
     fetch(url)
-    .then(response => response.body)
-    .then(rb =>{
-        const reader = rb.getReader();
+        .then(response => response.body)
+        .then(rb => {
+            const reader = rb.getReader();
 
-        return new ReadableStream({
-            start(controller) {
-            // The following function handles each data chunk
-            function push() {
-                // "done" is a Boolean and value a "Uint8Array"
-                reader.read().then( ({done, value}) => {
-                // If there is no more data to read
-                if (done) {
-                    controller.close();
-                    return;
+            return new ReadableStream({
+                start(controller) {
+                    // The following function handles each data chunk
+                    function push() {
+                        // "done" is a Boolean and value a "Uint8Array"
+                        reader.read().then(({ done, value }) => {
+                            // If there is no more data to read
+                            if (done) {
+                                controller.close();
+                                return;
+                            }
+                            // Get the data and send it to the browser via the controller
+                            controller.enqueue(value);
+                            // Check chunks by logging to the console
+                            push();
+                        })
+                    }
+
+                    push();
                 }
-                // Get the data and send it to the browser via the controller
-                controller.enqueue(value);
-                // Check chunks by logging to the console
-                push();
-                })
+            });
+        })
+        .then(stream => {
+            // Respond with our stream
+            return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
+        })
+        .then(result => {
+            // Do things with result
+            let parsed = JSON.parse(result);
+            mainContent.innerHTML = parsed.results[0].content;
+            let toHide = document.getElementsByClassName('syndicate');
+            toHide[1].style.display = "none"
+            if (page == "expectations") {
+                let ids = ['joining-connect', 'after-you-join', 'long-term-study-activities', 'what-connect-will-do', 'how-your-information-will-help-prevent-cancer']
+                let sections = document.getElementsByTagName('section');
+                for (let i = 0; i < sections.length; i++) {
+                    let section = sections[i];
+                    section.id = ids[i];
+                }
             }
+            if (page == "about") {
+                let ids = ['why-connect-is-important', 'what-to-expect-if-you-decide-to-join', 'where-this-study-takes-place', 'about-our-researchers', 'a-resource-for-science']
+                let sections = document.getElementsByTagName('section');
+                for (let i = 0; i < sections.length; i++) {
+                    let section = sections[i];
+                    section.id = ids[i];
+                }
+            }
+            let aLinks = document.getElementsByTagName('a');
+            let allIds = ['#', '#about', '#expectations', '#privacy', 'joining-connect', 'after-you-join', 'long-term-study-activities', 'what-connect-will-do', 'how-your-information-will-help-prevent-cancer', 'why-connect-is-important', 'what-to-expect-if-you-decide-to-join', 'where-this-study-takes-place', 'about-our-researchers', 'a-resource-for-science']
+            for (let i = 0; i < aLinks.length; i++) {
+                let section = aLinks[i];
+                let found = false;
+                for (let j = 0; j < allIds.length; j++) {
+                    if (section.href.includes(allIds[j])) {
+                        found = true;
+                    }
+                }
+                if (!found) {
+                    section.target = "_blank";
+                    console.log(section.href);
+                }
 
-            push();
             }
+            hideAnimation();
+
         });
-    })
-    .then(stream => {
-    // Respond with our stream
-    return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
-    })
-    .then(result => {
-    // Do things with result
-    let parsed = JSON.parse(result);
-    mainContent.innerHTML = parsed.results[0].content;
-    let toHide = document.getElementsByClassName('syndicate');
-    toHide[1].style.display = "none"
-    if(page == "expectations"){
-        let ids = ['joining-connect', 'after-you-join', 'long-term-study-activities', 'what-connect-will-do', 'how-your-information-will-help-prevent-cancer']
-        let sections = document.getElementsByTagName('section');
-        for(let i = 0; i < sections.length; i++){
-            let section = sections[i];
-            section.id = ids[i];
-        }
-    }
-    if(page == "about"){
-        let ids = ['why-connect-is-important','what-to-expect-if-you-decide-to-join','where-this-study-takes-place','about-our-researchers','a-resource-for-science']
-        let sections = document.getElementsByTagName('section');
-        for(let i = 0; i < sections.length; i++){
-            let section = sections[i];
-            section.id = ids[i];
-        }
-    }
-    let aLinks = document.getElementsByTagName('a');
-    let allIds = ['#','#about','#expectations','#privacy','joining-connect', 'after-you-join', 'long-term-study-activities', 'what-connect-will-do', 'how-your-information-will-help-prevent-cancer','why-connect-is-important','what-to-expect-if-you-decide-to-join','where-this-study-takes-place','about-our-researchers','a-resource-for-science']
-    for(let i = 0; i < aLinks.length; i++){
-        let section = aLinks[i];
-        let found = false;
-        for(let j = 0; j < allIds.length; j++){
-            if(section.href.includes(allIds[j])){
-                found = true;
-            }
-        }
-        if(!found){
-            section.target = "_blank";
-            console.log(section.href);
-        }
-        
-    }
-    hideAnimation();
-
-    });
 }
 
 export function fragment(strings, ...values) {
-  const N = values.length;
-  const transformedStringList = [];
-  const elementAndDocumentFragmentList = [];
+    const N = values.length;
+    const transformedStringList = [];
+    const elementAndDocumentFragmentList = [];
 
-  for (let i = 0; i < N; i++) {
-    if (
-      values[i] instanceof HTMLElement ||
-      values[i] instanceof DocumentFragment
-    ) {
-      transformedStringList.push(strings[i], `<div id="placeholder"></div>`);
-      elementAndDocumentFragmentList.push(values[i]);
-    } else {
-      transformedStringList.push(strings[i], values[i]);
+    for (let i = 0; i < N; i++) {
+        if (
+            values[i] instanceof HTMLElement ||
+            values[i] instanceof DocumentFragment
+        ) {
+            transformedStringList.push(strings[i], `<div id="placeholder"></div>`);
+            elementAndDocumentFragmentList.push(values[i]);
+        } else {
+            transformedStringList.push(strings[i], values[i]);
+        }
     }
-  }
 
-  transformedStringList.push(strings[N]);
-  const doc = new DOMParser().parseFromString(transformedStringList.join(""), "text/html");
-  const documentFragment = new DocumentFragment();
-  documentFragment.append(...doc.body.children);
+    transformedStringList.push(strings[N]);
+    const doc = new DOMParser().parseFromString(transformedStringList.join(""), "text/html");
+    const documentFragment = new DocumentFragment();
+    documentFragment.append(...doc.body.children);
 
-  if (elementAndDocumentFragmentList.length > 0) {
-    const phEleList = documentFragment.querySelectorAll("#placeholder");
-    for (let i = 0; i < phEleList.length; i++) {
-      phEleList[i].replaceWith(elementAndDocumentFragmentList[i]);
+    if (elementAndDocumentFragmentList.length > 0) {
+        const phEleList = documentFragment.querySelectorAll("#placeholder");
+        for (let i = 0; i < phEleList.length; i++) {
+            phEleList[i].replaceWith(elementAndDocumentFragmentList[i]);
+        }
     }
-  }
 
-  return documentFragment;
+    return documentFragment;
 }
 
 export const delay = async (ms) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
+    new Promise((resolve) => setTimeout(resolve, ms));
 
 export const validEmailFormat = /^[a-zA-Z0-9.!#$%&'*+"\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,63}$/;
 
@@ -2216,7 +2243,7 @@ export const validNameFormat = /^[A-Za-zÀ-ÖØ-öø-ÿ\s'\-.]+$/i;
 
 // valid phone number examples: +1 123-456-789, 1-123-456-7890, 123-456-7890, 1234567890, 123.456 7890, (123)456-7890, (123) 456-7890, 123 456.7890, 123 456-7890, 123-456.7890, etc.
 export const validPhoneNumberFormat =
-  /^[\+]?(?:1|1-|1\.|1\s+)?[(]?[0-9]{3}[)]?(?:-|\s+|\.)?[0-9]{3}(?:-|\s+|\.)?[0-9]{4}$/;
+    /^[\+]?(?:1|1-|1\.|1\s+)?[(]?[0-9]{3}[)]?(?:-|\s+|\.)?[0-9]{3}(?:-|\s+|\.)?[0-9]{4}$/;
 
 /**
  * Recover special characters in search string of URL
@@ -2224,15 +2251,15 @@ export const validPhoneNumberFormat =
  * @returns {string}
  */
 export function getCleanSearchString(urlSearchStr) {
-  let prevStr = urlSearchStr;
-  let currStr = decodeURIComponent(urlSearchStr);
+    let prevStr = urlSearchStr;
+    let currStr = decodeURIComponent(urlSearchStr);
 
-  while (prevStr !== currStr) {
-    prevStr = currStr;
-    currStr = decodeURIComponent(currStr);
-  }
+    while (prevStr !== currStr) {
+        prevStr = currStr;
+        currStr = decodeURIComponent(currStr);
+    }
 
-  return currStr.replace(/&amp;/g, "&");
+    return currStr.replace(/&amp;/g, "&");
 }
 
 /**
@@ -2242,14 +2269,14 @@ export function getCleanSearchString(urlSearchStr) {
  * @returns {Promise<HTMLElement | null>} 
  */
 export async function elementIsLoaded(selector, timeout = 1000) {
-  const startTime = Date.now();
+    const startTime = Date.now();
 
-  while (document.querySelector(selector) === null) {
-    await new Promise((resolve) => requestAnimationFrame(resolve));
-    if (Date.now() - startTime > timeout) break;
-  }
+    while (document.querySelector(selector) === null) {
+        await new Promise((resolve) => requestAnimationFrame(resolve));
+        if (Date.now() - startTime > timeout) break;
+    }
 
-  return document.querySelector(selector);
+    return document.querySelector(selector);
 }
 
 /**
@@ -2257,28 +2284,28 @@ export async function elementIsLoaded(selector, timeout = 1000) {
  * @returns {boolean}
  */
 function checkDeviceMobile() {
-  let isMobile = false;
+    let isMobile = false;
 
-  if ('maxTouchPoints' in navigator) {
-    isMobile = navigator.maxTouchPoints > 0;
-  } else if ('msMaxTouchPoints' in navigator) {
-    isMobile = navigator.msMaxTouchPoints > 0;
-  } else {
-    const mediaQuery = matchMedia?.('(pointer:coarse)');
-    if (mediaQuery?.media === '(pointer:coarse)') {
-      isMobile = !!mediaQuery.matches;
-    } else if ('orientation' in window) {
-      isMobile = true;
+    if ('maxTouchPoints' in navigator) {
+        isMobile = navigator.maxTouchPoints > 0;
+    } else if ('msMaxTouchPoints' in navigator) {
+        isMobile = navigator.msMaxTouchPoints > 0;
     } else {
-      isMobile = /Mobi|Android|Tablet|iPad|iPhone|iPod|webOS/i.test(
-        navigator.userAgent
-      );
+        const mediaQuery = matchMedia?.('(pointer:coarse)');
+        if (mediaQuery?.media === '(pointer:coarse)') {
+            isMobile = !!mediaQuery.matches;
+        } else if ('orientation' in window) {
+            isMobile = true;
+        } else {
+            isMobile = /Mobi|Android|Tablet|iPad|iPhone|iPod|webOS/i.test(
+                navigator.userAgent
+            );
+        }
     }
-  }
 
-  return isMobile;
+    return isMobile;
 }
-  
+
 export const isMobile = checkDeviceMobile();
 
 let urlToNewTabMap = {};
@@ -2288,11 +2315,11 @@ let urlToNewTabMap = {};
  * @param {string} url 
  */
 export function openNewTab(url) {
-  if (!urlToNewTabMap[url] || urlToNewTabMap[url].closed) {
-    urlToNewTabMap[url] = window.open(url);
-  } else {
-    urlToNewTabMap[url].focus();
-  }
+    if (!urlToNewTabMap[url] || urlToNewTabMap[url].closed) {
+        urlToNewTabMap[url] = window.open(url);
+    } else {
+        urlToNewTabMap[url].focus();
+    }
 }
 
 export const usGov = `
@@ -2300,7 +2327,7 @@ You are accessing a U.S. Government web site which may contain information that 
 `;
 
 export const firebaseSignInRender = async ({ account = {}, displayFlag = true }) => {
-  const df = fragment`
+    const df = fragment`
     <div class="mx-4">
       <p class="loginTitleFont" style="text-align:center;" data-i18n="shared.signIn">Sign In</p>
       <div id="signInDiv"></div>
@@ -2308,35 +2335,35 @@ export const firebaseSignInRender = async ({ account = {}, displayFlag = true })
       </div>
     </div>`;
 
-  translateHTML(df.children[0]);
+    translateHTML(df.children[0]);
 
-  const wrapperDiv = document.getElementById("signInWrapperDiv");
-  wrapperDiv.replaceChildren(df);
-  wrapperDiv.setAttribute('data-ui-type', 'signIn');
-  wrapperDiv.setAttribute('data-account-type', account.type);
-  if (account.value) {
-    wrapperDiv.setAttribute('data-account-value', account.value);
-  } else {
-    wrapperDiv.removeAttribute('data-account-value');
-  }
-  let ui = await getFirebaseUI();
-  ui.start("#signInDiv", signInConfig(account.type));
+    const wrapperDiv = document.getElementById("signInWrapperDiv");
+    wrapperDiv.replaceChildren(df);
+    wrapperDiv.setAttribute('data-ui-type', 'signIn');
+    wrapperDiv.setAttribute('data-account-type', account.type);
+    if (account.value) {
+        wrapperDiv.setAttribute('data-account-value', account.value);
+    } else {
+        wrapperDiv.removeAttribute('data-account-value');
+    }
+    let ui = await getFirebaseUI();
+    ui.start("#signInDiv", signInConfig(account.type));
 
-  if (account.type === "email") {
+    if (account.type === "email") {
 
-    document.querySelector('input[class~="firebaseui-id-email"]').value = account.value;
-    document.querySelector('label[class~="firebaseui-label"]').remove();
+        document.querySelector('input[class~="firebaseui-id-email"]').value = account.value;
+        document.querySelector('label[class~="firebaseui-label"]').remove();
 
-    const submitButton = document.querySelector('button[class~="firebaseui-id-submit"]');
-    submitButton.addEventListener('click', (e) => e.preventDefault());
-    submitButton.click();
+        const submitButton = document.querySelector('button[class~="firebaseui-id-submit"]');
+        submitButton.addEventListener('click', (e) => e.preventDefault());
+        submitButton.click();
 
-  } else if (account.type === "phone") {
-    document.querySelector('input[class~="firebaseui-id-phone-number"]').value = account.value;
-    document.querySelector('label[class~="firebaseui-label"]').remove();
-    document.querySelector('h1[class~="firebaseui-title"]').innerText = translateText('shared.signInPhone');
-    document.querySelector('h1[class~="firebaseui-title"]').setAttribute('data-i18n', 'shared.signInPhone');
-  }
+    } else if (account.type === "phone") {
+        document.querySelector('input[class~="firebaseui-id-phone-number"]').value = account.value;
+        document.querySelector('label[class~="firebaseui-label"]').remove();
+        document.querySelector('h1[class~="firebaseui-title"]').innerText = translateText('shared.signInPhone');
+        document.querySelector('h1[class~="firebaseui-title"]').setAttribute('data-i18n', 'shared.signInPhone');
+    }
 };
 
 /**
@@ -2345,33 +2372,33 @@ export const firebaseSignInRender = async ({ account = {}, displayFlag = true })
  */
 export const signInAnonymously = async () => {
     const { user } = await firebase.auth().signInAnonymously();
-  
-    if (user) {
-      const idToken = await user.getIdToken();
-      appState.setState({ idToken});
-    }
-  
-    return user;
-  }
 
-export const processAuthWithFirebaseAdmin = async(newAuthData) => {
+    if (user) {
+        const idToken = await user.getIdToken();
+        appState.setState({ idToken });
+    }
+
+    return user;
+}
+
+export const processAuthWithFirebaseAdmin = async (newAuthData) => {
 
     const authenticationDataPayload = {
         "data": newAuthData
     }
-  
+
     const idToken = await getIdToken();
-  
+
     try {
-        const response = await fetch(`${api}?api=updateParticipantFirebaseAuthentication`,{
-            method:'POST',
+        const response = await fetch(`${api}?api=updateParticipantFirebaseAuthentication`, {
+            method: 'POST',
             body: JSON.stringify(authenticationDataPayload),
-            headers:{
-                Authorization:"Bearer " + idToken,
+            headers: {
+                Authorization: "Bearer " + idToken,
                 "Content-Type": "application/json"
             }
         });
-        
+
         return await response.json();
     } catch (error) {
         console.error('An error occurred in processAuthWithFirebaseAdmin():', error);
@@ -2390,12 +2417,12 @@ export const isParticipantDataDestroyed = (data) => {
     const millisecondsWait = 5184000000; // 60days
     const timeDiff = data.hasOwnProperty(fieldMapping.dateRequestedDataDestroy) && isIsoDate(data[fieldMapping.dateRequestedDataDestroy])
         ? new Date().getTime() -
-          new Date(data[fieldMapping.dateRequestedDataDestroy]).getTime()
+        new Date(data[fieldMapping.dateRequestedDataDestroy]).getTime()
         : 0;
     return (
         (data.hasOwnProperty(fieldMapping.dataDestroyCategorical) &&
             data[fieldMapping.dataDestroyCategorical] ===
-                fieldMapping.requestedDataDestroySigned) ||
+            fieldMapping.requestedDataDestroySigned) ||
         timeDiff > millisecondsWait
     );
 };
@@ -2409,7 +2436,7 @@ export const isParticipantDataDestroyed = (data) => {
  */
 export const fetchDataWithRetry = async (fetchFunction, maxRetries = 5, retryInterval = 250, backoffFactor = 2) => {
     let fetchAttempt = 0;
-    
+
     while (fetchAttempt < maxRetries) {
         try {
             return await fetchFunction();
@@ -2460,11 +2487,11 @@ export const getModuleSHA = async (path, connectID, moduleID) => {
         }
     } catch (error) {
         logDDRumError(new Error(`SHA Fetch Error: + ${error.message}`), 'StartModuleError', {
-                userAction: 'click start survey',
-                timestamp: new Date().toISOString(),
-                connectID: connectID,
-                questionnaire: moduleID,
-                fetchedSHA: sha || 'Failed to fetch SHA',
+            userAction: 'click start survey',
+            timestamp: new Date().toISOString(),
+            connectID: connectID,
+            questionnaire: moduleID,
+            fetchedSHA: sha || 'Failed to fetch SHA',
         });
 
         throw new Error('Error: getModuleSHA():', error);
@@ -2505,20 +2532,20 @@ export const getShaFromGitHubCommitData = async (surveyStartTimestamp, path, con
         if (jsonResponse.code === 200 && sha) {
             return [sha, surveyVersion];
         } else {
-            throw new Error('Failed to retrieve SHA based on surveyStartTimestamp ' + jsonResponse.message); 
+            throw new Error('Failed to retrieve SHA based on surveyStartTimestamp ' + jsonResponse.message);
         }
     } catch (error) {
         logDDRumError(new Error(`SHA Retrieval Error (fetch by timestamp): + ${error.message}`), 'StartModuleError', {
-                userAction: 'click start survey',
-                timestamp: new Date().toISOString(),
-                connectID: connectID,
-                startSurveyTimestamp: surveyStartTimestamp,
-                questionnaire: moduleID,
-                fetchedSHA: sha || 'Failed to fetch SHA by timestamp',
-                fetchedVersion: surveyVersion || 'Failed to fetch version by timestamp',
+            userAction: 'click start survey',
+            timestamp: new Date().toISOString(),
+            connectID: connectID,
+            startSurveyTimestamp: surveyStartTimestamp,
+            questionnaire: moduleID,
+            fetchedSHA: sha || 'Failed to fetch SHA by timestamp',
+            fetchedVersion: surveyVersion || 'Failed to fetch version by timestamp',
         });
 
-        throw new Error('Error: getShaFromGitHubCommitData. ' +  error.message);
+        throw new Error('Error: getShaFromGitHubCommitData. ' + error.message);
     }
 };
 
@@ -2554,7 +2581,7 @@ export const updateStartSurveyParticipantData = async (sha, path, connectId, mod
         // Do not update startTs if the sha is being repaired. Retain the original startTs, which coincides with the fetched survey.
         if (!repairShaValue) formData[fieldMapping[moduleId].startTs] = new Date().toISOString();
         formData[fieldMapping[moduleId].statusFlag] = fieldMapping.moduleStatus.started;
-    
+
         // TODO: turn this into a single call or a transaction to ensure db consistency.
         // Caution on refactor: both calls are complex. Both transform the data objects.
         await storeResponseQuest(questData);
@@ -2595,12 +2622,12 @@ export const getModuleText = async (sha, path, connectID, moduleID) => {
         }
     } catch (error) {
         logDDRumError(new Error(`Module Text Fetch Error: + ${error.message}`), 'GetModuleTextError', {
-                userAction: 'click start survey',
-                timestamp: new Date().toISOString(),
-                connectID: connectID,
-                questionnaire: moduleID,
-                sha: sha || 'Unknown SHA',
-                path: path || 'Unknown path',
+            userAction: 'click start survey',
+            timestamp: new Date().toISOString(),
+            connectID: connectID,
+            questionnaire: moduleID,
+            sha: sha || 'Unknown SHA',
+            path: path || 'Unknown path',
         });
 
         throw new Error('Error: getModuleText():', error);
@@ -2631,19 +2658,19 @@ export const syncDHQ3RespondentInfo = async (studyID, respondentUsername, dhqSur
             },
             body: JSON.stringify({ studyID, respondentUsername, dhqSurveyStatus, dhqSurveyStatusExternal }),
         });
-        
+
         const jsonResponse = await response.json();
-        
+
         if (jsonResponse.code !== 200) {
             throw new Error(`Failed to check DHQ3 status: ${jsonResponse.message}`);
         }
-        
+
         return jsonResponse.data;
 
     } catch (error) {
         logDDRumError(new Error(`Sync DHQ3 Respondent Info Error: + ${error.message}`), 'syncDHQ3RespondentInfoError', {
-                userAction: 'sync DHQ3 Respondent Info',
-                timestamp: new Date().toISOString(),
+            userAction: 'sync DHQ3 Respondent Info',
+            timestamp: new Date().toISOString(),
         });
 
         throw new Error(`Error: syncDHQ3RespondentInfo(): ${error.message}`);
@@ -2786,11 +2813,11 @@ export const translateHTML = (source, language) => {
             translateHTML(node, language);
         })
     }
-    
+
     if (typeof source === "string") {
         return sourceElement.innerHTML;
     } else {
-       return sourceElement;
+        return sourceElement;
     }
 }
 
@@ -2831,7 +2858,7 @@ export const translateDate = (timestamp, language, options) => {
  * @param {Object} translationObj 
  * @returns String
  */
-export const translateText = (keys, language, keyIndex, translationObj) => { 
+export const translateText = (keys, language, keyIndex, translationObj) => {
     if (!language) {
         language = appState.getState().language;
         if (!language) {
@@ -2928,13 +2955,13 @@ export const getAppSettings = async (paramsToFetchArray) => {
                 Authorization: "Bearer " + idToken,
             },
         });
-    
+
         const jsonResponse = await response.json();
 
         if (jsonResponse.code !== 200) {
             throw new Error(`Failed to retrieve app settings: ${jsonResponse.message}`);
-        } 
-        
+        }
+
         return jsonResponse.data;
 
     } catch (error) {
@@ -2956,13 +2983,13 @@ export const getFirebaseUI = async () => {
         }
         scriptTag.parentNode.removeChild(scriptTag);
         scriptTag = null;
-        
+
     }
 
     //If the scriptTag is falsey then load it
     if (!scriptTag) {
         scriptTag = document.createElement("script");
-        scriptTag.src = 'https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth__'+lang+'.js';
+        scriptTag.src = 'https://www.gstatic.com/firebasejs/ui/6.1.0/firebase-ui-auth__' + lang + '.js';
         scriptTag.async = true;
         scriptTag.id = 'firebaseui-script';
         scriptTag.setAttribute('data-i18n', lang);
@@ -2975,7 +3002,7 @@ export const getFirebaseUI = async () => {
                 resolve(true);
             });
             scriptTag.addEventListener('error', (event) => {
-                reject(new Error('Error loading FirebaseUI script from '+event.target.getAttribute('src')));
+                reject(new Error('Error loading FirebaseUI script from ' + event.target.getAttribute('src')));
             });
         });
         return firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(firebase.auth());
@@ -2990,7 +3017,7 @@ export const getFirebaseUI = async () => {
                         resolve(true);
                     });
                     scriptTag.addEventListener('error', (event) => {
-                        reject(new Error('Error loading FirebaseUI script from '+event.target.getAttribute('src')));
+                        reject(new Error('Error loading FirebaseUI script from ' + event.target.getAttribute('src')));
                     });
                 });
                 return firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(firebase.auth());
@@ -3043,9 +3070,9 @@ export const getAdjustedTime = (inputTime, days = 0, hours = 0, minutes = 0) => 
     adjustedTime.setDate(adjustedTime.getDate() + days);
     adjustedTime.setHours(adjustedTime.getHours() + hours);
     adjustedTime.setMinutes(adjustedTime.getMinutes() + minutes);
-  
+
     return adjustedTime;
-  };
+};
 
 
 export const emailValidationStatus = {
@@ -3103,28 +3130,28 @@ export const showErrorAlert = (messageTranslationKey = 'questionnaire.somethingW
     alert(plainMessage);
 };
 
- /* Checks for each code point whether the given font supports it.
+/* Checks for each code point whether the given font supports it.
 If not, tries to remove diacritics from said code point.
 If that doesn't work either, replaces the unsupported character with '?'. */
 export function replaceUnsupportedPDFCharacters(string, font) {
- if (!string) return;
- const charSet = font.getCharacterSet()
- const codePoints = []
- for (const codePointStr of string) {
-     const codePoint = codePointStr.codePointAt(0);
-     if (!charSet.includes(codePoint)) {
-         const withoutDiacriticsStr = codePointStr.normalize('NFD').replace(/\p{Diacritic}/gu, '');
-         const withoutDiacritics = withoutDiacriticsStr.charCodeAt(0);
-         if (charSet.includes(withoutDiacritics)) {
-             codePoints.push(withoutDiacritics);
-         } else {
-             codePoints.push('?'.codePointAt(0));
-         }
-     } else {
-         codePoints.push(codePoint)
-     }
- }
- return String.fromCodePoint(...codePoints);
+    if (!string) return;
+    const charSet = font.getCharacterSet()
+    const codePoints = []
+    for (const codePointStr of string) {
+        const codePoint = codePointStr.codePointAt(0);
+        if (!charSet.includes(codePoint)) {
+            const withoutDiacriticsStr = codePointStr.normalize('NFD').replace(/\p{Diacritic}/gu, '');
+            const withoutDiacritics = withoutDiacriticsStr.charCodeAt(0);
+            if (charSet.includes(withoutDiacritics)) {
+                codePoints.push(withoutDiacritics);
+            } else {
+                codePoints.push('?'.codePointAt(0));
+            }
+        } else {
+            codePoints.push(codePoint)
+        }
+    }
+    return String.fromCodePoint(...codePoints);
 }
 
 /**
@@ -3157,9 +3184,9 @@ export const validateToken = async (token) => {
     const response = await fetch(api + `?api=validateToken`, {
         method: "POST",
         headers: {
-            Authorization:"Bearer " + idToken
+            Authorization: "Bearer " + idToken
         },
-        body: JSON.stringify({ token, time})
+        body: JSON.stringify({ token, time })
     });
 
     const data = await response.json();
