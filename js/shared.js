@@ -1462,7 +1462,6 @@ let processingRetrieveNotifications = false;
 const retrieveNotificationsEventTarget = new EventTarget();
 export const retrieveNotifications = async (markAsRead) => {
     if (processingRetrieveNotifications) {
-        console.log('waiting');
         await waitForRetrieveNotifications();
     }
     
