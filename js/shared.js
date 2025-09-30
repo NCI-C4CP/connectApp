@@ -1469,7 +1469,6 @@ export const retrieveNotifications = async (markAsRead) => {
     let resultJson = { data: [] };
     try {
         const idToken = await getIdToken();
-        let api = 'http://localhost:8080/';
         const response = await fetch(`${api}?api=retrieveNotifications&markasread=${markAsRead ? 'true' : 'false'}`, {
             method: "GET",
             headers: {
