@@ -345,13 +345,13 @@ const buildPageTemplate = () => {
 
 const showMajorFormDivs = () => {
   document.getElementById('myProfileTextContainer').style.display = 'block';
-  document.getElementById('nameDiv').style.display = 'block';
-  document.getElementById('contactInformationDiv').style.display = 'block';
-  document.getElementById('preferredLanguageDiv').style.display = 'block';
-  document.getElementById('mailingAddressDiv').style.display = 'block';
-  document.getElementById('physicalMailingAddressDiv').style.display = 'block';
-  document.getElementById('altAddressDiv').style.display = 'block';
-  document.getElementById('altContactDiv').style.display = 'block';
+  if (document.getElementById('nameDiv')) { document.getElementById('nameDiv').style.display = 'block'; }
+  if (document.getElementById('contactInformationDiv')) { document.getElementById('contactInformationDiv').style.display = 'block'; }
+  if (document.getElementById('preferredLanguageDiv')) { document.getElementById('preferredLanguageDiv').style.display = 'block'; }
+  if (document.getElementById('mailingAddressDiv')) { document.getElementById('mailingAddressDiv').style.display = 'block'; }
+  if (document.getElementById('physicalMailingAddressDiv')) { document.getElementById('physicalMailingAddressDiv').style.display = 'block'; }
+  if (document.getElementById('altAddressDiv')) { document.getElementById('altAddressDiv').style.display = 'block'; }
+  if (document.getElementById('altContactDiv')) { document.getElementById('altContactDiv').style.display = 'block'; }
   document.getElementById('signInInformationDiv').style.display = 'block';
 };
 
@@ -375,32 +375,36 @@ const loadNameElements = () => {
 };
 
 const handleEditNameSection = () => {
-  btnObj.changeNameButton.addEventListener('click', () => {
-    successMessageElement = hideSuccessMessage(successMessageElement);
-    formVisBools.isNameFormDisplayed = toggleElementVisibility(nameElementArray, formVisBools.isNameFormDisplayed);
-    if (formVisBools.isNameFormDisplayed) {
-      hideOptionalElementsOnShowForm([optRowEles.middleNameRow, optRowEles.suffixRow, optRowEles.preferredFirstNameRow]);
-      toggleActiveForm(FormTypes.NAME);
-    }
-    toggleButtonText();
-  });
+  if (btnObj.changeNameButton) {
+      btnObj.changeNameButton.addEventListener('click', () => {
+        successMessageElement = hideSuccessMessage(successMessageElement);
+        formVisBools.isNameFormDisplayed = toggleElementVisibility(nameElementArray, formVisBools.isNameFormDisplayed);
+        if (formVisBools.isNameFormDisplayed) {
+          hideOptionalElementsOnShowForm([optRowEles.middleNameRow, optRowEles.suffixRow, optRowEles.preferredFirstNameRow]);
+          toggleActiveForm(FormTypes.NAME);
+        }
+        toggleButtonText();
+      });
+  }
 
-  document.getElementById('changeNameSubmit').addEventListener('click', e => {
-    const firstNameField = document.getElementById('newFirstNameField');
-    const lastNameField = document.getElementById('newLastNameField');
-    const middleNameField = document.getElementById('newMiddleNameField');
-    optVars.suffix = escapeHTML(document.getElementById('newSuffixNameField').value.trim());
-    optVars.preferredFirstName = escapeHTML(document.getElementById('newPreferredFirstNameField').value.trim());
-    const isNameValid = validateName(firstNameField, lastNameField, middleNameField);
-    if (isNameValid) {
-      const firstName = escapeHTML(firstNameField.value.trim());
-      const lastName = escapeHTML(lastNameField.value.trim());
-      optVars.middleName = escapeHTML(middleNameField.value.trim());
-      formVisBools.isNameFormDisplayed = toggleElementVisibility(nameElementArray, formVisBools.isNameFormDisplayed);
-      toggleButtonText();
-      submitNewName(firstName, lastName);
-    }
-  });
+  if (document.getElementById('changeNameSubmit')) {
+      document.getElementById('changeNameSubmit').addEventListener('click', e => {
+        const firstNameField = document.getElementById('newFirstNameField');
+        const lastNameField = document.getElementById('newLastNameField');
+        const middleNameField = document.getElementById('newMiddleNameField');
+        optVars.suffix = escapeHTML(document.getElementById('newSuffixNameField').value.trim());
+        optVars.preferredFirstName = escapeHTML(document.getElementById('newPreferredFirstNameField').value.trim());
+        const isNameValid = validateName(firstNameField, lastNameField, middleNameField);
+        if (isNameValid) {
+          const firstName = escapeHTML(firstNameField.value.trim());
+          const lastName = escapeHTML(lastNameField.value.trim());
+          optVars.middleName = escapeHTML(middleNameField.value.trim());
+          formVisBools.isNameFormDisplayed = toggleElementVisibility(nameElementArray, formVisBools.isNameFormDisplayed);
+          toggleButtonText();
+          submitNewName(firstName, lastName);
+        }
+      });
+  }
 };
 
 const submitNewName = async (firstName, lastName) => {
@@ -464,76 +468,84 @@ const loadPreferredLanguageElements = () => {
 };
 
 const handleEditContactInformationSection = () => {
-  btnObj.changeContactInformationButton.addEventListener('click', () => {
-    successMessageElement = hideSuccessMessage(successMessageElement);
-    formVisBools.isContactInformationFormDisplayed = toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed);
-    if (formVisBools.isContactInformationFormDisplayed) {
-
-      hideOptionalElementsOnShowForm([optRowEles.mobilePhoneRow, optRowEles.mobilePhoneVoicemailRow, optRowEles.mobilePhoneTextRow, optRowEles.homePhoneRow, optRowEles.homePhoneVoicemailRow, optRowEles.otherPhoneRow, optRowEles.otherPhoneVoicemailRow, optRowEles.additionalEmail1Row, optRowEles.additionalEmail2Row]);  
-      toggleActiveForm(FormTypes.CONTACT);
-    }
-    toggleButtonText();
-    handleContactInformationRadioButtonPresets(optVars.mobilePhoneNumberComplete, optVars.canWeVoicemailMobile, optVars.canWeText, optVars.homePhoneNumberComplete, optVars.canWeVoicemailHome, optVars.otherPhoneNumberComplete, optVars.canWeVoicemailOther);
-    updatePhoneNumberInputFocus(FormTypes.CONTACT);
-  });
-
-  document.getElementById('changeContactInformationSubmit').addEventListener('click', async (e) => {
-    const mobilePhoneNumberPart1 = document.getElementById('mobilePhoneNumber1').value;
-    const mobilePhoneNumberPart2 = document.getElementById('mobilePhoneNumber2').value;
-    const mobilePhoneNumberPart3 = document.getElementById('mobilePhoneNumber3').value;
-    optVars.mobilePhoneNumberComplete = `${mobilePhoneNumberPart1}${mobilePhoneNumberPart2}${mobilePhoneNumberPart3}`;
-    const homePhoneNumberPart1 = document.getElementById('homePhoneNumber1').value;
-    const homePhoneNumberPart2 = document.getElementById('homePhoneNumber2').value;
-    const homePhoneNumberPart3 = document.getElementById('homePhoneNumber3').value;
-    optVars.homePhoneNumberComplete = `${homePhoneNumberPart1}${homePhoneNumberPart2}${homePhoneNumberPart3}`;
-    const otherPhoneNumberPart1 = document.getElementById('otherPhoneNumber1').value;
-    const otherPhoneNumberPart2 = document.getElementById('otherPhoneNumber2').value;
-    const otherPhoneNumberPart3 = document.getElementById('otherPhoneNumber3').value;
-    optVars.otherPhoneNumberComplete = `${otherPhoneNumberPart1}${otherPhoneNumberPart2}${otherPhoneNumberPart3}`;
-
-    optVars.canWeVoicemailMobile = getCheckedRadioButtonValue('mobileVoicemailPermissionYesRadio');
-    optVars.canWeText = getCheckedRadioButtonValue('textPermissionYesRadio');
-    optVars.canWeVoicemailHome = getCheckedRadioButtonValue('homeVoicemailPermissionYesRadio');
-    optVars.canWeVoicemailOther = getCheckedRadioButtonValue('otherVoicemailPermissionYesRadio');
-
-    const preferredEmail = document.getElementById('newPreferredEmail').value.toLowerCase().trim();
-    optVars.additionalEmail1 = document.getElementById('newadditionalEmail1').value.toLowerCase().trim();
-    optVars.additionalEmail2 = document.getElementById('newadditionalEmail2').value.toLowerCase().trim();
+  if (btnObj.changeContactInformationButton) {
+      btnObj.changeContactInformationButton.addEventListener('click', () => {
+        successMessageElement = hideSuccessMessage(successMessageElement);
+        formVisBools.isContactInformationFormDisplayed = toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed);
+        if (formVisBools.isContactInformationFormDisplayed) {
     
-      const { hasError, riskyEmails } = await validateContactInformation(optVars.mobilePhoneNumberComplete, optVars.homePhoneNumberComplete, preferredEmail, optVars.otherPhoneNumberComplete, optVars.additionalEmail1, optVars.additionalEmail2);
-      if (!hasError) {
-          const submit = () => {
-              formVisBools.isContactInformationFormDisplayed = toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed);
-              toggleButtonText();
-              submitNewContactInformation(preferredEmail);
+          hideOptionalElementsOnShowForm([optRowEles.mobilePhoneRow, optRowEles.mobilePhoneVoicemailRow, optRowEles.mobilePhoneTextRow, optRowEles.homePhoneRow, optRowEles.homePhoneVoicemailRow, optRowEles.otherPhoneRow, optRowEles.otherPhoneVoicemailRow, optRowEles.additionalEmail1Row, optRowEles.additionalEmail2Row]);  
+          toggleActiveForm(FormTypes.CONTACT);
+        }
+        toggleButtonText();
+        handleContactInformationRadioButtonPresets(optVars.mobilePhoneNumberComplete, optVars.canWeVoicemailMobile, optVars.canWeText, optVars.homePhoneNumberComplete, optVars.canWeVoicemailHome, optVars.otherPhoneNumberComplete, optVars.canWeVoicemailOther);
+        updatePhoneNumberInputFocus(FormTypes.CONTACT);
+      });
+  }
+
+  if (document.getElementById('changeContactInformationSubmit')) {
+      document.getElementById('changeContactInformationSubmit').addEventListener('click', async (e) => {
+        const mobilePhoneNumberPart1 = document.getElementById('mobilePhoneNumber1').value;
+        const mobilePhoneNumberPart2 = document.getElementById('mobilePhoneNumber2').value;
+        const mobilePhoneNumberPart3 = document.getElementById('mobilePhoneNumber3').value;
+        optVars.mobilePhoneNumberComplete = `${mobilePhoneNumberPart1}${mobilePhoneNumberPart2}${mobilePhoneNumberPart3}`;
+        const homePhoneNumberPart1 = document.getElementById('homePhoneNumber1').value;
+        const homePhoneNumberPart2 = document.getElementById('homePhoneNumber2').value;
+        const homePhoneNumberPart3 = document.getElementById('homePhoneNumber3').value;
+        optVars.homePhoneNumberComplete = `${homePhoneNumberPart1}${homePhoneNumberPart2}${homePhoneNumberPart3}`;
+        const otherPhoneNumberPart1 = document.getElementById('otherPhoneNumber1').value;
+        const otherPhoneNumberPart2 = document.getElementById('otherPhoneNumber2').value;
+        const otherPhoneNumberPart3 = document.getElementById('otherPhoneNumber3').value;
+        optVars.otherPhoneNumberComplete = `${otherPhoneNumberPart1}${otherPhoneNumberPart2}${otherPhoneNumberPart3}`;
+    
+        optVars.canWeVoicemailMobile = getCheckedRadioButtonValue('mobileVoicemailPermissionYesRadio');
+        optVars.canWeText = getCheckedRadioButtonValue('textPermissionYesRadio');
+        optVars.canWeVoicemailHome = getCheckedRadioButtonValue('homeVoicemailPermissionYesRadio');
+        optVars.canWeVoicemailOther = getCheckedRadioButtonValue('otherVoicemailPermissionYesRadio');
+    
+        const preferredEmail = document.getElementById('newPreferredEmail').value.toLowerCase().trim();
+        optVars.additionalEmail1 = document.getElementById('newadditionalEmail1').value.toLowerCase().trim();
+        optVars.additionalEmail2 = document.getElementById('newadditionalEmail2').value.toLowerCase().trim();
+        
+          const { hasError, riskyEmails } = await validateContactInformation(optVars.mobilePhoneNumberComplete, optVars.homePhoneNumberComplete, preferredEmail, optVars.otherPhoneNumberComplete, optVars.additionalEmail1, optVars.additionalEmail2);
+          if (!hasError) {
+              const submit = () => {
+                  formVisBools.isContactInformationFormDisplayed = toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed);
+                  toggleButtonText();
+                  submitNewContactInformation(preferredEmail);
+              }
+              if (riskyEmails.length > 0) {
+                  showRiskyEmailWarningMyProfile(riskyEmails, submit)
+                  return
+              }
+              submit();
           }
-          if (riskyEmails.length > 0) {
-              showRiskyEmailWarningMyProfile(riskyEmails, submit)
-              return
-          }
-          submit();
-      }
-  });
+      });
+  }
 };
 
 
 const handleEditPreferredLanguageSection = () => {
-  btnObj.changePreferredLanguageButton.addEventListener('click', () => {
-    successMessageElement = hideSuccessMessage(successMessageElement);
-    formVisBools.isPreferredLanguageFormDisplayed = toggleElementVisibility(preferredLanguageElementArray, formVisBools.isPreferredLanguageFormDisplayed);
-    if (formVisBools.isPreferredLanguageFormDisplayed) {
-      toggleActiveForm(FormTypes.LANGUAGE);
-    }
-    toggleButtonText();
-  });
+  if (btnObj.changePreferredLanguageButton) {
+      btnObj.changePreferredLanguageButton.addEventListener('click', () => {
+        successMessageElement = hideSuccessMessage(successMessageElement);
+        formVisBools.isPreferredLanguageFormDisplayed = toggleElementVisibility(preferredLanguageElementArray, formVisBools.isPreferredLanguageFormDisplayed);
+        if (formVisBools.isPreferredLanguageFormDisplayed) {
+          toggleActiveForm(FormTypes.LANGUAGE);
+        }
+        toggleButtonText();
+      });
+  }
 
-  document.getElementById('changePreferredLanguageSubmit').addEventListener('click', e => {
-    const preferredLanguageField = document.getElementById('newpreferredLanguage');
-    const preferredLanguage = escapeHTML(preferredLanguageField.value.trim());
-    formVisBools.isPreferredLanguageFormDisplayed = toggleElementVisibility(preferredLanguageElementArray, formVisBools.isPreferredLanguageFormDisplayed);
-      toggleButtonText();
-      submitNewPreferredLanguage(preferredLanguage);
-  });
+  if (document.getElementById('changePreferredLanguageSubmit')) {
+      document.getElementById('changePreferredLanguageSubmit').addEventListener('click', e => {
+        const preferredLanguageField = document.getElementById('newpreferredLanguage');
+        const preferredLanguage = escapeHTML(preferredLanguageField.value.trim());
+        formVisBools.isPreferredLanguageFormDisplayed = toggleElementVisibility(preferredLanguageElementArray, formVisBools.isPreferredLanguageFormDisplayed);
+          toggleButtonText();
+          submitNewPreferredLanguage(preferredLanguage);
+      });
+  }
 };
 
 const submitNewPreferredLanguage = async (preferredLanguage) => {
@@ -589,56 +601,60 @@ const loadMailingAddressElements = () => {
 };
 
 const handleEditMailingAddressSection = () => {
-  btnObj.changeMailingAddressButton.addEventListener('click', () => {
-    successMessageElement = hideSuccessMessage(successMessageElement);
-    formVisBools.isMailingAddressFormDisplayed = toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed);
-    if (formVisBools.isMailingAddressFormDisplayed) {
-      toggleActiveForm(FormTypes.MAILING);
-      addEventAddressAutoComplete(1);
-    }
-    toggleButtonText();
-  });
-
-  document.getElementById('changeMailingAddressSubmit1').addEventListener('click', async (e) => {
-    const addressLine1 = escapeHTML(document.getElementById('UPAddress1Line1').value.trim());
-    const addressLine2 = escapeHTML(document.getElementById('UPAddress1Line2').value.trim());
-    const city = escapeHTML(document.getElementById('UPAddress1City').value.trim());
-    const state = escapeHTML(document.getElementById('UPAddress1State').value.trim());
-    const zip = escapeHTML(document.getElementById('UPAddress1Zip').value.trim());
-    const isPOBox = document.getElementById('poBoxCheckbox').checked;
-
-    const {hasError, uspsSuggestion} = await validateMailingAddress(1, addressLine1, city, state, zip);
-
-    if (!hasError) {
-      const submitNewAddress = (addressLine1, addressLine2, city, state, zip) => {
-        formVisBools.isMailingAddressFormDisplayed = toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed);
-        toggleButtonText();
-        submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isPOBox);
-        document.getElementById(`UPAddress1Line1`).value = "";
-        document.getElementById(`UPAddress1Line2`).value = "";
-        document.getElementById(`UPAddress1City`).value = "";
-        document.getElementById(`UPAddress1State`).value = "";
-        document.getElementById(`UPAddress1Zip`).value = "";
+  if (btnObj.changeMailingAddressButton) {
+    btnObj.changeMailingAddressButton.addEventListener('click', () => {
+      successMessageElement = hideSuccessMessage(successMessageElement);
+      formVisBools.isMailingAddressFormDisplayed = toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed);
+      if (formVisBools.isMailingAddressFormDisplayed) {
+        toggleActiveForm(FormTypes.MAILING);
+        addEventAddressAutoComplete(1);
       }
-      if (uspsSuggestion.suggestion) {
-          showMailAddressSuggestionMyProfile(
-              uspsSuggestion,
-              'event.addressSuggestionDescription',
-              (streetAddress, secondaryAddress, city, state, zipCode) => {
-                  submitNewAddress(
-                      streetAddress,
-                      secondaryAddress,
-                      city,
-                      state,
-                      zipCode
-                  );
-              }
-          );
-      } else {
-          submitNewAddress(addressLine1, addressLine2, city, state, zip);
-      }
-    }
-  });
+      toggleButtonText();
+    });
+  }
+
+  if (document.getElementById('changeMailingAddressSubmit1')) {
+      document.getElementById('changeMailingAddressSubmit1').addEventListener('click', async (e) => {
+        const addressLine1 = escapeHTML(document.getElementById('UPAddress1Line1').value.trim());
+        const addressLine2 = escapeHTML(document.getElementById('UPAddress1Line2').value.trim());
+        const city = escapeHTML(document.getElementById('UPAddress1City').value.trim());
+        const state = escapeHTML(document.getElementById('UPAddress1State').value.trim());
+        const zip = escapeHTML(document.getElementById('UPAddress1Zip').value.trim());
+        const isPOBox = document.getElementById('poBoxCheckbox').checked;
+    
+        const {hasError, uspsSuggestion} = await validateMailingAddress(1, addressLine1, city, state, zip);
+    
+        if (!hasError) {
+          const submitNewAddress = (addressLine1, addressLine2, city, state, zip) => {
+            formVisBools.isMailingAddressFormDisplayed = toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed);
+            toggleButtonText();
+            submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isPOBox);
+            document.getElementById(`UPAddress1Line1`).value = "";
+            document.getElementById(`UPAddress1Line2`).value = "";
+            document.getElementById(`UPAddress1City`).value = "";
+            document.getElementById(`UPAddress1State`).value = "";
+            document.getElementById(`UPAddress1Zip`).value = "";
+          }
+          if (uspsSuggestion.suggestion) {
+              showMailAddressSuggestionMyProfile(
+                  uspsSuggestion,
+                  'event.addressSuggestionDescription',
+                  (streetAddress, secondaryAddress, city, state, zipCode) => {
+                      submitNewAddress(
+                          streetAddress,
+                          secondaryAddress,
+                          city,
+                          state,
+                          zipCode
+                      );
+                  }
+              );
+          } else {
+              submitNewAddress(addressLine1, addressLine2, city, state, zip);
+          }
+        }
+      });
+  }
 };
 
 const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, isPOBox = false) => {
@@ -678,80 +694,88 @@ const loadPhysicalMailingAddressElements = () => {
   };
 
 const handleEditPhysicalMailingAddressSection = () => {
-  btnObj.changePhysicalMailingAddressButton.addEventListener('click', () => {
-    successMessageElement = hideSuccessMessage(successMessageElement);
-    formVisBools.isPhysicalMailingAddressFormDisplayed = toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed);
-    if (formVisBools.isPhysicalMailingAddressFormDisplayed) {
-      toggleActiveForm(FormTypes.PHYSICAL_MAILING);
-      addEventAddressAutoComplete(2);
-    }
-    toggleButtonText();
-  });
-
-  document.getElementById('changeMailingAddressSubmit2').addEventListener('click', async (e) => {
-    const addressLine1 = escapeHTML(document.getElementById('UPAddress2Line1').value.trim());
-    const addressLine2 = escapeHTML(document.getElementById('UPAddress2Line2').value.trim());
-    const city = escapeHTML(document.getElementById('UPAddress2City').value.trim());
-    const state = escapeHTML(document.getElementById('UPAddress2State').value.trim());
-    const zip = escapeHTML(document.getElementById('UPAddress2Zip').value.trim());
-
-    const {hasError, uspsSuggestion} = await validateMailingAddress(2, addressLine1, city, state, zip);
-    
-    if (!hasError) {
-      const submitNewAddress = (addressLine1, addressLine2, city, state, zip) => {
-        formVisBools.isPhysicalMailingAddressFormDisplayed = toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed);
-        toggleButtonText();
-        submitNewMailingAddress(
-            2,
-            addressLine1,
-            addressLine2,
-            city,
-            state,
-            zip,
-            true
-        );
-        document.getElementById(`UPAddress2Line1`).value = "";
-        document.getElementById(`UPAddress2Line2`).value = "";
-        document.getElementById(`UPAddress2City`).value = "";
-        document.getElementById(`UPAddress2State`).value = "";
-        document.getElementById(`UPAddress2Zip`).value = "";
+  if (btnObj.changePhysicalMailingAddressButton) {
+    btnObj.changePhysicalMailingAddressButton.addEventListener('click', () => {
+      successMessageElement = hideSuccessMessage(successMessageElement);
+      formVisBools.isPhysicalMailingAddressFormDisplayed = toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed);
+      if (formVisBools.isPhysicalMailingAddressFormDisplayed) {
+        toggleActiveForm(FormTypes.PHYSICAL_MAILING);
+        addEventAddressAutoComplete(2);
       }
-      if (uspsSuggestion.suggestion) {
-        showMailAddressSuggestionMyProfile(
-            uspsSuggestion,
-            'event.addressSuggestionDescriptionPhysical',
-            (streetAddress, secondaryAddress, city, state, zipCode) => {
-                submitNewAddress(
-                    streetAddress,
-                    secondaryAddress,
-                    city,
-                    state,
-                    zipCode
-                );
-            }
-        );
-    } else {
-        submitNewAddress(addressLine1, addressLine2, city, state, zip);
-    }
+      toggleButtonText();
+    });
+  }
 
-    }
-  });
+  if (document.getElementById('changeMailingAddressSubmit2')) {
+      document.getElementById('changeMailingAddressSubmit2').addEventListener('click', async (e) => {
+        const addressLine1 = escapeHTML(document.getElementById('UPAddress2Line1').value.trim());
+        const addressLine2 = escapeHTML(document.getElementById('UPAddress2Line2').value.trim());
+        const city = escapeHTML(document.getElementById('UPAddress2City').value.trim());
+        const state = escapeHTML(document.getElementById('UPAddress2State').value.trim());
+        const zip = escapeHTML(document.getElementById('UPAddress2Zip').value.trim());
+    
+        const {hasError, uspsSuggestion} = await validateMailingAddress(2, addressLine1, city, state, zip);
+        
+        if (!hasError) {
+          const submitNewAddress = (addressLine1, addressLine2, city, state, zip) => {
+            formVisBools.isPhysicalMailingAddressFormDisplayed = toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed);
+            toggleButtonText();
+            submitNewMailingAddress(
+                2,
+                addressLine1,
+                addressLine2,
+                city,
+                state,
+                zip,
+                true
+            );
+            document.getElementById(`UPAddress2Line1`).value = "";
+            document.getElementById(`UPAddress2Line2`).value = "";
+            document.getElementById(`UPAddress2City`).value = "";
+            document.getElementById(`UPAddress2State`).value = "";
+            document.getElementById(`UPAddress2Zip`).value = "";
+          }
+          if (uspsSuggestion.suggestion) {
+            showMailAddressSuggestionMyProfile(
+                uspsSuggestion,
+                'event.addressSuggestionDescriptionPhysical',
+                (streetAddress, secondaryAddress, city, state, zipCode) => {
+                    submitNewAddress(
+                        streetAddress,
+                        secondaryAddress,
+                        city,
+                        state,
+                        zipCode
+                    );
+                }
+            );
+        } else {
+            submitNewAddress(addressLine1, addressLine2, city, state, zip);
+        }
+    
+        }
+      });
+  }
 };
 
 const handleClearPhysicalAddress = () => {
-    document.getElementById('clearPhysicalAddrBtn').addEventListener('click', async (e) => {
-        showClearAddressConfirmation(() => {
-            submitNewMailingAddress(2, "", "", "", "", "")
+    if (document.getElementById('clearPhysicalAddrBtn')) {
+        document.getElementById('clearPhysicalAddrBtn').addEventListener('click', async (e) => {
+            showClearAddressConfirmation(() => {
+                submitNewMailingAddress(2, "", "", "", "", "")
+            })
         })
-    })
+    }
 }
 
 const handleClearAlternateAddress = () => {
-    document.getElementById('clearAlternateAddrBtn').addEventListener('click', async (e) => {
-        showClearAddressConfirmation(() => {
-            submitNewMailingAddress(3, "", "", "", "", "")
+    if (document.getElementById('clearAlternateAddrBtn')) {
+        document.getElementById('clearAlternateAddrBtn').addEventListener('click', async (e) => {
+            showClearAddressConfirmation(() => {
+                submitNewMailingAddress(3, "", "", "", "", "")
+            })
         })
-    })
+    }
 }
 
 const loadAltAddressElements = () => {
@@ -760,65 +784,69 @@ const loadAltAddressElements = () => {
 }
 
 const handleEditAltAddressSection = () => {
-    btnObj.changeAltAddressButton.addEventListener('click', () => {
-        successMessageElement = hideSuccessMessage(successMessageElement);
-        formVisBools.isAltAddressFormDisplayed = toggleElementVisibility(altAddressElementArray, formVisBools.isAltAddressFormDisplayed);
-        if (formVisBools.isAltAddressFormDisplayed) {
-            toggleActiveForm(FormTypes.ALT_ADDRESS);
-            addEventAddressAutoComplete(3);
-        }
-        toggleButtonText();
-    });
-
-    document.getElementById('changeMailingAddressSubmit3').addEventListener('click', async () => {
-        const altAddressLine1 = escapeHTML(document.getElementById('UPAddress3Line1').value.trim());
-        const altAddressLine2 = escapeHTML(document.getElementById('UPAddress3Line2').value.trim());
-        const altCity = escapeHTML(document.getElementById('UPAddress3City').value.trim());
-        const altState = escapeHTML(document.getElementById('UPAddress3State').value.trim());
-        const altZip = escapeHTML(document.getElementById('UPAddress3Zip').value.trim());
-        const altAddressIsPOBox = document.getElementById("poBoxCheckboxAltAddress")?.checked;
-
-        const { hasError, uspsSuggestion } = await validateMailingAddress(3, altAddressLine1, altCity, altState, altZip);
-
-        if (!hasError) {
-            const submitNewAddress = async (addressLine1, addressLine2, city, state, zip) => {
-                formVisBools.isAltAddressFormDisplayed = toggleElementVisibility(altAddressElementArray, formVisBools.isAltAddressFormDisplayed);
-                toggleButtonText();
-                await submitNewMailingAddress(
-                    3,
-                    addressLine1,
-                    addressLine2,
-                    city,
-                    state,
-                    zip,
-                    altAddressIsPOBox
-                );
-                document.getElementById(`UPAddress3Line1`).value = "";
-                document.getElementById(`UPAddress3Line2`).value = "";
-                document.getElementById(`UPAddress3City`).value = "";
-                document.getElementById(`UPAddress3State`).value = "";
-                document.getElementById(`UPAddress3Zip`).value = "";
+    if (btnObj.changeAltAddressButton) {
+        btnObj.changeAltAddressButton.addEventListener('click', () => {
+            successMessageElement = hideSuccessMessage(successMessageElement);
+            formVisBools.isAltAddressFormDisplayed = toggleElementVisibility(altAddressElementArray, formVisBools.isAltAddressFormDisplayed);
+            if (formVisBools.isAltAddressFormDisplayed) {
+                toggleActiveForm(FormTypes.ALT_ADDRESS);
+                addEventAddressAutoComplete(3);
             }
-            if (uspsSuggestion.suggestion) {
-                showMailAddressSuggestionMyProfile(
-                    uspsSuggestion,
-                    'event.addressSuggestionDescriptionAlternate',
-                    (streetAddress, secondaryAddress, city, state, zipCode) => {
-                        submitNewAddress(
-                            streetAddress,
-                            secondaryAddress,
-                            city,
-                            state,
-                            zipCode
-                        );
-                    }
-                );
-            } else {
-                await submitNewAddress(altAddressLine1, altAddressLine2, altCity, altState, altZip);
-            }
+            toggleButtonText();
+        });
+    }
 
-        }
-    });
+    if (document.getElementById('changeMailingAddressSubmit3')) {
+        document.getElementById('changeMailingAddressSubmit3').addEventListener('click', async () => {
+            const altAddressLine1 = escapeHTML(document.getElementById('UPAddress3Line1').value.trim());
+            const altAddressLine2 = escapeHTML(document.getElementById('UPAddress3Line2').value.trim());
+            const altCity = escapeHTML(document.getElementById('UPAddress3City').value.trim());
+            const altState = escapeHTML(document.getElementById('UPAddress3State').value.trim());
+            const altZip = escapeHTML(document.getElementById('UPAddress3Zip').value.trim());
+            const altAddressIsPOBox = document.getElementById("poBoxCheckboxAltAddress")?.checked;
+    
+            const { hasError, uspsSuggestion } = await validateMailingAddress(3, altAddressLine1, altCity, altState, altZip);
+    
+            if (!hasError) {
+                const submitNewAddress = async (addressLine1, addressLine2, city, state, zip) => {
+                    formVisBools.isAltAddressFormDisplayed = toggleElementVisibility(altAddressElementArray, formVisBools.isAltAddressFormDisplayed);
+                    toggleButtonText();
+                    await submitNewMailingAddress(
+                        3,
+                        addressLine1,
+                        addressLine2,
+                        city,
+                        state,
+                        zip,
+                        altAddressIsPOBox
+                    );
+                    document.getElementById(`UPAddress3Line1`).value = "";
+                    document.getElementById(`UPAddress3Line2`).value = "";
+                    document.getElementById(`UPAddress3City`).value = "";
+                    document.getElementById(`UPAddress3State`).value = "";
+                    document.getElementById(`UPAddress3Zip`).value = "";
+                }
+                if (uspsSuggestion.suggestion) {
+                    showMailAddressSuggestionMyProfile(
+                        uspsSuggestion,
+                        'event.addressSuggestionDescriptionAlternate',
+                        (streetAddress, secondaryAddress, city, state, zipCode) => {
+                            submitNewAddress(
+                                streetAddress,
+                                secondaryAddress,
+                                city,
+                                state,
+                                zipCode
+                            );
+                        }
+                    );
+                } else {
+                    await submitNewAddress(altAddressLine1, altAddressLine2, altCity, altState, altZip);
+                }
+    
+            }
+        });
+    }
 };
 
 const loadAltContactElements = () => {
@@ -837,55 +865,59 @@ const loadAltContactElements = () => {
 };
 
 const handleEditAltContactSection = () => {
-    btnObj.changeAltContactInfoButton.addEventListener('click', () => {
-        successMessageElement = hideSuccessMessage(successMessageElement);
-        formVisBools.isAltContactInfoFormDisplayed = toggleElementVisibility(altContactElementArray, formVisBools.isAltContactInfoFormDisplayed);
-        if (formVisBools.isAltContactInfoFormDisplayed) {
-            hideOptionalElementsOnShowForm([optRowEles.altContactFirstNameRow, optRowEles.altContactLastNameRow, optRowEles.altContactMobilePhoneRow, optRowEles.altContactHomePhoneRow, optRowEles.altContactEmailRow]);
-            toggleActiveForm(FormTypes.ALT_CONTACT);
-        }
-        toggleButtonText();
-        updatePhoneNumberInputFocus(FormTypes.ALT_CONTACT);
-    });
-
-    document.getElementById('changeAltContactInformationSubmit').addEventListener('click', async () => {
-        optVars.altContactFirstName = document.getElementById('newAltContactFirstNameField')?.value?.trim() || '';
-        optVars.altContactLastName = document.getElementById('newAltContactLastNameField')?.value?.trim() || '';
-
-        const altContactMobilePhonePart1 = document.getElementById('altContactMobilePhoneNumber1')?.value;
-        const altContactMobilePhonePart2 = document.getElementById('altContactMobilePhoneNumber2')?.value;
-        const altContactMobilePhonePart3 = document.getElementById('altContactMobilePhoneNumber3')?.value;
-        optVars.altContactMobilePhoneNumberComplete = `${altContactMobilePhonePart1}${altContactMobilePhonePart2}${altContactMobilePhonePart3}`;
-
-        const altContactHomePhonePart1 = document.getElementById('altContactHomePhoneNumber1')?.value;
-        const altContactHomePhonePart2 = document.getElementById('altContactHomePhoneNumber2')?.value;
-        const altContactHomePhonePart3 = document.getElementById('altContactHomePhoneNumber3')?.value;
-        optVars.altContactHomePhoneNumberComplete = `${altContactHomePhonePart1}${altContactHomePhonePart2}${altContactHomePhonePart3}`;
-
-        optVars.altContactEmail = document.getElementById('newAltContactEmail')?.value?.toLowerCase().trim();
-
-        const { hasError, riskyEmails } = await validateAltContactInformation(
-            optVars.altContactMobilePhoneNumberComplete,
-            optVars.altContactHomePhoneNumberComplete,
-            optVars.altContactEmail
-        );
-        if (!hasError) {
-            const submit = () => {
-                formVisBools.isAltContactInfoFormDisplayed =
-                    toggleElementVisibility(
-                        altContactElementArray,
-                        formVisBools.isAltContactInfoFormDisplayed
-                    );
-                toggleButtonText();
-                submitNewAltContactInformation();
-            };
-            if (riskyEmails.length > 0) {
-                showRiskyEmailWarningMyProfile(riskyEmails, submit);
-                return;
+    if (btnObj.changeAltContactInfoButton) {
+        btnObj.changeAltContactInfoButton.addEventListener('click', () => {
+            successMessageElement = hideSuccessMessage(successMessageElement);
+            formVisBools.isAltContactInfoFormDisplayed = toggleElementVisibility(altContactElementArray, formVisBools.isAltContactInfoFormDisplayed);
+            if (formVisBools.isAltContactInfoFormDisplayed) {
+                hideOptionalElementsOnShowForm([optRowEles.altContactFirstNameRow, optRowEles.altContactLastNameRow, optRowEles.altContactMobilePhoneRow, optRowEles.altContactHomePhoneRow, optRowEles.altContactEmailRow]);
+                toggleActiveForm(FormTypes.ALT_CONTACT);
             }
-            submit();
-        }
-    });
+            toggleButtonText();
+            updatePhoneNumberInputFocus(FormTypes.ALT_CONTACT);
+        });
+    }
+
+    if (document.getElementById('changeAltContactInformationSubmit')) {
+        document.getElementById('changeAltContactInformationSubmit').addEventListener('click', async () => {
+            optVars.altContactFirstName = document.getElementById('newAltContactFirstNameField')?.value?.trim() || '';
+            optVars.altContactLastName = document.getElementById('newAltContactLastNameField')?.value?.trim() || '';
+    
+            const altContactMobilePhonePart1 = document.getElementById('altContactMobilePhoneNumber1')?.value;
+            const altContactMobilePhonePart2 = document.getElementById('altContactMobilePhoneNumber2')?.value;
+            const altContactMobilePhonePart3 = document.getElementById('altContactMobilePhoneNumber3')?.value;
+            optVars.altContactMobilePhoneNumberComplete = `${altContactMobilePhonePart1}${altContactMobilePhonePart2}${altContactMobilePhonePart3}`;
+    
+            const altContactHomePhonePart1 = document.getElementById('altContactHomePhoneNumber1')?.value;
+            const altContactHomePhonePart2 = document.getElementById('altContactHomePhoneNumber2')?.value;
+            const altContactHomePhonePart3 = document.getElementById('altContactHomePhoneNumber3')?.value;
+            optVars.altContactHomePhoneNumberComplete = `${altContactHomePhonePart1}${altContactHomePhonePart2}${altContactHomePhonePart3}`;
+    
+            optVars.altContactEmail = document.getElementById('newAltContactEmail')?.value?.toLowerCase().trim();
+    
+            const { hasError, riskyEmails } = await validateAltContactInformation(
+                optVars.altContactMobilePhoneNumberComplete,
+                optVars.altContactHomePhoneNumberComplete,
+                optVars.altContactEmail
+            );
+            if (!hasError) {
+                const submit = () => {
+                    formVisBools.isAltContactInfoFormDisplayed =
+                        toggleElementVisibility(
+                            altContactElementArray,
+                            formVisBools.isAltContactInfoFormDisplayed
+                        );
+                    toggleButtonText();
+                    submitNewAltContactInformation();
+                };
+                if (riskyEmails.length > 0) {
+                    showRiskyEmailWarningMyProfile(riskyEmails, submit);
+                    return;
+                }
+                submit();
+            }
+        });
+    }
 };
 
 const submitNewAltContactInformation = async () => {
@@ -1127,22 +1159,22 @@ const toggleActiveForm = clickedFormType => {
 }
 
 export const toggleButtonText = () => {
-  btnObj.changeNameButton.textContent = formVisBools.isNameFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateName');
-  btnObj.changeNameButton.setAttribute('data-i18n', formVisBools.isNameFormDisplayed ? 'settings.cancel' : 'settings.updateName');
-  btnObj.changeContactInformationButton.textContent = formVisBools.isContactInformationFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateContactText');
-  btnObj.changeContactInformationButton.setAttribute('data-i18n',formVisBools.isContactInformationFormDisplayed ? 'settings.cancel' : 'settings.updateContactText');
-  btnObj.changePreferredLanguageButton.textContent = formVisBools.isPreferredLanguageFormDisplayed ? translateText('settings.cancel') : translateText('settings.updatePreferredLanguage');
-  btnObj.changePreferredLanguageButton.setAttribute('data-i18n',formVisBools.isPreferredLanguageFormDisplayed ? 'settings.cancel' : 'settings.updatePreferredLanguage');
-  btnObj.changeMailingAddressButton.textContent = formVisBools.isMailingAddressFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateAddress');
-  btnObj.changeMailingAddressButton.setAttribute('data-i18n',formVisBools.isMailingAddressFormDisplayed ? 'settings.cancel' : 'settings.updateAddress');
-  btnObj.changePhysicalMailingAddressButton.textContent = formVisBools.isPhysicalMailingAddressFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateAddress');
-  btnObj.changePhysicalMailingAddressButton.setAttribute('data-i18n',formVisBools.isPhysicalMailingAddressFormDisplayed ? 'settings.cancel' : 'settings.updateAddress');
-  btnObj.changeAltAddressButton.textContent = formVisBools.isAltAddressFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateAddress');
-  btnObj.changeAltAddressButton.setAttribute('data-i18n',formVisBools.isAltAddressFormDisplayed ? 'settings.cancel' : 'settings.updateAddress');
-  btnObj.changeAltContactInfoButton.textContent = formVisBools.isAltContactInfoFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateContact');
-  btnObj.changeAltContactInfoButton.setAttribute('data-i18n',formVisBools.isAltContactInfoFormDisplayed ? 'settings.cancel' : 'settings.updateContact');
-  btnObj.changeLoginButton.textContent = formVisBools.isLoginFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateSignIn');
-  btnObj.changeLoginButton.setAttribute('data-i18n', formVisBools.isLoginFormDisplayed ? 'settings.cancel' : 'settings.updateSignIn');
+  if ( btnObj.changeNameButton ) { btnObj.changeNameButton.textContent = formVisBools.isNameFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateName'); }
+  if ( btnObj.changeNameButton ) { btnObj.changeNameButton.setAttribute('data-i18n', formVisBools.isNameFormDisplayed ? 'settings.cancel' : 'settings.updateName'); }
+  if ( btnObj.changeContactInformationButton ) { btnObj.changeContactInformationButton.textContent = formVisBools.isContactInformationFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateContactText'); }
+  if ( btnObj.changeContactInformationButton ) { btnObj.changeContactInformationButton.setAttribute('data-i18n',formVisBools.isContactInformationFormDisplayed ? 'settings.cancel' : 'settings.updateContactText'); }
+  if ( btnObj.changePreferredLanguageButton ) { btnObj.changePreferredLanguageButton.textContent = formVisBools.isPreferredLanguageFormDisplayed ? translateText('settings.cancel') : translateText('settings.updatePreferredLanguage'); }
+  if ( btnObj.changePreferredLanguageButton ) { btnObj.changePreferredLanguageButton.setAttribute('data-i18n',formVisBools.isPreferredLanguageFormDisplayed ? 'settings.cancel' : 'settings.updatePreferredLanguage'); }
+  if ( btnObj.changeMailingAddressButton ) { btnObj.changeMailingAddressButton.textContent = formVisBools.isMailingAddressFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateAddress'); }
+  if ( btnObj.changeMailingAddressButton ) { btnObj.changeMailingAddressButton.setAttribute('data-i18n',formVisBools.isMailingAddressFormDisplayed ? 'settings.cancel' : 'settings.updateAddress'); }
+  if ( btnObj.changePhysicalMailingAddressButton ) { btnObj.changePhysicalMailingAddressButton.textContent = formVisBools.isPhysicalMailingAddressFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateAddress'); }
+  if ( btnObj.changePhysicalMailingAddressButton ) { btnObj.changePhysicalMailingAddressButton.setAttribute('data-i18n',formVisBools.isPhysicalMailingAddressFormDisplayed ? 'settings.cancel' : 'settings.updateAddress'); }
+  if ( btnObj.changeAltAddressButton ) { btnObj.changeAltAddressButton.textContent = formVisBools.isAltAddressFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateAddress'); }
+  if ( btnObj.changeAltAddressButton ) { btnObj.changeAltAddressButton.setAttribute('data-i18n',formVisBools.isAltAddressFormDisplayed ? 'settings.cancel' : 'settings.updateAddress'); }
+  if ( btnObj.changeAltContactInfoButton ) { btnObj.changeAltContactInfoButton.textContent = formVisBools.isAltContactInfoFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateContact'); }
+  if ( btnObj.changeAltContactInfoButton ) { btnObj.changeAltContactInfoButton.setAttribute('data-i18n',formVisBools.isAltContactInfoFormDisplayed ? 'settings.cancel' : 'settings.updateContact'); }
+  if ( btnObj.changeLoginButton ) { btnObj.changeLoginButton.textContent = formVisBools.isLoginFormDisplayed ? translateText('settings.cancel') : translateText('settings.updateSignIn'); }
+  if ( btnObj.changeLoginButton ) { btnObj.changeLoginButton.setAttribute('data-i18n', formVisBools.isLoginFormDisplayed ? 'settings.cancel' : 'settings.updateSignIn'); }
 };
 
 const refreshUserDataAfterEdit = async () => {
