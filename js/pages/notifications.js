@@ -1,10 +1,13 @@
 import { retrieveNotifications, showAnimation, hideAnimation, translateHTML, translateText } from "../shared.js";
+import {addMessageCounterToNavBar} from "../components/navbar.js";
 
 
 export const renderNotificationsPage = async () => {
     document.title = translateText('notifications.title');
     showAnimation();
-    const notifs = await retrieveNotifications();
+    const notifs = await retrieveNotifications(true);
+    addMessageCounterToNavBar();
+    
 
     let template = `
         <div class="row">
