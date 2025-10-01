@@ -1,9 +1,9 @@
-import { allocateDHQ3Credential, hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML, translateText, getAdjustedTime, getAppSettings, logDDRumError, reportConfiguration, setReportAttributes, updateStartDHQParticipantData } from "../shared.js";
+import { allocateDHQ3Credential, hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML, translateText, getAdjustedTime, getAppSettings, logDDRumError, reportConfiguration, setReportAttributes, updateStartDHQParticipantData, sitesNotEnrolling } from "../shared.js";
 import { blockParticipant, questionnaire } from "./questionnaire.js";
 import { renderUserProfile } from "../components/form.js";
 import { consentTemplate } from "./consent.js";
 import { addEventHeardAboutStudy, addEventRequestPINForm, addEventHealthCareProviderSubmit, addEventPinAutoUpperCase, addEventHealthProviderModalSubmit, addEventToggleSubmit, storeParameters } from "../event.js";
-import { heardAboutStudy, requestPINTemplate, healthCareProvider } from "./healthCareProvider.js";
+import { heardAboutStudy, requestPINTemplate, healthCareProvider, noLongerEnrollingRender } from "./healthCareProvider.js";
 import fieldMapping from '../fieldToConceptIdMapping.js';
 
 export const renderDashboard = async (data, fromUserProfile, collections) => {
@@ -104,6 +104,7 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                                 topMessage += '';
                             }
                         }
+
                     }
                     else {
                         topMessage += `
@@ -197,6 +198,24 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                     hideAnimation();
                     return;
                 }
+                else if (data[fieldMapping.verification] && data[fieldMapping.verification] == fieldMapping.noLongerEnrolling) {
+                    noLongerEnrollingRender(data[fieldMapping.healthcareProvider]);
+                    return;
+                }
+                if ((!data['updatesSeen'] || data['updatesSeen'] !== true) && topMessage.trim() === "") {
+                    topMessage += `
+                            <span data-i18n="mytodolist.newUpdates"><span style="font-weight: bold">We've Updated MyConnect!</span><br>
+                                You may notice things look a little different here. While nothing about the study has changed, we've made some design improvements to give MyConnect a fresh new look and make it easier navigate.
+                                <br><br>
+                                We’ll be rolling out other design updates over the next few months, so stay tuned for even more improvements! If you have any questions about the changes, feel free to contact our team at the Connect Support Center (hyperlink CSC with MyConnect.cancer.gov/support).
+                                <br><br>
+                                We hope you enjoy the new experience!
+                            </span>
+                        `
+                        let formData = {};
+                        formData['updatesSeen'] = true;
+                        storeResponse(formData);
+                }
 
                 const surveyMessage = await checkForNewSurveys(data, collections);
 
@@ -224,20 +243,33 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                 hideAnimation();
                 return;
             }
-            renderUserProfile();
+
+            if (sitesNotEnrolling()[data[fieldMapping.healthcareProvider]]) {
+                noLongerEnrollingRender(data[fieldMapping.healthcareProvider]);
+            } else {
+                renderUserProfile();
+            }
             hideAnimation();
             return;
         }
 
-        consentTemplate();
+        if (sitesNotEnrolling()[data[fieldMapping.healthcareProvider]]) {
+            noLongerEnrollingRender(data[fieldMapping.healthcareProvider]);
+        } else {
+            consentTemplate();
+        }
         hideAnimation();
         return;
     }
     // Completed healthcareProvider form. Did not complete heardAboutStudy form.
     else if (data[fieldMapping.healthcareProvider] && !data[fieldMapping.heardAboutStudyForm] && !isParticipantDataDestroyed(data)) {
-        mainContent.innerHTML = heardAboutStudy();
-        addEventHeardAboutStudy();
-        hideAnimation();
+        if (sitesNotEnrolling()[data[fieldMapping.healthcareProvider]]) {
+            noLongerEnrollingRender(data[fieldMapping.healthcareProvider]);
+        } else {
+            mainContent.innerHTML = heardAboutStudy();
+            addEventHeardAboutStudy();
+            hideAnimation();
+        }
     }
     // Completed PIN entry form by either entering a PIN number or specifying no PIN number (passive recruit).
     else if (data[fieldMapping.pinNumber] || data[fieldMapping.dontHavePinNumber] === fieldMapping.yes) {
@@ -283,12 +315,11 @@ const renderWelcomeHeader = (data) => {
 }
 
 const renderMainBody = async (data, collections) => {
-    let template = `<div class="container">
+    let template = `<div class="container connect-container">
         <div class="row gy-3">
             ${await renderSurveysCard(data, collections)}
             ${renderSamplesCard(data)}
             ${await renderReportsCard(data)}
-            ${renderFormsCard(data)}
             ${renderPaymentCard(data)}
         </div>
     </div>`;
@@ -360,7 +391,7 @@ const renderCard = (icon, type, href, newFlag) => {
             </div>
             <div class="card-body">
                 <div>
-                    <img class="card-icon" src="${icon}" />
+                    <img class="card-icon" src="${icon}" alt="" />
                 </div>
                 <div class="card-title" data-i18n="dashboard.${type}Title">
                     Card Header Here!

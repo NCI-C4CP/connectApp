@@ -13,7 +13,9 @@ export default
     "consentDate": 454445267,
     "consentWithdrawn": 747006172,
     "revokeHipaa": 773707518,
+    "dataDestructionSignedDT": 119449326,
     "hipaaRevocationSigned": 153713899,
+    "hipaaRevocationSignedDT": 613641698,
     "destroyData": 831041022,
     "destroyDataSigned": 359404406,
     "suffix": 506826178,
@@ -83,6 +85,7 @@ export default
     "cannotBeVerified": 219863910,
     "duplicate": 922622075,
     "outreachTimedOut": 160161595,
+    "noLongerEnrolling": 290379732,
 
     "verifiedDate": 914594314,
     "firebaseAuthEmail": 421823980,

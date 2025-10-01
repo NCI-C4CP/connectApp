@@ -1,7 +1,7 @@
 import { todaysDate, storeResponse, dataSavingBtn, dateTime, errorMessageConsent, siteAcronyms, getMyData, hasUserData, isMobile, openNewTab, languageSuffix, getSelectedLanguage, translateHTML, translateText, validNameFormat} from "../shared.js";
 import { renderUserProfile } from "../components/form.js";
 import { removeAllErrors } from "../event.js";
-import { downloadSignedPdf } from "./agreements.js";
+import { addEventDownloadSignedConsentAndHipaa } from "./agreements.js";
 import { heardAboutStudy } from "./healthCareProvider.js";
 import {addEventHeardAboutStudy} from "../event.js";
 import fieldMapping from "../fieldToConceptIdMapping.js";
@@ -797,20 +797,7 @@ export const consentFinishedPage = async () => {
         consentToProfilePage();
     })
 
-    const anchorIdArray= ['consentDownload', 'healthRecordsDownload'];
-    for (const anchorId of anchorIdArray) {
-      const anchorElement = document.getElementById(anchorId);
-      if (!anchorElement) continue;
-
-      anchorElement.addEventListener('click', async (e) => {
-        await downloadSignedPdf(data, e);
-      });
-
-      // Handle touch events in iPhone/iPad
-      anchorElement.addEventListener('touchend', (e) => {
-        anchorElement.click();
-      });
-    }
+    addEventDownloadSignedConsentAndHipaa(["consentDownload", "healthRecordsDownload"], data);
 }
 
 export const consentToProfilePage = () => {
@@ -1050,8 +1037,8 @@ const consentSubmit = async e => {
     formData['query.firstName'] = [CSFirstName.value.trim().toLowerCase()];
     formData['query.lastName'] = [CSLastName.value.trim().toLowerCase()];
     formData[fieldMapping.consentSubmitted] = fieldMapping.yes;
-    formData['454445267'] = dateTime();
-    formData['262613359'] = dateTime();
+    formData[fieldMapping.consentDate] = dateTime();
+    formData[fieldMapping.hipaaTimestamp] = dateTime();
     formData['558435199'] = 353358909;
     //consent and hipaa forms
     let siteDict = siteAcronyms();
