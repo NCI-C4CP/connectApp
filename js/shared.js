@@ -1639,6 +1639,14 @@ export const questionnaireModules = () => {
                 moduleId: "DHQ3",
                 enabled: false,
             },
+            '2025 Return of Results Preference Survey': {
+                path: {
+                    en: 'prod/module2025ROIPreferencesStage.txt',
+                    es: 'prod/module2025ROIPreferencesStageSpanish.txt'
+                },
+                moduleId: "ROIPreference2025",
+                enabled: false
+            },
         }
     }
 
@@ -1751,6 +1759,14 @@ export const questionnaireModules = () => {
             },
             moduleId: "DHQ3",
             enabled: false,
+        },
+        '2025 Return of Results Preference Survey': {
+            path: {
+                en: 'module2025ROIPreferencesStage.txt',
+                es: 'module2025ROIPreferencesStageSpanish.txt'
+            },
+            moduleId: "ROIPreference2025",
+            enabled: false
         },
     };
 }
@@ -3210,4 +3226,302 @@ export const getNestedProperty = (obj, path) => {
     return path.split('.').reduce((current, key) => {
         return current?.[key];
     }, obj);
+};
+
+/**
+ * Set module attributes for the modules object based on participant data and collections.
+ * @param {*} data - Participant data object.
+ * @param {*} modules - Modules object to update.
+ * @param {*} collections - Collections object for additional data.
+ * @returns 
+ */
+export const setModuleAttributes = async (data, modules, collections) => {
+    modules['First Survey'] = {};
+    modules['First Survey'].description = 'mytodolist.mainHeaderFirstSurveyDescription';
+    modules['First Survey'].hasIcon = false;
+    modules['First Survey'].noButton = true;
+    
+    modules['Background and Overall Health'].header = 'Background and Overall Health'; 
+    modules['Background and Overall Health'].description = 'mytodolist.mainBodyBackgroundDescription';
+    modules['Background and Overall Health'].estimatedTime = 'mytodolist.20_30minutes';
+    
+    modules['Medications, Reproductive Health, Exercise, and Sleep'].header = 'Medications, Reproductive Health, Exercise, and Sleep'; 
+    modules['Medications, Reproductive Health, Exercise, and Sleep'].description = 'mytodolist.mainBodyMedicationsDescription';
+    modules['Medications, Reproductive Health, Exercise, and Sleep'].estimatedTime = 'mytodolist.20_30minutes';
+    
+    modules['Smoking, Alcohol, and Sun Exposure'].header = 'Smoking, Alcohol, and Sun Exposure'; 
+    modules['Smoking, Alcohol, and Sun Exposure'].description = 'mytodolist.mainBodySmokingDescription';
+    modules['Smoking, Alcohol, and Sun Exposure'].estimatedTime = 'mytodolist.20_30minutes';
+    
+    modules["Where You Live and Work"].header = 'Where You Live and Work';
+    modules["Where You Live and Work"].description  = 'mytodolist.mainBodyLiveWorkDescription';
+    modules["Where You Live and Work"].estimatedTime = 'mytodolist.20_30minutes';
+    
+    modules['Enter SSN'].header = 'Your Social Security Number (SSN)';
+    modules['Enter SSN'].description = 'mytodolist.mainBodySSNDescription';
+    modules['Enter SSN'].hasIcon = false;
+    modules['Enter SSN'].noButton = false;
+    modules['Enter SSN'].estimatedTime = 'mytodolist.less5minutes';
+    
+    modules['Covid-19'].header = 'COVID-19 Survey';
+    modules['Covid-19'].description = 'mytodolist.mainBodyCovid19Description';
+    modules['Covid-19'].hasIcon = false;
+    modules['Covid-19'].noButton = false;
+    modules['Covid-19'].estimatedTime = 'mytodolist.10minutes';
+
+    modules['Biospecimen Survey'].header = 'Baseline Blood, Urine, and Mouthwash Sample Survey';
+    modules['Biospecimen Survey'].description = 'mytodolist.mainBodyBiospecimenDescription';
+    modules['Biospecimen Survey'].estimatedTime = 'mytodolist.5minutes';
+    
+    modules['Clinical Biospecimen Survey'].header = 'Baseline Blood and Urine Sample Survey';
+    modules['Clinical Biospecimen Survey'].description = 'mytodolist.mainBodyClinicalBiospecimenDescription';
+    modules['Clinical Biospecimen Survey'].estimatedTime = 'mytodolist.5minutes';
+
+    modules['Menstrual Cycle'].header = 'Menstrual Cycle Survey';
+    modules['Menstrual Cycle'].description = 'mytodolist.mainBodyMenstrualDescription';
+    modules['Menstrual Cycle'].estimatedTime = 'mytodolist.5minutes';
+
+    modules['Mouthwash'].header = 'At-Home Mouthwash Sample Survey';
+    modules['Mouthwash'].description = 'mytodolist.mainBodyMouthwashDescription';
+    modules['Mouthwash'].estimatedTime = 'mytodolist.5minutes';
+
+    modules['PROMIS'].header = 'Quality of Life Survey';
+    modules['PROMIS'].description = 'mytodolist.mainBodyPROMISDescription';
+    modules['PROMIS'].estimatedTime = 'mytodolist.10_15minutes';
+
+    modules['Connect Experience 2024'].header = '2024 Connect Experience Survey';
+    modules['Connect Experience 2024'].description = 'mytodolist.mainBodyExperience2024Description';
+    modules['Connect Experience 2024'].estimatedTime = 'mytodolist.15_20minutes';
+
+    modules['Cancer Screening History'].header = 'Cancer Screening History Survey';
+    modules['Cancer Screening History'].description = 'mytodolist.mainBodyCancerScreeningHistoryDescription';
+    modules['Cancer Screening History'].estimatedTime = 'mytodolist.15_20minutes';
+
+    modules['Diet History Questionnaire III (DHQ III)'].header = 'Diet History Questionnaire III (DHQ III)';
+    modules['Diet History Questionnaire III (DHQ III)'].description = 'mytodolist.mainBodyDHQ3Description';
+    modules['Diet History Questionnaire III (DHQ III)'].estimatedTime = 'mytodolist.45_60minutes';
+
+    modules['2025 Return of Results Preference Survey'].header = '2025 Return of Results Preference Survey';
+    modules['2025 Return of Results Preference Survey'].description = 'mytodolist.mainBodyReturnOfResults2025Description';
+    modules['2025 Return of Results Preference Survey'].estimatedTime = 'mytodolist.10_15minutes';
+
+    const currentTime = new Date();
+    
+    if(data['331584571']?.['266600170']?.['840048338']) {
+        modules['Biospecimen Survey'].enabled = true;
+        modules['Covid-19'].enabled = true;
+    }
+
+    if(collections && collections.filter(collection => collection['650516960'] === 664882224).length > 0) {
+        modules['Clinical Biospecimen Survey'].enabled = true;
+        modules['Covid-19'].enabled = true;
+    }
+
+    if (data[fieldMapping.menstrualSurveyEligible] === fieldMapping.yes) {
+        modules['Menstrual Cycle'].enabled = true;
+
+        if (data[fieldMapping.MenstrualCycle.statusFlag] !== fieldMapping.moduleStatus.submitted) {
+
+            // Survey will become available on dashboard 120 hours (5 days) after completion of bio survey if participant is menstrual survey eligible
+            const firstCutoffDate = new Date();
+            firstCutoffDate.setDate(firstCutoffDate.getDate() - 5);
+            const dateBecomeAvailable = firstCutoffDate.toISOString()
+
+            // Survey will be closed if it has been more than 45 days since the Biospec survey submission and the MC survey is not submitted yet.
+            const secondCutoffDate = new Date();
+            secondCutoffDate.setDate(secondCutoffDate.getDate() - 45);
+            const dateBecomeUnavailable = secondCutoffDate.toISOString()
+
+            if (data[fieldMapping.Biospecimen.statusFlag] === fieldMapping.moduleStatus.submitted) {
+                if (data[fieldMapping.Biospecimen.completeTs] < dateBecomeUnavailable ||
+                    data[fieldMapping.Biospecimen.completeTs] > dateBecomeAvailable
+                ) {
+                    modules['Menstrual Cycle'].enabled = false;
+                }
+            }
+            else if (data[fieldMapping.ClinicalBiospecimen.statusFlag] === fieldMapping.moduleStatus.submitted) {
+                if (data[fieldMapping.ClinicalBiospecimen.completeTs] < dateBecomeUnavailable ||
+                    data[fieldMapping.ClinicalBiospecimen.completeTs] > dateBecomeAvailable
+                ) {
+                    modules['Menstrual Cycle'].enabled = false;
+                }
+            }
+        }
+    }
+
+    if (
+        data[fieldMapping.verification] === fieldMapping.verified &&
+        data[fieldMapping.PROMIS.statusFlag] !==
+            fieldMapping.moduleStatus.submitted
+    ) {
+        modules["PROMIS"].enabled = true;
+
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - 90);
+
+        if (data[fieldMapping.verifiedDate] && data[fieldMapping.verifiedDate] > cutoffDate.toISOString()) {
+            modules["PROMIS"].enabled = false;
+        }
+    }
+    
+    if (data[fieldMapping.Module1.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+        modules['Background and Overall Health'].completed = true;
+        
+        modules["Smoking, Alcohol, and Sun Exposure"].enabled = true;
+        modules["Where You Live and Work"].enabled = true;
+        modules['Medications, Reproductive Health, Exercise, and Sleep'].enabled = true;
+    }
+
+    if (data[fieldMapping.Module2.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+        modules['Medications, Reproductive Health, Exercise, and Sleep'].completed = true;
+    }
+
+    if (data[fieldMapping.Module3.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+        modules['Smoking, Alcohol, and Sun Exposure'].completed = true;
+    }
+
+    if (data[fieldMapping.Module4.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+        modules["Where You Live and Work"].completed  = true;
+    }
+
+    if ((data[fieldMapping.verification] && data[fieldMapping.verification] === fieldMapping.verified)) { 
+        modules['Enter SSN'].enabled = true;
+    }
+
+    if (data[fieldMapping.ModuleSsn.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+        modules['Enter SSN'].completed = true;
+    }
+    
+    if (data[fieldMapping.ModuleCovid19.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+        modules['Covid-19'].completed = true;
+    }
+
+    if (data[fieldMapping.Biospecimen.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+        modules['Biospecimen Survey'].completed = true;
+    }
+
+    if (data[fieldMapping.MenstrualCycle.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+        modules['Menstrual Cycle'].completed = true;
+    }
+
+    if (data[fieldMapping.ClinicalBiospecimen.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+        modules['Clinical Biospecimen Survey'].completed = true;
+    }
+
+    const mouthwashData = data[fieldMapping.collectionDetails]?.[fieldMapping.baseline]?.[fieldMapping.bioKitMouthwash];
+    if (
+      mouthwashData?.[fieldMapping.kitType] === fieldMapping.kitTypeValues.mouthwash &&
+      (mouthwashData?.[fieldMapping.kitStatus] === fieldMapping.kitStatusValues.shipped ||
+        mouthwashData?.[fieldMapping.kitStatus] === fieldMapping.kitStatusValues.received)
+    ) {
+      modules.Mouthwash.enabled = true;
+    }
+
+    if (data[fieldMapping.Mouthwash.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+        modules['Mouthwash'].completed = true;
+    }
+
+    if (data[fieldMapping.PROMIS.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+        modules['PROMIS'].enabled = true;
+        modules['PROMIS'].completed = true;
+    }
+
+    if (data[fieldMapping.Experience2024.statusFlag]) {
+        modules["Connect Experience 2024"].enabled = true;
+    }
+    if (data[fieldMapping.Experience2024.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+        modules['Connect Experience 2024'].completed = true;
+    }
+
+    if (
+      data[fieldMapping.verification] === fieldMapping.verified &&
+      data[fieldMapping.verifiedDate] &&
+      currentTime > getAdjustedTime(data[fieldMapping.verifiedDate], 270)
+    ) {
+      if (data[fieldMapping.CancerScreeningHistory.statusFlag]) {
+        modules["Cancer Screening History"].enabled = true;
+      }
+      
+      if (data[fieldMapping.CancerScreeningHistory.statusFlag] === fieldMapping.moduleStatus.submitted) {
+        modules["Cancer Screening History"].completed = true;
+      }
+    }
+
+    if (
+        data[fieldMapping.verification] === fieldMapping.verified &&
+        data[fieldMapping.verifiedDate] &&
+        currentTime > getAdjustedTime(data[fieldMapping.verifiedDate], 180)
+    ) {
+        if (data[fieldMapping.DHQ3.statusFlag] === fieldMapping.moduleStatus.notStarted || data[fieldMapping.DHQ3.statusFlag] === fieldMapping.moduleStatus.started) {
+            // Participant is eligible. Make sure a DHQ3 credential is allocated. Allocation runs once per eligible participant.
+            if (!data[fieldMapping.DHQ3.uuid]) {
+                try {
+                    const newUUID = await assignDHQ3Credential(data);
+                    data[fieldMapping.DHQ3.uuid] = newUUID;
+
+                } catch (error) {
+                    console.error("Error assigning DHQ3 credential:", error);
+                    return modules;
+                }
+            }
+        }
+
+        if (data[fieldMapping.DHQ3.statusFlag] && data[fieldMapping.DHQ3.statusFlag] !== fieldMapping.moduleStatus.notYetEligible && data[fieldMapping.DHQ3.uuid]) {
+            modules["Diet History Questionnaire III (DHQ III)"].enabled = true;
+        }
+
+        if (data?.[fieldMapping.DHQ3.statusFlag] === fieldMapping.moduleStatus.submitted) {
+            modules["Diet History Questionnaire III (DHQ III)"].completed = true;
+        }
+    }
+
+    // The 2025 Return of Results Preference Survey is available for participants verified on or before August 1, 2025
+    const returnOfResultsCutoff = new Date('2025-08-01T00:00:00Z');
+    if (data[fieldMapping.verifiedDate] && new Date(data[fieldMapping.verifiedDate]) <= returnOfResultsCutoff) {
+        modules['2025 Return of Results Preference Survey'].enabled = true;
+    }
+
+    if (data[fieldMapping.ROIPreference2025.statusFlag] && data[fieldMapping.ROIPreference2025.statusFlag] === fieldMapping.moduleStatus.submitted) {
+        modules['2025 Return of Results Preference Survey'].completed = true;
+    }
+    
+    return modules;
+};
+
+const assignDHQ3Credential = async (participantData) => {
+    try {
+        const appSettingsData = await getAppSettings(['dhq']);
+        if (!appSettingsData.dhq) {
+            console.error("DHQ3 app settings not found");
+            return;
+        }
+
+        const dhqStudyIDs = appSettingsData.dhq.dhqStudyIDs || [];                      // List of DHQ study IDs from appSettings.
+        const depletedDHQStudyIDs = appSettingsData.dhq.dhqDepletedCredentials || [];   // List of DHQ study IDs without availableCredentials (skip these in credential search).
+        const availableCredentialPools = dhqStudyIDs.filter(studyID => !depletedDHQStudyIDs.includes(studyID));
+
+        const dhqCredential = await allocateDHQ3Credential(availableCredentialPools);
+        return dhqCredential?.[fieldMapping.DHQ3.uuid];
+
+    } catch (error) {
+        const errorContext = {
+            userAction: 'assignDHQ3Credential',
+            timestamp: new Date().toISOString(),
+            ...(participantData?.['Connect_ID'] && { connectID: participantData['Connect_ID'] }),
+            moduleId: 'DHQ3 Credential Allocation',
+            errorMessage: error.message,
+        };
+
+        logDDRumError(error, 'DHQ3LoadError', errorContext);
+    }
+}
+
+export const checkIfComplete = (data) => {
+
+    let module1Complete = data[fieldMapping.Module1.statusFlag] === fieldMapping.moduleStatus.submitted;
+    let module2Complete = data[fieldMapping.Module2.statusFlag] === fieldMapping.moduleStatus.submitted;
+    let module3Complete = data[fieldMapping.Module3.statusFlag] === fieldMapping.moduleStatus.submitted;
+    let module4Complete = data[fieldMapping.Module4.statusFlag] === fieldMapping.moduleStatus.submitted;
+
+    return module1Complete && module2Complete && module3Complete && module4Complete;
 };
