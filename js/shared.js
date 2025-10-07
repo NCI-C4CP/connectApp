@@ -3429,6 +3429,7 @@ export const setModuleAttributes = async (data, modules, collections) => {
     if (data[fieldMapping.Experience2024.statusFlag]) {
         modules["Connect Experience 2024"].enabled = true;
     }
+
     if (data[fieldMapping.Experience2024.statusFlag] === fieldMapping.moduleStatus.submitted) { 
         modules['Connect Experience 2024'].completed = true;
     }
@@ -3476,12 +3477,11 @@ export const setModuleAttributes = async (data, modules, collections) => {
     }
 
     // The 2025 Return of Results Preference Survey is available for participants verified on or before August 1, 2025
-    const returnOfResultsCutoff = new Date('2025-08-01T00:00:00Z');
-    if (data[fieldMapping.verifiedDate] && new Date(data[fieldMapping.verifiedDate]) <= returnOfResultsCutoff) {
+    if (data[fieldMapping.ROIPreference2025.statusFlag]) {
         modules['2025 Return of Results Preference Survey'].enabled = true;
     }
 
-    if (data[fieldMapping.ROIPreference2025.statusFlag] && data[fieldMapping.ROIPreference2025.statusFlag] === fieldMapping.moduleStatus.submitted) {
+    if (data[fieldMapping.ROIPreference2025.statusFlag] === fieldMapping.moduleStatus.submitted) {
         modules['2025 Return of Results Preference Survey'].completed = true;
     }
     
