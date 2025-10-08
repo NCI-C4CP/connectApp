@@ -172,6 +172,7 @@ export default
         "D_506648060": "Experience2024",
         "D_369168474": "CancerScreeningHistory",
         "D_497020618": "DHQ3",
+        "D_312845734": "ROIPreference2025",
     },
 
     "Module1_OLD": {
@@ -326,6 +327,15 @@ export default
         "username": "148184166",
         "uuid": "808755658",
         "studyID": "196723965",
+    },
+
+    ROIPreference2025: {
+        "conceptId": "D_312845734",
+        "startTs": "993557295",
+        "completeTs": "543379310",
+        "statusFlag": "278023676",
+        "standaloneSurvey": true,
+        "version": "716532434",
     },
 
     // @deprecated. Retain until migration to Quest2 is complete. External variables passed into Quest that require extra async/await handling.
