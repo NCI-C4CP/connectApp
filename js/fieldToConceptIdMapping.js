@@ -376,12 +376,37 @@ export default
         },
     },
 
+
+    biospecimenFlag: 650516960,
+    biospecimenResearch: 534621077,
+    biospecimenClinical: 664882224,
+    biospecimenHome: 103209024,
+    biospecimenBloodCollection: 592099155,
+    biospecimenUrineCollection: 718172863,
+    biospecimenMouthwashdCollection: 915179629,
+
+    bloodFlag: 878865966,
+    bloodDateTime: 561681068,
+    clinicalBloodDateTime: 982213346,
+
+    urineFlag: 167958071,
+    urineDateTime: 847159717,
+    clinicalUrineDateTime: 139245758,
+
+    mouthwash: 684635302,
+    mouthwashDateTime: 448660695,
+
+    
     collectionDetails: 173836415,
     baseline: 266600170,
     bioKitMouthwash: 319972665,
+    bioKitMouthwashBL1: 541483796,
+    bioKitMouthwashBL2: 641006239,
+    kitReceivedTime: 826941471,
     kitType: 379252329,
     kitTypeValues: {
-        mouthwash: 976461859
+        mouthwash: 976461859,
+        homeMouthwash: 976461859
     },
     kitStatus: 221592017,
     kitStatusValues: {

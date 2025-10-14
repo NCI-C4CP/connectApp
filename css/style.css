@@ -1732,3 +1732,7 @@ span.my-samples-indent-text {
     font-size: 1.2em;
     font-family: 'Montserrat', sans-serif;
 }
+
+.samples-list li {
+    padding: 1em 0;
+}
