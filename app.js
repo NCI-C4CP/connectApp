@@ -275,7 +275,8 @@ const router = async () => {
 
             // Skip at sign-up (no Firestore profile yet)
             if (Object.keys(data.data).length > 0) {
-                await checkAuthDataConsistency(firebaseAuthUser.email ?? '', firebaseAuthUser.phoneNumber ?? '', data.data[conceptIdMap.firebaseAuthEmail] ?? '', data.data[conceptIdMap.firebaseAuthPhone] ?? '');
+                const shouldSaveLogin = data.data[conceptIdMap.consentSubmitted] === conceptIdMap.yes;
+                await checkAuthDataConsistency(firebaseAuthUser.email ?? '', firebaseAuthUser.phoneNumber ?? '', data.data[conceptIdMap.firebaseAuthEmail] ?? '', data.data[conceptIdMap.firebaseAuthPhone] ?? '', shouldSaveLogin);
             }
 
             // Set Connect_ID for the current DataDog session
@@ -589,31 +590,40 @@ const toggleNavBar = (route, data) => {
  * The 'else if' case handles the following: We write firebase auth and firestore participant data separately, one after another. There's a chance the first write (Firebase Auth) succeeds and the second write (Firestore) fails.
  * This only costs an API call if the data is inconsistent since we hava access to both datapoints from app init. It otherwise only costs the time to run the check.
  */
-const checkAuthDataConsistency = async (firebaseAuthEmail, firebaseAuthPhoneNumber, firestoreParticipantEmail, firestoreParticipantPhoneNumber) => {
-    const isAuthEmailConsistent = firebaseAuthEmail === firestoreParticipantEmail;
-    const isAuthPhoneConsistent = firebaseAuthPhoneNumber === firestoreParticipantPhoneNumber;
-  
-    if (firestoreParticipantPhoneNumber && !firebaseAuthPhoneNumber) {
-      await updateFirebaseAuthPhoneTrigger(firestoreParticipantPhoneNumber);
-      return false;
-    } else if (!isAuthEmailConsistent || !isAuthPhoneConsistent) {
-      const authDataToSync = {
-        [conceptIdMap.firebaseAuthEmail]: firebaseAuthEmail,
-      };
+const checkAuthDataConsistency = async (
+  firebaseAuthEmail,
+  firebaseAuthPhoneNumber,
+  firestoreParticipantEmail,
+  firestoreParticipantPhoneNumber,
+  shouldSaveLogin
+) => {
+  const isAuthEmailConsistent = firebaseAuthEmail === firestoreParticipantEmail;
+  const isAuthPhoneConsistent = firebaseAuthPhoneNumber === firestoreParticipantPhoneNumber;
+  if (firestoreParticipantPhoneNumber && !firebaseAuthPhoneNumber) {
+    await updateFirebaseAuthPhoneTrigger(firestoreParticipantPhoneNumber);
+    return false;
+  } else if (!isAuthEmailConsistent || !isAuthPhoneConsistent) {
+    if (!shouldSaveLogin) return false;
+    const authDataToSync = {};
+    if (firebaseAuthEmail && !isAuthEmailConsistent) {
+      authDataToSync[conceptIdMap.firebaseAuthEmail] = firebaseAuthEmail;
+    }
+    if (firebaseAuthPhoneNumber && !isAuthPhoneConsistent) {
+      authDataToSync[conceptIdMap.firebaseAuthPhone] = firebaseAuthPhoneNumber;
+    }
 
-      if (firebaseAuthPhoneNumber || firestoreParticipantPhoneNumber) {
-        authDataToSync[conceptIdMap.firebaseAuthPhone] = firebaseAuthPhoneNumber ?? firestoreParticipantPhoneNumber;
-      }
-  
+    if (Object.keys(authDataToSync).length > 0) {
       try {
         await storeResponse(authDataToSync);
       } catch (error) {
-        console.error('Error updating document (storeResponse): ', error);
-        return false;
-      }      
-      return false;
+        console.error("Error updating document (storeResponse): ", error);
+      }
     }
-    return true;
+
+    return false;
+  }
+
+  return true;
 };
 
 /**
