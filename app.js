@@ -605,10 +605,10 @@ const checkAuthDataConsistency = async (
   } else if (!isAuthEmailConsistent || !isAuthPhoneConsistent) {
     if (!shouldSaveLogin) return false;
     const authDataToSync = {};
-    if (firebaseAuthEmail) {
+    if (firebaseAuthEmail && !isAuthEmailConsistent) {
       authDataToSync[conceptIdMap.firebaseAuthEmail] = firebaseAuthEmail;
     }
-    if (firebaseAuthPhoneNumber) {
+    if (firebaseAuthPhoneNumber && !isAuthPhoneConsistent) {
       authDataToSync[conceptIdMap.firebaseAuthPhone] = firebaseAuthPhoneNumber;
     }
 
