@@ -405,7 +405,7 @@ export default
     kitReceivedTime: 826941471,
     kitType: 379252329,
     kitTypeValues: {
-        mouthwash: 976461859,
+        mouthwash: 390351864,
         homeMouthwash: 976461859
     },
     kitStatus: 221592017,
