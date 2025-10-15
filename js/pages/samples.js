@@ -16,7 +16,7 @@ export const renderSamplesPage = async () => {
                 <div class="col-lg-2 col-xl-3"></div>
                 <div class="col-lg-8 col-xl-6" >
                     <p class="consentHeadersFont" id="myProfileTextContainer" style="color:#606060;" data-i18n="navbar.samplesLink">
-                        ${translateText('navbar.samplesLink')}
+                    My Samples
                     </p>
                 </div>
                 <div class="col-lg-2 col-xl-3"></div>
@@ -28,16 +28,15 @@ export const renderSamplesPage = async () => {
             <div class="col-lg-2 col-xl-3"></div>
             <div class="col-lg-8 col-xl-6">
                 <p class="consentHeadersFont" style="color:#606060; font-size: 1.5em;" data-i18n="settings.pageNav">
-                    ${translateText('settings.pageNav')}
+                    On this page:
                 </p>
                 <ul class="onThisPage">
-                <li><a href="javascript:document.getElementById('donatingInformation').scrollIntoView(true)"><span data-i18n="samples.donatingSamples"/></span> ${site.name}</a></li>
-                <li><a href="javascript:document.getElementById('requestAKit').scrollIntoView(true);" data-i18n="samples.requestAKit">${translateText('samples.requestAKit')}</a></li>
-                <li><a href="javascript:document.getElementById('sampleInventory').scrollIntoView(true)" data-i18n="samples.sampleInventory">${translateText('samples.sampleInventory')}</a></li>
+                <li><a href="javascript:document.getElementById('donatingInformation').scrollIntoView(true)"><span data-i18n="samples.donatingSamples">Donating Your Samples at</span> ${site.name}</a></li>
+                <li><a href="javascript:document.getElementById('requestAKit').scrollIntoView(true);" data-i18n="samples.requestAKit">Home Collection Kit Request</a></li>
+                <li><a href="javascript:document.getElementById('sampleInventory').scrollIntoView(true)" data-i18n="samples.sampleInventory">Sample Inventory</a></li>
                 </ul>
             </div>
-            <div class="col-lg-2 col-xl-3">
-            </div>
+            <div class="col-lg-2 col-xl-3"></div>
         </div>`);
 
         if (site && 
