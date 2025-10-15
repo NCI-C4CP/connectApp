@@ -6,9 +6,38 @@ export const renderSamplesPage = async () => {
     getMyData().then(res => {
 
         if (!hasUserData(res)) return;
-        
-        let site = locations.filter(location => location.concept == res.data[conceptId.healthcareProvider])[0];
-        let template;
+        let participant = res.data;
+        let site = locations.filter(location => location.concept == participant[conceptId.healthcareProvider])[0];
+        let template = '';
+
+        //Top Header
+        template += translateHTML(`
+            <div class="row" style="margin-top:18px">
+                <div class="col-lg-2 col-xl-3"></div>
+                <div class="col-lg-8 col-xl-6" >
+                    <p class="consentHeadersFont" id="myProfileTextContainer" style="color:#606060;" data-i18n="navbar.samplesLink">
+                    My Samples
+                    </p>
+                </div>
+                <div class="col-lg-2 col-xl-3"></div>
+            </div>
+        `);
+
+        //In page Navigation
+        template += translateHTML(`<div class="row">
+            <div class="col-lg-2 col-xl-3"></div>
+            <div class="col-lg-8 col-xl-6">
+                <p class="consentHeadersFont" style="color:#606060; font-size: 1.5em;" data-i18n="settings.pageNav">
+                    On this page:
+                </p>
+                <ul class="onThisPage">
+                <li><a href="javascript:document.getElementById('donatingInformation').scrollIntoView(true)"><span data-i18n="samples.donatingSamples">Donating Your Samples at</span> ${site.name}</a></li>
+                <li><a href="javascript:document.getElementById('requestAKit').scrollIntoView(true);" data-i18n="samples.requestAKit">Home Collection Kit Request</a></li>
+                <li><a href="javascript:document.getElementById('sampleInventory').scrollIntoView(true)" data-i18n="samples.sampleInventory">Sample Inventory</a></li>
+                </ul>
+            </div>
+            <div class="col-lg-2 col-xl-3"></div>
+        </div>`);
 
         if (site && 
             site !== kpga && 
@@ -19,13 +48,10 @@ export const renderSamplesPage = async () => {
         ) {
             const locationTemplate = renderLocations(site);
 
-            template = translateHTML(`
-            <br>
-            
-            <div class="row">
-            <div class="col-md-2">
-                </div>
-                <div class="col-md-8">
+            template += translateHTML(`
+            <div class="row" id="donatingInformation">
+                <div class="col-lg-2 col-xl-3"></div>
+                <div class="col-lg-8 col-xl-6">
                     <div class="row" style="width:100%">
                         <div class="consentHeadersFont" style="color:#606060;width:100%">
                             <div>
@@ -181,20 +207,18 @@ export const renderSamplesPage = async () => {
                     </div>
                     <hr>
                 </div>
-                <div class="col-md-2">
+                <div class="col-lg-2 col-xl-3">
                 </div>
             </div>    
             `);
         }
         else if (site && (site === kpga || site ===  kphi || site ===  kpco || site ===  kpnw)) {
             const locationTemplate = renderLocations(site);
-            template = translateHTML(`
-            <br>
-            
-            <div class="row">
-            <div class="col-md-2">
+            template += translateHTML(`
+            <div class="row"  id="donatingInformation">
+            <div class="col-lg-2 col-xl-3">
                 </div>
-                <div class="col-md-8">
+                <div class="col-lg-8 col-xl-6">
                     <div class="row" style="width:100%">
                         <div class="consentHeadersFont" style="color:#606060;width:100%">
                             <div>
@@ -224,7 +248,7 @@ export const renderSamplesPage = async () => {
                     <div class="row" style="width:100%">
                         <div class="consentHeadersFont collapsed" style="color:#606060;width:100%;" data-bs-toggle="collapse" data-bs-target="#howToDonateSamples" aria-expanded="false" aria-controls="howToDonateSamples">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                            <div data-i18n="samples.howToDonateSamples ">
+                            <div data-i18n="samples.howToDonateSamples">
                                 How Do I Donate My Blood and Urine Samples?
                             </div>
                         </div>
@@ -312,16 +336,16 @@ export const renderSamplesPage = async () => {
                     </div>
                     <hr>
                 </div>
-                <div class="col-md-2">
+                <div class="col-lg-2 col-xl-3">
                 </div>
             </div>     
             `);
         } else if (site && site === u_chicago) {
-            template = translateHTML(`
-                        <div class="row" style="width:100%">
-                            <div class="col-md-2">
+            template += translateHTML(`
+                        <div class="row" style="width:100%"  id="donatingInformation">
+                            <div class="col-lg-2 col-xl-3">
                             </div>
-                            <div class="col-md-8">
+                            <div class="col-lg-8 col-xl-6">
                                 <div class="consentHeadersFont" style="color:#606060;width:100%">
                                     <div>
                                         <span data-i18n="samples.donatingSamplesConnectMessage"/></span>
@@ -333,28 +357,139 @@ export const renderSamplesPage = async () => {
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-md-2">
+                            <div class="col-lg-2 col-xl-3">
                             </div>
                         </div>
             `);
         } else {
-            template = translateHTML(`
-            <br>
-            
-            <div class="row">
-                <div class="col-md-2">
+            template += translateHTML(`
+            <div class="row"  id="donatingInformation">
+                <div class="col-lg-2 col-xl-3">
                 </div>
-                <div class="col-md-8 NotoSansFont" data-i18n="samples.planCollecting">
+                <div class="col-lg-8 col-xl-6 NotoSansFont" data-i18n="samples.planCollecting">
                     We plan to begin collecting samples later this year. We will send you an email with instructions and next steps when it is time to donate samples. Thank you for being part of Connect!
                 </div>
-                <div class="col-md-2">
+                <div class="col-lg-2 col-xl-3">
                 </div>
             </div>    
             `);
         }
 
+        //Request a kit
+
+        template += translateHTML(`<div class="row"  id="requestAKit">
+            <div class="col-lg-2 col-xl-3"></div>
+            <div class="col-lg-8 col-xl-6"></div>
+            <div class="col-lg-2 col-xl-3">
+        `);
+
+
+        //Sample Inventory
+        let samples = [];
+        if (participant[conceptId.collectionDetails]) {
+            if (participant[conceptId.bloodFlag] === conceptId.yes) {
+                samples.push({
+                    type: "samples.blood",
+                    date: getSampleDateTime(participant, conceptId.biospecimenBloodCollection, conceptId.bloodDateTime, conceptId.clinicalBloodDateTime)
+                });
+            }
+            if (participant[conceptId.urineFlag] === conceptId.yes) {
+                samples.push({
+                    type: "samples.urine",
+                    date: getSampleDateTime(participant, conceptId.biospecimenUrineCollection, conceptId.urineDateTime, conceptId.clinicalUrineDateTime)
+                });
+            }
+            
+            let mouthwashSample = getMouthWashSample(participant, conceptId.bioKitMouthwash, "samples.mouthwash");
+            if (mouthwashSample) {
+                samples.push(mouthwashSample);
+            }
+            let mouthwashSampleR1 = getMouthWashSample(participant, conceptId.bioKitMouthwashBL1, "samples.mouthwashR1");
+            if (mouthwashSampleR1) {
+                samples.push(mouthwashSampleR1);
+            }
+            let mouthwashSampleR2 = getMouthWashSample(participant, conceptId.bioKitMouthwashBL2, "samples.mouthwashR2");
+            if (mouthwashSampleR2) {
+                samples.push(mouthwashSampleR2);
+            }
+        }
+
+        let samplesBody = `<div class="col-lg-2 col-xl-3"></div>
+            <div class="col-lg-8 col-xl-6">`
+        if (samples.length) {
+            const dateOptions = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            };
+            
+            samplesBody += '<ul  class="list-unstyled samples-list"><li>';
+            samplesBody += samples.sort((a, b) => a.date < b.date ? -1 : 1).map((sample) => {
+                return '<div class="h5"><span data-i18n="samples.donationDate">Donation Date: </span>'+(sample.date ? `<span data-i18n="date" data-timestamp="${sample.date}" data-date-options="${encodeURIComponent(JSON.stringify(dateOptions))}"></span>` : 'N/A') +'</div>'+
+                '<span data-i18n="samples.typeOfSample">Type of Sample Donated: </span><span data-i18n="'+sample.type+'"></span>'
+            }).join('</li><li>');
+            samplesBody += '</li></ul>';
+        } else {
+            samplesBody += '<span data-i18n="samples.noInventory"></span>';
+        }
+        samplesBody += `
+            <div class="col-lg-2 col-xl-3"></div>
+        `
+
+        template += translateHTML(`<div class="row gy-3"  id="sampleInventory">
+            <div class="col-lg-2 col-xl-3"></div>
+            <div class="col-lg-8 col-xl-6">
+                <div class="consentHeadersFont" style="color:#606060;width:100%" data-i18n="samples.sampleInventory"></div>
+            </div>
+            <div class="col-lg-2 col-xl-3"></div>
+            ${samplesBody}
+        </div>
+        `);
+
         document.getElementById('root').innerHTML = template;
     });
+}
+
+const getSampleDateTime = (participant, biospecimenFlag, researchDateTime, clinicalDateTime) => {
+    let biospecimenSampleDateTime = ``;
+    
+    (participant[conceptId.collectionDetails] &&
+        
+         (participant[conceptId.collectionDetails][conceptId.baseline][biospecimenFlag]) === (conceptId.biospecimenResearch) ?  
+            (   
+                biospecimenSampleDateTime += participant[conceptId.collectionDetails][conceptId.baseline][researchDateTime]
+            ) : 
+        (participant[conceptId.collectionDetails][conceptId.baseline][biospecimenFlag]) === (conceptId.biospecimenClinical) ?
+            (
+                biospecimenSampleDateTime += participant[conceptId.collectionDetails][conceptId.baseline][clinicalDateTime]
+            ) : ``
+    )   
+    return biospecimenSampleDateTime;
+}
+
+const getMouthWashSample = (participant, path, itemName) => {
+    // Initial kits have some specific behavior vs. replacement kits
+    const isInitialKit = path === conceptId.bioKitMouthwash;
+    const homeMouthwashData =
+        participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[path] || {};
+    const collectionTime =
+        (
+            homeMouthwashData[conceptId.kitType] === conceptId.kitTypeValues.homeMouthwash || !isInitialKit ?
+                // Home collection kits, including all replacement kits, use kit received time
+                participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[path]?.[conceptId.kitReceivedTime] :
+                // Research kits (initial kits with appropriate kit type) use kit collection time
+                participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.mouthwashDateTime]
+        )
+        || "";
+
+    const kitStatusCid = homeMouthwashData[conceptId.kitStatus];
+    const isCollected = homeMouthwashData[conceptId.kitType] === conceptId.kitTypeValues.homeMouthwash ?
+        kitStatusCid === conceptId.kitStatusValues.received :
+        // Only initial kits can be research; replacement kits are by definition home collections,
+        // so the participant result here only applies to initial kits
+        participant[conceptId.mouthwash] === conceptId.yes && path === conceptId.bioKitMouthwash;
+
+    return isCollected ? {type: itemName, date: collectionTime} : null;
 }
 
 const health_partners = {
