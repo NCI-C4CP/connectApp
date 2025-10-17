@@ -338,10 +338,24 @@ const buildPageTemplate = () => {
       loadAltContactElements();
       showMajorFormDivs();
       togglePendingVerificationMessage(userData);
+      enableMobileTextWarning();
   }
   loadSignInInformationElements();
   hideAnimation();
 };
+
+const enableMobileTextWarning = () => {
+    let yesRadio = document.getElementById('textPermissionYesRadio');
+    let noRadio = document.getElementById('textPermissionNoRadio');
+    yesRadio.addEventListener('click', (event) => { 
+        if (yesRadio.dataset.initialNo === 'yes') {
+            document.getElementById('mobileTextOptInWarning').classList.remove('d-none');
+        }
+    });
+    noRadio.addEventListener('click', (event) => { 
+        document.getElementById('mobileTextOptInWarning').classList.add('d-none');
+    });
+}
 
 const showMajorFormDivs = () => {
   document.getElementById('myProfileTextContainer').style.display = 'block';
@@ -1723,8 +1737,10 @@ export const renderChangeContactInformationGroup = () => {
                           &nbsp; <i data-i18n="settings.chargesMayApply">*Text message charges may apply</i>
                           </br>
                           <div class="btn-group btn-group-toggle col-md-4" id="mobileTextRadio">
-                              <label for="textPermissionYesRadio" class="ms-1" id="textPermissionYes"><input type="radio" id="textPermissionYesRadio" name="mobileTextPermission"  value="${cId.yes}"> <span data-i18n="settings.optYes">${translateText('settings.optYes')}</span></label>
+                              <label for="textPermissionYesRadio" class="ms-1" id="textPermissionYes"><input type="radio" id="textPermissionYesRadio" name="mobileTextPermission" value="${cId.yes}"> <span data-i18n="settings.optYes">${translateText('settings.optYes')}</span></label>
                               <label for="textPermissionNoRadio" style = "margin-left:20px;" id="textPermissionNo"><input type="radio" id="textPermissionNoRadio" name="mobileTextPermission"  value="${cId.no}"> <span data-i18n="settings.optNo">${translateText('settings.optNo')}</span></label>
+                          </div>
+                          <div class="d-none" id="mobileTextOptInWarning" data-i18n="settings.textOptIn"></div>
                           </div>
                       </div>
                   </div>

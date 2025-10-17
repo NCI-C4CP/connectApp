@@ -1105,6 +1105,7 @@
     },
     "settings": {
         "title": "My Connect - Mi perfil",
+        "textOptIn": "<b>Importante:</b> Responda COMENZAR al 201962 para asegurar que comenzará a recibir mensajes textos de Connect de nuevo.",
         "pageNav": "En esta página:",
         "agreements": "Acuerdos",
         "emailAndPhone": "Correo electrónico y teléfono",
