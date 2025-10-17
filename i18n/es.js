@@ -1851,7 +1851,7 @@
         "mod2024ConnectExperienceSurvey": "2024 Encuesta Sobre Experiencia de Connect",
         "modCancerScreeningHistorySurvey": "Encuesta sobre historial de exámenes de detección de cáncer",
         "modDietHistoryQuestionnaireIIIDHQIII": "Cuestionario de Historial Alimentación III (DHQ III, por sus siglas en ingles)",
-        "modROIPreference2025": "Encuesta de Preferencias para la Devolución de Resultados 2025",
+        "mod2025ReturnofResultsPreferenceSurvey": "Encuesta de Preferencias para la Devolución de Resultados 2025",
         "sessionInactiveTitle": "Inactivo",
         "sessionInactive": "Ha estado inactivo durante 20 minutos, ¿desea extender la sesión?<div class=\"modal-footer\"><button type=\"button\" title=\"Cerrar\" class=\"btn btn-dark log-out-user\" data-bs-dismiss=\"modal\">Cerrar sesión</button><button type=\"button\" title=\"Continuar\" class=\"btn btn-primary extend-user-session\" data-bs-dismiss=\"modal\">Continuar</button></div>",
         "homeTitle": "My Connect - Inicio",
