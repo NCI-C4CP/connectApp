@@ -141,6 +141,7 @@ export const handleContactInformationRadioButtonPresets = (mobilePhoneNumberComp
     document.getElementById('textPermissionYesRadio').checked = canWeText;
     if (!canWeText) {
       document.getElementById('textPermissionYesRadio').dataset.initialNo = 'yes';
+      document.getElementById('mobileTextOptInWarning').classList.add('d-none');
     }
     document.getElementById('textPermissionNoRadio').checked = !canWeText;
   }
