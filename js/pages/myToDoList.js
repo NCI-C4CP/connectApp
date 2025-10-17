@@ -220,7 +220,7 @@ const renderMainBody = async (data, collections, tab) => {
                                     `}
                                     <div class="${modules[thisKey]['hasIcon'] === false? 'col-9':'col-md-8'}">
                                         <p style="font-style:bold; font-size:24px; margin-left:10px">
-                                            <b style="color:#5c2d93; font-size:18px;">
+                                            <b style="color:#327abb; font-size:18px;">
                                             <span data-i18n="${`shared.mod${strippedModuleTitle}`}">${moduleTitle}</span>
                                             </b>
                                             <br> 
@@ -300,7 +300,7 @@ const renderMainBody = async (data, collections, tab) => {
                                     `}
                                     <div class="${modules[key]['hasIcon'] === false ? 'col-9' : 'col-md-8'}">
                                     <p style="font-style:bold; font-size:24px; margin-left:10px">
-                                        <b style="color:#5c2d93; font-size:18px;">
+                                        <b style="color:#327abb; font-size:18px;">
                                         <span data-i18n="${`shared.mod${strippedModuleTitle}`}">${moduleTitle}</span>
                                         </b>
                                         <br> 
@@ -331,7 +331,7 @@ const renderMainBody = async (data, collections, tab) => {
 
                                     <div class="${modules[key]['hasIcon'] === false? 'col-9':'col-md-8'}">
                                     <p style="font-style:bold; font-size:24px; margin-left:10px">
-                                        <b style="color:#5c2d93; font-size:18px;">
+                                        <b style="color:#327abb; font-size:18px;">
                                         <span data-i18n="${`shared.mod${moduleTitle.replace(/(\s|[-._\(\),])/g,'')}`}">${moduleTitle}</span>
                                         </b>
                                         <br> 
@@ -385,7 +385,7 @@ const renderMainBody = async (data, collections, tab) => {
 
                                                     <div class="${modules[thisKey]['hasIcon'] === false? 'col-9':'col-md-8'}">
                                                     <p style="font-style:bold; font-size:24px; margin-left:10px">
-                                                        <b id="header-${thisKey}" style="color:#5c2d93; font-size:18px;">
+                                                        <b id="header-${thisKey}" style="color:#327abb; font-size:18px;">
                                                         <span data-i18n="${`shared.mod${moduleTitle.replace(/(\s|[-._\(\),])/g,'')}`}">${moduleTitle}</span>
                                                         </b>
                                                         <br> 
@@ -417,7 +417,7 @@ const renderMainBody = async (data, collections, tab) => {
                                 </div>
                                 <div class="col-md-8">
                                 <p style="font-style:bold; font-size:24px; margin-left:10px">
-                                    <b id="completed-header-${key} style="color:#5c2d93; font-size:18px;">
+                                    <b id="completed-header-${key} style="color:#327abb; font-size:18px;">
                                     <span data-i18n="${`shared.mod${moduleTitle.replace(/(\s|[-._\(\),])/g,'')}`}">${moduleTitle}</span>
                                     </b>
                                     <br>
