@@ -32,8 +32,8 @@ export const renderSamplesPage = async () => {
                 </p>
                 <ul class="onThisPage">
                 <li><a href="javascript:document.getElementById('donatingInformation').scrollIntoView(true)"><span data-i18n="samples.donatingSamples">Donating Your Samples at</span> ${site.name}</a></li>
-                <li><a href="javascript:document.getElementById('requestAKit').scrollIntoView(true);" data-i18n="samples.requestAKit">Home Collection Kit Request</a></li>
-                <li><a href="javascript:document.getElementById('sampleInventory').scrollIntoView(true)" data-i18n="samples.sampleInventory">Sample Inventory</a></li>
+                <!--li><a href="javascript:document.getElementById('requestAKit').scrollIntoView(true);" data-i18n="samples.requestAKit">Home Collection Kit Request</a></li>
+                <li><a href="javascript:document.getElementById('sampleInventory').scrollIntoView(true)" data-i18n="samples.sampleInventory">Sample Inventory</a></li-->
                 </ul>
             </div>
             <div class="col-lg-2 col-xl-3"></div>
@@ -414,37 +414,37 @@ export const renderSamplesPage = async () => {
             }
         }
 
-        let samplesBody = `<div class="col-lg-2 col-xl-3"></div>
-            <div class="col-lg-8 col-xl-6">`
-        if (samples.length) {
-            const dateOptions = {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-            };
+        // let samplesBody = `<div class="col-lg-2 col-xl-3"></div>
+        //     <div class="col-lg-8 col-xl-6">`
+        // if (samples.length) {
+        //     const dateOptions = {
+        //         year: 'numeric',
+        //         month: 'long',
+        //         day: 'numeric',
+        //     };
             
-            samplesBody += '<ul  class="list-unstyled samples-list"><li>';
-            samplesBody += samples.sort((a, b) => a.date < b.date ? -1 : 1).map((sample) => {
-                return '<div class="h5"><span data-i18n="samples.donationDate">Donation Date: </span>'+(sample.date ? `<span data-i18n="date" data-timestamp="${sample.date}" data-date-options="${encodeURIComponent(JSON.stringify(dateOptions))}"></span>` : 'N/A') +'</div>'+
-                '<span data-i18n="samples.typeOfSample">Type of Sample Donated: </span><span data-i18n="'+sample.type+'"></span>'
-            }).join('</li><li>');
-            samplesBody += '</li></ul>';
-        } else {
-            samplesBody += '<span data-i18n="samples.noInventory"></span>';
-        }
-        samplesBody += `
-            <div class="col-lg-2 col-xl-3"></div>
-        `
+        //     samplesBody += '<ul  class="list-unstyled samples-list"><li>';
+        //     samplesBody += samples.sort((a, b) => a.date < b.date ? -1 : 1).map((sample) => {
+        //         return '<div class="h5"><span data-i18n="samples.donationDate">Donation Date: </span>'+(sample.date ? `<span data-i18n="date" data-timestamp="${sample.date}" data-date-options="${encodeURIComponent(JSON.stringify(dateOptions))}"></span>` : 'N/A') +'</div>'+
+        //         '<span data-i18n="samples.typeOfSample">Type of Sample Donated: </span><span data-i18n="'+sample.type+'"></span>'
+        //     }).join('</li><li>');
+        //     samplesBody += '</li></ul>';
+        // } else {
+        //     samplesBody += '<span data-i18n="samples.noInventory"></span>';
+        // }
+        // samplesBody += `
+        //     <div class="col-lg-2 col-xl-3"></div>
+        // `
 
-        template += translateHTML(`<div class="row gy-3"  id="sampleInventory">
-            <div class="col-lg-2 col-xl-3"></div>
-            <div class="col-lg-8 col-xl-6">
-                <div class="consentHeadersFont" style="color:#606060;width:100%" data-i18n="samples.sampleInventory"></div>
-            </div>
-            <div class="col-lg-2 col-xl-3"></div>
-            ${samplesBody}
-        </div>
-        `);
+        // template += translateHTML(`<div class="row gy-3"  id="sampleInventory">
+        //     <div class="col-lg-2 col-xl-3"></div>
+        //     <div class="col-lg-8 col-xl-6">
+        //         <div class="consentHeadersFont" style="color:#606060;width:100%" data-i18n="samples.sampleInventory"></div>
+        //     </div>
+        //     <div class="col-lg-2 col-xl-3"></div>
+        //     ${samplesBody}
+        // </div>
+        // `);
 
         document.getElementById('root').innerHTML = template;
     });
