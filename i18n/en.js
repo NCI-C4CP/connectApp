@@ -1102,7 +1102,7 @@ const en = {
     },
     "settings": {
         "title": "My Connect - My Profile",
-        "textOptIn": "<b>Important:</b> Reply START to 201962 to ensure you start getting texts from Connect again.",
+        "textOptIn": "<b>Important:</b> Reply START to 1-301-962-2427 to ensure you start getting texts from Connect again.",
         "pageNav": "On this page:",
         "agreements": "Agreements",
         "emailAndPhone": "Email and Phone",
