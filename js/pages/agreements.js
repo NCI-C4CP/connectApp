@@ -268,7 +268,7 @@ export const renderAgreements = async () => {
                                                 <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
                                             </div>
                                             <div class="col-md-10 consentBodyFont2">
-                                                <span class = "consentHeadersFont" style="color:#5c2d93">
+                                                <span class = "consentHeadersFont" style="color:#327abb">
                                                     <b data-i18n="agreements.destroyFormTitle">Sign data destruction request form</b>
                                                 </span>
                                                 <br>
@@ -291,7 +291,7 @@ export const renderAgreements = async () => {
                                                 <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
                                             </div>
                                             <div class="col-md-10 consentBodyFont2" >
-                                                <span class = "consentHeadersFont" style="color:#5c2d93">
+                                                <span class = "consentHeadersFont" style="color:#327abb">
                                                     <b data-i18n="agreements.revocateShareTitle">Sign revocation of electronic health records release (HIPAA Revocation) form</b>
                                                 </span>
                                                 <br>
@@ -327,7 +327,7 @@ export const renderAgreements = async () => {
                                                     <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
                                                 </div>
                                                 <div class="col-md-10 consentBodyFont2">
-                                                    <span class = "consentHeadersFont" style="color:#5c2d93" data-i18n="agreements.samplesDestructionTitle">
+                                                    <span class = "consentHeadersFont" style="color:#327abb" data-i18n="agreements.samplesDestructionTitle">
                                                         <b>Data destruction request form</b>
                                                     </span>
                                                     <br>
@@ -355,7 +355,7 @@ export const renderAgreements = async () => {
                                                 <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
                                             </div>
                                             <div class="col-md-10 consentBodyFont2">
-                                                <span class = "consentHeadersFont" style="color:#5c2d93"  data-i18n="agreements.stopSharingRecordsTitle">
+                                                <span class = "consentHeadersFont" style="color:#327abb"  data-i18n="agreements.stopSharingRecordsTitle">
                                                     <b>Revocation of electronic health records release (HIPAA Revocation) form</b>
                                                 </span>
                                                 <br>
@@ -383,7 +383,7 @@ export const renderAgreements = async () => {
                                                 <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
                                             </div>
                                             <div class="col-md-10 consentBodyFont2">
-                                                <span class = "consentHeadersFont" style="color:#5c2d93" data-i18n="agreements.consentFormTitle">
+                                                <span class = "consentHeadersFont" style="color:#327abb" data-i18n="agreements.consentFormTitle">
                                                     <b>Consent form to participate in Connect</b>
                                                 </span>
                                                 <br>
@@ -410,7 +410,7 @@ export const renderAgreements = async () => {
                                                 <i class="fab fa-wpforms d-none d-md-block" title="Survey Icon" style="margin-left:10px; font-size:50px;color:#c2af7f;"></i>
                                             </div>
                                             <div class="col-md-10 consentBodyFont2">
-                                                <span class = "consentHeadersFont" style="color:#5c2d93" data-i18n="agreements.releaseFormTitle">
+                                                <span class = "consentHeadersFont" style="color:#327abb" data-i18n="agreements.releaseFormTitle">
                                                     <b>Electronic health records release (HIPAA Authorization) form </b>
                                                 </span>
                                                 <br>
