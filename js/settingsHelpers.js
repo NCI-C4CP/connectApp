@@ -991,7 +991,7 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.altCity]: isClearing ? null : city,
       [cId.altState]: isClearing ? null : state,
       [cId.altZip]: isClearing ? null : (zip ? zip.toString() : ""),
-      [cId.isPOBoxAltAddress]: isClearing ? cId.no : (isPOBox ? cId.yes : cId.no)
+      [cId.isPOBoxAltAddress]: isClearing ? null : (isPOBox ? cId.yes : cId.no)
      };
   }
 
