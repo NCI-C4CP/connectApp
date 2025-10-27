@@ -87,9 +87,8 @@ const importQuest = async () => {
 export const questionnaire = async (moduleId) => {
     try {
         showAnimation();
-
-        if (!moduleId) {
-            throw new Error('No module ID on start survey click.');
+        if (!fieldMapping[moduleId]) {
+            throw new Error('Invalid module ID on start survey click.');
         }
 
         const [participantResponse, appSettingsResponse] = await Promise.all([
@@ -185,8 +184,9 @@ async function startModule(moduleId) {
             throw new Error('Error: No path found for module (null key).');
         }
 
-        // Module has not been started.
-        if (participantData[fieldMapping[moduleId].statusFlag] === fieldMapping.moduleStatus.notStarted) {
+        // Module has not been started. Use "not started" as fallback if statusFlag value missing.
+        const moduleStatus = participantData[fieldMapping[moduleId].statusFlag] || fieldMapping.moduleStatus.notStarted;
+        if (moduleStatus === fieldMapping.moduleStatus.notStarted) {
             
             ({ path, lang } = getMarkdownPath(getSelectedLanguage(), moduleConfig[key]));
             

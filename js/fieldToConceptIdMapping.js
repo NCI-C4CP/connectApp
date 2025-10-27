@@ -172,6 +172,7 @@ export default
         "D_506648060": "Experience2024",
         "D_369168474": "CancerScreeningHistory",
         "D_497020618": "DHQ3",
+        "D_312845734": "ROIPreference2025",
     },
 
     "Module1_OLD": {
@@ -328,6 +329,15 @@ export default
         "studyID": "196723965",
     },
 
+    ROIPreference2025: {
+        "conceptId": "D_312845734",
+        "startTs": "993557295",
+        "completeTs": "543379310",
+        "statusFlag": "278023676",
+        "standaloneSurvey": true,
+        "version": "716532434",
+    },
+
     // @deprecated. Retain until migration to Quest2 is complete. External variables passed into Quest that require extra async/await handling.
     delayedParameterArray: [
         "D_761310265",
@@ -366,12 +376,37 @@ export default
         },
     },
 
+
+    biospecimenFlag: 650516960,
+    biospecimenResearch: 534621077,
+    biospecimenClinical: 664882224,
+    biospecimenHome: 103209024,
+    biospecimenBloodCollection: 592099155,
+    biospecimenUrineCollection: 718172863,
+    biospecimenMouthwashdCollection: 915179629,
+
+    bloodFlag: 878865966,
+    bloodDateTime: 561681068,
+    clinicalBloodDateTime: 982213346,
+
+    urineFlag: 167958071,
+    urineDateTime: 847159717,
+    clinicalUrineDateTime: 139245758,
+
+    mouthwash: 684635302,
+    mouthwashDateTime: 448660695,
+
+    
     collectionDetails: 173836415,
     baseline: 266600170,
     bioKitMouthwash: 319972665,
+    bioKitMouthwashBL1: 541483796,
+    bioKitMouthwashBL2: 641006239,
+    kitReceivedTime: 826941471,
     kitType: 379252329,
     kitTypeValues: {
-        mouthwash: 976461859
+        mouthwash: 390351864,
+        homeMouthwash: 976461859
     },
     kitStatus: 221592017,
     kitStatusValues: {
