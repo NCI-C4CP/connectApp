@@ -1,4 +1,4 @@
-import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, sitesNotEnrolling, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues, escapeHTML } from "./shared.js";
+import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, sitesNotEnrolling, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues, escapeHTML, updateStartDHQParticipantData } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
 import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, noLongerEnrollingRender,  requestPINTemplate } from "./pages/healthCareProvider.js";
 import { renderDashboard } from "./pages/dashboard.js";
@@ -2518,3 +2518,66 @@ export const addEventLanguageSelection = () => {
         }
     });
 }
+
+/**
+ * Attach a click listener to the DHQ3 survey link.
+ * On click, open the link in a new tab and update the main content area.
+ */
+
+export const addDHQListener = (currentDHQ3SurveyStatus, ConnectID) => {
+    const dhq3Link = document.getElementById('dhq3-survey-link');
+    if (dhq3Link && !dhq3Link.hasClickListener) {
+        dhq3Link.addEventListener('click', async () => {
+            const surveyUrlFromLink = dhq3Link.getAttribute('href');
+            
+            // If status is not started, update it to 'started' in Firestore.
+            if (currentDHQ3SurveyStatus === fieldMapping.moduleStatus.notStarted) {
+                try {
+                    await updateStartDHQParticipantData();
+                    
+                } catch (error) {
+                    console.error("Error calling updateStartDHQParticipantData:", error);
+                    
+                    logDDRumError(error, 'UpdateDHQStatusError', {
+                        connectID: ConnectID,
+                        moduleId: 'DHQ3',
+                        userAction: 'Start DHQ3 Survey (updateStartDHQParticipantData)',
+                        errorMessage: error.message,
+                        timestamp: new Date().toISOString(),
+                    });
+                }
+            }
+
+            // Allows browser navigation before DOM update
+            setTimeout(() => {
+                const rootElement = document.getElementById('root');
+                if (rootElement) {
+                    const dhqScreenHTML = `
+                        <div class="container mt-4">
+                            <p><span data-i18n="dhq3Screen.openedInNewTab">The Diet History Questionnaire III (DHQ III) is open and in progress in a separate browser tab or window. Please complete the survey in that tab or window. When you finish it, you can exit the window and return here.</span></p>
+                            <p>
+                                <span data-i18n="dhq3Screen.youMayNeedTo">You may need to </span>
+                                <strong onclick="location.reload()" style="cursor:pointer; color:blue; text-decoration: underline;"><span data-i18n="dhq3Screen.refreshThisPage">refresh this page</span></strong>
+                                <span data-i18n="dhq3Screen.toSeeUpdatedStatus"> to see your updated survey status. The DHQ III may stay on your Dashboard for a short time after you submit it.</span>
+                            </p>
+                            <p>
+                                <span data-i18n="dhq3Screen.ifSurveyDidntOpen">If the survey didn’t open, or if you closed it before submitting:</span>
+                            </p>
+                            <div class="row">
+                                <div class="col-12 col-lg-6 mx-auto">
+                                    <a href="${surveyUrlFromLink}" target="_blank" rel="noopener noreferrer"
+                                        class="btn btn-expanding-height btn-agreement d-block w-100 mx-auto d-flex align-items-center justify-content-center mt-2"
+                                        role="button">
+                                        <b data-i18n="dhq3Screen.openAgainButton">Click here to open the survey again and pick up where you left off</b>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    rootElement.innerHTML = translateHTML(dhqScreenHTML);
+                }
+            }, 50);
+        });
+        dhq3Link.hasClickListener = true;
+    }
+};

@@ -139,6 +139,10 @@ export const handleContactInformationRadioButtonPresets = (mobilePhoneNumberComp
     document.getElementById('mobileVoicemailPermissionYesRadio').checked = canWeVoicemailMobile;
     document.getElementById('mobileVoicemailPermissionNoRadio').checked = !canWeVoicemailMobile;
     document.getElementById('textPermissionYesRadio').checked = canWeText;
+    if (!canWeText) {
+      document.getElementById('textPermissionYesRadio').dataset.initialNo = 'yes';
+      document.getElementById('mobileTextOptInWarning').classList.add('d-none');
+    }
     document.getElementById('textPermissionNoRadio').checked = !canWeText;
   }
   if (homePhoneNumberComplete) {
@@ -938,19 +942,6 @@ const handleAllEmailField = (changedUserDataForProfile, userData) => {
 };
 
 /**
- * Convert empty string to null
- * @param {string} text  - The text is  a string
- * @returns {string | null}
- */
-
-// temporarily reverting, adding back in June 2025 Release
-/*
-const convertToNullIfEmptyString = (text) => {
-  return text.trim().length > 0 ? text : null;
-}
-*/
-
-/**
  * Update the mailing address, physical mailing address, or alternate address in the user profile.
  * All address changes are tied to user profile history.
  * @param {number} id - The id of the address to update. 1: mailing, 2: physical, 3: alternate 
@@ -961,10 +952,11 @@ const convertToNullIfEmptyString = (text) => {
  * @param {string} zip - The 5-digit zip code 
  * @param {Object} userData - The user profile data
  * @param {boolean} isPOBox - true if the address is a PO Box, false otherwise
+ * @param {boolean} isClearing - true if we are intentionally clearing this address, false otherwise
  * @returns {boolean} - true if the update was successful, false otherwise
  */
 
-export const changeMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, userData, isPOBox) => {
+export const changeMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, userData, isPOBox, isClearing = false) => {
   document.getElementById(`mailingAddressFail${id}`).style.display = 'none';
   document.getElementById(`changeMailingAddressGroup${id}`).style.display = 'none';
 
@@ -980,26 +972,26 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.isPOBox]: isPOBox ? cId.yes : cId.no
     };
   } else if (id === 2) {
+    // For physical address (id=2), convert to null when clearing, otherwise use values as-is
     newValues = {
-      [cId.physicalAddress1]: addressLine1,
-      [cId.physicalAddress2]: addressLine2 ?? "",
-      [cId.physicalCity]: city,
-      [cId.physicalState]: state,
-      [cId.physicalZip]: zip.toString(),
-     };
+      [cId.physicalAddress1]: isClearing ? null : addressLine1,
+      [cId.physicalAddress2]: isClearing ? null : (addressLine2 ?? ""),
+      [cId.physicalCity]: isClearing ? null : city,
+      [cId.physicalState]: isClearing ? null : state,
+      [cId.physicalZip]: isClearing ? null : (zip ? zip.toString() : ""),
+    };
   } else if (id === 3) {
-    const doesAltAddressExist = addressLine1 || addressLine2 || city || state || zip
-      ? cId.yes
-      : cId.no;
+    const doesAltAddressExist = isClearing ? cId.no : (addressLine1 || addressLine2 || city || state || zip ? cId.yes : cId.no);
     
+    // For alternate address (id=3), convert to null when clearing, otherwise use values as-is
     newValues = {
       [cId.doesAltAddressExist]: doesAltAddressExist,
-      [cId.altAddress1]: addressLine1,
-      [cId.altAddress2]: addressLine2 ?? "",
-      [cId.altCity]: city,
-      [cId.altState]: state,
-      [cId.altZip]: zip.toString(),
-      [cId.isPOBoxAltAddress]: isPOBox ? cId.yes : cId.no
+      [cId.altAddress1]: isClearing ? null : addressLine1,
+      [cId.altAddress2]: isClearing ? null : (addressLine2 ?? ""),
+      [cId.altCity]: isClearing ? null : city,
+      [cId.altState]: isClearing ? null : state,
+      [cId.altZip]: isClearing ? null : (zip ? zip.toString() : ""),
+      [cId.isPOBoxAltAddress]: isClearing ? null : (isPOBox ? cId.yes : cId.no)
      };
   }
 

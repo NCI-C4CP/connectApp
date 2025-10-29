@@ -393,7 +393,7 @@ canvas {
     margin-top:0px;
     border-radius:30px !important; 
     height:60px !important;
-    background-color:#5c2d93 !important;
+    background-color: #327abb !important;
     color:white !important; 
     width:100%;
 }
@@ -411,7 +411,7 @@ canvas {
     margin-top: 0px;
     border-radius: 30px !important;
     min-height: 60px !important;
-    background-color: #5c2d93 !important;
+    background-color: #327abb !important;
     color: white !important;
     width: 100%;
 }
@@ -903,14 +903,14 @@ input:checked + .slider:before {
 }
 
 .survey-Active-Nav {
-    color:purple !important;
+    color: #327abb !important;
     background-color:white;
     border: 1px solid lightgrey !important;
     border-bottom: 1px solid white !important;
 }
 
 .survey-Inactive-Nav {
-    color:purple !important;
+    color:#327abb !important;
     background-color:white;
     border-bottom: 1px solid lightgrey !important;
 }
@@ -1731,4 +1731,8 @@ span.my-samples-indent-text {
     padding: .25em;
     font-size: 1.2em;
     font-family: 'Montserrat', sans-serif;
+}
+
+.samples-list li {
+    padding: 1em 0;
 }
