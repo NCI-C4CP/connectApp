@@ -1052,12 +1052,27 @@ const consentSubmit = async e => {
     formData['412000022'] = participantSite + '_HIPAA_' + formVersions[participantSite]['HIPAA'] + (langSuffix[selectedLanguage] ? '_' + langSuffix[selectedLanguage] : '');
 
     // Adding sign in info provided by firebase
-    if(firebase.auth().currentUser) {
-        const user = firebase.auth().currentUser;
-        if(user.email) formData['421823980'] = user.email;
-        if(user.displayName) formData['756862764'] = user.displayName;
-        if(user.phoneNumber) formData['348474836'] = user.phoneNumber;
-        if(user.providerData) formData['995036844'] = user.providerData[0].providerId; // TODO: datadog Error: TypeError: undefined is not an object (evaluating 'user.providerData[0].providerId')
+    const user = firebase.auth().currentUser;
+    if (user) {
+        if (user.email) {
+            formData[fieldMapping.firebaseAuthEmail] = user.email;
+            formData['query.allEmails'] = [user.email.trim().toLowerCase()];
+        }
+
+        if (user.displayName) formData['756862764'] = user.displayName; // Deprecated (old auth method, 1 record in prod)
+        
+        if (user.phoneNumber) {
+            formData[fieldMapping.firebaseAuthPhone] = user.phoneNumber;
+            // Remove +1 prefix for query array to match 10-digit format in query.allPhoneNo (used for participant search)
+            const cleanedAuthPhoneNo = user.phoneNumber.startsWith('+1') ? user.phoneNumber.substring(2) : user.phoneNumber;
+            if (cleanedAuthPhoneNo.length === 10) {
+                formData['query.allPhoneNo'] = [cleanedAuthPhoneNo];
+            }
+        }
+        
+        if (user.providerData && user.providerData.length > 0 && user.providerData[0]) {
+            formData[fieldMapping.firebaseSignInMechanism] = user.providerData[0].providerId;
+        }
     }
     
     const CSWFirstName = document.getElementById('CSWFirstName');

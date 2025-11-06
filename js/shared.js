@@ -3525,3 +3525,13 @@ export const checkIfComplete = (data) => {
 
     return module1Complete && module2Complete && module3Complete && module4Complete;
 };
+
+/**
+ * Merges and deduplicates two arrays
+ * @param {Array} firstArr - The first array to merge
+ * @param {Array} secondArr - The second array to merge
+ * @returns {Array} - The merged and deduplicated array
+ */
+export const mergeAndDeduplicateArrays = (firstArr, secondArr) => {
+    return [...new Set([...firstArr, ...secondArr])];
+};

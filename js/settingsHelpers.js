@@ -1,4 +1,4 @@
-import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML, closeModal, escapeHTML } from './shared.js';
+import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML, closeModal, escapeHTML, mergeAndDeduplicateArrays } from './shared.js';
 import { removeAllErrors } from './event.js';
 import cId from './fieldToConceptIdMapping.js';
 
@@ -801,8 +801,8 @@ export const changeName = async (firstName, lastName, middleName, suffix, prefer
   };
   
   let { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValues, userData, 'changeName');
-  changedUserDataForProfile = handleNameField(firstNameTypes, 'firstName', changedUserDataForProfile, userData);
-  changedUserDataForProfile = handleNameField(lastNameTypes, 'lastName', changedUserDataForProfile, userData);
+  changedUserDataForProfile = handleQueryArrayField(firstNameTypes, 'query.firstName', normalizeNameForQuery, changedUserDataForProfile, userData);
+  changedUserDataForProfile = handleQueryArrayField(lastNameTypes, 'query.lastName', normalizeNameForQuery, changedUserDataForProfile, userData);
   const isSuccess = await processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'changeName');
   return isSuccess;
 };
@@ -837,8 +837,8 @@ export const changeContactInformation = async (mobilePhoneNumberComplete, homePh
   };
 
   let { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValues, userData, 'changeContactInformation');
-  changedUserDataForProfile = handleAllPhoneNoField(changedUserDataForProfile, userData);
-  changedUserDataForProfile = handleAllEmailField(changedUserDataForProfile, userData);
+  changedUserDataForProfile = handleQueryArrayField(primaryPhoneTypes, 'query.allPhoneNo', normalizePhoneForQuery, changedUserDataForProfile, userData);
+  changedUserDataForProfile = handleQueryArrayField(primaryEmailTypes, 'query.allEmails', normalizeEmailForQuery, changedUserDataForProfile, userData, (val) => !val.startsWith('noreply'));
   const isSuccess = await processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'changeContactInformation');
   return isSuccess;
 };
@@ -857,87 +857,74 @@ export const changePreferredLanguage = async (preferredLanguage, userData) => {
   return isSuccess;
 };
 
+// Source field groups for query arrays
 const firstNameTypes = [cId.consentFirstName, cId.fName, cId.prefName];
 const lastNameTypes = [cId.consentLastName, cId.lName];
+const primaryPhoneTypes = [cId.cellPhone, cId.homePhone, cId.otherPhone, cId.firebaseAuthPhone];
+const primaryEmailTypes = [cId.prefEmail, cId.additionalEmail1, cId.additionalEmail2, cId.firebaseAuthEmail];
+
+const compareArraysIgnoreOrder = (a = [], b = []) => {
+  if (a.length !== b.length) return false;
+  const setA = new Set(a);
+  for (const val of b) {
+    if (!setA.has(val)) return false;
+  }
+  return true;
+};
+
+// Remove +1 prefix (used with Firebase Auth only). Ensure 10 digits for consistent search experience.
+const normalizePhoneForQuery = (phoneNumber) => {
+  if (!phoneNumber) return '';
+  const digits = phoneNumber.replace(/\D/g, '');
+  return digits.length >= 10 ? digits.slice(-10) : digits;
+};
+
+const normalizeEmailForQuery = (email) => {
+  return (email || '').trim().toLowerCase();
+};
+
+const normalizeNameForQuery = (name) => {
+  return (name || '').trim().toLowerCase();
+};
+
 
 /**
- * Handle the query.frstName and query.lastName fields in the participant profile.
- * Check the changedUserDataForProfile object and then the participant profile for all name types. If a name is in changedUserDataForProfile, that's the up-to-date version. Add it to the queryNameArray.
- * If a nameType isn't in changedUserData, check the existing participant profile and add that to the queryNameArray.
- * If a nameType is an empty string in changedUserData, don't add it to the queryNameArray even if it exists in the participant profile. The empty string means the participant wants the name removed.
- * Lastly, remove duplicates. This can happen when the participant has a consent name that matches the first or last name.
- * @param {array} nameTypes - array of name types to check.
- * @param {string} fieldName - the name of the field to update.
- * @param {object} changedUserDataForProfile - the changed user data.
- * @param {object} userData - the existing participant object.
+ * Build the query array from the related fields in the participant profile
+ * Values come from changed (if provided) otherwise from participant profile.
+ * 
  */
-const handleNameField = (nameTypes, fieldName, changedUserDataForProfile, userData) => {
-  const queryNameArray = [];
-  nameTypes.forEach(nameType => {
-      if (changedUserDataForProfile[nameType]) {
-          queryNameArray.push(changedUserDataForProfile[nameType].toLowerCase());
-      } else if (userData[nameType] && changedUserDataForProfile[nameType] !== '') {
-          queryNameArray.push(userData[nameType].toLowerCase());
+const buildQueryArray = (participant, changed, types, normalizeFn, filterFn) => {
+  const values = new Set();
+  types.forEach((fieldType) => {
+    if (Object.prototype.hasOwnProperty.call(changed, fieldType)) {
+      const raw = changed[fieldType];
+      if (raw) {
+        const normalized = normalizeFn(raw);
+        if (normalized && (!filterFn || filterFn(normalized))) values.add(normalized);
       }
+    } else if (participant && participant[fieldType]) {
+      const normalized = normalizeFn(participant[fieldType]);
+      if (normalized && (!filterFn || filterFn(normalized))) values.add(normalized);
+    }
   });
-
-  changedUserDataForProfile[`query.${fieldName}`] = Array.from(new Set(queryNameArray));
-
-  return changedUserDataForProfile;
+  return Array.from(values);
 };
 
 /**
- * Handle the allPhoneNo field in the user profile
- * If a number is in the changedUserDataForProfile, the participant has added this phone number. Add it to the allPhoneNo field.
- * Then check the userData profile for an existing value at the field being updated. The participant is updating this phone number. Remove it from the allPhoneNo field.
- * If an empty string is in the changedUserDataForProfile, the participant has removed this phone number. Remove it from the allPhoneNo field.
+ * Keeps query.* arrays synchronized with profile field changes by merging
+ * existing participant values with any pending updates before normalizing.
  */
-const handleAllPhoneNoField = (changedUserDataForProfile, userData) => {
-  const allPhoneNo = userData.query.allPhoneNo ?? [];
-  const phoneTypes = [cId.cellPhone, cId.homePhone, cId.otherPhone];
+const handleQueryArrayField = (types, queryKey, normalizeFn, changedUserDataForProfile, participant, filterFn = null) => {
+  const [rootKey, arrayKey] = queryKey.split('.');
+  const existingArray = Array.isArray(participant?.[rootKey]?.[arrayKey]) 
+    ? participant[rootKey][arrayKey]
+    : [];
+  const nextArray = buildQueryArray(participant, changedUserDataForProfile, types, normalizeFn, filterFn);
 
-  phoneTypes.forEach(phoneType => {
-    if (changedUserDataForProfile[phoneType] && !allPhoneNo.includes(changedUserDataForProfile[phoneType])) {
-      allPhoneNo.push(changedUserDataForProfile[phoneType]);
-    }
+  if (!compareArraysIgnoreOrder(nextArray, existingArray)) {
+    changedUserDataForProfile[queryKey] = nextArray;
+  }
 
-    if (changedUserDataForProfile[phoneType] || changedUserDataForProfile[phoneType] === '') {
-      const indexToRemove = allPhoneNo.indexOf(userData[phoneType]);  
-      if (indexToRemove !== -1) {
-        allPhoneNo.splice(indexToRemove, 1);
-      }  
-    }
-  });
-
-  changedUserDataForProfile['query.allPhoneNo'] = allPhoneNo;
-  
-  return changedUserDataForProfile;
-};
-
-/**
- * Handle the allEmails field in the user profile
- * If an email is in the changedUserDataForProfile, the participant has added this email. Add it to the allEmails field.
- * If an email is in the changedUserDataForHistory, the participant has removed this email. Remove it from the allEmails field.
- */
-const handleAllEmailField = (changedUserDataForProfile, userData) => {
-  const allEmails = userData.query.allEmails ?? [];
-  const emailTypes = [cId.prefEmail, cId.additionalEmail1, cId.additionalEmail2];
-
-  emailTypes.forEach(emailType => {
-    if (changedUserDataForProfile[emailType] && !allEmails.includes(changedUserDataForProfile[emailType])) {
-      allEmails.push(changedUserDataForProfile[emailType].toLowerCase());
-    }
-
-    if (changedUserDataForProfile[emailType] || changedUserDataForProfile[emailType] === '') {
-      const indexToRemove = allEmails.indexOf(userData[emailType]);  
-      if (indexToRemove !== -1) {
-        allEmails.splice(indexToRemove, 1);
-      }  
-    }
-  });
-
-  changedUserDataForProfile['query.allEmails'] = allEmails;
-  
   return changedUserDataForProfile;
 };
 
@@ -1084,7 +1071,10 @@ export const addOrUpdateAuthenticationMethod = async (email, phone, userData) =>
   }
 
   document.getElementById('changeLoginGroup').style.display = 'none';
-  const { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValuesForFirestore, userData);
+  let { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValuesForFirestore, userData);
+  // Keep query arrays in sync when auth identifiers change
+  changedUserDataForProfile = handleQueryArrayField(primaryPhoneTypes, 'query.allPhoneNo', normalizePhoneForQuery, changedUserDataForProfile, userData);
+  changedUserDataForProfile = handleQueryArrayField(primaryEmailTypes, 'query.allEmails', normalizeEmailForQuery, changedUserDataForProfile,  userData, (val) => !val.startsWith('noreply'));
   const isSuccess = await processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'loginUpdate');
   return isSuccess;
 };
@@ -1184,7 +1174,7 @@ export const unlinkFirebaseAuthProvider = async (providerType, userData, newPhon
       console.error('bad providerType arg in unlinkFirebaseAuthProvider()');
     }
     if (updateResult === true) {
-      const changedUserDataForProfile = {};
+      let changedUserDataForProfile = {};
 
       if (providerType === 'email') {
         changedUserDataForProfile[cId.firebaseAuthEmail] = noReplyEmail;
@@ -1197,6 +1187,10 @@ export const unlinkFirebaseAuthProvider = async (providerType, userData, newPhon
         changedUserDataForProfile[cId.firebaseAuthPhone] = newPhone;
         userData[cId.firebaseAuthEmail] && !userData[cId.firebaseAuthEmail].startsWith('noreply') ? changedUserDataForProfile[cId.firebaseSignInMechanism] = 'passwordAndPhone' : changedUserDataForProfile[cId.firebaseSignInMechanism] = 'phone';
       }  
+
+      // Keep query arrays in sync when auth identifiers change
+      changedUserDataForProfile = handleQueryArrayField(primaryPhoneTypes, 'query.allPhoneNo', normalizePhoneForQuery, changedUserDataForProfile, userData);
+      changedUserDataForProfile = handleQueryArrayField(primaryEmailTypes, 'query.allEmails', normalizeEmailForQuery, changedUserDataForProfile, userData, (val) => !val.startsWith('noreply'));
 
       await storeResponse(changedUserDataForProfile)
         .catch(function (error) {
