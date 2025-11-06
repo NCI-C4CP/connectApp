@@ -23,11 +23,12 @@ export const socialSecurityTemplate = (data) => {
     content = document.getElementById('questionnaireRoot');
     content.style.visibility = 'visible';
 
-    if (data[fieldMapping.ModuleSsn.statusFlag] === fieldMapping.moduleStatus.notStarted) {
+    const ssnStatus = data[fieldMapping.ModuleSsn.statusFlag] || fieldMapping.moduleStatus.notStarted;
+    if (ssnStatus === fieldMapping.moduleStatus.notStarted) {
         const formData = {
             [fieldMapping.ModuleSsn.startTs]: new Date().toISOString(),
             [fieldMapping.ModuleSsn.statusFlag]: fieldMapping.moduleStatus.started
-        }
+        };
         
         storeResponse(formData);
     }
