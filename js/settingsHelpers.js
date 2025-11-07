@@ -1,4 +1,4 @@
-import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML, closeModal, escapeHTML, mergeAndDeduplicateArrays } from './shared.js';
+import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML, closeModal, escapeHTML } from './shared.js';
 import { removeAllErrors } from './event.js';
 import cId from './fieldToConceptIdMapping.js';
 
@@ -887,11 +887,15 @@ const normalizeNameForQuery = (name) => {
   return (name || '').trim().toLowerCase();
 };
 
-
 /**
- * Build the query array from the related fields in the participant profile
- * Values come from changed (if provided) otherwise from participant profile.
- * 
+ * Build the query array from the related fields in the participant profile.
+ * Values come from `changed` (if provided) otherwise from participant profile.
+ * @param {Object} participant - The participant object.
+ * @param {Object} changed - Object containing changed values.
+ * @param {Array<string>} types - Array of field types to extract and normalize.
+ * @param {function} normalizeFn - Field-specific normalization.
+ * @param {function} filterFn - Optional function to filter normalized values (e.g., exclude noreply emails).
+ * @returns {Array<string>} Array of unique, normalized, and (optionally) filtered values.
  */
 const buildQueryArray = (participant, changed, types, normalizeFn, filterFn) => {
   const values = new Set();
@@ -1074,7 +1078,7 @@ export const addOrUpdateAuthenticationMethod = async (email, phone, userData) =>
   let { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValuesForFirestore, userData);
   // Keep query arrays in sync when auth identifiers change
   changedUserDataForProfile = handleQueryArrayField(primaryPhoneTypes, 'query.allPhoneNo', normalizePhoneForQuery, changedUserDataForProfile, userData);
-  changedUserDataForProfile = handleQueryArrayField(primaryEmailTypes, 'query.allEmails', normalizeEmailForQuery, changedUserDataForProfile,  userData, (val) => !val.startsWith('noreply'));
+  changedUserDataForProfile = handleQueryArrayField(primaryEmailTypes, 'query.allEmails', normalizeEmailForQuery, changedUserDataForProfile, userData, (val) => !val.startsWith('noreply'));
   const isSuccess = await processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'loginUpdate');
   return isSuccess;
 };

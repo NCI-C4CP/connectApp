@@ -1211,6 +1211,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             formData['714419972'] = document.getElementById('UPAdditionalEmail3').value.trim();
             allEmails.push(document.getElementById('UPAdditionalEmail3').value.toLowerCase().trim());
         }
+        
         if(allEmails.length > 0) {
             formData['query.allEmails'] = mergeAndDeduplicateArrays(queryEmailArray, allEmails);
         }
