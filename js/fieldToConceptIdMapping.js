@@ -403,6 +403,7 @@ export default
     bioKitMouthwashBL1: 541483796,
     bioKitMouthwashBL2: 641006239,
     kitReceivedTime: 826941471,
+    uniqueKitID: 687158491,
     kitType: 379252329,
     kitTypeValues: {
         mouthwash: 390351864,
@@ -411,11 +412,16 @@ export default
     kitStatus: 221592017,
     kitStatusValues: {
         pending: 517216441,
+        initialized: 728267588,
         addressPrinted: 849527480,
         assigned: 241974920,
         shipped: 277438316,
         received: 375535639
     },
+    dateKitRequested: 759651991,
+    shippedDateTime: 661940160,
+    receivedDateTime: 826941471,
+    kitRequestEligible: 638781731,
 
     // Healthcare providers
 
