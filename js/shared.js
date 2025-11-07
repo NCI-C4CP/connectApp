@@ -3527,11 +3527,10 @@ export const checkIfComplete = (data) => {
 };
 
 /**
- * Merges and deduplicates two arrays
- * @param {Array} firstArr - The first array to merge
- * @param {Array} secondArr - The second array to merge
+ * Merges and deduplicates an arbitrary number of arrays
+ * @param {...Array} arrays - Arrays to merge and deduplicate
  * @returns {Array} - The merged and deduplicated array
  */
-export const mergeAndDeduplicateArrays = (firstArr, secondArr) => {
-    return [...new Set([...firstArr, ...secondArr])];
+export const mergeAndDeduplicateArrays = (...arrays) => {
+    return [...new Set(arrays.flat())];
 };
