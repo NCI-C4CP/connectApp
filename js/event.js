@@ -1,4 +1,4 @@
-import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, sitesNotEnrolling, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues, escapeHTML, updateStartDHQParticipantData } from "./shared.js";
+import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, sitesNotEnrolling, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues, escapeHTML, updateStartDHQParticipantData, mergeAndDeduplicateArrays } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
 import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, noLongerEnrollingRender,  requestPINTemplate } from "./pages/healthCareProvider.js";
 import { renderDashboard } from "./pages/dashboard.js";
@@ -583,7 +583,7 @@ const validateAddress = async (focus, addr1Id, addr2Id, cityId, stateId, zipId) 
     }
 }
     
-export const addEventUPSubmit = async () => {
+export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
     const userProfileForm = document.getElementById('userProfileForm');
     userProfileForm.addEventListener('submit', async e => {
         e.preventDefault();
@@ -1177,7 +1177,6 @@ export const addEventUPSubmit = async () => {
         Array.from(voiceMailPermission2).forEach(radioBtn => {
             if(radioBtn.checked) formData['187894482'] = parseInt(radioBtn.value);
         });
-        if(allPhoneNo.length > 0) formData['query.allPhoneNo'] = allPhoneNo
 
          // Other phone
         if(document.getElementById('UPPhoneNumber31').value && document.getElementById('UPPhoneNumber32').value && document.getElementById('UPPhoneNumber33').value) {
@@ -1188,7 +1187,10 @@ export const addEventUPSubmit = async () => {
         Array.from(voiceMailPermission3).forEach(radioBtn => {
             if(radioBtn.checked) formData['983278853'] = parseInt(radioBtn.value);
         });
-        if(allPhoneNo.length > 0) formData['query.allPhoneNo'] = allPhoneNo
+        
+        if(allPhoneNo.length > 0) {
+            formData['query.allPhoneNo'] = mergeAndDeduplicateArrays(queryPhoneNoArray, allPhoneNo);
+        }
 
         // Email
         const allEmails = [];
@@ -1209,7 +1211,10 @@ export const addEventUPSubmit = async () => {
             formData['714419972'] = document.getElementById('UPAdditionalEmail3').value.trim();
             allEmails.push(document.getElementById('UPAdditionalEmail3').value.toLowerCase().trim());
         }
-        if(allEmails.length > 0) formData['query.allEmails'] = allEmails;
+        
+        if(allEmails.length > 0) {
+            formData['query.allEmails'] = mergeAndDeduplicateArrays(queryEmailArray, allEmails);
+        }
 
         // Preferred method of contact
         if(document.getElementsByName('methodOfContact')){

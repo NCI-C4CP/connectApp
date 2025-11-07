@@ -395,7 +395,13 @@ export const renderUserProfile = async () => {
     addEventAddressAutoComplete(2);
     addEventAddressAutoComplete(3);
     addEventCheckCanText();
-    addEventUPSubmit();
+
+    // Either query.allPhoneNo or query.allEmails will already have an entry from consenting. These are used for participant search.
+    // We add to them as the participant submits the profile form.
+    const queryPhoneNoArray = myData?.data?.['query.allPhoneNo'] || [];
+    const queryEmailArray = myData?.data?.['query.allEmails'] || [];
+    addEventUPSubmit(queryPhoneNoArray, queryEmailArray);
+    
     addEventPhysicalAddressLine(2);
     addEventToggleAltAddress();
 
