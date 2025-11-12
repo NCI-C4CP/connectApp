@@ -12,10 +12,10 @@ export const renderSamplesPage = async () => {
         let participant = res.data;
         const kitId = participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.uniqueKitID];
         const kitStatus = participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.kitStatus];
-        if(kitStatus === conceptId.kitStatusValues.shipped && participant[conceptId.kitRequestEligible] === conceptId.yes) {
+        if (kitStatus === conceptId.kitStatusValues.shipped && participant[conceptId.kitRequestEligible] === conceptId.yes) {
             // If the kit has been shipped and was user-requested, we're going to need its tracking number information
             const {code, data, message} = await getKitTrackingNumber(kitId);
-            if(data?.supplyKitTrackingNum) {
+            if (data?.supplyKitTrackingNum) {
                 participant.supplyKitTrackingNum = data.supplyKitTrackingNum;
             } else {
                 console.error('%s error retriving kit information:', code, message);
@@ -415,7 +415,7 @@ export const renderSamplesPage = async () => {
         const kitsForRequest = [{key: conceptId.bioKitMouthwash, kitType: "Mouthwash"}];
         const availableKits  = [], receivedKits = [];
         kitsForRequest.forEach(({key, kitType}) => {
-            if(participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[key]?.[conceptId.kitStatus] === conceptId.kitStatusValues.received) {
+            if (participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[key]?.[conceptId.kitStatus] === conceptId.kitStatusValues.received) {
                 receivedKits.push({
                     key,
                     kitType,
@@ -428,7 +428,7 @@ export const renderSamplesPage = async () => {
         });
 
         // Display only if user is kit request eligible and has not requested all kit types
-        if(participant[conceptId.kitRequestEligible] === conceptId.yes && availableKits.length) {
+        if (participant[conceptId.kitRequestEligible] === conceptId.yes && availableKits.length) {
             template += translateHTML(`
                     <div class="row">
                         <div class="col-lg-2 col-xl-3"></div>
@@ -453,7 +453,7 @@ export const renderSamplesPage = async () => {
                 template += renderAddPhysicalAddressInfo();
         }
         
-        if(receivedKits.length) {
+        if (receivedKits.length) {
             // Home Collection Kit Request History
             template += translateHTML(`
                 <div class="row">
@@ -574,7 +574,7 @@ const getParticipantMailToAddress = (participant) => {
 
     let addressObj;
 
-    if(physicalAddressVal && !poBoxRegex.test(physicalAddressVal)) {
+    if (physicalAddressVal && !poBoxRegex.test(physicalAddressVal)) {
         addressObj = {
             address_1: participant[physicalAddress1],
             address_2: participant[physicalAddress2] || '',
@@ -586,7 +586,7 @@ const getParticipantMailToAddress = (participant) => {
     } else {
         const addressLineOne = participant?.[address1];
         const isPOBoxMatch = poBoxRegex.test(addressLineOne) || participant?.[isPOBox] === yes;
-        if(isPOBoxMatch) {
+        if (isPOBoxMatch) {
             invalidAddress = true;
         }
         addressType = 'mailing';
@@ -613,13 +613,13 @@ const getParticipantMailToAddress = (participant) => {
 
 const renderRequestAKitDisplay = (participant) => {
     const requestAKitInner = document.getElementById('requestAKitInner');
-    if(!requestAKitInner || participant[conceptId.kitRequestEligible] !== conceptId.yes) {
+    if (!requestAKitInner || participant[conceptId.kitRequestEligible] !== conceptId.yes) {
         return;
     }
 
-    const {collectionDetails, baseline, bioKitMouthwash, kitStatus, shippedDateTime, uniqueKitID, kitStatusValues: {initialized, assigned, addressPrinted, shipped}} = conceptId;
+    const {collectionDetails, baseline, bioKitMouthwash, kitStatus, shippedDateTime, kitStatusValues: {initialized, assigned, addressPrinted, shipped}} = conceptId;
 
-    if ([initialized, addressPrinted, assigned].indexOf(participant[collectionDetails]?.[baseline]?.[bioKitMouthwash]?.[kitStatus]) > -1) {
+    if ([initialized, addressPrinted, assigned].includes(participant[collectionDetails]?.[baseline]?.[bioKitMouthwash]?.[kitStatus])) {
         // Request has been sent, kit has not been shipped. Basically, check that kitStatus is initialized, address printed or assigned
         requestAKitInner.innerHTML = translateHTML(`<div class="callout callout-success">
                 <div class="row">
@@ -637,11 +637,14 @@ const renderRequestAKitDisplay = (participant) => {
             month: "short",
             day: "numeric"
         };
+        const trackingUrls = {
+            FedEx: `https://www.fedex.com/wtrk/track/?trknbr=${participant.supplyKitTrackingNum}`,
+            USPS: `https://tools.usps.com/go/TrackConfirmAction`,
+            UPS: `https://www.ups.com/track`,
+            default: `https://www.ups.com/track`
+        };
         const trackingNumberSource = getTrackingNumberSource(participant.supplyKitTrackingNum);
-        const trackingNumberURL = trackingNumberSource === 'FedEx' ? 
-            `https://www.fedex.com/wtrk/track/?trknbr=${participant.supplyKitTrackingNum}` : 
-            trackingNumberSource === 'USPS' ? `https://tools.usps.com/go/TrackConfirmAction`
-            : `https://www.ups.com/track`;
+        const trackingNumberURL = trackingUrls[trackingNumberSource] || trackingUrls.default;
 
         requestAKitInner.innerHTML = translateHTML(`
             <div>
@@ -665,7 +668,7 @@ const renderRequestAKitDisplay = (participant) => {
     } else {
         const {invalidAddress, kitMailToAddress, addressType} = getParticipantMailToAddress(participant);
 
-        if(invalidAddress) {
+        if (invalidAddress) {
             requestAKitInner.innerHTML = translateHTML(`
                 <div class="fw-bold" data-i18n="samples.requestAKit.eligibilityBlurb">We sent you a message recently to let you know you can now request a home collection kit for Connect!</div>
                 <br />
@@ -716,7 +719,7 @@ const renderRequestAKitDisplay = (participant) => {
 
 const renderSomethingWentWrongError = () => {
     const requestAKitInner = document.getElementById('requestAKitInner');
-    if(requestAKitInner) {
+    if (requestAKitInner) {
         requestAKitInner.innerHTML = translateHTML(`
             <div class="alert alert-danger">
                 <span data-i18n="samples.requestAKit.somethingWentWrong">We're experiencing an issue with your request. Please contact the <a href=\"myconnect.cancer.gov/support\">Connect Support Center</a> for help.</span>
@@ -750,7 +753,7 @@ const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, sta
 
 const renderParticipantPhysicalAddress = (participant) => {
     const requestAKitInner = document.getElementById('requestAKitInner');
-    if(!requestAKitInner || participant[conceptId.kitRequestEligible] !== conceptId.yes) {
+    if (!requestAKitInner || participant[conceptId.kitRequestEligible] !== conceptId.yes) {
         return;
     }
 
@@ -778,7 +781,7 @@ const bindRequestKitButton = (participant) => {
     requestKitBtn && requestKitBtn.addEventListener('click', async () => {
         const resJSON = await requestHomeKit(participant);
         const {code, message} = resJSON;
-        if(code === 200) {
+        if (code === 200) {
             // Update area with success message
             // Update the participant with the necessary information
             participant[conceptId.collectionDetails] = participant[conceptId.collectionDetails] || {};
@@ -812,7 +815,7 @@ const bindUpdateAddressBtn = (participant) => {
 
         const {hasError, uspsSuggestion} = await validateMailingAddress(2, addressLine1, city, state, zip);
         
-        if(!hasError) {
+        if (!hasError) {
             const submitNewAddress = (addressLine1, addressLine2, city, state, zip) => submitNewMailingAddress(
                 2,
                 addressLine1,
@@ -835,9 +838,9 @@ const bindUpdateAddressBtn = (participant) => {
                             state,
                             zipCode
                         );
-                        if(success) {
+                        if (success) {
                             participant[conceptId.physicalAddress1] = streetAddress;
-                            if(secondaryAddress) {
+                            if (secondaryAddress) {
                                 participant[conceptId.physicalAddress2] = secondaryAddress;
                             }
                             participant[conceptId.physicalCity] = city;
@@ -851,9 +854,9 @@ const bindUpdateAddressBtn = (participant) => {
                 );
             } else {
                 const success = await submitNewAddress(addressLine1, addressLine2, city, state, zip);
-                if(success) {
+                if (success) {
                     participant[conceptId.physicalAddress1] = addressLine1;
-                    if(addressLine2) {
+                    if (addressLine2) {
                         participant[conceptId.physicalAddress2] = addressLine2;
                     }
                     participant[conceptId.physicalCity] = city;
@@ -886,7 +889,7 @@ const bindEvents = (participant) => {
 
 const renderUpdateAddressSuccess = () => {
     const div = document.getElementById('mailingAddressSuccess2');
-    if(!div) {
+    if (!div) {
         return;
     }
 
@@ -1511,7 +1514,7 @@ const locations = [
 
 const renderLocations = (site) => {
     let template = '';
-    if(site.locations){
+    if (site.locations){
         site.locations.forEach(location => {
             template += `
                 <div class="row" style="width:100%">
@@ -1582,7 +1585,7 @@ const renderLocations = (site) => {
                     </div>
                 </div>`
             }
-            if(location[2])  {
+            if (location[2])  {
                 template+=`    
                 <div class="row" style="width:100%;padding:5px 15px;">
                     <div style="width:100%">
@@ -1596,7 +1599,7 @@ const renderLocations = (site) => {
                 </div>`
             }
             
-            if(location[3])  {
+            if (location[3])  {
             template+=` 
                 <div class="row" style="width:100%">
                     <div style="width:100%">
