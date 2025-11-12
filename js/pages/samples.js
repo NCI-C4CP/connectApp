@@ -18,7 +18,7 @@ export const renderSamplesPage = async () => {
             if (data?.supplyKitTrackingNum) {
                 participant.supplyKitTrackingNum = data.supplyKitTrackingNum;
             } else {
-                console.error('%s error retriving kit information:', code, message);
+                console.error('%s error retrieving kit information:', code, message);
             }
 
         }
