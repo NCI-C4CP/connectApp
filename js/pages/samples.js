@@ -1,12 +1,28 @@
-import { getMyData, hasUserData, translateHTML, translateText } from "../shared.js";
+import { getMyData, hasUserData, translateHTML, translateText, requestHomeKit, escapeHTML, getKitTrackingNumber, getTrackingNumberSource } from "../shared.js";
+import { renderChangeMailingAddressGroup } from "./settings.js";
+import { toggleElementVisibility, validateMailingAddress, changeMailingAddress } from "../settingsHelpers.js";
+import { addEventAddressAutoComplete } from '../event.js';
 import conceptId from '../fieldToConceptIdMapping.js';
 
 export const renderSamplesPage = async () => {
     document.title = translateText('samples.title');
-    getMyData().then(res => {
+    getMyData().then(async res => {
 
         if (!hasUserData(res)) return;
         let participant = res.data;
+        const kitId = participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.uniqueKitID];
+        const kitStatus = participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.kitStatus];
+        if (kitStatus === conceptId.kitStatusValues.shipped && participant[conceptId.kitRequestEligible] === conceptId.yes) {
+            // If the kit has been shipped and was user-requested, we're going to need its tracking number information
+            const {code, data, message} = await getKitTrackingNumber(kitId);
+            if (data?.supplyKitTrackingNum) {
+                participant.supplyKitTrackingNum = data.supplyKitTrackingNum;
+            } else {
+                console.error('%s error retrieving kit information:', code, message);
+            }
+
+        }
+
         let site = locations.filter(location => location.concept == participant[conceptId.healthcareProvider])[0];
         let template = '';
 
@@ -32,8 +48,8 @@ export const renderSamplesPage = async () => {
                 </p>
                 <ul class="onThisPage">
                 <li><a href="javascript:document.getElementById('donatingInformation').scrollIntoView(true)"><span data-i18n="samples.donatingSamples">Donating Your Samples at</span> ${site.name}</a></li>
-                <!--li><a href="javascript:document.getElementById('requestAKit').scrollIntoView(true);" data-i18n="samples.requestAKit">Home Collection Kit Request</a></li>
-                <li><a href="javascript:document.getElementById('sampleInventory').scrollIntoView(true)" data-i18n="samples.sampleInventory">Sample Inventory</a></li-->
+                <li><a href="javascript:document.getElementById('requestAKit').scrollIntoView(true);" data-i18n="samples.requestAKit.title">Home Collection Kit Request</a></li>
+                <li><a href="javascript:document.getElementById('sampleInventory').scrollIntoView(true)" data-i18n="samples.sampleInventory">Sample Inventory</a></li>
                 </ul>
             </div>
             <div class="col-lg-2 col-xl-3"></div>
@@ -395,12 +411,86 @@ export const renderSamplesPage = async () => {
 
         //Request a kit
 
-        template += translateHTML(`<div class="row"  id="requestAKit">
-            <div class="col-lg-2 col-xl-3"></div>
-            <div class="col-lg-8 col-xl-6"></div>
-            <div class="col-lg-2 col-xl-3">
-        `);
+        // More kit types will be added eventually
+        const kitsForRequest = [{key: conceptId.bioKitMouthwash, kitType: "Mouthwash"}];
+        const availableKits  = [], receivedKits = [];
+        kitsForRequest.forEach(({key, kitType}) => {
+            if (participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[key]?.[conceptId.kitStatus] === conceptId.kitStatusValues.received) {
+                receivedKits.push({
+                    key,
+                    kitType,
+                    dateRequested: participant[conceptId.collectionDetails][conceptId.baseline][key][conceptId.dateKitRequested],
+                    dateReceived: participant[conceptId.collectionDetails][conceptId.baseline][key][conceptId.receivedDateTime]
+                });
+            } else {
+                availableKits.push(key);
+            }
+        });
 
+        // Display only if user is kit request eligible and has not requested all kit types
+        if (participant[conceptId.kitRequestEligible] === conceptId.yes && availableKits.length) {
+            template += translateHTML(`
+                    <div class="row">
+                        <div class="col-lg-2 col-xl-3"></div>
+                        <div class="col-lg-8 col-xl-6">
+                            <div class="row collapsed" style="width:100%" data-bs-toggle="collapse" data-bs-target="#requestAKit" aria-expanded="false" aria-controls="requestAKit">
+                                <div class="consentHeadersFont" style="color:#606060;width:100%">
+                                    <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
+                                    <div data-i18n="requestAKit.title">
+                                        Home Collection Kit Request
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row collapse" id="requestAKit">
+                                <div class="col-lg-12" id="requestAKitInner">
+                                </div>
+                            </div>
+                            <hr />
+                    </div>
+                    <div class="col-lg-2 col-xl-3"></div>
+                </div>
+                `);
+                template += renderAddPhysicalAddressInfo();
+        }
+        
+        if (receivedKits.length) {
+            // Home Collection Kit Request History
+            template += translateHTML(`
+                <div class="row">
+                    <div class="col-lg-2 col-xl-3"></div>
+                    <div class="col-lg-8 col-xl-6">
+                        <div class="row collapsed" style="width:100%" data-bs-toggle="collapse" data-bs-target="#kitRequestHistory" aria-expanded="false" aria-controls="kitRequestHistory">
+                            <div class="consentHeadersFont" style="color:#606060;width:100%">
+                                <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
+                                <div data-i18n="samples.kitRequestHistory.title">
+                                    Home Collection Kit Request History
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row collapse" id="kitRequestHistory">
+                            <div class="col-lg-12" id="kitRequestHistoryInner">
+                                ${receivedKits.map(({kitType, dateRequested, dateReceived}) => {
+                                    const dateOptions = {
+                                        weekday: "short",
+                                        year: "numeric",
+                                        month: "short",
+                                        day: "numeric"
+                                    };
+                                    return `
+                                        <div class="messagesSubHeader"><span data-i18n="samples.kitRequestHistory.kitTypeLabel">Type of Kit</span>: <span data-i18n="kitRequestHistory.${kitType}">${kitType}</span></div>
+                                        <br />
+                                        <div><span data-i18n="samples.kitRequestHistory.dateKitRequestedLabel">Date Requested</span>: <span data-i18n="date" data-timestamp="${dateRequested}" data-date-options="${encodeURIComponent(JSON.stringify(dateOptions))}"></span></div>
+                                        <div><span data-i18n="samples.kitRequestHistory.dateKitReceivedLabel">Date Received</span>: <span data-i18n="date" data-timestamp="${dateReceived}" data-date-options="${encodeURIComponent(JSON.stringify(dateOptions))}"></span></div>
+                                    `;
+                                }).join('<hr />')}
+                            </div>
+                        </div>
+                        <hr />
+                    </div>
+                    <div class="col-lg-2 col-xl-3"></div>
+                </div>
+            `);
+        }
 
         //Sample Inventory
         let samples = [];
@@ -432,41 +522,473 @@ export const renderSamplesPage = async () => {
             }
         }
 
-        // let samplesBody = `<div class="col-lg-2 col-xl-3"></div>
-        //     <div class="col-lg-8 col-xl-6">`
-        // if (samples.length) {
-        //     const dateOptions = {
-        //         year: 'numeric',
-        //         month: 'long',
-        //         day: 'numeric',
-        //     };
+        let samplesBody = `<div class="col-lg-2 col-xl-3"></div>
+            <div class="col-lg-8 col-xl-6">`
+        if (samples.length) {
+            const dateOptions = {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+            };
             
-        //     samplesBody += '<ul  class="list-unstyled samples-list"><li>';
-        //     samplesBody += samples.sort((a, b) => a.date < b.date ? -1 : 1).map((sample) => {
-        //         return '<div class="h5"><span data-i18n="samples.donationDate">Donation Date: </span>'+(sample.date ? `<span data-i18n="date" data-timestamp="${sample.date}" data-date-options="${encodeURIComponent(JSON.stringify(dateOptions))}"></span>` : 'N/A') +'</div>'+
-        //         '<span data-i18n="samples.typeOfSample">Type of Sample Donated: </span><span data-i18n="'+sample.type+'"></span>'
-        //     }).join('</li><li>');
-        //     samplesBody += '</li></ul>';
-        // } else {
-        //     samplesBody += '<span data-i18n="samples.noInventory"></span>';
-        // }
-        // samplesBody += `
-        //     <div class="col-lg-2 col-xl-3"></div>
-        // `
+            samplesBody += '<ul  class="list-unstyled samples-list"><li>';
+            samplesBody += samples.sort((a, b) => a.date < b.date ? -1 : 1).map((sample) => {
+                return '<div class="h5"><span data-i18n="samples.donationDate">Donation Date: </span>'+(sample.date ? `<span data-i18n="date" data-timestamp="${sample.date}" data-date-options="${encodeURIComponent(JSON.stringify(dateOptions))}"></span>` : 'N/A') +'</div>'+
+                '<span data-i18n="samples.typeOfSample">Type of Sample Donated: </span><span data-i18n="'+sample.type+'"></span>'
+            }).join('</li><li>');
+            samplesBody += '</li></ul>';
+        } else {
+            samplesBody += '<span data-i18n="samples.noInventory"></span>';
+        }
+        samplesBody += `
+            <div class="col-lg-2 col-xl-3"></div>
+        `
 
-        // template += translateHTML(`<div class="row gy-3"  id="sampleInventory">
-        //     <div class="col-lg-2 col-xl-3"></div>
-        //     <div class="col-lg-8 col-xl-6">
-        //         <div class="consentHeadersFont" style="color:#606060;width:100%" data-i18n="samples.sampleInventory"></div>
-        //     </div>
-        //     <div class="col-lg-2 col-xl-3"></div>
-        //     ${samplesBody}
-        // </div>
-        // `);
+        template += translateHTML(`<div class="row gy-3"  id="sampleInventory">
+            <div class="col-lg-2 col-xl-3"></div>
+            <div class="col-lg-8 col-xl-6">
+                <div class="consentHeadersFont" style="color:#606060;width:100%" data-i18n="samples.sampleInventory"></div>
+            </div>
+            <div class="col-lg-2 col-xl-3"></div>
+            ${samplesBody}
+        </div>
+        `);
 
         document.getElementById('root').innerHTML = template;
+
+        renderRequestAKitDisplay(participant);
+        bindEvents(participant);
     });
 }
+
+const getParticipantMailToAddress = (participant) => {
+    const {
+        physicalAddress1, physicalAddress2, physicalCity, physicalState, physicalZip,
+        address1, address2, city, state, zip, isPOBox, yes
+    } = conceptId;
+    let invalidAddress = false;
+    let addressType;
+
+    const poBoxRegex = /^(?:P\.?\s*O\.?\s*(?:Box|B\.?)?|Post\s+Office\s+(?:Box|B\.?)?)\s*(\s*#?\s*\d*)((?:\s+(.+))?$)$/i;
+    const physicalAddressVal = participant?.[conceptId.physicalAddress1];
+
+    let addressObj;
+
+    if (physicalAddressVal && !poBoxRegex.test(physicalAddressVal)) {
+        addressObj = {
+            address_1: participant[physicalAddress1],
+            address_2: participant[physicalAddress2] || '',
+            city: participant[physicalCity],
+            state: participant[physicalState],
+            zip_code: participant[physicalZip], 
+        };
+        addressType = 'physical';
+    } else {
+        const addressLineOne = participant?.[address1];
+        const isPOBoxMatch = poBoxRegex.test(addressLineOne) || participant?.[isPOBox] === yes;
+        if (isPOBoxMatch) {
+            invalidAddress = true;
+        }
+        addressType = 'mailing';
+        addressObj = {
+            address_1: participant[address1],
+            address_2: participant[address2] || '',
+            city: participant[city],
+            state: participant[state],
+            zip_code: participant[zip]
+        };
+    }
+
+    let kitMailToAddress = `${addressObj.address_1 || ''}<br />
+            ${addressObj.address_2 ? `${addressObj.address_2}<br />` : ''}
+        ${addressObj.city || ''}${addressObj.state ? ',':''} ${addressObj.state || ''} ${addressObj.zip || ''}`;
+
+    return {
+        invalidAddress,
+        kitMailToAddress,
+        addressType,
+        addressObj
+    }
+}
+
+const renderRequestAKitDisplay = (participant) => {
+    const requestAKitInner = document.getElementById('requestAKitInner');
+    if (!requestAKitInner || participant[conceptId.kitRequestEligible] !== conceptId.yes) {
+        return;
+    }
+
+    const {collectionDetails, baseline, bioKitMouthwash, kitStatus, shippedDateTime, kitStatusValues: {initialized, assigned, addressPrinted, shipped}} = conceptId;
+
+    if ([initialized, addressPrinted, assigned].includes(participant[collectionDetails]?.[baseline]?.[bioKitMouthwash]?.[kitStatus])) {
+        // Request has been sent, kit has not been shipped. Basically, check that kitStatus is initialized, address printed or assigned
+        requestAKitInner.innerHTML = translateHTML(`<div class="callout callout-success">
+                <div class="row">
+                    <div class="col-1"><i class="fa-solid fa-circle-check" style="color: #4CAF50; font-size:2rem;"></i></div>
+                    <div class="col-11"><strong><span data-i18n="samples.requestAKit.confirmedBold">Your mouthwash home collection request has been submitted!</span></strong> <span data-i18n="samples.requestAKit.confirmedShippingTimeframe">We will ship your kit soon, and you can expect it to arrive within one week.</span></div>
+                </div>
+            </div>`);
+    } else if (participant[collectionDetails]?.[baseline]?.[bioKitMouthwash]?.[kitStatus] === shipped) {
+        // Kit has been shipped
+        const kitShippedDate = new Date(participant[collectionDetails]?.[baseline]?.[bioKitMouthwash]?.[shippedDateTime]);
+        const kitArrivalDate = new Date(+kitShippedDate + (7 * 24 * 60 * 60 * 1000)); // Add 7 days
+        const dateOptions = {
+            weekday: "short",
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+        };
+        const trackingUrls = {
+            FedEx: `https://www.fedex.com/wtrk/track/?trknbr=${participant.supplyKitTrackingNum}`,
+            USPS: `https://tools.usps.com/go/TrackConfirmAction`,
+            UPS: `https://www.ups.com/track`,
+            default: `https://www.ups.com/track`
+        };
+        const trackingNumberSource = getTrackingNumberSource(participant.supplyKitTrackingNum);
+        const trackingNumberURL = trackingUrls[trackingNumberSource] || trackingUrls.default;
+
+        requestAKitInner.innerHTML = translateHTML(`
+            <div>
+                <span data-i18n="samples.requestAKit.mouthwashKitShippedOn">Your mouthwash kit was shipped on </span>
+                <span data-i18n="date" data-timestamp="${kitShippedDate}" data-date-options="${encodeURIComponent(JSON.stringify(dateOptions))}"></span><span data-i18n="samples.requestAKit.mouthwashShouldArriveBy">. Expect it to arrive by </span>
+                <span data-i18n="date" data-timestamp="${kitArrivalDate}" data-date-options="${encodeURIComponent(JSON.stringify(dateOptions))}"></span><span data-i18n="samples.requestAKit.mouthwashArrivalPostfix">.</span>
+            </div>
+             <br />
+            <div>
+                ${participant.supplyKitTrackingNum ? `
+                    <span data-i18n="samples.requestAKit.weShippedYourKitThrough">We shipped your kit through</span>
+                        ${trackingNumberSource}. 
+                        <span data-i18n="samples.requestAKit.kitTrackingInfo">You can track it using this number: </span><a href="${trackingNumberURL}" target="_blank">${participant.supplyKitTrackingNum}</a>.` 
+                    : `<div class="alert alert-danger">
+                            <span data-i18n="samples.requestAKit.somethingWentWrong">We're experiencing an issue retrieving your tracking information. Please contact the <a href=\"myconnect.cancer.gov/support\">Connect Support Center</a> for help.</span>
+                        </div>`}
+                
+             </div>
+             <br />
+            <div data-i18n="samples.requestAKit.kitDelayMissingQuestionsContactInfo">If you don't get your kit within one week of the above ship date, or have any questions about the kit or home collection process, please reach out to the <a href=\"#support\">Connect Support Center</a> for help.</div>`)
+    } else {
+        const {invalidAddress, kitMailToAddress, addressType} = getParticipantMailToAddress(participant);
+
+        if (invalidAddress) {
+            requestAKitInner.innerHTML = translateHTML(`
+                <div class="fw-bold" data-i18n="samples.requestAKit.eligibilityBlurb">We sent you a message recently to let you know you can now request a home collection kit for Connect!</div>
+                <br />
+                <div class="fw-bold"  data-i18n="samples.requestAKit.cannotShipKitHeader">We can\'t ship your kit because of a problem with your address.</div>
+                <div>${kitMailToAddress}</div>
+                <br />
+                <div class="callout callout-danger">
+                    <span data-i18n="samples.requestAKit.cannotShipToPOBoxesFirstHalf">We can't ship home collection kits to P.O. Boxes, and your current mailing address is a P.O. Box. Please </span><a href="/#myprofile"><span data-i18n="samples.requestAKit.updateMailingAddressLink">update your mailing address</span></a><span data-i18n="samples.requestAKit.cannotShipToPOBoxesSecondHalf"> or click the button below to add a new physical address where we should ship your kit.</span>
+                </div>
+                <div id="mailingAddressSuccess2"></div>
+                <div id="mailingAddressFail2"></div>
+                <div id="mailingAddressError2"></div>
+                ${addressType === 'physical' ? '' : `<br /><div><button type="button" class="btn btn-primary" id="addPhysicalAddress" data-i18n="samples.requestAKit.addPhysicalAddress" data-bs-toggle="modal" data-bs-target="#addPhysicalAddressInfo">Add pPhysical Address</button></div>`}
+            `);
+            const addPhysicalAddressInfoModal = document.getElementById('addPhysicalAddressInfo');
+            addPhysicalAddressInfoModal.outerHTML = renderAddPhysicalAddressInfo(true);
+        } else {
+            requestAKitInner.innerHTML = translateHTML(`
+                <div class="fw-bold" data-i18n="samples.requestAKit.eligibilityBlurb">We sent you a message recently to let you know you can now request a home collection kit for Connect!</div>
+                <br />
+                <div class="fw-bold" data-i18n="samples.requestAKit.willShipToThisAddress">We will ship your kit to this address:</div>
+                <div>${kitMailToAddress}</div>
+                <br />
+                <div><a href="/#myprofile"><span data-i18n="samples.requestAKit.updateMy${addressType === 'physical' ? 'Physical' : 'Mailing'}Address">Update my ${addressType} address.</span></a></div>
+                ${addressType === 'mailing' ? `<div><a href="#" id="addPhysicalAddress"  data-i18n="samples.requestAKit.addPhysicalAddressLowercase" data-bs-toggle="modal" data-bs-target="#addPhysicalAddressInfo">Add physical address</a></div>` : ''}
+                <br /><br />
+                <div class="fst-italic" data-i18n="samples.requestAKit.cannotShipToPOBoxesNote">Note: we can't ship kits to P.O. Boxes.</div>
+                <div id="mailingAddressSuccess2"></div>
+                <div id="mailingAddressFail2"></div>
+                <div id="mailingAddressError2"></div>
+                <label class="fw-bold col-form-label" data-i18n="samples.requestAKit.selectKitType" for="selectKitType"><strong>Select your kit type:</strong></label>
+                <select class="form-control" name="kitType" id="selectKitType">
+                    <option data-i18n="samples.requestAKit.chooseKitGhostValue" value="" disabled>Choose the kit you are requesting</option>
+                    <option data-i18n="samples.requestAKit.mouthwashOption" value="mouthwash" default>Mouthwash</option>
+                </select>
+                <div data=i18n="samples.requestAKit.mwKitShipTimeframe">Please note: mouthwash kits ship and arrive in about one week.</div>
+                <br />
+                <div><button type="button" class="btn btn-primary" id="requestHomeKit" data-i18n="samples.requestAKit.submitRequestText">Submit Request</button></div>
+            `);
+
+            const addPhysicalAddressInfoModal = document.getElementById('addPhysicalAddressInfo');
+            addPhysicalAddressInfoModal.outerHTML = renderAddPhysicalAddressInfo(false);
+
+        }
+    }
+
+}
+
+const renderSomethingWentWrongError = () => {
+    const requestAKitInner = document.getElementById('requestAKitInner');
+    if (requestAKitInner) {
+        requestAKitInner.innerHTML = translateHTML(`
+            <div class="alert alert-danger">
+                <span data-i18n="samples.requestAKit.somethingWentWrong">We're experiencing an issue with your request. Please contact the <a href=\"myconnect.cancer.gov/support\">Connect Support Center</a> for help.</span>
+                </div>
+            `)
+    }
+}
+
+/**
+ * This function has been largely copied from settings.js, but has modifications specific to this page
+ * @param {*} id 
+ * @param {*} addressLine1 
+ * @param {*} addressLine2 
+ * @param {*} city 
+ * @param {*} state 
+ * @param {*} zip 
+ * @param {*} isPOBox 
+ */
+const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, isPOBox = false) => {
+    const data = await getMyData();
+    const userData = data.data;
+    const isSuccess = await changeMailingAddress(id, addressLine1, addressLine2, city, state, zip, userData, isPOBox).catch(function (error) {
+        console.error('Error', error);
+        document.getElementById(`mailingAddressFail${id}`).style.display = 'block';
+        document.getElementById(`mailingAddressError${id}`).innerHTML = translateText('settings.failMailUpdate');
+    });
+    if (isSuccess) {
+        return true;
+    }
+};
+
+const renderParticipantPhysicalAddress = (participant) => {
+    const requestAKitInner = document.getElementById('requestAKitInner');
+    if (!requestAKitInner || participant[conceptId.kitRequestEligible] !== conceptId.yes) {
+        return;
+    }
+
+    requestAKitInner.innerHTML = '<div class="messagesSubHeader" data-i18n="samples.requestAKit.addPhysicalAddress">New Physical Address</div>' + renderChangeMailingAddressGroup(2);
+    toggleElementVisibility([document.getElementById(`currentMailingAddressDiv2`), document.getElementById(`changeMailingAddressGroup2`)], false);
+    addEventAddressAutoComplete(2);
+    const submitButton = document.getElementById('changeMailingAddressSubmit2');
+    submitButton.setAttribute('class', 'btn btn-primary save-data');
+    const buttonParentDiv = submitButton.parentElement;
+    const backButton = document.createElement('button');
+    backButton.textContent = 'Cancel';
+    backButton.setAttribute('class', 'btn btn-outline-primary');
+    backButton.setAttribute("data-i18n", "samples.requestAKit.cancelText");
+    // Go back if cancel is clicked
+    backButton.addEventListener('click', () => {
+        renderRequestAKitDisplay(participant);
+        bindEvents(participant);
+    });
+    buttonParentDiv.appendChild(translateHTML(backButton));
+    bindEvents(participant);
+}
+
+const bindRequestKitButton = (participant) => {
+    const requestKitBtn = document.getElementById('requestHomeKit');
+    requestKitBtn && requestKitBtn.addEventListener('click', async () => {
+        const resJSON = await requestHomeKit(participant);
+        const {code, message} = resJSON;
+        if (code === 200) {
+            // Update area with success message
+            // Update the participant with the necessary information
+            participant[conceptId.collectionDetails] = participant[conceptId.collectionDetails] || {};
+            participant[conceptId.collectionDetails][conceptId.baseline] = participant[conceptId.collectionDetails][conceptId.baseline] || {};
+            participant[conceptId.collectionDetails][conceptId.baseline][conceptId.bioKitMouthwash] = [conceptId.bioKitMouthwash] || {};
+            participant[conceptId.collectionDetails][conceptId.baseline][conceptId.bioKitMouthwash][conceptId.kitStatus] = conceptId.kitStatusValues.initialized;
+            renderRequestAKitDisplay(participant);
+        } else {
+            // Error case -- message is error message
+            console.error(`${code} error requesting kit: ${message}`);
+            renderSomethingWentWrongError();
+        }
+    });
+}
+
+const bindAddPhysicalAddressBtn = (participant) => {
+    const addPhysicalAddressBtn = document.getElementById('continueToAddPAddress');
+    addPhysicalAddressBtn && addPhysicalAddressBtn.addEventListener('click', () => {
+        renderParticipantPhysicalAddress(participant);
+    });
+}
+
+const bindUpdateAddressBtn = (participant) => {
+    const updateAddressBtn = document.getElementById('changeMailingAddressSubmit2');
+    updateAddressBtn && updateAddressBtn.addEventListener('click', async () => {
+        const addressLine1 = escapeHTML(document.getElementById('UPAddress2Line1').value.trim());
+        const addressLine2 = escapeHTML(document.getElementById('UPAddress2Line2').value.trim());
+        const city = escapeHTML(document.getElementById('UPAddress2City').value.trim());
+        const state = escapeHTML(document.getElementById('UPAddress2State').value.trim());
+        const zip = escapeHTML(document.getElementById('UPAddress2Zip').value.trim());
+
+        const {hasError, uspsSuggestion} = await validateMailingAddress(2, addressLine1, city, state, zip);
+        
+        if (!hasError) {
+            const submitNewAddress = (addressLine1, addressLine2, city, state, zip) => submitNewMailingAddress(
+                2,
+                addressLine1,
+                addressLine2,
+                city,
+                state,
+                zip,
+                true
+            );
+
+            if (uspsSuggestion.suggestion) {
+                showMailAddressSuggestion(
+                    uspsSuggestion,
+                    'event.addressSuggestionDescriptionPhysical',
+                    async (streetAddress, secondaryAddress, city, state, zipCode) => {
+                        const success = await submitNewAddress(
+                            streetAddress,
+                            secondaryAddress,
+                            city,
+                            state,
+                            zipCode
+                        );
+                        if (success) {
+                            participant[conceptId.physicalAddress1] = streetAddress;
+                            if (secondaryAddress) {
+                                participant[conceptId.physicalAddress2] = secondaryAddress;
+                            }
+                            participant[conceptId.physicalCity] = city;
+                            participant[conceptId.physicalState] = state;
+                            participant[conceptId.physicalZip] = zipCode;
+                            
+                            renderRequestAKitDisplay(participant);
+                            renderUpdateAddressSuccess();
+                        }
+                    }
+                );
+            } else {
+                const success = await submitNewAddress(addressLine1, addressLine2, city, state, zip);
+                if (success) {
+                    participant[conceptId.physicalAddress1] = addressLine1;
+                    if (addressLine2) {
+                        participant[conceptId.physicalAddress2] = addressLine2;
+                    }
+                    participant[conceptId.physicalCity] = city;
+                    participant[conceptId.physicalState] = state;
+                    participant[conceptId.physicalZip] = zip
+                    renderRequestAKitDisplay(participant);
+                    renderUpdateAddressSuccess();
+                }
+            }
+        }
+    });
+}
+
+const bindCancelAddressUpdateBtn = (participant) => {
+    const cancelAddressUpdateBtn = document.getElementById('cancelAddressUpdate');
+    cancelAddressUpdateBtn && cancelAddressUpdateBtn.addEventListener('click', () => {
+        renderRequestAKitDisplay(participant);
+        bindAddPhysicalAddressBtn(participant);
+    });
+}
+
+const bindEvents = (participant) => {
+    bindRequestKitButton(participant);
+    bindAddPhysicalAddressBtn(participant);
+
+    bindUpdateAddressBtn(participant);
+
+    bindCancelAddressUpdateBtn(participant);
+}
+
+const renderUpdateAddressSuccess = () => {
+    const div = document.getElementById('mailingAddressSuccess2');
+    if (!div) {
+        return;
+    }
+
+    div.innerHTML = translateHTML(`<div class="callout callout-success">
+            <div data-i18n="samples.requestAKit.addressUpdateSuccess">You have successfully updated your physical address and selected this address to receive your kit.</div>
+            <div data-i18n="samples.requestAKit.addressUpdateEditInfo">Your new physical address can be found and edited on your <a href="/#myprofile">Profile</a> page.</div>
+        </div>`);
+}
+
+const renderAddPhysicalAddressInfo = (displayPOBoxInfo) => {
+
+    return translateHTML(`
+        <div class="modal fade" id="addPhysicalAddressInfo" tabindex="-1" aria-labelledby="addPhysicalAddressInfoLabel">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header"></div>
+                    <div class="modal-body">
+                        <div><span data-i18n="samples.requestAKit.pleaseNote" class="fw-bold">Please note:</span> <span data-i18n="samples.requestAKit.addPhysicalAddressExplanation">adding a physical address means that your kit will arrive there.</span>
+                        ${displayPOBoxInfo ? `<span data-i18n="samples.requestAKit.editMailingToNonPOBox">If you want to edit your mailing address to a non-P.O. Box address, your kit will ship to your mailing address.</span>` : ''}
+                        </div>
+                        <br />
+                        <div data-i18n="samples.requestAKit.doubleCheckAddress">Please double check your address information. Contact the Connect Support Center if you need further help.</div>
+                    </div>
+                    <div class="modal-footer" style="justify-content: flex-start">
+                        <button type="button" class="btn btn-primary" id="continueToAddPAddress" data-i18n="samples.requestAKit.continueButton" data-bs-dismiss="modal">Continue</button>
+                        <button type="button" class="btn btn-outline-primary" id="closeAddPAddressConfirm" data-i18n="samples.requestAKit.goBackButton" data-bs-dismiss="modal">Go Back</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `);
+}
+
+export const showMailAddressSuggestion = (uspsSuggestion, i18nTranslation, submit) => {
+  const modalElement = document.getElementById("connectMainModal");
+  let modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+
+  // TODO: Need to refactor
+  const closeModal = () => {
+    const instance = bootstrap.Modal.getInstance(modalElement);
+    if (instance) instance.hide();
+  };
+
+  document.getElementById("connectModalHeader").innerHTML = translateHTML(`
+        <h2 style="color: #333;" data-i18n="event.addressSuggestionTitle">Address Verification</h2>
+    `);
+
+  document.getElementById("connectModalBody").innerHTML = translateHTML(`
+        <div style="margin-bottom: 20px;" data-i18n="${i18nTranslation}">
+            We can’t verify your address but found a close match. Please confirm the correct address or enter a different address.
+        </div>
+        <div style="display: flex; gap: 20px;">
+            <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
+                <div style="margin-bottom: 15px;">
+                    ${uspsSuggestion.original.streetAddress} ${uspsSuggestion.original.secondaryAddress} <br>
+                    ${uspsSuggestion.original.city} ${uspsSuggestion.original.state} ${uspsSuggestion.original.zipCode} 
+                </div>
+                <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressSuggestionKeepButton" data-i18n="event.addressSuggestionKeepButton">Keep address I entered</button>
+            </div>
+            <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
+                <div style="margin-bottom: 15px;">
+                    ${uspsSuggestion.suggestion.streetAddress} ${uspsSuggestion.suggestion.secondaryAddress}<br>
+                    ${uspsSuggestion.suggestion.city} ${uspsSuggestion.suggestion.state} ${uspsSuggestion.suggestion.zipCode} 
+                </div>
+                <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressSuggestionUseButton" data-i18n="event.addressSuggestionUseButton">Use suggested address</button>
+            </div>
+        </div>
+    `);
+
+  document.getElementById("connectModalFooter").innerHTML = translateHTML(`
+        <div class="d-flex justify-content-between w-100">
+            <button data-i18n="event.navButtonsClose" type="button" title="Go Back" class="btn btn-dark" id="goBackButton">Go Back</button>
+        </div>
+    `);
+
+  modalInstance.show();
+
+  document.getElementById("addressSuggestionKeepButton").addEventListener("click", async () => {
+    const { streetAddress, secondaryAddress, city, state, zipCode } = uspsSuggestion.original;
+    await submit(streetAddress, secondaryAddress, city, state, zipCode);
+    closeModal();
+  });
+
+  document.getElementById("addressSuggestionUseButton").addEventListener("click", async () => {
+    const { streetAddress, secondaryAddress, city, state, zipCode } = uspsSuggestion.suggestion;
+    await submit(streetAddress, secondaryAddress, city, state, zipCode);
+    closeModal();
+  });
+
+  // Delay the 'goBackButton' since it's rendered dynamically
+  setTimeout(() => {
+    const goBackButton = document.getElementById("goBackButton");
+    if (goBackButton) {
+      goBackButton.addEventListener("click", () => {
+        closeModal();
+      });
+    }
+  }, 100);
+};
 
 const getSampleDateTime = (participant, biospecimenFlag, researchDateTime, clinicalDateTime) => {
     let biospecimenSampleDateTime = ``;
@@ -992,7 +1514,7 @@ const locations = [
 
 const renderLocations = (site) => {
     let template = '';
-    if(site.locations){
+    if (site.locations){
         site.locations.forEach(location => {
             template += `
                 <div class="row" style="width:100%">
@@ -1063,7 +1585,7 @@ const renderLocations = (site) => {
                     </div>
                 </div>`
             }
-            if(location[2])  {
+            if (location[2])  {
                 template+=`    
                 <div class="row" style="width:100%;padding:5px 15px;">
                     <div style="width:100%">
@@ -1077,7 +1599,7 @@ const renderLocations = (site) => {
                 </div>`
             }
             
-            if(location[3])  {
+            if (location[3])  {
             template+=` 
                 <div class="row" style="width:100%">
                     <div style="width:100%">

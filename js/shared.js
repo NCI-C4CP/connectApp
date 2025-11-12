@@ -394,6 +394,41 @@ export const getMyData = async () => {
     }
 };
 
+export const getKitTrackingNumber = async (uniqueKitID) => {
+    try {
+        const idToken = await getIdToken();
+        const response = await fetch(`${api}?api=getKitTrackingNumber&uniqueKitID=${uniqueKitID}`, {
+            headers: {
+                Authorization: "Bearer " + idToken,
+            },
+        });
+
+        return await response.json();
+    } catch (err) {
+        logDDRumError(err, "getMyDataError", {
+            userAction: "Get participant data",
+            timestamp: new Date().toISOString(),
+        });
+
+        return { code: 500, data: null, message: "Error occurred when calling getMyData()" };
+    }
+}
+
+/**
+ * Determines the type of shipping used for a package and returns the information.
+ * 
+ * @param {*} trackingNum 
+ * @returns 
+ */
+export const getTrackingNumberSource = (trackingNum = '') => {
+    if (`${trackingNum}`.length === 22 || `${trackingNum}`.length === 20) {
+        return 'USPS';
+    } else if (`${trackingNum}`.length === 12 || `${trackingNum}`.length === 34) {
+        return 'FedEx';
+    }
+    return '';
+}
+
 export const retrievePhysicalActivityReport = async () => {
 
     const idToken = await getIdToken();
@@ -3069,6 +3104,21 @@ export const addressValidation = async (data) => {
 
     const jsonResponse = await response.json();
     return jsonResponse;
+}
+
+export const requestHomeKit = async (participant) => {
+    const idToken = await getIdToken();
+
+    const res = await fetch(`${api}?api=requestHomeKit`, {
+            method: 'POST',
+            headers:{
+                Authorization: "Bearer " + idToken,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({connectId: participant.Connect_ID})
+        });
+    const resJSON = await res.json();
+    return resJSON;
 }
 
 /**
