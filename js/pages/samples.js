@@ -12,7 +12,7 @@ export const renderSamplesPage = async () => {
         let participant = res.data;
         const kitId = participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.uniqueKitID];
         const kitStatus = participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.kitStatus];
-        if (kitStatus === conceptId.kitStatusValues.shipped && participant[conceptId.kitRequestEligible] === conceptId.yes) {
+        if (kitStatus === conceptId.kitStatusValues.shipped && participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.kitRequestEligible] === conceptId.yes) {
             // If the kit has been shipped and was user-requested, we're going to need its tracking number information
             const {code, data, message} = await getKitTrackingNumber(kitId);
             if (data?.supplyKitTrackingNum) {
@@ -40,6 +40,29 @@ export const renderSamplesPage = async () => {
         `);
 
         //In page Navigation
+
+        // Request a kit and kit request history eligibility information needed, so calculated here
+         // More kit types will be added eventually
+        const kitsForRequest = [{key: conceptId.bioKitMouthwash, kitType: "Mouthwash"}];
+        const availableKits  = [], receivedKits = [];
+        kitsForRequest.forEach(({key, kitType}) => {
+            if (participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[key]?.[conceptId.kitStatus] === conceptId.kitStatusValues.received) {
+                receivedKits.push({
+                    key,
+                    kitType,
+                    dateRequested: participant[conceptId.collectionDetails][conceptId.baseline][key][conceptId.dateKitRequested],
+                    dateReceived: participant[conceptId.collectionDetails][conceptId.baseline][key][conceptId.receivedDateTime]
+                });
+            } else {
+                availableKits.push(key);
+            }
+        });
+
+        // Display only if user is kit request eligible and has not requested all kit types
+        const showRequestAKit = participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.kitRequestEligible] === conceptId.yes && availableKits.length;
+        // Display if any home kits have been received
+        const showKitRequestHistory = !!receivedKits.length;
+
         template += translateHTML(`<div class="row">
             <div class="col-lg-2 col-xl-3"></div>
             <div class="col-lg-8 col-xl-6">
@@ -48,8 +71,9 @@ export const renderSamplesPage = async () => {
                 </p>
                 <ul class="onThisPage">
                 <li><a href="javascript:document.getElementById('donatingInformation').scrollIntoView(true)"><span data-i18n="samples.donatingSamples">Donating Your Samples at</span> ${site.name}</a></li>
-                <li><a href="javascript:document.getElementById('requestAKit').scrollIntoView(true);" data-i18n="samples.requestAKit.title">Home Collection Kit Request</a></li>
-                <li><a href="javascript:document.getElementById('sampleInventory').scrollIntoView(true)" data-i18n="samples.sampleInventory">Sample Inventory</a></li>
+                ${showRequestAKit ? `<li><a href="javascript:document.getElementById('requestAKitRow').scrollIntoView(true);" data-i18n="samples.requestAKit.title">Home Collection Kit Request</a></li>` : ``}
+                ${showKitRequestHistory ? `<li><a href="javascript:document.getElementById('kitRequestHistoryRow').scrollIntoView(true);" data-i18n="samples.kitRequestHistory.title">Home Collection Kit Request History</a></li>` : ``}
+                <!-- <li><a href="javascript:document.getElementById('sampleInventory').scrollIntoView(true)" data-i18n="samples.sampleInventory">Sample Inventory</a></li> -->
                 </ul>
             </div>
             <div class="col-lg-2 col-xl-3"></div>
@@ -411,29 +435,12 @@ export const renderSamplesPage = async () => {
 
         //Request a kit
 
-        // More kit types will be added eventually
-        const kitsForRequest = [{key: conceptId.bioKitMouthwash, kitType: "Mouthwash"}];
-        const availableKits  = [], receivedKits = [];
-        kitsForRequest.forEach(({key, kitType}) => {
-            if (participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[key]?.[conceptId.kitStatus] === conceptId.kitStatusValues.received) {
-                receivedKits.push({
-                    key,
-                    kitType,
-                    dateRequested: participant[conceptId.collectionDetails][conceptId.baseline][key][conceptId.dateKitRequested],
-                    dateReceived: participant[conceptId.collectionDetails][conceptId.baseline][key][conceptId.receivedDateTime]
-                });
-            } else {
-                availableKits.push(key);
-            }
-        });
-
-        // Display only if user is kit request eligible and has not requested all kit types
-        if (participant[conceptId.kitRequestEligible] === conceptId.yes && availableKits.length) {
+        if (showRequestAKit) {
             template += translateHTML(`
                     <div class="row">
                         <div class="col-lg-2 col-xl-3"></div>
                         <div class="col-lg-8 col-xl-6">
-                            <div class="row collapsed" style="width:100%" data-bs-toggle="collapse" data-bs-target="#requestAKit" aria-expanded="false" aria-controls="requestAKit">
+                            <div class="row collapsed" style="width:100%" data-bs-toggle="collapse" id="requestAKitRow" data-bs-target="#requestAKit" aria-expanded="false" aria-controls="requestAKit">
                                 <div class="consentHeadersFont" style="color:#606060;width:100%">
                                     <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                                     <div data-i18n="requestAKit.title">
@@ -453,13 +460,13 @@ export const renderSamplesPage = async () => {
                 template += renderAddPhysicalAddressInfo();
         }
         
-        if (receivedKits.length) {
+        if (showKitRequestHistory) {
             // Home Collection Kit Request History
             template += translateHTML(`
                 <div class="row">
                     <div class="col-lg-2 col-xl-3"></div>
                     <div class="col-lg-8 col-xl-6">
-                        <div class="row collapsed" style="width:100%" data-bs-toggle="collapse" data-bs-target="#kitRequestHistory" aria-expanded="false" aria-controls="kitRequestHistory">
+                        <div class="row collapsed" style="width:100%" data-bs-toggle="collapse" id="kitRequestHistoryRow" data-bs-target="#kitRequestHistory" aria-expanded="false" aria-controls="kitRequestHistory">
                             <div class="consentHeadersFont" style="color:#606060;width:100%">
                                 <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                                 <div data-i18n="samples.kitRequestHistory.title">
@@ -493,6 +500,7 @@ export const renderSamplesPage = async () => {
         }
 
         //Sample Inventory
+        /*
         let samples = [];
         if (participant[conceptId.collectionDetails]) {
             if (participant[conceptId.bloodFlag] === conceptId.yes) {
@@ -553,6 +561,7 @@ export const renderSamplesPage = async () => {
             ${samplesBody}
         </div>
         `);
+        */
 
         document.getElementById('root').innerHTML = template;
 
@@ -564,7 +573,7 @@ export const renderSamplesPage = async () => {
 const getParticipantMailToAddress = (participant) => {
     const {
         physicalAddress1, physicalAddress2, physicalCity, physicalState, physicalZip,
-        address1, address2, city, state, zip, isPOBox, yes
+        address1, address2, city, state, zip, isPOBox, isIntlAddr, physicalAddrIntl, yes
     } = conceptId;
     let invalidAddress = false;
     let addressType;
@@ -574,7 +583,7 @@ const getParticipantMailToAddress = (participant) => {
 
     let addressObj;
 
-    if (physicalAddressVal && !poBoxRegex.test(physicalAddressVal)) {
+    if (physicalAddressVal && !poBoxRegex.test(physicalAddressVal) && participant?.[physicalAddrIntl] !== yes) {
         addressObj = {
             address_1: participant[physicalAddress1],
             address_2: participant[physicalAddress2] || '',
@@ -585,7 +594,7 @@ const getParticipantMailToAddress = (participant) => {
         addressType = 'physical';
     } else {
         const addressLineOne = participant?.[address1];
-        const isPOBoxMatch = poBoxRegex.test(addressLineOne) || participant?.[isPOBox] === yes;
+        const isPOBoxMatch = poBoxRegex.test(addressLineOne) || participant?.[isPOBox] === yes || participant?.[isIntlAddr] === yes;
         if (isPOBoxMatch) {
             invalidAddress = true;
         }
@@ -613,7 +622,7 @@ const getParticipantMailToAddress = (participant) => {
 
 const renderRequestAKitDisplay = (participant) => {
     const requestAKitInner = document.getElementById('requestAKitInner');
-    if (!requestAKitInner || participant[conceptId.kitRequestEligible] !== conceptId.yes) {
+    if (!requestAKitInner || participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.kitRequestEligible] !== conceptId.yes) {
         return;
     }
 
@@ -753,7 +762,7 @@ const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, sta
 
 const renderParticipantPhysicalAddress = (participant) => {
     const requestAKitInner = document.getElementById('requestAKitInner');
-    if (!requestAKitInner || participant[conceptId.kitRequestEligible] !== conceptId.yes) {
+    if (!requestAKitInner || participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.kitRequestEligible] !== conceptId.yes) {
         return;
     }
 
