@@ -440,15 +440,12 @@ export const renderSamplesPage = async () => {
                     <div class="row">
                         <div class="col-lg-2 col-xl-3"></div>
                         <div class="col-lg-8 col-xl-6">
-                            <div class="row collapsed" style="width:100%" data-bs-toggle="collapse" id="requestAKitRow" data-bs-target="#requestAKit" aria-expanded="false" aria-controls="requestAKit">
-                                <div class="consentHeadersFont" style="color:#606060;width:100%">
-                                    <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                                    <div data-i18n="requestAKit.title">
-                                        Home Collection Kit Request
-                                    </div>
+                            <div class="consentHeadersFont" style="color:#606060;width:100%" id="requestAKitRow">
+                                <div data-i18n="requestAKit.title">
+                                    Home Collection Kit Request
                                 </div>
                             </div>
-                            <div class="row collapse" id="requestAKit">
+                            <div class="row" id="requestAKit">
                                 <div class="col-lg-12" id="requestAKitInner">
                                 </div>
                             </div>
@@ -466,15 +463,12 @@ export const renderSamplesPage = async () => {
                 <div class="row">
                     <div class="col-lg-2 col-xl-3"></div>
                     <div class="col-lg-8 col-xl-6">
-                        <div class="row collapsed" style="width:100%" data-bs-toggle="collapse" id="kitRequestHistoryRow" data-bs-target="#kitRequestHistory" aria-expanded="false" aria-controls="kitRequestHistory">
-                            <div class="consentHeadersFont" style="color:#606060;width:100%">
-                                <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                                <div data-i18n="samples.kitRequestHistory.title">
-                                    Home Collection Kit Request History
-                                </div>
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" id="kitRequestHistoryRow">
+                            <div data-i18n="samples.kitRequestHistory.title">
+                                Home Collection Kit Request History
                             </div>
                         </div>
-                        <div class="row collapse" id="kitRequestHistory">
+                        <div class="row" id="kitRequestHistory">
                             <div class="col-lg-12" id="kitRequestHistoryInner">
                                 ${receivedKits.map(({kitType, dateRequested, dateReceived}) => {
                                     const dateOptions = {
@@ -483,11 +477,14 @@ export const renderSamplesPage = async () => {
                                         month: "short",
                                         day: "numeric"
                                     };
+                                    // Because the date received is always stored as midnight in UTC on the date that the kit is received
+                                    // we have to specify UTC timezone for Date Received
+                                    // otherwise, in the standard US timezones, it will display as the day before receipt
                                     return `
                                         <div class="messagesSubHeader"><span data-i18n="samples.kitRequestHistory.kitTypeLabel">Type of Kit</span>: <span data-i18n="kitRequestHistory.${kitType}">${kitType}</span></div>
                                         <br />
                                         <div><span data-i18n="samples.kitRequestHistory.dateKitRequestedLabel">Date Requested</span>: <span data-i18n="date" data-timestamp="${dateRequested}" data-date-options="${encodeURIComponent(JSON.stringify(dateOptions))}"></span></div>
-                                        <div><span data-i18n="samples.kitRequestHistory.dateKitReceivedLabel">Date Received</span>: <span data-i18n="date" data-timestamp="${dateReceived}" data-date-options="${encodeURIComponent(JSON.stringify(dateOptions))}"></span></div>
+                                        <div><span data-i18n="samples.kitRequestHistory.dateKitReceivedLabel">Date Received</span>: <span data-i18n="date" data-timestamp="${dateReceived}" data-date-options="${encodeURIComponent(JSON.stringify({...dateOptions, timeZone: "UTC"}))}"></span></div>
                                     `;
                                 }).join('<hr />')}
                             </div>
@@ -673,7 +670,7 @@ const renderRequestAKitDisplay = (participant) => {
                 
              </div>
              <br />
-            <div data-i18n="samples.requestAKit.kitDelayMissingQuestionsContactInfo">If you don't get your kit within one week of the above ship date, or have any questions about the kit or home collection process, please reach out to the <a href=\"#support\">Connect Support Center</a> for help.</div>`)
+            <div data-i18n="samples.requestAKit.kitDelayMissingQuestionsContactInfo">If you don't receive your kit within one week of the above ship date, or have any questions about the kit or home collection process, please reach out to the <a href=\"#support\">Connect Support Center</a> for help.</div>`)
     } else {
         const {invalidAddress, kitMailToAddress, addressType} = getParticipantMailToAddress(participant);
 
@@ -704,7 +701,7 @@ const renderRequestAKitDisplay = (participant) => {
                 <div><a href="/#myprofile"><span data-i18n="samples.requestAKit.updateMy${addressType === 'physical' ? 'Physical' : 'Mailing'}Address">Update my ${addressType} address.</span></a></div>
                 ${addressType === 'mailing' ? `<div><a href="#" id="addPhysicalAddress"  data-i18n="samples.requestAKit.addPhysicalAddressLowercase" data-bs-toggle="modal" data-bs-target="#addPhysicalAddressInfo">Add physical address</a></div>` : ''}
                 <br /><br />
-                <div class="fst-italic" data-i18n="samples.requestAKit.cannotShipToPOBoxesNote">Note: we can't ship kits to P.O. Boxes.</div>
+                <div class="fst-italic" data-i18n="samples.requestAKit.cannotShipToPOBoxesNote">Note: we can't ship kits to P.O. Boxes or international addresses.</div>
                 <div id="mailingAddressSuccess2"></div>
                 <div id="mailingAddressFail2"></div>
                 <div id="mailingAddressError2"></div>
@@ -769,6 +766,18 @@ const renderParticipantPhysicalAddress = (participant) => {
     requestAKitInner.innerHTML = '<div class="messagesSubHeader" data-i18n="samples.requestAKit.addPhysicalAddress">New Physical Address</div>' + renderChangeMailingAddressGroup(2);
     toggleElementVisibility([document.getElementById(`currentMailingAddressDiv2`), document.getElementById(`changeMailingAddressGroup2`)], false);
     addEventAddressAutoComplete(2);
+    
+    // We want to preserve the styling between the add physical address section here and the user profile page as much as possible,
+    // hence the use of renderChangeMailingAddressGroup. However, our styling for this page
+    // calls for the addition of the cancellation button, a style difference on the submit button, and added
+    // warning text about being unable to ship to PO Boxes or international addresses
+    // These changes are done below as DOM manipulation
+    const submitDiv = document.getElementById('changeMailingAddressGroup2');
+    const submitDivRows = submitDiv.children[0].children;
+    const buttonDiv = submitDivRows[submitDivRows.length - 1];
+    const cannotShipToPOIntDiv = document.createElement('div');
+    submitDiv.children[0].insertBefore(cannotShipToPOIntDiv, buttonDiv);
+    cannotShipToPOIntDiv.outerHTML = translateHTML(`<div class="fst-italic" data-i18n="samples.requestAKit.cannotShipToPOBoxesNote">Note: we can't ship kits to P.O. Boxes or international addresses.</div>`);
     const submitButton = document.getElementById('changeMailingAddressSubmit2');
     submitButton.setAttribute('class', 'btn btn-primary save-data');
     const buttonParentDiv = submitButton.parentElement;
@@ -788,6 +797,7 @@ const renderParticipantPhysicalAddress = (participant) => {
 const bindRequestKitButton = (participant) => {
     const requestKitBtn = document.getElementById('requestHomeKit');
     requestKitBtn && requestKitBtn.addEventListener('click', async () => {
+        requestKitBtn.disabled = true;
         const resJSON = await requestHomeKit(participant);
         const {code, message} = resJSON;
         if (code === 200) {
@@ -795,7 +805,7 @@ const bindRequestKitButton = (participant) => {
             // Update the participant with the necessary information
             participant[conceptId.collectionDetails] = participant[conceptId.collectionDetails] || {};
             participant[conceptId.collectionDetails][conceptId.baseline] = participant[conceptId.collectionDetails][conceptId.baseline] || {};
-            participant[conceptId.collectionDetails][conceptId.baseline][conceptId.bioKitMouthwash] = [conceptId.bioKitMouthwash] || {};
+            participant[conceptId.collectionDetails][conceptId.baseline][conceptId.bioKitMouthwash] = participant[conceptId.collectionDetails][conceptId.baseline][conceptId.bioKitMouthwash] || {};
             participant[conceptId.collectionDetails][conceptId.baseline][conceptId.bioKitMouthwash][conceptId.kitStatus] = conceptId.kitStatusValues.initialized;
             renderRequestAKitDisplay(participant);
         } else {
@@ -919,8 +929,6 @@ const renderAddPhysicalAddressInfo = (displayPOBoxInfo) => {
                         <div><span data-i18n="samples.requestAKit.pleaseNote" class="fw-bold">Please note:</span> <span data-i18n="samples.requestAKit.addPhysicalAddressExplanation">adding a physical address means that your kit will arrive there.</span>
                         ${displayPOBoxInfo ? `<span data-i18n="samples.requestAKit.editMailingToNonPOBox">If you want to edit your mailing address to a non-P.O. Box address, your kit will ship to your mailing address.</span>` : ''}
                         </div>
-                        <br />
-                        <div data-i18n="samples.requestAKit.doubleCheckAddress">Please double check your address information. Contact the Connect Support Center if you need further help.</div>
                     </div>
                     <div class="modal-footer" style="justify-content: flex-start">
                         <button type="button" class="btn btn-primary" id="continueToAddPAddress" data-i18n="samples.requestAKit.continueButton" data-bs-dismiss="modal">Continue</button>
