@@ -884,7 +884,7 @@
             "cannotShipToPOBoxesSecondHalf": " o haga clic en el botón de abajo para agregar un nuevo domicilio al cual podamos enviarle su kit.",
             "updateMyPhysicalAddress": "Cambiar mi domicilio.",
             "updateMyMailingAddress": "Cambiar mi dirección postal.",
-            "cannotShipToPOBoxesNote": "Nota: No podemos enviar kits a apartados postales.",
+            "cannotShipToPOBoxesNote": "Nota: No podemos enviar kits a apartados postales o direcciones internacionales..",
             "selectKitType": "Elija su tipo de kit:",
             "chooseKitGhostValue": "Elija el kit que solicita",
             "mouthwashOption": "Enjuague bucal",
