@@ -607,7 +607,7 @@ const getParticipantMailToAddress = (participant) => {
 
     let kitMailToAddress = `${addressObj.address_1 || ''}<br />
             ${addressObj.address_2 ? `${addressObj.address_2}<br />` : ''}
-        ${addressObj.city || ''}${addressObj.state ? ',':''} ${addressObj.state || ''} ${addressObj.zip || ''}`;
+        ${addressObj.city || ''}${addressObj.state ? ',':''} ${addressObj.state || ''} ${addressObj.zip_code || ''}`;
 
     return {
         invalidAddress,
