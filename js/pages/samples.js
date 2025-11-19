@@ -1162,9 +1162,9 @@ const sanford = {
         ,
         [
             '<span data-i18n="samples.sanford.locations.BemidjiName">Bemidji, MN: 1705 Anne St clinic (Audiology)</span>',
-            '<span data-i18n="samples.sanford.locations.BemidjiAddress">Address and Directions<br>1705 Anne St N.W.<br>Bemidji, MN 56601<br><i>Enter through door 1 #of the aAudiology building.</i></span>',
+            '<span data-i18n="samples.sanford.locations.BemidjiAddress">Address and Directions<br>1705 Anne St N.W.<br>Bemidji, MN 56601<br><i>Enter through door 1 of the Audiology building.</i></span>',
             '',
-            '<span data-i18n="samples.sanford.locations.BemidjiParking">Parking Instructions<br>Free patient parking is available in front of the aAudiology building. No parking validation is needed.</span>',
+            '<span data-i18n="samples.sanford.locations.BemidjiParking">Parking Instructions<br>Free patient parking is available in front of the Audiology building. No parking validation is needed.</span>',
         ]
       ]
 };
