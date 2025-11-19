@@ -682,7 +682,7 @@ const renderRequestAKitDisplay = (participant) => {
                 <div>${kitMailToAddress}</div>
                 <br />
                 <div class="callout callout-danger">
-                    <span data-i18n="samples.requestAKit.cannotShipToPOBoxesFirstHalf">We can't ship home collection kits to P.O. Boxes, and your current mailing address is a P.O. Box. Please </span><a href="/#myprofile"><span data-i18n="samples.requestAKit.updateMailingAddressLink">update your mailing address</span></a><span data-i18n="samples.requestAKit.cannotShipToPOBoxesSecondHalf"> or click the button below to add a new physical address where we should ship your kit.</span>
+                    <span data-i18n="samples.requestAKit.cannotShipToPOBoxesFirstHalf">We can't ship home collection kits to P.O. Boxes, and your current mailing address is a P.O. Box. Please </span><a href="#myprofile"><span data-i18n="samples.requestAKit.updateMailingAddressLink">update your mailing address</span></a><span data-i18n="samples.requestAKit.cannotShipToPOBoxesSecondHalf"> or click the button below to add a new physical address where we should ship your kit.</span>
                 </div>
                 <div id="mailingAddressSuccess2"></div>
                 <div id="mailingAddressFail2"></div>
@@ -698,7 +698,7 @@ const renderRequestAKitDisplay = (participant) => {
                 <div class="fw-bold" data-i18n="samples.requestAKit.willShipToThisAddress">We will ship your kit to this address:</div>
                 <div>${kitMailToAddress}</div>
                 <br />
-                <div><a href="/#myprofile"><span data-i18n="samples.requestAKit.updateMy${addressType === 'physical' ? 'Physical' : 'Mailing'}Address">Update my ${addressType} address.</span></a></div>
+                <div><a href="#myprofile"><span data-i18n="samples.requestAKit.updateMy${addressType === 'physical' ? 'Physical' : 'Mailing'}Address">Update my ${addressType} address.</span></a></div>
                 ${addressType === 'mailing' ? `<div><a href="#" id="addPhysicalAddress"  data-i18n="samples.requestAKit.addPhysicalAddressLowercase" data-bs-toggle="modal" data-bs-target="#addPhysicalAddressInfo">Add physical address</a></div>` : ''}
                 <br /><br />
                 <div class="fst-italic" data-i18n="samples.requestAKit.cannotShipToPOBoxesNote">Note: we can't ship kits to P.O. Boxes or international addresses.</div>
@@ -914,7 +914,7 @@ const renderUpdateAddressSuccess = () => {
 
     div.innerHTML = translateHTML(`<div class="callout callout-success">
             <div data-i18n="samples.requestAKit.addressUpdateSuccess">You have successfully updated your physical address and selected this address to receive your kit.</div>
-            <div data-i18n="samples.requestAKit.addressUpdateEditInfo">Your new physical address can be found and edited on your <a href="/#myprofile">Profile</a> page.</div>
+            <div data-i18n="samples.requestAKit.addressUpdateEditInfo">Your new physical address can be found and edited on your <a href="#myprofile">Profile</a> page.</div>
         </div>`);
 }
 

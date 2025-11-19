@@ -909,7 +909,7 @@
             "kitTrackingInfo": "Puede hacer un seguimiento del envío con el número ",
             "kitDelayMissingQuestionsContactInfo": "Si no recibe su kit dentro de la semana siguiente a la fecha de envío indicada más arriba, o tiene alguna pregunta sobre el kit o el proceso de recolección en el hogar, comuníquese con <a href=\"#support\">el Centro de Asistencia de Connect</a> para solicitar ayuda.",
             "addressUpdateSuccess": "Ha modificado su domicilio y ha seleccionado esta dirección para recibir su kit.",
-            "addressUpdateEditInfo": "Puede encontrar y editar su nuevo domicilio en <a href=\"/#myprofile\">la página de su Perfil</a>.",
+            "addressUpdateEditInfo": "Puede encontrar y editar su nuevo domicilio en <a href=\"#myprofile\">la página de su Perfil</a>.",
             "cancelText": "Cancelar",
             "mwKitShipTimeframe": "Tenga en cuenta que los kits de enjuague bucal llegan alrededor de una semana después del envío.",
         },
