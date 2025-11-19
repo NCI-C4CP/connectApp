@@ -905,7 +905,7 @@ const en = {
             "kitTrackingInfo": "You can track it using this number: ",
             "kitDelayMissingQuestionsContactInfo": "If you don't receive your kit within one week of the above ship date, or have any questions about the kit or home collection process, please reach out to the <a href=\"#support\">Connect Support Center</a> for help.",
             "addressUpdateSuccess": "You have successfully updated your physical address and selected this address to receive your kit.",
-            "addressUpdateEditInfo": "Your new physical address can be found and edited on your <a href=\"/#myprofile\">Profile</a> page.",
+            "addressUpdateEditInfo": "Your new physical address can be found and edited on your <a href=\"#myprofile\">Profile</a> page.",
             "cancelText": "Cancel",
             "mwKitShipTimeframe": "Please note: mouthwash kits ship and arrive in about one week.",
 
