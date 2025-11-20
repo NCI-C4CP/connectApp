@@ -2001,7 +2001,7 @@ export const renderPhysicalMailingAddressData = (id) => {
         `);
 };
 
-const renderAlternateAddressData = (id) => {
+export const renderAlternateAddressData = (id) => {
     const hasAddressContent = !!(
         userData[cId.altAddress1] ||
         userData[cId.altAddress2] ||
@@ -2043,7 +2043,7 @@ const renderAlternateAddressData = (id) => {
         `);
 };
 
-const renderChangeMailingAddressGroup = (id) => {
+export const renderChangeMailingAddressGroup = (id) => {
     if (!id) {
         console.error('id is required for renderChangeMailingAddressGroup');
         return;
@@ -2183,7 +2183,7 @@ const renderChangeMailingAddressGroup = (id) => {
     `);
 };
 
-const renderStates = () => {
+export const renderStates = () => {
   let options = '';
   for (const state in allStates) {
     options += `<option class="option-dark-mode" value="${state}" data-i18n="shared.state${state.replace(/\s/g,'')}">${state}</option>`;

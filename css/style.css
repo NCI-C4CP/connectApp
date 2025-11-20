@@ -1736,3 +1736,34 @@ span.my-samples-indent-text {
 .samples-list li {
     padding: 1em 0;
 }
+
+.callout {
+    --cui-border-width: 1px;
+    --cui-border-style: solid;
+    --cui-border-color: #dbdfe6;
+    --cui-border-radius: 0.375rem;
+    --cui-callout-padding-x: 1rem;
+    --cui-callout-padding-y: 1rem;
+    --cui-callout-margin-x: 0;
+    --cui-callout-margin-y: 1rem;
+    --cui-callout-border-width: var(--cui-border-width);
+    --cui-callout-border-color: var(--cui-border-color);
+    --cui-callout-border-left-width: calc(var(--cui-border-width) * 4);
+    --cui-callout-border-radius: var(--cui-border-radius);
+    padding: var(--cui-callout-padding-y) var(--cui-callout-padding-x);
+    margin: var(--cui-callout-margin-y) var(--cui-callout-margin-x);
+    border: var(--cui-callout-border-width) solid var(--cui-callout-border-color);
+    border-inline-start-color: var(--cui-callout-border-left-color);
+    border-inline-start-width: var(--cui-callout-border-left-width);
+    border-radius: var(--cui-callout-border-radius);
+}
+
+.callout-success {
+    --cui-callout-border-left-color: var(--bs-success-text-emphasis);
+    background-color: var(--bs-success-bg-subtle);
+}
+
+.callout-danger {
+    --cui-callout-border-left-color: var(--bs-danger-text-emphasis);
+    background-color: var(--bs-danger-bg-subtle);
+}
