@@ -1,7 +1,7 @@
-import { allStates, allCountries, getMyData, hasUserData, translateHTML, country3Codes, translateText } from "../shared.js";
+import { allStates, allCountries, getMyData, hasUserData, translateHTML } from "../shared.js";
 import { addEventMonthSelection, addEventMonthConfirmationSelection, addEventUPSubmit, addEventCancerFollowUp, addEventChangeFocus, addEventAddressAutoComplete, addEventAdditionalEmail, addEventCheckCanText, addEventFormerName, addMoreFormerName, addEventPhysicalAddressLine } from "../event.js";
 import cId from '../fieldToConceptIdMapping.js';
-import { suffixList, suffixToTextMapDropdown, suffixToTextMap, numberOfDefaultFormerNames } from "../settingsHelpers.js";
+import { suffixList, suffixToTextMapDropdown, suffixToTextMap, numberOfDefaultFormerNames, renderCountries } from "../settingsHelpers.js";
 
 export const renderUserProfile = async () => {
     const myData = await getMyData();
@@ -640,31 +640,6 @@ const renderStates = () => {
     let options = '';
     for(const state in allStates){
         options += `<option class="option-dark-mode" value="${state}" data-i18n="shared.state${state.replace(/\s/g,'')}">${state}</option>`;
-    }
-    return options;
-}
-
-const renderCountries = () => {
-    let countries = country3Codes.map((code) => {
-        return {code,
-            title: translateText('countries.' + code)
-        }
-    }).sort((a, b) => {
-        if (a.code === 'usa') {
-            return -1;
-        } else if (b.code === 'usa') {
-            return 1;
-        } else if (a.title < b.title) {
-            return -1
-        } else {
-            return 1;
-        }
-    });
-
-    let options = '';
-    for(const index in countries) {
-        let country = countries[index];
-        options += `<option class="option-dark-mode" value="${country.code}" data-i18n="countries.${country.code}">${country.title}</option>`;
     }
     return options;
 }

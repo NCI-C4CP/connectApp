@@ -1,5 +1,5 @@
 import { allStates, escapeHTML, showAnimation, hideAnimation, getMyData, hasUserData, firebaseSignInRender, validEmailFormat, validPhoneNumberFormat, checkAccount, translateHTML, translateText, languageTranslations } from '../shared.js';
-import { attachTabEventListeners, addOrUpdateAuthenticationMethod, changeAltContactInformation, changeContactInformation, changePreferredLanguage, changeMailingAddress, changeName, formatFirebaseAuthPhoneNumber, FormTypes, getCheckedRadioButtonValue, handleContactInformationRadioButtonPresets, handleOptionalFieldVisibility, hideOptionalElementsOnShowForm, hideSuccessMessage, openUpdateLoginForm, showAndPushElementToArrayIfExists, showEditButtonsOnUserVerified, suffixList, suffixToTextMap, toggleElementVisibility, togglePendingVerificationMessage, unlinkFirebaseAuthProvider, updatePhoneNumberInputFocus, validateAltContactInformation, validateContactInformation, validateLoginEmail, validateLoginPhone, validateMailingAddress, validateName, showMailAddressSuggestionMyProfile, showRiskyEmailWarningMyProfile, showClearAddressConfirmation } from '../settingsHelpers.js';
+import { attachTabEventListeners, addOrUpdateAuthenticationMethod, changeAltContactInformation, changeContactInformation, changePreferredLanguage, changeMailingAddress, changeName, formatFirebaseAuthPhoneNumber, FormTypes, getCheckedRadioButtonValue, handleContactInformationRadioButtonPresets, handleOptionalFieldVisibility, hideOptionalElementsOnShowForm, hideSuccessMessage, openUpdateLoginForm, showAndPushElementToArrayIfExists, showEditButtonsOnUserVerified, suffixList, suffixToTextMap, toggleElementVisibility, togglePendingVerificationMessage, unlinkFirebaseAuthProvider, updatePhoneNumberInputFocus, validateAltContactInformation, validateContactInformation, validateLoginEmail, validateLoginPhone, validateMailingAddress, validateName, showMailAddressSuggestionMyProfile, showRiskyEmailWarningMyProfile, showClearAddressConfirmation, renderCountries } from '../settingsHelpers.js';
 import { addEventAddressAutoComplete } from '../event.js';
 import {addEventAgreementOptions} from './agreements.js';
 import cId from '../fieldToConceptIdMapping.js';
@@ -2079,6 +2079,16 @@ const renderChangeMailingAddressGroup = (id) => {
             <div class="col">
                 <div class="form-group row">
                     <div class="col">
+                        <div class="form-check form-switch">
+                        <input type="checkbox" id="UPAddress${id}International" data-i18n="settings.${idText.toLowerCase()}InternationalField" class="form-check-input" role="switch">
+                        <label for="UPAddress${id}International" class="custom-form-label" data-i18n="settings.${idText.toLowerCase()}International">
+                            International Address
+                        </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col">
                         <label for="UPAddress${id}Line1" class="custom-form-label" data-i18n="settings.${idText.toLowerCase()}AddressLine1">
                             Line 1 (street, ${poBoxText}rural route) <span class="required">*</span>
                         </label>
@@ -2093,6 +2103,15 @@ const renderChangeMailingAddressGroup = (id) => {
                         </label>
                         <br>
                         <input style="max-width:301px;" type=text id="UPAddress${id}Line2" data-i18n="settings.mailAddressLine2Field" autocomplete="off" class="form-control" placeholder="${translateText('settings.mailAddressLine2Placeholder')}">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col">
+                        <label for="UPAddress${id}Line3" class="custom-form-label" data-i18n="settings.mailAddressLine3">
+                            Line 3 
+                        </label>
+                        <br>
+                        <input style="max-width:301px;" type=text id="UPAddress${id}Line3" data-i18n="settings.mailAddressLine3Field" autocomplete="off" class="form-control" placeholder="${translateText('settings.mailAddressLine3Placeholder')}">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -2121,6 +2140,19 @@ const renderChangeMailingAddressGroup = (id) => {
                             Zip <span class="required">*</span>
                         </label>
                     <input type=text style="max-width:301px;" id="UPAddress${id}Zip" data-i18n="settings.zipField" data-error-validation="${translateText('settings.zipValidator')}" data-val-pattern="[0-9]{5}" title="${translateHTML('settings.zipTitle')}" class="form-control required-field num-val" data-error-required="${translateText('settings.zipRequired')}" size="5" maxlength="5" placeholder="99999">
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-lg-2">
+                        <label for="UPAddress${id}Country" class="custom-form-label" data-i18n="settings.country">
+                            Country <span class="required">*</span>
+                        </label>
+                        <br>
+                        <select style="max-width:150px; text-align-last: center; text-align: center;" class="form-control required-field" id="UPAddress${id}Country">
+                            <option class="option-dark-mode" value="" data-i18n="form.selectOption">-- Select --</option>
+                            ${renderCountries(['usa'])}
+                        </select>
+                        <br>
                     </div>
                 </div>
                 <br>

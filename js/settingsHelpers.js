@@ -1,4 +1,4 @@
-import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML, closeModal, escapeHTML } from './shared.js';
+import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML, closeModal, escapeHTML, country3Codes } from './shared.js';
 import { removeAllErrors } from './event.js';
 import cId from './fieldToConceptIdMapping.js';
 
@@ -1503,3 +1503,36 @@ export const getFormerNameData = () => {
     });
     return result;
 };
+
+/**
+ * Renders the options for a country selector and places USA at the top
+ * 
+ * @param {String[]} excludeCountries - Array of country 3 codes to not render 
+ * @returns String
+ */
+export const renderCountries = (excludeCountries) => {
+    let countries = country3Codes.map((code) => {
+        return {code,
+            title: translateText('countries.' + code)
+        }
+    }).sort((a, b) => {
+        if (a.code === 'usa') {
+            return -1;
+        } else if (b.code === 'usa') {
+            return 1;
+        } else if (a.title < b.title) {
+            return -1
+        } else {
+            return 1;
+        }
+    });
+
+    let options = '';
+    for(const index in countries) {
+        let country = countries[index];
+        if (!excludeCountries || !excludeCountries.includes(country.code)) {
+            options += `<option class="option-dark-mode" value="${country.code}" data-i18n="countries.${country.code}">${country.title}</option>`;
+        } 
+    }
+    return options;
+}
