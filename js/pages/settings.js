@@ -1,6 +1,6 @@
 import { allStates, escapeHTML, showAnimation, hideAnimation, getMyData, hasUserData, firebaseSignInRender, validEmailFormat, validPhoneNumberFormat, checkAccount, translateHTML, translateText, languageTranslations } from '../shared.js';
 import { attachTabEventListeners, addOrUpdateAuthenticationMethod, changeAltContactInformation, changeContactInformation, changePreferredLanguage, changeMailingAddress, changeName, formatFirebaseAuthPhoneNumber, FormTypes, getCheckedRadioButtonValue, handleContactInformationRadioButtonPresets, handleOptionalFieldVisibility, hideOptionalElementsOnShowForm, hideSuccessMessage, openUpdateLoginForm, showAndPushElementToArrayIfExists, showEditButtonsOnUserVerified, suffixList, suffixToTextMap, toggleElementVisibility, togglePendingVerificationMessage, unlinkFirebaseAuthProvider, updatePhoneNumberInputFocus, validateAltContactInformation, validateContactInformation, validateLoginEmail, validateLoginPhone, validateMailingAddress, validateName, showMailAddressSuggestionMyProfile, showRiskyEmailWarningMyProfile, showClearAddressConfirmation, renderCountries } from '../settingsHelpers.js';
-import { addEventAddressAutoComplete } from '../event.js';
+import { addEventAddressAutoComplete, addEventInternationalAddressToggle } from '../event.js';
 import {addEventAgreementOptions} from './agreements.js';
 import cId from '../fieldToConceptIdMapping.js';
 
@@ -622,6 +622,7 @@ const handleEditMailingAddressSection = () => {
       if (formVisBools.isMailingAddressFormDisplayed) {
         toggleActiveForm(FormTypes.MAILING);
         addEventAddressAutoComplete(1);
+        addEventInternationalAddressToggle(1);
       }
       toggleButtonText();
     });
@@ -629,26 +630,37 @@ const handleEditMailingAddressSection = () => {
 
     if (document.getElementById('changeMailingAddressSubmit1')) {
         document.getElementById('changeMailingAddressSubmit1').addEventListener('click', async (e) => {
+            const isInternational = document.getElementById('UPAddress1International').checked ? cId.yes : cId.no;
             const addressLine1 = escapeHTML(document.getElementById('UPAddress1Line1').value.trim());
             const addressLine2 = escapeHTML(document.getElementById('UPAddress1Line2').value.trim());
+            const addressLine3 = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress1Line3').value.trim()) : '';
             const city = escapeHTML(document.getElementById('UPAddress1City').value.trim());
-            const state = escapeHTML(document.getElementById('UPAddress1State').value.trim());
+            const state = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress1Region').value.trim()) : escapeHTML(document.getElementById('UPAddress1State').value.trim());
             const zip = escapeHTML(document.getElementById('UPAddress1Zip').value.trim());
+            const country = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress1Country').value.trim()) : '';
             const isPOBox = document.getElementById('poBoxCheckbox').checked;
         
-            const {hasError, uspsSuggestion} = await validateMailingAddress(1, addressLine1, city, state, zip);
+            const {hasError, uspsSuggestion} = await validateMailingAddress(1, addressLine1, city, state, zip, isInternational, country);
         
             if (!hasError) {
-                const submitNewAddress = async (addressLine1, addressLine2, city, state, zip) => {
+                const submitNewAddress = async (addressLine1, addressLine2, city, state, zip,isInternational, addressLine3, country) => {
                     formVisBools.isMailingAddressFormDisplayed = toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed);
                     toggleButtonText();
 
-                    await submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isPOBox);
+                    if (isInternational === cId.yes) {
+                        await submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isPOBox, false, isInternational, addressLine3, country);
+                    } else {
+                        await submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isPOBox, false, isInternational);
+                    }
+                    document.getElementById('UPAddress1International').checked = false;
                     document.getElementById(`UPAddress1Line1`).value = "";
                     document.getElementById(`UPAddress1Line2`).value = "";
+                    document.getElementById(`UPAddress1Line3`).value = "";
                     document.getElementById(`UPAddress1City`).value = "";
                     document.getElementById(`UPAddress1State`).value = "";
+                    document.getElementById(`UPAddress1Region`).value = "";
                     document.getElementById(`UPAddress1Zip`).value = "";
+                    document.getElementById(`UPAddress1Country`).value = "";
                 }
                 
                 if (uspsSuggestion.suggestion) {
@@ -656,19 +668,19 @@ const handleEditMailingAddressSection = () => {
                         uspsSuggestion,
                         'event.addressSuggestionDescription',
                         (streetAddress, secondaryAddress, city, state, zipCode) => {
-                            submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode);
+                            submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational);
                         }
                     );
                 } else {
-                    submitNewAddress(addressLine1, addressLine2, city, state, zip);
+                    submitNewAddress(addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country);
                 }
             }
         });
     }
 };
 
-const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, isPOBox = false, isClearing = false) => {
-  const isSuccess = await changeMailingAddress(id, addressLine1, addressLine2, city, state, zip, userData, isPOBox, isClearing).catch(function (error) {
+const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, isPOBox = false, isClearing = false, isInternational, addressLine3, country) => {
+  const isSuccess = await changeMailingAddress(id, addressLine1, addressLine2, city, state, zip, userData, isPOBox, isClearing, isInternational, addressLine3, country).catch(function (error) {
     document.getElementById(`mailingAddressFail${id}`).style.display = 'block';
     document.getElementById(`mailingAddressError${id}`).innerHTML = translateText('settings.failMailUpdate');
   });
@@ -682,15 +694,28 @@ const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, sta
         poBoxText = translateHTML(`<br><br><span data-i18n="event.poBoxAltAddress">Alternate address is PO Box</span>: <span data-i18n="settings.${isPOBox ? 'optYes' : 'optNo'}">${isPOBox ? "Yes" : "No"}</span>`);
     }
 
-    if (!addressLine2 || addressLine2 === '') {
-        document.getElementById(`profileMailingAddress${id}`).innerHTML = `${escapeHTML(addressLine1)}</br>${escapeHTML(city)}, ${escapeHTML(state)} ${escapeHTML(zip)}${poBoxText}`;
-
-    } else {
-        document.getElementById(`profileMailingAddress${id}`).innerHTML = `${escapeHTML(addressLine1)}</br>${escapeHTML(addressLine2)}</br>${escapeHTML(city)}, ${escapeHTML(state)} ${escapeHTML(zip)}${poBoxText}`;
+    let addressString = `${escapeHTML(addressLine1)}<br>`;
+    if (addressLine2 && addressLine2 !== '') {
+        addressString += `${escapeHTML(addressLine2)}<br>`;
     }
+    if (addressLine3 && addressLine3 !== '') {
+        addressString += `${escapeHTML(addressLine3)}<br>`;
+    }
+    addressString += escapeHTML(city);
+    if ((city && city !== '') && (state && state !== '')) {
+        addressString += ', ';
+    } 
+    addressString += `${escapeHTML(state)} ${escapeHTML(zip)}`;
+    if (country && country !== '') {
+        addressString += `<br><span data-i18n="countries.${country}>${translateText('countries.'+country)}</span>`;
+    }
+    
+    addressString += poBoxText;
 
     if (addressLine1 === ""){
         document.getElementById(`profileMailingAddress${id}`).innerHTML = ""
+    } else {
+        document.getElementById(`profileMailingAddress${id}`).innerHTML = addressString;
     }
 
     successMessageElement = document.getElementById(`mailingAddressSuccess${id}`);
@@ -711,6 +736,7 @@ const handleEditPhysicalMailingAddressSection = () => {
       if (formVisBools.isPhysicalMailingAddressFormDisplayed) {
         toggleActiveForm(FormTypes.PHYSICAL_MAILING);
         addEventAddressAutoComplete(2);
+        addEventInternationalAddressToggle(2);
       }
       toggleButtonText();
     });
@@ -788,6 +814,7 @@ const handleEditAltAddressSection = () => {
             if (formVisBools.isAltAddressFormDisplayed) {
                 toggleActiveForm(FormTypes.ALT_ADDRESS);
                 addEventAddressAutoComplete(3);
+                addEventInternationalAddressToggle(3);
             }
             toggleButtonText();
         });
@@ -1958,7 +1985,9 @@ export const renderMailingAddressData = (id) => {
                         `
                             ${userData[cId.address1]}</br>
                             ${userData[cId.address2] ? `${userData[cId.address2]}</br>` : ''}
-                            ${userData[cId.city]}, ${userData[cId.state]} ${userData[cId.zip]}</br>
+                            ${userData[cId.address3] ? `${userData[cId.address3]}</br>` : ''}
+                            ${userData[cId.city]}${userData[cId.city] && userData[cId.state] ? ', ' : ''}${userData[cId.state]} ${userData[cId.zip]}</br>
+                            ${userData[cId.country] ? `<span data-i18n="countries.${userData[cId.country]}"></span></br>` : ''}
                             <br>
                             <span data-i18n="event.poBox">Mailing address is PO Box</span>:
                             <span data-i18n="settings.${userData[cId.isPOBox] === cId.yes ? 'optYes': 'optNo'}">${userData[cId.isPOBox] === cId.yes ? "Yes" : "No"}</span> 
@@ -2075,18 +2104,19 @@ export const renderChangeMailingAddressGroup = (id) => {
     const checkboxHTML = checkboxes[id] || '';
 
     return translateHTML(`
-        <div class="row userProfileLinePaddings" id="changeMailingAddressGroup${id}" style="display:none;">
-            <div class="col">
+        <div class="userProfileLinePaddings" id="changeMailingAddressGroup${id}" style="display:none;">
+        <div class="container">
+        <div class="row">
+            <div class="col-1">
                 <div class="form-group row">
                     <div class="col">
-                        <div class="form-check form-switch">
+                        <div class="form-check form-switch internation-address">
                         <input type="checkbox" id="UPAddress${id}International" data-i18n="settings.${idText.toLowerCase()}InternationalField" class="form-check-input" role="switch">
-                        <label for="UPAddress${id}International" class="custom-form-label" data-i18n="settings.${idText.toLowerCase()}International">
-                            International Address
-                        </label>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-11">
                 <div class="form-group row">
                     <div class="col">
                         <label for="UPAddress${id}Line1" class="custom-form-label" data-i18n="settings.${idText.toLowerCase()}AddressLine1">
@@ -2105,13 +2135,13 @@ export const renderChangeMailingAddressGroup = (id) => {
                         <input style="max-width:301px;" type=text id="UPAddress${id}Line2" data-i18n="settings.mailAddressLine2Field" autocomplete="off" class="form-control" placeholder="${translateText('settings.mailAddressLine2Placeholder')}">
                     </div>
                 </div>
-                <div class="form-group row">
+                <div class="form-group row d-none">
                     <div class="col">
                         <label for="UPAddress${id}Line3" class="custom-form-label" data-i18n="settings.mailAddressLine3">
                             Line 3 
                         </label>
                         <br>
-                        <input style="max-width:301px;" type=text id="UPAddress${id}Line3" data-i18n="settings.mailAddressLine3Field" autocomplete="off" class="form-control" placeholder="${translateText('settings.mailAddressLine3Placeholder')}">
+                        <input style="max-width:301px;" type=text id="UPAddress${id}Line3" data-i18n="settings.mailAddressLine3Field" autocomplete="off" class="form-control">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -2133,6 +2163,7 @@ export const renderChangeMailingAddressGroup = (id) => {
                             <option class="option-dark-mode" value="" data-i18n="form.selectOption">-- Select --</option>
                             ${renderStates()}
                         </select>
+                        <input class="d-none" style="max-width:301px;" type=text id="UPAddress${id}Region" data-i18n="settings.regionField" class="form-control">
                         <br>
                     </div>
                     <div class="col-lg-2">
@@ -2140,15 +2171,16 @@ export const renderChangeMailingAddressGroup = (id) => {
                             Zip <span class="required">*</span>
                         </label>
                     <input type=text style="max-width:301px;" id="UPAddress${id}Zip" data-i18n="settings.zipField" data-error-validation="${translateText('settings.zipValidator')}" data-val-pattern="[0-9]{5}" title="${translateHTML('settings.zipTitle')}" class="form-control required-field num-val" data-error-required="${translateText('settings.zipRequired')}" size="5" maxlength="5" placeholder="99999">
+                    <input type=text style="max-width:301px;" id="UPAddress${id}Postal" class="form-control d-none">
                     </div>
                 </div>
-                <div class="form-group row">
-                    <div class="col-lg-2">
+                <div class="form-group row d-none">
+                    <div class="col">
                         <label for="UPAddress${id}Country" class="custom-form-label" data-i18n="settings.country">
                             Country <span class="required">*</span>
                         </label>
                         <br>
-                        <select style="max-width:150px; text-align-last: center; text-align: center;" class="form-control required-field" id="UPAddress${id}Country">
+                        <select style="text-align-last: center; text-align: center;" class="form-control required-field" id="UPAddress${id}Country">
                             <option class="option-dark-mode" value="" data-i18n="form.selectOption">-- Select --</option>
                             ${renderCountries(['usa'])}
                         </select>
@@ -2158,10 +2190,10 @@ export const renderChangeMailingAddressGroup = (id) => {
                 <br>
                 <!-- PO Box Checkbox (for mailing and alt addresses) -->
                 ${checkboxHTML}
-                <div class="form-group row">
-                        <div class="col">
-                            <button id="changeMailingAddressSubmit${id}" class="btn btn-outline-primary save-data" data-i18n="settings.submit${idText}Update">Submit ${idTerm} Address Update</button>
-                        </div>
+            </div>
+            <div class="form-group row">
+                    <div class="col">
+                        <button id="changeMailingAddressSubmit${id}" class="btn btn-outline-primary save-data" data-i18n="settings.submit${idText}Update">Submit ${idTerm} Address Update</button>
                     </div>
                 </div>
             </div>
@@ -2179,6 +2211,8 @@ export const renderChangeMailingAddressGroup = (id) => {
                     </span>
                 </div>
             </div>
+        </div>
+        </div>
         </div>
     `);
 };

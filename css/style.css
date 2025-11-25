@@ -1767,3 +1767,12 @@ span.my-samples-indent-text {
     --cui-callout-border-left-color: var(--bs-danger-text-emphasis);
     background-color: var(--bs-danger-bg-subtle);
 }
+
+.form-check.internation-address .form-check-input {
+    background-image: url('../images/united-states-of-america-flag.svg');
+}
+
+.form-check.internation-address .form-check-input:checked {
+    background-color: transparent;
+    background-image: url('../images/earth-globe-global.svg');
+}

@@ -29,6 +29,7 @@ export const addEventsConsentSign = () => {
 
 export const addEventAddressAutoComplete = (id, country) => {
     let autocomplete = {};
+    const UPAddressInternational = document.getElementById(`UPAddress${id}International`);
     const UPAddressLine1 = document.getElementById(`UPAddress${id}Line1`);
     const UPAddressCity = document.getElementById(`UPAddress${id}City`);
     const UPAddressState = document.getElementById(`UPAddress${id}State`);
@@ -36,6 +37,10 @@ export const addEventAddressAutoComplete = (id, country) => {
     if(!UPAddressLine1) return;
 
     const googlePlacesInitiation = () => {
+        if (UPAddressInternational.checked) {
+            return;
+        }
+
         autocomplete = new google.maps.places.Autocomplete(document.getElementById(`UPAddress${id}Line1`), {types: ['geocode']});
         autocomplete.setFields(['address_component']);
         let addressLine1 = '';
@@ -80,6 +85,70 @@ export const addEventAddressAutoComplete = (id, country) => {
     }
 
     UPAddressLine1.addEventListener('focus', googlePlacesInitiation)      
+}
+
+export const addEventInternationalAddressToggle = (id) => {
+    let autocomplete = {};
+    const UPAddressInternational = document.getElementById(`UPAddress${id}International`);
+    const UPAddressLine3 = document.getElementById(`UPAddress${id}Line3`);
+    const UPAddressState = document.getElementById(`UPAddress${id}State`);
+    const UPAddressRegion = document.getElementById(`UPAddress${id}Region`);
+    const UPAddressStateLabel = document.querySelector(`label[for="UPAddress${id}State"]`);
+    const UPAddressZip = document.getElementById(`UPAddress${id}Zip`);
+    const UPAddressPostal = document.getElementById(`UPAddress${id}Postal`);
+    const UPAddressZipLabel = document.querySelector(`label[for="UPAddress${id}Zip"]`);
+    const UPAddressCountry = document.getElementById(`UPAddress${id}Country`);
+    if(!UPAddressInternational) return;
+
+    const internationalToggle = (event) => {
+        let target = event.target;
+        if (target.checked) {
+            UPAddressCountry.parentNode.parentNode.classList.remove('d-none');
+            UPAddressLine3.parentNode.parentNode.classList.remove('d-none');
+
+            UPAddressStateLabel.dataset.i18n = 'settings.region';
+            UPAddressStateLabel.setAttribute('for', `UPAddress${id}Region`);
+            UPAddressStateLabel.parentNode.classList.add('col-lg-6');
+            UPAddressStateLabel.parentNode.classList.remove('col-lg-2');
+            translateHTML(UPAddressStateLabel);
+
+            UPAddressState.classList.add('d-none');
+            UPAddressRegion.classList.remove('d-none');
+
+            UPAddressZipLabel.dataset.i18n = 'settings.postalCode';
+            UPAddressZipLabel.setAttribute('for', `UPAddress${id}Postal`);
+            UPAddressZipLabel.parentNode.classList.add('col-lg-6');
+            UPAddressZipLabel.parentNode.classList.remove('col-lg-2');
+            translateHTML(UPAddressZipLabel);
+
+            UPAddressZip.classList.add('d-none');
+            UPAddressPostal.classList.remove('d-none');
+
+        } else {
+            UPAddressCountry.parentNode.parentNode.classList.add('d-none');
+            UPAddressLine3.parentNode.parentNode.classList.add('d-none');
+
+            UPAddressStateLabel.dataset.i18n = 'settings.state';
+            UPAddressStateLabel.setAttribute('for', `UPAddress${id}State`);
+            UPAddressStateLabel.parentNode.classList.add('col-lg-2');
+            UPAddressStateLabel.parentNode.classList.remove('col-lg-6');
+            translateHTML(UPAddressStateLabel);
+
+            UPAddressState.classList.remove('d-none');
+            UPAddressRegion.classList.add('d-none');
+
+            UPAddressZipLabel.dataset.i18n = 'settings.zip';
+            UPAddressZipLabel.setAttribute('for', `UPAddress${id}Zip`);
+            UPAddressZipLabel.parentNode.classList.add('col-lg-2');
+            UPAddressZipLabel.parentNode.classList.remove('col-lg-6');
+            translateHTML(UPAddressZipLabel);
+
+            UPAddressZip.classList.remove('d-none');
+            UPAddressPostal.classList.add('d-none');
+        }
+    }
+
+    UPAddressInternational.addEventListener('change', internationalToggle)      
 }
 
 const getDaysTemplate = (month) => {
