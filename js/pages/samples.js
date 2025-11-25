@@ -441,7 +441,7 @@ export const renderSamplesPage = async () => {
                         <div class="col-lg-2 col-xl-3"></div>
                         <div class="col-lg-8 col-xl-6">
                             <div class="consentHeadersFont" style="color:#606060;width:100%" id="requestAKitRow">
-                                <div data-i18n="requestAKit.title">
+                                <div data-i18n="samples.requestAKit.title">
                                     Home Collection Kit Request
                                 </div>
                             </div>
@@ -676,18 +676,18 @@ const renderRequestAKitDisplay = (participant) => {
 
         if (invalidAddress) {
             requestAKitInner.innerHTML = translateHTML(`
-                <div class="fw-bold" data-i18n="samples.requestAKit.eligibilityBlurb">We sent you a message recently to let you know you can now request a home collection kit for Connect!</div>
+                <div class="fw-bold" data-i18n="samples.requestAKit.eligibilityBlurb">We sent you a message recently to let you know you can now request a home collection kit for Connect.</div>
                 <br />
                 <div class="fw-bold"  data-i18n="samples.requestAKit.cannotShipKitHeader">We can\'t ship your kit because of a problem with your address.</div>
                 <div>${kitMailToAddress}</div>
                 <br />
                 <div class="callout callout-danger">
-                    <span data-i18n="samples.requestAKit.cannotShipToPOBoxesFirstHalf">We can't ship home collection kits to P.O. Boxes, and your current mailing address is a P.O. Box. Please </span><a href="#myprofile"><span data-i18n="samples.requestAKit.updateMailingAddressLink">update your mailing address</span></a><span data-i18n="samples.requestAKit.cannotShipToPOBoxesSecondHalf"> or click the button below to add a new physical address where we should ship your kit.</span>
+                    <span data-i18n="samples.requestAKit.cannotShipToPOBoxesFirstHalf">We can't ship home collection kits to P.O. Boxes, and your current mailing address is a P.O. Box. Please </span><a href="#"id="updateMailingAddress"><span data-i18n="samples.requestAKit.updateMailingAddressLink">update your mailing address</span></a><span data-i18n="samples.requestAKit.cannotShipToPOBoxesSecondHalf"> or click the button below to add a new physical address where we should ship your kit.</span>
                 </div>
                 <div id="mailingAddressSuccess2"></div>
                 <div id="mailingAddressFail2"></div>
                 <div id="mailingAddressError2"></div>
-                ${addressType === 'physical' ? '' : `<br /><div><button type="button" class="btn btn-primary" id="addPhysicalAddress" data-i18n="samples.requestAKit.addPhysicalAddress" data-bs-toggle="modal" data-bs-target="#addPhysicalAddressInfo">Add pPhysical Address</button></div>`}
+                ${addressType === 'physical' ? '' : `<br /><div><button type="button" class="btn btn-primary" id="addPhysicalAddress" data-i18n="samples.requestAKit.addPhysicalAddress" data-bs-toggle="modal" data-bs-target="#addPhysicalAddressInfo">Add Physical Address</button></div>`}
             `);
             const addPhysicalAddressInfoModal = document.getElementById('addPhysicalAddressInfo');
             addPhysicalAddressInfoModal.outerHTML = renderAddPhysicalAddressInfo(true);
@@ -698,7 +698,7 @@ const renderRequestAKitDisplay = (participant) => {
                 <div class="fw-bold" data-i18n="samples.requestAKit.willShipToThisAddress">We will ship your kit to this address:</div>
                 <div>${kitMailToAddress}</div>
                 <br />
-                <div><a href="#myprofile"><span data-i18n="samples.requestAKit.updateMy${addressType === 'physical' ? 'Physical' : 'Mailing'}Address">Update my ${addressType} address.</span></a></div>
+                <div><a href="#" id="update${addressType === 'physical' ? 'Physical' : 'Mailing'}Address"><span data-i18n="samples.requestAKit.updateMy${addressType === 'physical' ? 'Physical' : 'Mailing'}Address">Update my ${addressType} address</span></a></div>
                 ${addressType === 'mailing' ? `<div><a href="#" id="addPhysicalAddress"  data-i18n="samples.requestAKit.addPhysicalAddressLowercase" data-bs-toggle="modal" data-bs-target="#addPhysicalAddressInfo">Add physical address</a></div>` : ''}
                 <br /><br />
                 <div class="fst-italic" data-i18n="samples.requestAKit.cannotShipToPOBoxesNote">Note: we can't ship kits to P.O. Boxes or international addresses.</div>
@@ -710,7 +710,7 @@ const renderRequestAKitDisplay = (participant) => {
                     <option data-i18n="samples.requestAKit.chooseKitGhostValue" value="" disabled>Choose the kit you are requesting</option>
                     <option data-i18n="samples.requestAKit.mouthwashOption" value="mouthwash" default>Mouthwash</option>
                 </select>
-                <div data=i18n="samples.requestAKit.mwKitShipTimeframe">Please note: mouthwash kits ship and arrive in about one week.</div>
+                <div data-i18n="samples.requestAKit.mwKitShipTimeframe">Mouthwash kits ship and arrive in about one week.</div>
                 <br />
                 <div><button type="button" class="btn btn-primary" id="requestHomeKit" data-i18n="samples.requestAKit.submitRequestText">Submit Request</button></div>
             `);
@@ -757,13 +757,34 @@ const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, sta
     }
 };
 
-const renderParticipantPhysicalAddress = (participant) => {
+const renderParticipantPhysicalAddress = (participant, displayCurrentPhysicalAddress) => {
     const requestAKitInner = document.getElementById('requestAKitInner');
     if (!requestAKitInner || participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.kitRequestEligible] !== conceptId.yes) {
         return;
     }
 
-    requestAKitInner.innerHTML = '<div class="messagesSubHeader" data-i18n="samples.requestAKit.addPhysicalAddress">New Physical Address</div>' + renderChangeMailingAddressGroup(2);
+    let newInnerHTML = '<div class="messagesSubHeader" data-i18n="samples.requestAKit.addPhysicalAddress">New Physical Address</div>' + renderChangeMailingAddressGroup(2);
+
+    if(displayCurrentPhysicalAddress) {
+        const {
+            physicalAddress1, physicalAddress2, physicalCity, physicalState, physicalZip,
+        } = conceptId;
+        const addressObj = {
+            address_1: participant[physicalAddress1],
+            address_2: participant[physicalAddress2] || '',
+            city: participant[physicalCity],
+            state: participant[physicalState],
+            zip_code: participant[physicalZip]
+        };
+        const formattedAddress = `${addressObj.address_1 || ''}<br />
+                ${addressObj.address_2 ? `${addressObj.address_2}<br />` : ''}
+            ${addressObj.city || ''}${addressObj.state ? ',':''} ${addressObj.state || ''} ${addressObj.zip_code || ''}`;
+
+        newInnerHTML = '<div class="messagesSubHeader" data-i18n="samples.requestAKit.currentPhysicalAddress">Current Physical Address</div>' 
+        + `<div class="row"><div class="col-1"></div><div class="col-11">${formattedAddress}</div></div>` + newInnerHTML;
+    }
+
+    requestAKitInner.innerHTML = newInnerHTML;
     toggleElementVisibility([document.getElementById(`currentMailingAddressDiv2`), document.getElementById(`changeMailingAddressGroup2`)], false);
     addEventAddressAutoComplete(2);
     
@@ -772,15 +793,72 @@ const renderParticipantPhysicalAddress = (participant) => {
     // calls for the addition of the cancellation button, a style difference on the submit button, and added
     // warning text about being unable to ship to PO Boxes or international addresses
     // These changes are done below as DOM manipulation
-    const submitDiv = document.getElementById('changeMailingAddressGroup2');
-    const submitDivRows = submitDiv.children[0].children;
-    const buttonDiv = submitDivRows[submitDivRows.length - 1];
+    
     const cannotShipToPOIntDiv = document.createElement('div');
-    submitDiv.children[0].insertBefore(cannotShipToPOIntDiv, buttonDiv);
-    cannotShipToPOIntDiv.outerHTML = translateHTML(`<div class="fst-italic" data-i18n="samples.requestAKit.cannotShipToPOBoxesNote">Note: we can't ship kits to P.O. Boxes or international addresses.</div>`);
     const submitButton = document.getElementById('changeMailingAddressSubmit2');
     submitButton.setAttribute('class', 'btn btn-primary save-data');
     const buttonParentDiv = submitButton.parentElement;
+    const buttonGrandparentDiv = buttonParentDiv.parentElement;
+    buttonGrandparentDiv.insertBefore(cannotShipToPOIntDiv, buttonParentDiv);
+    cannotShipToPOIntDiv.outerHTML = translateHTML(`<div class="fst-italic" data-i18n="samples.requestAKit.cannotShipToPOBoxesNote">Note: we can't ship kits to P.O. Boxes or international addresses.</div>`);
+    buttonGrandparentDiv.insertBefore(document.createElement('br'), buttonParentDiv);
+    buttonGrandparentDiv.insertBefore(document.createElement('br'), buttonParentDiv);
+
+    const backButton = document.createElement('button');
+    backButton.textContent = 'Cancel';
+    backButton.setAttribute('class', 'btn btn-outline-primary');
+    backButton.setAttribute("data-i18n", "samples.requestAKit.cancelText");
+    // Go back if cancel is clicked
+    backButton.addEventListener('click', () => {
+        renderRequestAKitDisplay(participant);
+        bindEvents(participant);
+    });
+    buttonParentDiv.appendChild(translateHTML(backButton));
+    bindEvents(participant);
+}
+
+const renderParticipantMailingAddress = (participant) => {
+    const requestAKitInner = document.getElementById('requestAKitInner');
+    if (!requestAKitInner || participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.kitRequestEligible] !== conceptId.yes) {
+        return;
+    }
+
+    const {
+        address1, address2, city, state, zip
+    } = conceptId;
+    const addressObj = {
+        address_1: participant[address1],
+        address_2: participant[address2] || '',
+        city: participant[city],
+        state: participant[state],
+        zip_code: participant[zip]
+    };
+    const formattedAddress = `${addressObj.address_1 || ''}<br />
+            ${addressObj.address_2 ? `${addressObj.address_2}<br />` : ''}
+        ${addressObj.city || ''}${addressObj.state ? ',':''} ${addressObj.state || ''} ${addressObj.zip_code || ''}`;
+
+    requestAKitInner.innerHTML = '<div class="messagesSubHeader" data-i18n="samples.requestAKit.currentMailingAddress">Current Mailing Address</div>' 
+        + `<div class="row"><div class="col-1"></div><div class="col-11">${formattedAddress}</div></div><div class="messagesSubHeader" data-i18n="samples.requestAKit.newMailingAddress">New Mailing Address</div>` 
+        + renderChangeMailingAddressGroup(1, true);
+    toggleElementVisibility([document.getElementById(`currentMailingAddressDiv1`), document.getElementById(`changeMailingAddressGroup1`)], false);
+    addEventAddressAutoComplete(1);
+    
+    // We want to preserve the styling between the add physical address section here and the user profile page as much as possible,
+    // hence the use of renderChangeMailingAddressGroup. However, our styling for this page
+    // calls for the addition of the cancellation button, a style difference on the submit button, and added
+    // warning text about being unable to ship to PO Boxes or international addresses
+    // These changes are done below as DOM manipulation
+    
+    const cannotShipToPOIntDiv = document.createElement('div');
+    const submitButton = document.getElementById('changeMailingAddressSubmit1');
+    submitButton.setAttribute('class', 'btn btn-primary save-data');
+    const buttonParentDiv = submitButton.parentElement;
+    const buttonGrandparentDiv = buttonParentDiv.parentElement;
+    buttonGrandparentDiv.insertBefore(cannotShipToPOIntDiv, buttonParentDiv);
+    cannotShipToPOIntDiv.outerHTML = translateHTML(`<div class="fst-italic" data-i18n="samples.requestAKit.cannotShipToPOBoxesNote">Note: we can't ship kits to P.O. Boxes or international addresses.</div>`);
+    buttonGrandparentDiv.insertBefore(document.createElement('br'), buttonParentDiv);
+    buttonGrandparentDiv.insertBefore(document.createElement('br'), buttonParentDiv);
+
     const backButton = document.createElement('button');
     backButton.textContent = 'Cancel';
     backButton.setAttribute('class', 'btn btn-outline-primary');
@@ -823,7 +901,23 @@ const bindAddPhysicalAddressBtn = (participant) => {
     });
 }
 
-const bindUpdateAddressBtn = (participant) => {
+const bindUpdatePhysicalAddressBtn = (participant) => {
+    const updatePhysicalAddressBtn = document.getElementById('updatePhysicalAddress');
+    updatePhysicalAddressBtn && updatePhysicalAddressBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        renderParticipantPhysicalAddress(participant, true);
+    });
+}
+
+const bindUpdateMailingAddressBtn = (participant) => {
+    const updateMailingAddressBtn = document.getElementById('updateMailingAddress');
+    updateMailingAddressBtn && updateMailingAddressBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        renderParticipantMailingAddress(participant);
+    });
+}
+
+const bindUpdatePAddressBtn = (participant) => {
     const updateAddressBtn = document.getElementById('changeMailingAddressSubmit2');
     updateAddressBtn && updateAddressBtn.addEventListener('click', async () => {
         const addressLine1 = escapeHTML(document.getElementById('UPAddress2Line1').value.trim());
@@ -842,7 +936,7 @@ const bindUpdateAddressBtn = (participant) => {
                 city,
                 state,
                 zip,
-                true
+                participant[conceptId.isPOBox] === conceptId.yes
             );
 
             if (uspsSuggestion.suggestion) {
@@ -889,24 +983,97 @@ const bindUpdateAddressBtn = (participant) => {
     });
 }
 
+const bindUpdateMAddressBtn = (participant) => {
+    const updateAddressBtn = document.getElementById('changeMailingAddressSubmit1');
+    updateAddressBtn && updateAddressBtn.addEventListener('click', async () => {
+        const addressLine1 = escapeHTML(document.getElementById('UPAddress1Line1').value.trim());
+        const addressLine2 = escapeHTML(document.getElementById('UPAddress1Line2').value.trim());
+        const city = escapeHTML(document.getElementById('UPAddress1City').value.trim());
+        const state = escapeHTML(document.getElementById('UPAddress1State').value.trim());
+        const zip = escapeHTML(document.getElementById('UPAddress1Zip').value.trim());
+
+        const {hasError, uspsSuggestion} = await validateMailingAddress(1, addressLine1, city, state, zip);
+        
+        if (!hasError) {
+            const submitNewAddress = (addressLine1, addressLine2, city, state, zip) => submitNewMailingAddress(
+                1,
+                addressLine1,
+                addressLine2,
+                city,
+                state,
+                zip,
+                false
+            );
+
+            if (uspsSuggestion.suggestion) {
+                showMailAddressSuggestion(
+                    uspsSuggestion,
+                    'event.addressSuggestionDescriptionPhysical',
+                    async (streetAddress, secondaryAddress, city, state, zipCode) => {
+                        const success = await submitNewAddress(
+                            streetAddress,
+                            secondaryAddress,
+                            city,
+                            state,
+                            zipCode
+                        );
+                        if (success) {
+                            participant[conceptId.address1] = streetAddress;
+                            if (secondaryAddress) {
+                                participant[conceptId.address2] = secondaryAddress;
+                            }
+                            participant[conceptId.city] = city;
+                            participant[conceptId.state] = state;
+                            participant[conceptId.zip] = zipCode;
+                            participant[conceptId.isPOBox] = conceptId.no;
+                            
+                            renderRequestAKitDisplay(participant);
+                            // renderUpdateAddressSuccess();
+                        }
+                    }
+                );
+            } else {
+                const success = await submitNewAddress(addressLine1, addressLine2, city, state, zip);
+                if (success) {
+                    participant[conceptId.address1] = streetAddress;
+                    if (addressLine2) {
+                        participant[conceptId.address2] = secondaryAddress;
+                    }
+                    participant[conceptId.city] = city;
+                    participant[conceptId.state] = state;
+                    participant[conceptId.zip] = zipCode;
+                    participant[conceptId.isPOBox] = conceptId.no;
+                    renderRequestAKitDisplay(participant);
+                    // renderUpdateAddressSuccess();
+                }
+            }
+        }
+    });
+}
+
 const bindCancelAddressUpdateBtn = (participant) => {
     const cancelAddressUpdateBtn = document.getElementById('cancelAddressUpdate');
     cancelAddressUpdateBtn && cancelAddressUpdateBtn.addEventListener('click', () => {
         renderRequestAKitDisplay(participant);
         bindAddPhysicalAddressBtn(participant);
+        bindUpdateMailingAddressBtn(participant);
+        bindUpdatePhysicalAddressBtn(participant);
     });
 }
 
 const bindEvents = (participant) => {
     bindRequestKitButton(participant);
     bindAddPhysicalAddressBtn(participant);
+    bindUpdateMailingAddressBtn(participant);
+    bindUpdatePhysicalAddressBtn(participant);
 
-    bindUpdateAddressBtn(participant);
+    bindUpdatePAddressBtn(participant);
+    bindUpdateMAddressBtn(participant);
 
     bindCancelAddressUpdateBtn(participant);
 }
 
-const renderUpdateAddressSuccess = () => {
+const renderUpdateAddressSuccess = (addressType) => {
     const div = document.getElementById('mailingAddressSuccess2');
     if (!div) {
         return;

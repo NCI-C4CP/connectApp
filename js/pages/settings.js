@@ -2178,7 +2178,9 @@ export const renderAlternateAddressData = (id) => {
         `);
 };
 
-export const renderChangeMailingAddressGroup = (id) => {
+export const renderChangeMailingAddressGroup = (id, hidePOCheckbox = false) => {
+    // Note: When making changes to this function, please also test changes on updating and adding
+    // mailing and physical addresses in the request a kit section of the samples.js page
     if (!id) {
         console.error('id is required for renderChangeMailingAddressGroup');
         return;
@@ -2207,7 +2209,7 @@ export const renderChangeMailingAddressGroup = (id) => {
             </div>
             <br>`
     };
-    const checkboxHTML = checkboxes[id] || '';
+    const checkboxHTML = hidePOCheckbox ? '' : (checkboxes[id] || '');
 
     return translateHTML(`
         <div class="userProfileLinePaddings" id="changeMailingAddressGroup${id}" style="display:none;">
