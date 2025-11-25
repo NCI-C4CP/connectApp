@@ -1359,7 +1359,9 @@
         "sureToRemoveEmail": "<strong><i>Importante</i></strong>: ¿Está seguro de que desea eliminar este método de inicio de sesión con correo electrónico?",
         "sureToRemovePhone": "<strong><i>Importante</i></strong>: ¿Está seguro de que desea eliminar este método de inicio de sesión con número de teléfono?",
         "confirmText": "Confirmar",
-        "cancelText": "Cancelar"
+        "cancelText": "Cancelar",
+        "noLoginEmail": "Actualmente no tiene un inicio de sesión mediante según el campo que esté vacío. ¿Desea agregar uno? Esto facilitará el acceso a su cuenta en el futuro.",
+        "noLoginPhone": "Actualmente no tiene un inicio de sesión mediante teléfono o correo electrónico. ¿Desea agregar uno? Esto facilitará el acceso a su cuenta en el futuro.",
     },
     "ssn": {
         "hardErrorNineFormat": "Introduzca un número de Seguro Social válido en este formato: 999-99-9999",
@@ -2297,7 +2299,19 @@
         "formTitle": "Formularios",
         "formText": "Revise y descargue copias de los formularios que ha completado, o firme nuevos formularios.",
         "paymentTitle": "Pago",
-        "paymentText": "Revise la información sobre los pagos para los participantes de Connect."
+        "paymentText": "Revise la información sobre los pagos para los participantes de Connect.",
+        "secondaryLoginTitle": "Agregar un inicio de sesión secundario",
+        "secondaryWarning": "Facilite el acceso a su cuenta agregando un método de inicio de sesión secundario para MyConnect (por ejemplo, un número de teléfono si normalmente accede con su correo electrónico). Siempre podrá actualizar o modificar esta información en su perfil.",
+        "secondaryDismiss": "No mostrar este mensaje nuevamente",
+        "addSecondary": {
+            "title": "Agregar inicio de sesión secundario",
+            "innerText": "Agregar inicio de sesión secundario",
+        },
+        "closeButton": {
+            "title": "Cerrar",
+            "innerText": "Cerrar",
+        }
+        
     }
 }
 
