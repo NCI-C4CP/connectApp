@@ -993,6 +993,9 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.physicalCity]: isClearing ? null : city,
       [cId.physicalState]: isClearing ? null : state,
       [cId.physicalZip]: isClearing ? null : (zip ? zip.toString() : ""),
+      [cId.physicalAddrIntl]: isClearing ? null : isInternational,
+      [cId.physicalAddress3]: isClearing ? null : (addressLine3 && isInternational === cId.yes ? addressLine3 : ''), 
+      [cId.physicalCountry]: isClearing ? null : (country && isInternational === cId.yes ? country : ''), 
     };
   } else if (id === 3) {
     const doesAltAddressExist = isClearing ? cId.no : (addressLine1 || addressLine2 || city || state || zip ? cId.yes : cId.no);
@@ -1005,7 +1008,10 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.altCity]: isClearing ? null : city,
       [cId.altState]: isClearing ? null : state,
       [cId.altZip]: isClearing ? null : (zip ? zip.toString() : ""),
-      [cId.isPOBoxAltAddress]: isClearing ? null : (isPOBox ? cId.yes : cId.no)
+      [cId.isPOBoxAltAddress]: isClearing ? null : (isPOBox ? cId.yes : cId.no),
+      [cId.isIntlAltAddress]: isClearing ? null : isInternational,
+      [cId.altAddress3]: isClearing ? null : (addressLine3 && isInternational === cId.yes ? addressLine3 : ''), 
+      [cId.altCountry]: isClearing ? null : (country && isInternational === cId.yes ? country : ''), 
      };
   }
 
