@@ -1262,6 +1262,7 @@ const en = {
             "placeholder": "Enter apartment, suite, unit, building"
         },
         "mailAddressLine2Placeholder": "Enter apartment, suite, unit, building",
+        "mailAddressLine3": "Line 3",
         "city": "City <span class=\"required\">*</span>",
         "cityField": {
             "data-error-required": "Please enter the city field of your mailing address.",

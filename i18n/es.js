@@ -1264,6 +1264,7 @@
             "placeholder": "Ingrese el apartamento, la suite, la unidad, el edificio"
         },
         "mailAddressLine2Placeholder": "Ingrese el apartamento, la suite, la unidad, el edificio",
+        "mailAddressLine3": "Línea 3",
         "city": "Ciudad <span class=\"required\">*</span>",
         "cityField": {
             "data-error-required": "Ingrese el campo de ciudad de su dirección postal.",
