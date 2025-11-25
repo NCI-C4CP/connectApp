@@ -1267,6 +1267,7 @@
             "placeholder": "Ingrese el apartamento, la suite, la unidad, el edificio"
         },
         "mailAddressLine2Placeholder": "Ingrese el apartamento, la suite, la unidad, el edificio",
+        "mailAddressLine3": "Línea 3",
         "city": "Ciudad <span class=\"required\">*</span>",
         "cityField": {
             "data-error-required": "Ingrese el campo de ciudad de su dirección postal.",
@@ -1278,6 +1279,9 @@
         "stateValidator": "Seleccione el campo de estado de su dirección postal.",
         "selectText": "-- Seleccione --",
         "zip": "Código postal <span class=\"required\">*</span>",
+        "region": "Región",
+        "postalCode": "Código postal",
+        "country": "País <span class=\"required\">*</span>",
         "zipField": {
             "title": "5 caracteres de longitud, solo valor numérico.",
             "data-error-validation": "Ingrese un código postal de 5 dígitos con este formato: 12345.",
@@ -1555,6 +1559,7 @@
         "cityNotEmpty": "El campo “Ciudad” no puede quedar vacío. Seleccione una ciudad.",
         "stateNotEmpty": "El campo “Estado” no puede quedar vacío. Seleccione un estado.",
         "zipNotEmpty": "El campo “Código postal” no puede quedar en blanco. Solo puede contener números.",
+        "countryNotEmpty": "El campo “País” no puede quedar vacío. Seleccione una país.",
         "errorEmailFormat": "Error: El formato de la dirección de correo electrónico no es válido. Ingrese una dirección de correo electrónico con este formato: nombre@ejemplo.com.",
         "errorEmailsDoNotMatch": "Error: Las direcciones de correo electrónico no coinciden. Verifique que las direcciones de correo electrónico coincidan y, a continuación, vuelva a enviar el formulario.",
         "errorPhoneFormat": "Error: El formato del número de teléfono no es válido. Ingrese un número de teléfono con este formato: 999-999-9999",

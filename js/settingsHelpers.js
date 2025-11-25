@@ -1,4 +1,4 @@
-import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML, closeModal, escapeHTML } from './shared.js';
+import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML, closeModal, escapeHTML, country3Codes } from './shared.js';
 import { removeAllErrors } from './event.js';
 import cId from './fieldToConceptIdMapping.js';
 
@@ -474,11 +474,12 @@ const uspsValidateAddress = async (
   }
 };
 
-export const validateMailingAddress = async (id, addressLine1, city, state, zip) => {
+export const validateMailingAddress = async (id, addressLine1, city, state, zip, isInternational, country) => {
   removeAllErrors();
   let hasError = false;
   let focus = true;
   const zipRegExp = /[0-9]{5}/;
+  isInternational = isInternational ? isInternational : cId.no;
 
   if (!addressLine1) {
       errorMessage(
@@ -504,7 +505,7 @@ export const validateMailingAddress = async (id, addressLine1, city, state, zip)
       hasError = true;
   }
 
-  if (!state) {
+  if (isInternational === cId.no && !state) {
       errorMessage(
           `UPAddress${id}State`,
           '<span data-i18n="settingsHelpers.stateNotEmpty">' +
@@ -516,7 +517,7 @@ export const validateMailingAddress = async (id, addressLine1, city, state, zip)
       hasError = true;
   }
 
-  if (!zip || !zipRegExp.test(zip)) {
+  if (isInternational === cId.no && (!zip || !zipRegExp.test(zip))) {
       errorMessage(
           `UPAddress${id}Zip`,
           '<span data-i18n="settingsHelpers.zipNotEmpty">' +
@@ -528,6 +529,18 @@ export const validateMailingAddress = async (id, addressLine1, city, state, zip)
       hasError = true;
   }
 
+  if (isInternational === cId.yes && !country) {
+      errorMessage(
+          `UPAddress${id}Country`,
+          '<span data-i18n="settingsHelpers.countryNotEmpty">' +
+              translateText("settingsHelpers.countryNotEmpty") +
+              "</span>"
+      );
+      if (focus) document.getElementById(`UPAddress${id}Country`).focus();
+      focus = false;
+      hasError = true;
+  }
+
   if (hasError) {
     console.error('Error(s) found.');
     return {
@@ -535,19 +548,26 @@ export const validateMailingAddress = async (id, addressLine1, city, state, zip)
     };
   }
 
-  const {hasError: isInvalid, uspsSuggestion} = await uspsValidateAddress(
-      focus,
-      `UPAddress${id}Line1`,
-      `UPAddress${id}Line2`,
-      `UPAddress${id}City`,
-      `UPAddress${id}State`,
-      `UPAddress${id}Zip`
-  );
-
-  return {
-      hasError: isInvalid,
-      uspsSuggestion,
-  };
+  if (isInternational === cId.no) {
+    const {hasError: isInvalid, uspsSuggestion} = await uspsValidateAddress(
+        focus,
+        `UPAddress${id}Line1`,
+        `UPAddress${id}Line2`,
+        `UPAddress${id}City`,
+        `UPAddress${id}State`,
+        `UPAddress${id}Zip`
+    );
+  
+    return {
+        hasError: isInvalid,
+        uspsSuggestion,
+    };
+  } else {
+    return {
+        hasError,
+        uspsSuggestion: {},
+    };
+  }
 };
 
 export const showRiskyEmailWarningMyProfile = (riskyEmails, onSubmit) => {
@@ -947,7 +967,7 @@ const handleQueryArrayField = (types, queryKey, normalizeFn, changedUserDataForP
  * @returns {boolean} - true if the update was successful, false otherwise
  */
 
-export const changeMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, userData, isPOBox, isClearing = false) => {
+export const changeMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, userData, isPOBox, isClearing = false, isInternational, addressLine3, country) => {
   document.getElementById(`mailingAddressFail${id}`).style.display = 'none';
   document.getElementById(`changeMailingAddressGroup${id}`).style.display = 'none';
 
@@ -960,7 +980,10 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.city]: city,
       [cId.state]: state,
       [cId.zip]: zip.toString(),
-      [cId.isPOBox]: isPOBox ? cId.yes : cId.no
+      [cId.isPOBox]: isPOBox ? cId.yes : cId.no,
+      [cId.isIntlAddr]: isInternational,
+      [cId.address3]: addressLine3 && isInternational === cId.yes ? addressLine3 : '', 
+      [cId.country]: country && isInternational === cId.yes ? country : '', 
     };
   } else if (id === 2) {
     // For physical address (id=2), convert to null when clearing, otherwise use values as-is
@@ -970,6 +993,9 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.physicalCity]: isClearing ? null : city,
       [cId.physicalState]: isClearing ? null : state,
       [cId.physicalZip]: isClearing ? null : (zip ? zip.toString() : ""),
+      [cId.physicalAddrIntl]: isClearing ? null : isInternational,
+      [cId.physicalAddress3]: isClearing ? null : (addressLine3 && isInternational === cId.yes ? addressLine3 : ''), 
+      [cId.physicalCountry]: isClearing ? null : (country && isInternational === cId.yes ? country : ''), 
     };
   } else if (id === 3) {
     const doesAltAddressExist = isClearing ? cId.no : (addressLine1 || addressLine2 || city || state || zip ? cId.yes : cId.no);
@@ -982,7 +1008,10 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.altCity]: isClearing ? null : city,
       [cId.altState]: isClearing ? null : state,
       [cId.altZip]: isClearing ? null : (zip ? zip.toString() : ""),
-      [cId.isPOBoxAltAddress]: isClearing ? null : (isPOBox ? cId.yes : cId.no)
+      [cId.isPOBoxAltAddress]: isClearing ? null : (isPOBox ? cId.yes : cId.no),
+      [cId.isIntlAltAddress]: isClearing ? null : isInternational,
+      [cId.altAddress3]: isClearing ? null : (addressLine3 && isInternational === cId.yes ? addressLine3 : ''), 
+      [cId.altCountry]: isClearing ? null : (country && isInternational === cId.yes ? country : ''), 
      };
   }
 
@@ -1503,3 +1532,36 @@ export const getFormerNameData = () => {
     });
     return result;
 };
+
+/**
+ * Renders the options for a country selector and places USA at the top
+ * 
+ * @param {String[]} excludeCountries - Array of country 3 codes to not render 
+ * @returns String
+ */
+export const renderCountries = (excludeCountries) => {
+    let countries = country3Codes.map((code) => {
+        return {code,
+            title: translateText('countries.' + code)
+        }
+    }).sort((a, b) => {
+        if (a.code === 'usa') {
+            return -1;
+        } else if (b.code === 'usa') {
+            return 1;
+        } else if (a.title < b.title) {
+            return -1
+        } else {
+            return 1;
+        }
+    });
+
+    let options = '';
+    for(const index in countries) {
+        let country = countries[index];
+        if (!excludeCountries || !excludeCountries.includes(country.code)) {
+            options += `<option class="option-dark-mode" value="${country.code}" data-i18n="countries.${country.code}">${country.title}</option>`;
+        } 
+    }
+    return options;
+}

@@ -1265,6 +1265,7 @@ const en = {
             "placeholder": "Enter apartment, suite, unit, building"
         },
         "mailAddressLine2Placeholder": "Enter apartment, suite, unit, building",
+        "mailAddressLine3": "Line 3",
         "city": "City <span class=\"required\">*</span>",
         "cityField": {
             "data-error-required": "Please enter the city field of your mailing address.",
@@ -1276,6 +1277,9 @@ const en = {
         "stateValidator": "Please select the state field of your mailing address.",
         "selectText": "-- Select --",
         "zip": "Zip <span class=\"required\">*</span>",
+        "region": "Region",
+        "postalCode": "Postal Code",
+        "country": "Country <span class=\"required\">*</span>",
         "zipField": {
             "title": "5 characters long, numeric-only value.",
             "data-error-validation": "Please enter a 5 digit zip code in this format: 12345.",
@@ -1552,6 +1556,7 @@ const en = {
         "cityNotEmpty": "City must not be empty. Please select a City.",
         "stateNotEmpty": "State must not be empty. Please select a state.",
         "zipNotEmpty": "Zip code must not be blank. It can only contain numbers.",
+        "countryNotEmpty": "Country must not be empty. Please select a Country.",
         "errorEmailFormat": "Error: The email address format is not valid. Please enter an email address in this format: name@example.com.",
         "errorEmailsDoNotMatch": "Error - the email addresses do not match. Please make sure the email addresses match, then resubmit the form.",
         "errorPhoneFormat": "Error: The phone number format is not valid. Please enter a phone number in this format: 999-999-9999",
