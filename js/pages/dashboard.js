@@ -232,9 +232,12 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                 }
 
                 //Check for secondary Login options
-                if (sessionStorage.getItem('secondaryModalShown') !== "yes" &&
-                    (data[fieldMapping.revokeHipaa] !== fieldMapping.yes  && data[fieldMapping.consentWithdrawn] !== fieldMapping.yes) && !isParticipantDataDestroyed(data) &&
-                    !data['secondaryDismissed'] && (!data[fieldMapping.firebaseAuthEmail] || !data[fieldMapping.firebaseAuthPhone]))
+                if (data[fieldMapping.verification] === fieldMapping.verified &&
+                    sessionStorage.getItem('secondaryModalShown') !== "yes" &&
+                    (data[fieldMapping.revokeHipaa] !== fieldMapping.yes  && data[fieldMapping.consentWithdrawn] !== fieldMapping.yes) && 
+                    !isParticipantDataDestroyed(data) &&
+                    !data['secondaryDismissed'] && 
+                    (!data[fieldMapping.firebaseAuthEmail] || !data[fieldMapping.firebaseAuthPhone]))
                 {
                     showSecondaryLoginModal();
                 }
