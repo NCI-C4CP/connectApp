@@ -271,6 +271,25 @@
         "mailAddressCountryRequired": "País <span class=\"required\">*</span>",
         "physicalAddress": "Dirección física (si es diferente de la dirección postal) ",
         "physicalAddressDesc": "Se necesita una dirección física para que Connect pueda enviarle paquetes por FedEx para algunas actividades del estudio. FedEx no hace envíos a apartados postales. ",
+        "physicalAddressLine1Field": {
+            "data-error-required": "Ingrese la primera línea de su dirección física.",
+            "placeholder": "Ingrese la calle, el apartado postal, la ruta rural"
+        },
+        "physicalAddressLine2Field": {
+            "placeholder": "Ingrese el apartamento, la suite, la unidad, el edificio"
+        },
+        "physicalAddressCityField": {
+            "data-error-required": "Ingrese el campo de ciudad de su dirección física.",
+            "placeholder": "Ingrese la ciudad"
+        },
+        "physicalAddressStateField": {
+            "data-error-required": "Seleccione el campo de estado de su dirección física."
+        },
+        "physicalAddressZipField": {
+            "data-error-validation": "Ingrese un código postal de 5 dígitos con este formato: 12345.",
+            "title": "5 caracteres de longitud, solo valor numérico.",
+            "data-error-required": "Ingrese el campo de código postal de su dirección física."
+        },
         "otherContactInformation": "Otra información de contacto",
         "otherContactIntroduction": "Queremos mantenernos en contacto con usted durante el tiempo que participe en el estudio. Por favor, bríndenos más información de contacto que nos ayude a comunicarnos con usted en el futuro.",
         "altAddressQuestion": "¿Hay alguna otra dirección de correo que utilice?",
@@ -279,21 +298,6 @@
         "altAddressLine1Field": {
             "data-error-required": "Ingrese la primera línea de su dirección alternativa.",
             "placeholder": "Ingrese la calle, el apartado postal, la ruta rural"
-        },
-        "altAddressLine2Field": {
-            "placeholder": "Ingrese el apartamento, la suite, la unidad, el edificio"
-        },
-        "altAddressCityField": {
-            "data-error-required": "Ingrese el campo de ciudad de su dirección alternativa.",
-            "placeholder": "Ingrese la ciudad"
-        },
-        "altAddressStateField": {
-            "data-error-required": "Seleccione el campo de estado de su dirección alternativa."
-        },
-        "altAddressZipField": {
-            "data-error-validation": "Ingrese un código postal de 5 dígitos con este formato: 12345.",
-            "title": "5 caracteres de longitud, solo valor numérico.",
-            "data-error-required": "Ingrese el campo de código postal de su dirección alternativa."
         },
         "isPOBoxCheckboxAltAddress": "Revise si la dirección postal es un apartado postal",
         "altContactHeader": "Contacto alternativo",

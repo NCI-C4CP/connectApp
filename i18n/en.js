@@ -271,6 +271,25 @@ const en = {
         "mailAddressCountryRequired": "Country <span class=\"required\">*</span>",
         "physicalAddress": "Physical Address (if different from Mailing Address)",
         "physicalAddressDesc": "Physical address is needed so Connect can mail you packages via FedEx for some study activities. FedEx does not deliver to P.O. Boxes.",
+        "physicalAddressLine1Field": {
+            "data-error-required": "Please enter the first line of your physical address.",
+            "placeholder": "Enter street, PO box, rural route"
+        },
+        "physicalAddressLine2Field": {
+            "placeholder": "Enter apartment, suite, unit, building"
+        },
+        "physicalAddressCityField": {
+            "data-error-required": "Please enter the city field of your physical address.",
+            "placeholder": "Enter City"
+        },
+        "physicalAddressStateField": {
+            "data-error-required": "Please select the state field of your physical address."
+        },
+        "physicalAddressZipField": {
+            "data-error-validation": "Please enter a 5 digit zip code in this format: 12345.",
+            "title": "5 characters long, numeric-only value.",
+            "data-error-required": "Please enter the zip field of your physical address."
+        },
         "otherContactInformation": "Other Contact Information",
         "otherContactIntroduction": "We would like to keep in touch with you during your time in the study. Please share more contact information to help us reach you in the future.",
         "altAddressQuestion": "Are there any other mailing addresses that you use?",
@@ -279,21 +298,6 @@ const en = {
         "altAddressLine1Field": {
             "data-error-required": "Please enter the first line of your mailing address.",
             "placeholder": "Enter street, PO box, rural route"
-        },
-        "altAddressLine2Field": {
-            "placeholder": "Enter apartment, suite, unit, building"
-        },
-        "altAddressCityField": {
-            "data-error-required": "Please enter the city field of your alternate address.",
-            "placeholder": "Enter City"
-        },
-        "altAddressStateField": {
-            "data-error-required": "Please select the state field of your alternate address."
-        },
-        "altAddressZipField": {
-            "data-error-validation": "Please enter a 5 digit zip code in this format: 12345.",
-            "title": "5 characters long, numeric-only value.",
-            "data-error-required": "Please enter the zip field of your alternate address."
         },
         "isPOBoxCheckboxAltAddress": "Please check if alternate address is a P.O. Box",
         "altContactHeader": "Alternate Contact",
