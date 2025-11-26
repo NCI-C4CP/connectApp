@@ -1360,7 +1360,9 @@ const en = {
         "sureToRemoveEmail": "<strong><i>Important</i></strong>: Are you sure you want to remove this email sign in method?",
         "sureToRemovePhone": "<strong><i>Important</i></strong>: Are you sure you want to remove this phone sign in method?",
         "confirmText": "Confirm",
-        "cancelText": "Cancel"
+        "cancelText": "Cancel",
+        "noLoginEmail": "You don't currently have a email login. Would you like to add one? This will make it easy to access your account in the future.",
+        "noLoginPhone": "You don't currently have a phone login. Would you like to add one? This will make it easy to access your account in the future.",
     },
     "ssn": {
         "hardErrorNineFormat": "Please enter a valid Social Security Number in this format: 999-99-9999.",
@@ -2299,7 +2301,18 @@ const en = {
         "formTitle": "Forms",
         "formText": "Review and download copies of the forms you’ve completed, or sign new forms.",
         "paymentTitle": "Payment",
-        "paymentText": "Review information about payments for Connect participants."
+        "paymentText": "Review information about payments for Connect participants.",
+        "secondaryLoginTitle": "Add a secondary login",
+        "secondaryWarning": "Make it easy to access your account by adding a secondary login method for MyConnect (e.g., phone number if you usually log in with email). You can always update or change this information in your profile.",
+        "secondaryDismiss": "Don't show this message again",
+        "addSecondary": {
+            "title": "Add Secondary Login",
+            "innerText": "Add Secondary Login",
+        },
+        "closeButton": {
+            "title": "Close",
+            "innerText": "Close"
+        }
     }
 }
 
