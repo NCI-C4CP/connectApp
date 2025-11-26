@@ -1213,7 +1213,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
 
         // User Profile Place of Birth
         if (document.getElementById('cityOfBirth').value) {
-            formData[fieldMapping.cityOfBirth] = escapeHTML(document.getElementById('cityOfBirth').value.value.trim());
+            formData[fieldMapping.cityOfBirth] = escapeHTML(document.getElementById('cityOfBirth').value.trim());
         }
         if (document.getElementById('stateOfBirth').value) {
             formData[fieldMapping.stateOfBirth] = escapeHTML(document.getElementById('stateOfBirth').value.trim());
