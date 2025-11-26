@@ -1276,9 +1276,15 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
                 formerNameData;
 
         // User Profile Place of Birth
-        formData['876546260'] = document.getElementById('cityOfBirth').value;
-        formData['337485417'] = document.getElementById('stateOfBirth').value;
-        formData[fieldMapping.countryOfOrigin] = document.getElementById('countryOfOrigin').value ? fieldMapping.countries[document.getElementById('countryOfOrigin').value] : '';
+        if (document.getElementById('cityOfBirth').value) {
+            formData[fieldMapping.cityOfBirth] = escapeHTML(document.getElementById('cityOfBirth').value.trim());
+        }
+        if (document.getElementById('stateOfBirth').value) {
+            formData[fieldMapping.stateOfBirth] = escapeHTML(document.getElementById('stateOfBirth').value.trim());
+        }
+        if (document.getElementById('countryOfOrigin').value) {
+            formData[fieldMapping.countryOfOrigin] = fieldMapping.countries[document.getElementById('countryOfOrigin').value];
+        }
 
         const gender = document.getElementsByName('UPRadio');
         Array.from(gender).forEach(radioBtn => {
@@ -1941,11 +1947,11 @@ const verifyUserDetails = (formData) => {
         </div>
          <div class="row">
             <div class="col" data-i18n="form.cityOfBirth.title">City</div>
-            <div class="col">${formData['876546260']}</div>
+            <div class="col">${formData[fieldMapping.cityOfBirth]}</div>
         </div>
          <div class="row">
             <div class="col" data-i18n="form.stateOfBirth.title">State</div>
-            <div class="col">${formData['337485417']}</div>
+            <div class="col">${formData[fieldMapping.stateOfBirth]}</div>
         </div>
          <div class="row">
             <div class="col" data-i18n="form.countryOfOrigin.title">Country</div>

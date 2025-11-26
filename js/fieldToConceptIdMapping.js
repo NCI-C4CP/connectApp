@@ -472,6 +472,8 @@ export default
         viewed: 469323437,
         declined: 746038746,
     },
+    "cityOfBirth": 876546260,
+    "stateOfBirth": 337485417,
     "countryOfOrigin": 837244890,
     "countries": {
         "usa": 333208328,
