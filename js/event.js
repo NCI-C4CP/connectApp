@@ -1212,9 +1212,15 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
                 formerNameData;
 
         // User Profile Place of Birth
-        formData['876546260'] = document.getElementById('cityOfBirth').value;
-        formData['337485417'] = document.getElementById('stateOfBirth').value;
-        formData[fieldMapping.countryOfOrigin] = document.getElementById('countryOfOrigin').value ? fieldMapping.countries[document.getElementById('countryOfOrigin').value] : '';
+        if (document.getElementById('cityOfBirth').value) {
+            formData['876546260'] = document.getElementById('cityOfBirth').value;
+        }
+        if (document.getElementById('stateOfBirth').value) {
+            formData['337485417'] = document.getElementById('stateOfBirth').value;
+        }
+        if (document.getElementById('countryOfOrigin').value) {
+            formData[fieldMapping.countryOfOrigin] = fieldMapping.countries[document.getElementById('countryOfOrigin').value];
+        }
 
         const gender = document.getElementsByName('UPRadio');
         Array.from(gender).forEach(radioBtn => {
