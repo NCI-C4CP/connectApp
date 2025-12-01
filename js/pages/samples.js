@@ -784,7 +784,7 @@ const renderParticipantPhysicalAddress = (participant, displayCurrentPhysicalAdd
         + `<div class="row"><div class="col-1"></div><div class="col-11">${formattedAddress}</div></div>` + newInnerHTML;
     }
 
-    requestAKitInner.innerHTML = newInnerHTML;
+    requestAKitInner.innerHTML = translateHTML(newInnerHTML);
     toggleElementVisibility([document.getElementById(`currentMailingAddressDiv2`), document.getElementById(`changeMailingAddressGroup2`)], false);
     addEventAddressAutoComplete(2);
     
@@ -837,9 +837,11 @@ const renderParticipantMailingAddress = (participant) => {
             ${addressObj.address_2 ? `${addressObj.address_2}<br />` : ''}
         ${addressObj.city || ''}${addressObj.state ? ',':''} ${addressObj.state || ''} ${addressObj.zip_code || ''}`;
 
-    requestAKitInner.innerHTML = '<div class="messagesSubHeader" data-i18n="samples.requestAKit.currentMailingAddress">Current Mailing Address</div>' 
+    const newInnerHTML = '<div class="messagesSubHeader" data-i18n="samples.requestAKit.currentMailingAddress">Current Mailing Address</div>' 
         + `<div class="row"><div class="col-1"></div><div class="col-11">${formattedAddress}</div></div><div class="messagesSubHeader" data-i18n="samples.requestAKit.newMailingAddress">New Mailing Address</div>` 
         + renderChangeMailingAddressGroup(1, true);
+
+    requestAKitInner.innerHTML = translateHTML(newInnerHTML);
     toggleElementVisibility([document.getElementById(`currentMailingAddressDiv1`), document.getElementById(`changeMailingAddressGroup1`)], false);
     addEventAddressAutoComplete(1);
     
