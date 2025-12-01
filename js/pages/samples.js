@@ -763,7 +763,7 @@ const renderParticipantPhysicalAddress = (participant, displayCurrentPhysicalAdd
         return;
     }
 
-    let newInnerHTML = '<div class="messagesSubHeader" data-i18n="samples.requestAKit.addPhysicalAddress">New Physical Address</div>' + renderChangeMailingAddressGroup(2);
+    let newInnerHTML = '<div class="messagesSubHeader" data-i18n="samples.requestAKit.addPhysicalAddress">New Physical Address</div>' + renderChangeMailingAddressGroup(2, true);
 
     if(displayCurrentPhysicalAddress) {
         const {

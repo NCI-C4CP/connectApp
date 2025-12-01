@@ -2178,7 +2178,7 @@ export const renderAlternateAddressData = (id) => {
         `);
 };
 
-export const renderChangeMailingAddressGroup = (id, hidePOCheckbox = false) => {
+export const renderChangeMailingAddressGroup = (id, hidePOAndIntl = false) => {
     // Note: When making changes to this function, please also test changes on updating and adding
     // mailing and physical addresses in the request a kit section of the samples.js page
     if (!id) {
@@ -2209,13 +2209,13 @@ export const renderChangeMailingAddressGroup = (id, hidePOCheckbox = false) => {
             </div>
             <br>`
     };
-    const checkboxHTML = hidePOCheckbox ? '' : (checkboxes[id] || '');
+    const checkboxHTML = hidePOAndIntl ? '' : (checkboxes[id] || '');
 
     return translateHTML(`
         <div class="userProfileLinePaddings" id="changeMailingAddressGroup${id}" style="display:none;">
         <div class="container">
         <div class="row">
-            <div class="col-1">
+            ${hidePOAndIntl ? `` : `<div class="col-1">
                 <div class="form-group row">
                     <div class="col">
                         <div class="form-check form-switch internation-address">
@@ -2223,7 +2223,7 @@ export const renderChangeMailingAddressGroup = (id, hidePOCheckbox = false) => {
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>`}
             <div class="col-11">
                 <div class="form-group row">
                     <div class="col">
