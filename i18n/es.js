@@ -271,6 +271,25 @@
         "mailAddressCountryRequired": "País <span class=\"required\">*</span>",
         "physicalAddress": "Dirección física (si es diferente de la dirección postal) ",
         "physicalAddressDesc": "Se necesita una dirección física para que Connect pueda enviarle paquetes por FedEx para algunas actividades del estudio. FedEx no hace envíos a apartados postales. ",
+        "physicalAddressLine1Field": {
+            "data-error-required": "Ingrese la primera línea de su dirección física.",
+            "placeholder": "Ingrese la calle, el apartado postal, la ruta rural"
+        },
+        "physicalAddressLine2Field": {
+            "placeholder": "Ingrese el apartamento, la suite, la unidad, el edificio"
+        },
+        "physicalAddressCityField": {
+            "data-error-required": "Ingrese el campo de ciudad de su dirección física.",
+            "placeholder": "Ingrese la ciudad"
+        },
+        "physicalAddressStateField": {
+            "data-error-required": "Seleccione el campo de estado de su dirección física."
+        },
+        "physicalAddressZipField": {
+            "data-error-validation": "Ingrese un código postal de 5 dígitos con este formato: 12345.",
+            "title": "5 caracteres de longitud, solo valor numérico.",
+            "data-error-required": "Ingrese el campo de código postal de su dirección física."
+        },
         "otherContactInformation": "Otra información de contacto",
         "otherContactIntroduction": "Queremos mantenernos en contacto con usted durante el tiempo que participe en el estudio. Por favor, bríndenos más información de contacto que nos ayude a comunicarnos con usted en el futuro.",
         "altAddressQuestion": "¿Hay alguna otra dirección de correo que utilice?",
@@ -279,21 +298,6 @@
         "altAddressLine1Field": {
             "data-error-required": "Ingrese la primera línea de su dirección alternativa.",
             "placeholder": "Ingrese la calle, el apartado postal, la ruta rural"
-        },
-        "altAddressLine2Field": {
-            "placeholder": "Ingrese el apartamento, la suite, la unidad, el edificio"
-        },
-        "altAddressCityField": {
-            "data-error-required": "Ingrese el campo de ciudad de su dirección alternativa.",
-            "placeholder": "Ingrese la ciudad"
-        },
-        "altAddressStateField": {
-            "data-error-required": "Seleccione el campo de estado de su dirección alternativa."
-        },
-        "altAddressZipField": {
-            "data-error-validation": "Ingrese un código postal de 5 dígitos con este formato: 12345.",
-            "title": "5 caracteres de longitud, solo valor numérico.",
-            "data-error-required": "Ingrese el campo de código postal de su dirección alternativa."
         },
         "isPOBoxCheckboxAltAddress": "Revise si la dirección postal es un apartado postal",
         "altContactHeader": "Contacto alternativo",
@@ -1362,7 +1366,9 @@
         "sureToRemoveEmail": "<strong><i>Importante</i></strong>: ¿Está seguro de que desea eliminar este método de inicio de sesión con correo electrónico?",
         "sureToRemovePhone": "<strong><i>Importante</i></strong>: ¿Está seguro de que desea eliminar este método de inicio de sesión con número de teléfono?",
         "confirmText": "Confirmar",
-        "cancelText": "Cancelar"
+        "cancelText": "Cancelar",
+        "noLoginEmail": "Actualmente no tiene un inicio de sesión mediante según el campo que esté vacío. ¿Desea agregar uno? Esto facilitará el acceso a su cuenta en el futuro.",
+        "noLoginPhone": "Actualmente no tiene un inicio de sesión mediante teléfono o correo electrónico. ¿Desea agregar uno? Esto facilitará el acceso a su cuenta en el futuro.",
     },
     "ssn": {
         "hardErrorNineFormat": "Introduzca un número de Seguro Social válido en este formato: 999-99-9999",
@@ -2300,7 +2306,19 @@
         "formTitle": "Formularios",
         "formText": "Revise y descargue copias de los formularios que ha completado, o firme nuevos formularios.",
         "paymentTitle": "Pago",
-        "paymentText": "Revise la información sobre los pagos para los participantes de Connect."
+        "paymentText": "Revise la información sobre los pagos para los participantes de Connect.",
+        "secondaryLoginTitle": "Agregar un inicio de sesión secundario",
+        "secondaryWarning": "Facilite el acceso a su cuenta agregando un método de inicio de sesión secundario para MyConnect (por ejemplo, un número de teléfono si normalmente accede con su correo electrónico). Siempre podrá actualizar o modificar esta información en su perfil.",
+        "secondaryDismiss": "No mostrar este mensaje nuevamente",
+        "addSecondary": {
+            "title": "Agregar inicio de sesión secundario",
+            "innerText": "Agregar inicio de sesión secundario",
+        },
+        "closeButton": {
+            "title": "Cerrar",
+            "innerText": "Cerrar",
+        }
+        
     }
 }
 

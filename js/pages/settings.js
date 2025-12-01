@@ -317,7 +317,6 @@ export const renderSettingsPage = async () => {
         localStorage.removeItem('signInUpdate');
         formVisBools.isLoginFormDisplayed = toggleElementVisibility(loginElementArray, formVisBools.isLoginFormDisplayed);
         if (formVisBools.isLoginFormDisplayed) {
-          hideOptionalElementsOnShowForm([optRowEles.loginEmailRow, optRowEles.loginPhoneRow]);
           toggleActiveForm(FormTypes.LOGIN);
           openUpdateLoginForm({ currentTarget: document.getElementsByClassName('tablinks')[0] }, 'form1');
         }
@@ -1053,10 +1052,6 @@ const submitNewAltContactInformation = async () => {
 const loadSignInInformationElements = () => {
   loginElementArray.push(document.getElementById('currentSignInInformationDiv'));
   loginElementArray.push(document.getElementById('changeLoginGroup'));
-  optRowEles.loginEmailRow = document.getElementById('loginEmailRow');
-  optRowEles.loginPhoneRow = document.getElementById('loginPhoneRow');
-  showAndPushElementToArrayIfExists(optVars.loginEmail, optRowEles.loginEmailRow, !!optVars.loginEmail, loginElementArray);
-  showAndPushElementToArrayIfExists(optVars.loginPhone, optRowEles.loginPhoneRow, !!optVars.loginPhone, loginElementArray);
 };
 
 const handleEditSignInInformationSection = () => {
@@ -1197,28 +1192,24 @@ const submitNewLoginMethod = async (email, phone) => {
     const loginEmailRow = document.getElementById('loginEmailRow');
     const loginPhoneRow = document.getElementById('loginPhoneRow');
     
+    loginEmailRow.style.display = 'block';
+    profileEmailElement.style.display = 'block';
+    loginEmailDiv && (loginEmailDiv.style.display = 'block');
     if (optVars.loginEmail) {
-        loginEmailRow.style.display = 'block';
         profileEmailElement.innerHTML = optVars.loginEmail;
-        profileEmailElement.style.display = 'block';
         loginEmailField && (loginEmailField.innerHTML = optVars.loginEmail);
-        loginEmailDiv && (loginEmailDiv.style.display = 'block');
     } else {
-        loginEmailRow && (loginEmailRow.style.display = 'none');
-        loginEmailDiv && (loginEmailDiv.style.display = 'none');
-        profileEmailElement.style.display = 'none';
+        profileEmailElement.innerHTML = translateHTML('<span data-i18n="settings.noLoginEmail"></span>');
     }
 
+    loginPhoneRow.style.display = 'block';
+    profilePhoneElement.style.display = 'block';
+    loginPhoneDiv && (loginPhoneDiv.style.display = 'block');        
     if (optVars.loginPhone) {
-        loginPhoneRow.style.display = 'block';
         profilePhoneElement.innerHTML = `${optVars.loginPhone}`;
-        profilePhoneElement.style.display = 'block';
         loginPhoneField && (loginPhoneField.innerHTML = optVars.loginPhone);
-        loginPhoneDiv && (loginPhoneDiv.style.display = 'block');        
     } else {
-        loginPhoneRow && (loginPhoneRow.style.display = 'none');
-        loginPhoneDiv && (loginPhoneDiv.style.display = 'none');
-        profilePhoneElement.style.display = 'none';
+        profilePhoneElement.innerHTML = translateHTML('<span data-i18n="settings.noLoginPhone"></span>');
     }
 
     successMessageElement = document.getElementById('loginUpdateSuccess');
@@ -1399,22 +1390,22 @@ const updateUIAfterUnlink = async (isSuccess, type, error) => {
       optVars.loginEmail = userData[cId.firebaseAuthEmail] && !userData[cId.firebaseAuthEmail].startsWith('noreply') ? userData[cId.firebaseAuthEmail] : ''; 
       optVars.loginPhone = formatFirebaseAuthPhoneNumber(userData[cId.firebaseAuthPhone]);
 
+      document.getElementById('loginEmailRow').style.display = 'block';
+      const profileEmailElement = document.getElementById('profileEmail');
+      profileEmailElement.style.display = 'block';
       if (optVars.loginEmail && type !== 'email') {
-        document.getElementById('loginEmailRow').style.display = 'block';
-        const profileEmailElement = document.getElementById('profileEmail');
         profileEmailElement.textContent = optVars.loginEmail;
-        profileEmailElement.style.display = 'block';
       } else {
-        optRowEles.loginEmailRow.style.display = 'none';
+        profileEmailElement.innerHTML = translateHTML('<span data-i18n="settings.noEmailPhone"></span>');
       }
 
+      const profilePhoneElement = document.getElementById('profilePhone');
+      document.getElementById('loginPhoneRow').style.display = 'block';
+      profilePhoneElement.style.display = 'block';        
       if (optVars.loginPhone && type !== 'phone') {
-        document.getElementById('loginPhoneRow').style.display = 'block';
-        const profilePhoneElement = document.getElementById('profilePhone');
         profilePhoneElement.innerHTML = `${optVars.loginPhone}`;
-        profilePhoneElement.style.display = 'block';        
       } else {
-        optRowEles.loginPhoneRow.style.display = 'none';
+        profilePhoneElement.innerHTML = translateHTML('<span data-i18n="settings.noLoginPhone"></span>');
       }
   
       successMessageElement = document.getElementById('loginUpdateSuccess');
@@ -2530,19 +2521,20 @@ export const renderSignInInformationHeadingAndButton = () => {
 };
 
 export const renderSignInInformationData = () => {
-    const loginPhone = optVars.loginPhone ? formatFirebaseAuthPhoneNumber(optVars.loginPhone) : '';
+    const loginEmail = optVars.loginEmail ? optVars.loginEmail : '<span data-i18n="settings.noLoginEmail"></span>';
+    const loginPhone = optVars.loginPhone ? formatFirebaseAuthPhoneNumber(optVars.loginPhone) : '<span data-i18n="settings.noLoginPhone"></span>';
     return translateHTML(`
         <div class="row userProfileLinePaddings" id="currentSignInInformationDiv">
             <div class="col">
-                <span class="userProfileBodyFonts" id="loginEmailRow" style="display:none">
+                <span class="userProfileBodyFonts" id="loginEmailRow">
                     <span data-i18n="settings.signInEmail">Sign in Email Address</span>
                     <br>
                     <b>
-                    <div id="profileEmail">${optVars.loginEmail}</div>
+                    <div id="profileEmail">${loginEmail}</div>
                     </b>
                     </br>
                 </span>
-                <span class="userProfileBodyFonts" id="loginPhoneRow" style="display:none">
+                <span class="userProfileBodyFonts" id="loginPhoneRow">
                     <span data-i18n="settings.signInPhone">Sign in Phone Number</span>
                     <br>
                     <b>

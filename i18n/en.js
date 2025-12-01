@@ -271,6 +271,25 @@ const en = {
         "mailAddressCountryRequired": "Country <span class=\"required\">*</span>",
         "physicalAddress": "Physical Address (if different from Mailing Address)",
         "physicalAddressDesc": "Physical address is needed so Connect can mail you packages via FedEx for some study activities. FedEx does not deliver to P.O. Boxes.",
+        "physicalAddressLine1Field": {
+            "data-error-required": "Please enter the first line of your physical address.",
+            "placeholder": "Enter street, PO box, rural route"
+        },
+        "physicalAddressLine2Field": {
+            "placeholder": "Enter apartment, suite, unit, building"
+        },
+        "physicalAddressCityField": {
+            "data-error-required": "Please enter the city field of your physical address.",
+            "placeholder": "Enter City"
+        },
+        "physicalAddressStateField": {
+            "data-error-required": "Please select the state field of your physical address."
+        },
+        "physicalAddressZipField": {
+            "data-error-validation": "Please enter a 5 digit zip code in this format: 12345.",
+            "title": "5 characters long, numeric-only value.",
+            "data-error-required": "Please enter the zip field of your physical address."
+        },
         "otherContactInformation": "Other Contact Information",
         "otherContactIntroduction": "We would like to keep in touch with you during your time in the study. Please share more contact information to help us reach you in the future.",
         "altAddressQuestion": "Are there any other mailing addresses that you use?",
@@ -279,21 +298,6 @@ const en = {
         "altAddressLine1Field": {
             "data-error-required": "Please enter the first line of your mailing address.",
             "placeholder": "Enter street, PO box, rural route"
-        },
-        "altAddressLine2Field": {
-            "placeholder": "Enter apartment, suite, unit, building"
-        },
-        "altAddressCityField": {
-            "data-error-required": "Please enter the city field of your alternate address.",
-            "placeholder": "Enter City"
-        },
-        "altAddressStateField": {
-            "data-error-required": "Please select the state field of your alternate address."
-        },
-        "altAddressZipField": {
-            "data-error-validation": "Please enter a 5 digit zip code in this format: 12345.",
-            "title": "5 characters long, numeric-only value.",
-            "data-error-required": "Please enter the zip field of your alternate address."
         },
         "isPOBoxCheckboxAltAddress": "Please check if alternate address is a P.O. Box",
         "altContactHeader": "Alternate Contact",
@@ -1359,7 +1363,9 @@ const en = {
         "sureToRemoveEmail": "<strong><i>Important</i></strong>: Are you sure you want to remove this email sign in method?",
         "sureToRemovePhone": "<strong><i>Important</i></strong>: Are you sure you want to remove this phone sign in method?",
         "confirmText": "Confirm",
-        "cancelText": "Cancel"
+        "cancelText": "Cancel",
+        "noLoginEmail": "You don't currently have a email login. Would you like to add one? This will make it easy to access your account in the future.",
+        "noLoginPhone": "You don't currently have a phone login. Would you like to add one? This will make it easy to access your account in the future.",
     },
     "ssn": {
         "hardErrorNineFormat": "Please enter a valid Social Security Number in this format: 999-99-9999.",
@@ -2298,7 +2304,18 @@ const en = {
         "formTitle": "Forms",
         "formText": "Review and download copies of the forms you’ve completed, or sign new forms.",
         "paymentTitle": "Payment",
-        "paymentText": "Review information about payments for Connect participants."
+        "paymentText": "Review information about payments for Connect participants.",
+        "secondaryLoginTitle": "Add a secondary login",
+        "secondaryWarning": "Make it easy to access your account by adding a secondary login method for MyConnect (e.g., phone number if you usually log in with email). You can always update or change this information in your profile.",
+        "secondaryDismiss": "Don't show this message again",
+        "addSecondary": {
+            "title": "Add Secondary Login",
+            "innerText": "Add Secondary Login",
+        },
+        "closeButton": {
+            "title": "Close",
+            "innerText": "Close"
+        }
     }
 }
 

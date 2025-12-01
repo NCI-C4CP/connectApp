@@ -798,12 +798,13 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         const phoneNo3 = `${escapeHTML(document.getElementById('UPPhoneNumber31').value)}${escapeHTML(document.getElementById('UPPhoneNumber32').value)}${escapeHTML(document.getElementById('UPPhoneNumber33').value)}`;
         const altContactMobilePhone = `${escapeHTML(document.getElementById('altContactMobilePhone1').value)}${escapeHTML(document.getElementById('altContactMobilePhone2').value)}${escapeHTML(document.getElementById('altContactMobilePhone3').value)}`;
         const altContactHomePhone = `${escapeHTML(document.getElementById('altContactHomePhone1').value)}${escapeHTML(document.getElementById('altContactHomePhone2').value)}${escapeHTML(document.getElementById('altContactHomePhone3').value)}`;
-        const email = document.getElementById('UPEmail').value;
+        const email = document.getElementById('UPEmail').value?.trim();
         const email2 = document.getElementById('UPEmail2');
         const email3 = document.getElementById('UPAdditionalEmail2');
         const email4 = document.getElementById('UPAdditionalEmail3');
         const altContactEmail = document.getElementById('altContactEmail')?.value?.trim() || '';
         const zip = document.getElementById('UPAddress1Zip').value;
+        const physicalZip = document.getElementById('UPAddress2Zip').value || '';
         const altAddressZip = document.getElementById('UPAddress3Zip').value || '';
         
         if(!email){
@@ -937,6 +938,13 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             console.error('User Profile - Invalid Zip Code', 'UPAddress1Zip');
 
         }
+        if (physicalZip && !/[0-9]{5}/.test(physicalZip)) {
+            errorMessage('UPAddress2Zip', '<span data-i18n="event.zipOnlyNumbers">'+translateText('event.zipOnlyNumbers')+'</span>');
+            if(focus) document.getElementById('UPAddress2Zip').focus();
+            focus = false;
+            hasError = true;
+            console.error('User Profile - Invalid Zip Code', 'UPAddress2Zip');
+        }
         if (altAddressZip && !/[0-9]{5}/.test(altAddressZip)) {
             errorMessage('UPAddress3Zip', '<span data-i18n="event.zipOnlyNumbers">'+translateText('event.zipOnlyNumbers')+'</span>');
             if(focus) document.getElementById('UPAddress3Zip').focus();
@@ -950,17 +958,17 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             focus = false;
             hasError = true;
         }
-        if (email2 && email2.value && !validEmailFormat.test(email2.value)) {
+        if (email2 && email2.value && !validEmailFormat.test(email2.value.trim())) {
             errorMessage('UPEmail2', '<span data-i18n="event.emailFormat">'+translateText('event.emailFormat')+'</span>', focus);
             focus = false;
             hasError = true;
         }
-        if (email3 && email3.value && !validEmailFormat.test(email3.value)) {
+        if (email3 && email3.value && !validEmailFormat.test(email3.value.trim())) {
             errorMessage('UPAdditionalEmail2', '<span data-i18n="event.emailFormat">'+translateText('event.emailFormat')+'</span>', focus);
             focus = false;
             hasError = true;
         }
-        if (email4 && email4.value && !validEmailFormat.test(email4.value)) {
+        if (email4 && email4.value && !validEmailFormat.test(email4.value.trim())) {
             errorMessage('UPAdditionalEmail3', '<span data-i18n="event.emailFormat">'+translateText('event.emailFormat')+'</span>', focus);
             focus = false;
             hasError = true;
@@ -971,7 +979,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             hasError = true;
         }
 
-        const confirmedEmail = document.getElementById('confirmUPEmail').value;
+        const confirmedEmail = document.getElementById('confirmUPEmail').value?.trim();
         if (!confirmedEmail) {
             errorMessage('confirmUPEmail', '<span data-i18n="event.confirmEmail">'+translateText('event.confirmEmail')+'</span>', focus);
             focus = false;
@@ -979,7 +987,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             console.error('User Profile - Required Field Value', 'confirmUPEmail');
             
         }
-        else if (confirmedEmail !== document.getElementById('UPEmail').value) {
+        else if (confirmedEmail !== email) {
             errorMessage('confirmUPEmail', '<span data-i18n="event.emailsDoNotMatch">'+translateText('event.emailsDoNotMatch')+'</span>', focus);
             focus = false;
             hasError = true;
@@ -1088,12 +1096,68 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             const validateMailAddress = await validateAddress(focus, "UPAddress1Line1", "UPAddress1Line2", "UPAddress1City", "UPAddress1State", "UPAddress1Zip")
             uspsSuggestion.isMailAddressValid = !validateMailAddress.hasError
             uspsSuggestion.mailAddress = validateMailAddress.result
+        }
 
-            if (document.getElementById('UPAddress2Line1').value &&
-                document.getElementById('UPAddress2City').value &&
-                document.getElementById('UPAddress2State').value &&
-                document.getElementById('UPAddress2Zip').value) {
+        // If any physical address field has a value, validate the required fields
+        const physicalAddressFields = {
+            line1: document.getElementById('UPAddress2Line1')?.value?.trim() || '',
+            line2: document.getElementById('UPAddress2Line2')?.value?.trim() || '',
+            city: document.getElementById('UPAddress2City')?.value?.trim() || '',
+            state: document.getElementById('UPAddress2State')?.value || '',
+            zip: document.getElementById('UPAddress2Zip')?.value?.trim() || ''
+        };
 
+        const hasPhysicalAddressField = Object.values(physicalAddressFields).some(value => value !== '');
+
+        if (hasPhysicalAddressField) {
+            if (!physicalAddressFields.line1) {
+                errorMessage(
+                    'UPAddress2Line1',
+                    `<span data-i18n="form.physicalAddressLine1Field.data-error-required">${translateText('form.physicalAddressLine1Field.data-error-required')}</span>`,
+                    focus
+                );
+                focus = false;
+                hasError = true;
+                console.error('User Profile - Required Field Value', 'UPAddress2Line1');
+            }
+
+            if (!physicalAddressFields.city) {
+                errorMessage(
+                    'UPAddress2City',
+                    `<span data-i18n="form.physicalAddressCityField.data-error-required">${translateText('form.physicalAddressCityField.data-error-required')}</span>`,
+                    focus
+                );
+                focus = false;
+                hasError = true;
+                console.error('User Profile - Required Field Value', 'UPAddress2City');
+                console.error('User Profile - UPAddress2Line1', `|${physicalAddressFields.line1}|`);
+            }
+
+            if (!physicalAddressFields.state) {
+                errorMessage(
+                    'UPAddress2State',
+                    `<span data-i18n="form.physicalAddressStateField.data-error-required">${translateText('form.physicalAddressStateField.data-error-required')}</span>`,
+                    focus
+                );
+                focus = false;
+                hasError = true;
+                console.error('User Profile - Required Field Value', 'UPAddress2State');
+                console.error('User Profile - UPAddress2Line1', `|${physicalAddressFields.line1}|`);
+            }
+
+            if (!physicalAddressFields.zip) {
+                errorMessage(
+                    'UPAddress2Zip',
+                    `<span data-i18n="form.physicalAddressZipField.data-error-required">${translateText('form.physicalAddressZipField.data-error-required')}</span>`,
+                    focus
+                );
+                focus = false;
+                hasError = true;
+                console.error('User Profile - Required Field Value', 'UPAddress2Zip');
+                console.error('User Profile - UPAddress2Line1', `|${physicalAddressFields.line1}|`);
+            }
+
+            if (!hasError) {
                 const validatePhysicalAddress = await validateAddress(focus, "UPAddress2Line1", "UPAddress2Line2", "UPAddress2City", "UPAddress2State", "UPAddress2Zip")
                 uspsSuggestion.isPhysicalAddressValid = !validatePhysicalAddress.hasError
                 uspsSuggestion.physicalAddress = validatePhysicalAddress.result
@@ -1212,9 +1276,15 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
                 formerNameData;
 
         // User Profile Place of Birth
-        formData['876546260'] = document.getElementById('cityOfBirth').value;
-        formData['337485417'] = document.getElementById('stateOfBirth').value;
-        formData[fieldMapping.countryOfOrigin] = document.getElementById('countryOfOrigin').value ? fieldMapping.countries[document.getElementById('countryOfOrigin').value] : '';
+        if (document.getElementById('cityOfBirth').value) {
+            formData[fieldMapping.cityOfBirth] = escapeHTML(document.getElementById('cityOfBirth').value.trim());
+        }
+        if (document.getElementById('stateOfBirth').value) {
+            formData[fieldMapping.stateOfBirth] = escapeHTML(document.getElementById('stateOfBirth').value.trim());
+        }
+        if (document.getElementById('countryOfOrigin').value) {
+            formData[fieldMapping.countryOfOrigin] = fieldMapping.countries[document.getElementById('countryOfOrigin').value];
+        }
 
         const gender = document.getElementsByName('UPRadio');
         Array.from(gender).forEach(radioBtn => {
@@ -1877,11 +1947,11 @@ const verifyUserDetails = (formData) => {
         </div>
          <div class="row">
             <div class="col" data-i18n="form.cityOfBirth.title">City</div>
-            <div class="col">${formData['876546260']}</div>
+            <div class="col">${formData[fieldMapping.cityOfBirth] || ''}</div>
         </div>
          <div class="row">
             <div class="col" data-i18n="form.stateOfBirth.title">State</div>
-            <div class="col">${formData['337485417']}</div>
+            <div class="col">${formData[fieldMapping.stateOfBirth] || ''}</div>
         </div>
          <div class="row">
             <div class="col" data-i18n="form.countryOfOrigin.title">Country</div>
