@@ -876,7 +876,7 @@ const en = {
             "title": "Home Collection Kit Request",
             "confirmedBold": "Your mouthwash home collection request has been submitted!",
             "confirmedShippingTimeframe": "We will ship your kit soon, and you can expect it to arrive within one week.",
-            "eligibilityBlurb": "We sent you a message recently to let you know you can now request a home collection kit for Connect!",
+            "eligibilityBlurb": "We sent you a message recently to let you know you can now request a home collection kit for Connect.",
             "cannotShipKitHeader": "We can't ship your kit because of a problem with your address.",
             "willShipToThisAddress": "We will ship your kit to this address:",
             "cannotShipToPOBoxesFirstHalf": "We can't ship home collection kits to P.O. Boxes, and your current mailing address is a P.O. Box. Please ",
@@ -911,7 +911,10 @@ const en = {
             "addressUpdateSuccess": "You have successfully updated your physical address and selected this address to receive your kit.",
             "addressUpdateEditInfo": "Your new physical address can be found and edited on your <a href=\"#myprofile\">Profile</a> page.",
             "cancelText": "Cancel",
-            "mwKitShipTimeframe": "Please note: mouthwash kits ship and arrive in about one week.",
+            "mwKitShipTimeframe": "Mouthwash kits ship and arrive in about one week.",
+            "currentPhysicalAddress": "Current Physical Address",
+            "currentMailingAddress": "Current Mailing Address",
+            "newMailingAddress": "New Mailing Address"
 
         },
         "kitRequestHistory": {
