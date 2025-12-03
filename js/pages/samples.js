@@ -1326,21 +1326,15 @@ const sanford = {
         ],
         [
             '<span data-i18n="samples.sanford.locations.SiouxFallsName">Sioux Falls, SD: Edith Sanford Breast Center</span>',
-            '<span data-i18n="samples.sanford.locations.SiouxFallsAddress">1210 W. 18th St.<br>Sioux Falls, SD 57104<br><i>Enter through door BB</i></span>',
+            '<span data-i18n="samples.sanford.locations.SiouxFallsAddress">1210 W. 18th St.<br>Sioux Falls, SD 57104<br><i>Enter Through Door BB</i></span>',
             '',
             '<span data-i18n="samples.sanford.locations.SiouxFallsParking">Free valet parking is available near the front entrance of the Edith Sanford Breast Center. Free patient parking is also available in the lot on the corner of S Grange Ave and W 18th Street. Enter through door BB. No parking validation is needed.</span>'
         ],
         [
             '<span data-i18n="samples.sanford.locations.FargoName">Fargo, ND: Sanford Amber Valley</span>',
-            '<span data-i18n="samples.sanford.locations.FargoAddress">4840 23<sup>rd</sup> Ave S<br>Fargo, ND 58104<br><i>Enter through door 4840. Upon entering, follow the signs to “Sanford Research” on Floor 2.</i></span>',
+            '<span data-i18n="samples.sanford.locations.FargoAddress">4840 23<sup>rd</sup> Ave S<br>Fargo, ND 58104<br><i>Enter Through Door 4840. Upon entering, follow the signs to “Sanford Research” on Floor 2.</i></span>',
             '',
             '<span data-i18n="samples.sanford.locations.FargoParking">Free patient parking is available in the lot near door 4840. No parking validation needed.</span>',
-        ],
-        [
-            '<span data-i18n="samples.sanford.locations.BemidjiName">Bemidji, MN: 1705 Anne St clinic (Audiology)</span>',
-            '<span data-i18n="samples.sanford.locations.BemidjiAddress">1705 Anne St N.W.<br>Bemidji, MN 56601<br><i>Enter through door 1 of the Audiology building.</i></span>',
-            '',
-            '<span data-i18n="samples.sanford.locations.BemidjiParking">Free patient parking is available in front of the Audiology building. No parking validation is needed.</span>'
         ]
       ]
 };
