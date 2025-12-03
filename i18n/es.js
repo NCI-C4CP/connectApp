@@ -1364,8 +1364,8 @@
         "sureToRemovePhone": "<strong><i>Importante</i></strong>: ¿Está seguro de que desea eliminar este método de inicio de sesión con número de teléfono?",
         "confirmText": "Confirmar",
         "cancelText": "Cancelar",
-        "noLoginEmail": "Actualmente no tiene un inicio de sesión mediante según el campo que esté vacío. ¿Desea agregar uno? Esto facilitará el acceso a su cuenta en el futuro.",
-        "noLoginPhone": "Actualmente no tiene un inicio de sesión mediante teléfono o correo electrónico. ¿Desea agregar uno? Esto facilitará el acceso a su cuenta en el futuro.",
+        "noLoginEmail": "Actualmente no tiene un inicio de sesión mediante correo electrónico. ¿Desea agregar uno? Esto facilitará el acceso a su cuenta en el futuro.",
+        "noLoginPhone": "Actualmente no tiene un inicio de sesión mediante teléfono. ¿Desea agregar uno? Esto facilitará el acceso a su cuenta en el futuro.",
     },
     "ssn": {
         "hardErrorNineFormat": "Introduzca un número de Seguro Social válido en este formato: 999-99-9999",
