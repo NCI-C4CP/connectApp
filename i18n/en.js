@@ -883,7 +883,7 @@ const en = {
             "updateMailingAddressLink": "update your mailing address",
             "cannotShipToPOBoxesSecondHalf": " or click the button below to add a new physical address where we should ship your kit.",
             "updateMyPhysicalAddress": "Update my physical address.",
-            "updateMyMailingAddress": "Update my mailing address.",
+            "updateMyMailingAddress": "Update my mailing address",
             "cannotShipToPOBoxesNote": "Note: we can't ship kits to P.O. Boxes or international addresses.",
             "selectKitType": "Select your kit type:",
             "chooseKitGhostValue": "Choose the kit you are requesting",
