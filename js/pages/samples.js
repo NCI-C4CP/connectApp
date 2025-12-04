@@ -481,7 +481,7 @@ export const renderSamplesPage = async () => {
                                     // we have to specify UTC timezone for Date Received
                                     // otherwise, in the standard US timezones, it will display as the day before receipt
                                     return `
-                                        <div class="messagesSubHeader"><span data-i18n="samples.kitRequestHistory.kitTypeLabel">Type of Kit</span>: <span data-i18n="kitRequestHistory.${kitType}">${kitType}</span></div>
+                                        <div class="messagesSubHeader"><span data-i18n="samples.kitRequestHistory.kitTypeLabel">Type of Kit</span>: <span data-i18n="samples.kitRequestHistory.${kitType}">${kitType}</span></div>
                                         <br />
                                         <div><span data-i18n="samples.kitRequestHistory.dateKitRequestedLabel">Date Requested</span>: <span data-i18n="date" data-timestamp="${dateRequested}" data-date-options="${encodeURIComponent(JSON.stringify(dateOptions))}"></span></div>
                                         <div><span data-i18n="samples.kitRequestHistory.dateKitReceivedLabel">Date Received</span>: <span data-i18n="date" data-timestamp="${dateReceived}" data-date-options="${encodeURIComponent(JSON.stringify({...dateOptions, timeZone: "UTC"}))}"></span></div>
@@ -573,6 +573,7 @@ const getParticipantMailToAddress = (participant) => {
         address1, address2, city, state, zip, isPOBox, isIntlAddr, physicalAddrIntl, yes
     } = conceptId;
     let invalidAddress = false;
+    let isIntl = false;
     let addressType;
 
     const poBoxRegex = /^(?:P\.?\s*O\.?\s*(?:Box|B\.?)?|Post\s+Office\s+(?:Box|B\.?)?)\s*(\s*#?\s*\d*)((?:\s+(.+))?$)$/i;
@@ -595,6 +596,9 @@ const getParticipantMailToAddress = (participant) => {
         if (isPOBoxMatch) {
             invalidAddress = true;
         }
+        if (participant?.[isIntlAddr] === yes) {
+            isIntl = true;
+        }
         addressType = 'mailing';
         addressObj = {
             address_1: participant[address1],
@@ -611,6 +615,7 @@ const getParticipantMailToAddress = (participant) => {
 
     return {
         invalidAddress,
+        isIntl,
         kitMailToAddress,
         addressType,
         addressObj
@@ -672,9 +677,10 @@ const renderRequestAKitDisplay = (participant) => {
              <br />
             <div data-i18n="samples.requestAKit.kitDelayMissingQuestionsContactInfo">If you don't receive your kit within one week of the above ship date, or have any questions about the kit or home collection process, please reach out to the <a href=\"#support\">Connect Support Center</a> for help.</div>`)
     } else {
-        const {invalidAddress, kitMailToAddress, addressType} = getParticipantMailToAddress(participant);
+        const {invalidAddress, isIntl, kitMailToAddress, addressType} = getParticipantMailToAddress(participant);
 
         if (invalidAddress) {
+            const cannotShipFirstHalfText = isIntl ? "We can't ship home collection kits to P.O. Boxes or international addresses, and your current mailing address is an international address. Please " : "We can't ship home collection kits to P.O. Boxes or international addresses, and your current mailing address is a P.O. Box. Please ";
             requestAKitInner.innerHTML = translateHTML(`
                 <div class="fw-bold" data-i18n="samples.requestAKit.eligibilityBlurb">We sent you a message recently to let you know you can now request a home collection kit for Connect.</div>
                 <br />
@@ -682,7 +688,7 @@ const renderRequestAKitDisplay = (participant) => {
                 <div>${kitMailToAddress}</div>
                 <br />
                 <div class="callout callout-danger">
-                    <span data-i18n="samples.requestAKit.cannotShipToPOBoxesFirstHalf">We can't ship home collection kits to P.O. Boxes, and your current mailing address is a P.O. Box. Please </span><a href="#"id="updateMailingAddress"><span data-i18n="samples.requestAKit.updateMailingAddressLink">update your mailing address</span></a><span data-i18n="samples.requestAKit.cannotShipToPOBoxesSecondHalf"> or click the button below to add a new physical address where we should ship your kit.</span>
+                    <span data-i18n="samples.requestAKit.${isIntl ? 'cannotShipToIntlAddressesFirstHalf' : 'cannotShipToPOBoxesFirstHalf'}">${cannotShipFirstHalfText}</span><a href="#"id="updateMailingAddress"><span data-i18n="samples.requestAKit.updateMailingAddressLink">update your mailing address</span></a><span data-i18n="samples.requestAKit.cannotShipToPOBoxesSecondHalf"> or click the button below to add a new physical address where we should ship your kit.</span>
                 </div>
                 <div id="mailingAddressSuccess2"></div>
                 <div id="mailingAddressFail2"></div>
@@ -690,7 +696,7 @@ const renderRequestAKitDisplay = (participant) => {
                 ${addressType === 'physical' ? '' : `<br /><div><button type="button" class="btn btn-primary" id="addPhysicalAddress" data-i18n="samples.requestAKit.addPhysicalAddress" data-bs-toggle="modal" data-bs-target="#addPhysicalAddressInfo">Add Physical Address</button></div>`}
             `);
             const addPhysicalAddressInfoModal = document.getElementById('addPhysicalAddressInfo');
-            addPhysicalAddressInfoModal.outerHTML = renderAddPhysicalAddressInfo(true);
+            addPhysicalAddressInfoModal.outerHTML = renderAddPhysicalAddressInfo(true, isIntl);
         } else {
             requestAKitInner.innerHTML = translateHTML(`
                 <div class="fw-bold" data-i18n="samples.requestAKit.eligibilityBlurb">We sent you a message recently to let you know you can now request a home collection kit for Connect!</div>
@@ -763,7 +769,7 @@ const renderParticipantPhysicalAddress = (participant, displayCurrentPhysicalAdd
         return;
     }
 
-    let newInnerHTML = '<div class="messagesSubHeader" data-i18n="samples.requestAKit.addPhysicalAddress">New Physical Address</div>' + renderChangeMailingAddressGroup(2, true);
+    let newInnerHTML = '<div class="messagesSubHeader" data-i18n="samples.requestAKit.newPhysicalAddress">New Physical Address</div>' + renderChangeMailingAddressGroup(2, true);
 
     if(displayCurrentPhysicalAddress) {
         const {
@@ -1087,7 +1093,7 @@ const renderUpdateAddressSuccess = (addressType) => {
         </div>`);
 }
 
-const renderAddPhysicalAddressInfo = (displayPOBoxInfo) => {
+const renderAddPhysicalAddressInfo = (displayPOBoxInfo, displayIntlAddrInfo) => {
 
     return translateHTML(`
         <div class="modal fade" id="addPhysicalAddressInfo" tabindex="-1" aria-labelledby="addPhysicalAddressInfoLabel">
@@ -1096,7 +1102,9 @@ const renderAddPhysicalAddressInfo = (displayPOBoxInfo) => {
                     <div class="modal-header"></div>
                     <div class="modal-body">
                         <div><span data-i18n="samples.requestAKit.pleaseNote" class="fw-bold">Please note:</span> <span data-i18n="samples.requestAKit.addPhysicalAddressExplanation">adding a physical address means that your kit will arrive there.</span>
-                        ${displayPOBoxInfo ? `<span data-i18n="samples.requestAKit.editMailingToNonPOBox">If you want to edit your mailing address to a non-P.O. Box address, your kit will ship to your mailing address.</span>` : ''}
+                        ${displayIntlAddrInfo ? `<span data-i18n="samples.requestAKit.editMailingToNonIntlBox">If you want to edit your mailing address to a non-international address, your kit will ship to your mailing address.</span>` : 
+                            displayPOBoxInfo ? `<span data-i18n="samples.requestAKit.editMailingToNonPOBox">If you want to edit your mailing address to a non-P.O. Box address, your kit will ship to your mailing address.</span>` : ''
+                        }
                         </div>
                     </div>
                     <div class="modal-footer" style="justify-content: flex-start">

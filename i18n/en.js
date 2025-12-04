@@ -879,7 +879,8 @@ const en = {
             "eligibilityBlurb": "We sent you a message recently to let you know you can now request a home collection kit for Connect.",
             "cannotShipKitHeader": "We can't ship your kit because of a problem with your address.",
             "willShipToThisAddress": "We will ship your kit to this address:",
-            "cannotShipToPOBoxesFirstHalf": "We can't ship home collection kits to P.O. Boxes, and your current mailing address is a P.O. Box. Please ",
+            "cannotShipToPOBoxesFirstHalf": "We can't ship home collection kits to P.O. Boxes or international addresses, and your current mailing address is a P.O. Box. Please ",
+            "cannotShipToIntlAddressesFirstHalf": "We can't ship home collection kits to P.O. Boxes or international addresses, and your current mailing address is an international address. Please ",
             "updateMailingAddressLink": "update your mailing address",
             "cannotShipToPOBoxesSecondHalf": " or click the button below to add a new physical address where we should ship your kit.",
             "updateMyPhysicalAddress": "Update my physical address.",
@@ -899,6 +900,7 @@ const en = {
             "pleaseNote": "Please note:",
             "addPhysicalAddressExplanation": "adding a physical address means that your kit will arrive there.",
             "editMailingToNonPOBox": "If you want to edit your mailing address to a non-P.O. Box address, your kit will ship to your mailing address.",
+            "editMailingToNonIntlBox": "If you want to edit your mailing address to a non-international address, your kit will ship to your mailing address.",
             "doubleCheckAddress": "Please double check your address information. Contact the Connect Support Center if you need further help.",
             "continueButton": "Continue",
             "goBackButton": "Go Back",
@@ -914,7 +916,8 @@ const en = {
             "mwKitShipTimeframe": "Mouthwash kits ship and arrive in about one week.",
             "currentPhysicalAddress": "Current Physical Address",
             "currentMailingAddress": "Current Mailing Address",
-            "newMailingAddress": "New Mailing Address"
+            "newMailingAddress": "New Mailing Address",
+            "newPhysicalAddress": "New Physical Address"
 
         },
         "kitRequestHistory": {
