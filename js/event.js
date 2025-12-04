@@ -1276,13 +1276,13 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
                 formerNameData;
 
         // User Profile Place of Birth
-        if (document.getElementById('cityOfBirth').value) {
+        if (document.getElementById('cityOfBirth').value && document.getElementById('cityOfBirth').value.trim() !== '') {
             formData[fieldMapping.cityOfBirth] = escapeHTML(document.getElementById('cityOfBirth').value.trim());
         }
-        if (document.getElementById('stateOfBirth').value) {
+        if (document.getElementById('stateOfBirth').value && document.getElementById('stateOfBirth').value.trim() !== '') {
             formData[fieldMapping.stateOfBirth] = escapeHTML(document.getElementById('stateOfBirth').value.trim());
         }
-        if (document.getElementById('countryOfOrigin').value) {
+        if (document.getElementById('countryOfOrigin').value && document.getElementById('countryOfOrigin').value !== '') {
             formData[fieldMapping.countryOfOrigin] = fieldMapping.countries[document.getElementById('countryOfOrigin').value];
         }
 
