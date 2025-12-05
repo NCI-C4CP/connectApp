@@ -237,7 +237,7 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                     (data[fieldMapping.revokeHipaa] !== fieldMapping.yes  && data[fieldMapping.consentWithdrawn] !== fieldMapping.yes) && 
                     !isParticipantDataDestroyed(data) &&
                     !data['secondaryDismissed'] && 
-                    (!data[fieldMapping.firebaseAuthEmail] || (userData[cId.firebaseAuthEmail] && userData[cId.firebaseAuthEmail].startsWith('noreply')) || !data[fieldMapping.firebaseAuthPhone]))
+                    (!data[fieldMapping.firebaseAuthEmail] || (data[fieldMapping.firebaseAuthEmail] && data[fieldMapping.firebaseAuthEmail].startsWith('noreply')) || !data[fieldMapping.firebaseAuthPhone]))
                 {
                     showSecondaryLoginModal();
                 }
