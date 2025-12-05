@@ -1575,7 +1575,8 @@ const en = {
         "clearButtonText": "Clear",
         "confirmationHeader": "Confirmation",
         "confirmationText": "Are you sure you want to delete this address?",
-
+        "duplicateEmail": "This is the same email we have on record for you. If you meant to update your existing information, please scroll up on this page until you see your contact information, and enter your changes there.",
+        "duplicateAltEmail": "This is the same email we have on record for you. If you meant to update your existing information, please scroll up on this page until you see your contact information, and enter your changes there. If you'd like to share an email for someone else (an alternate contact), please enter their email here.",
     },
     "shared": {
         "signIn": "Sign In",
