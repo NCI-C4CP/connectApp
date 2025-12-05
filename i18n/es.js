@@ -904,7 +904,7 @@
             "pleaseNote": "Tenga en cuenta que,",
             "addPhysicalAddressExplanation": "si agrega un domicilio, su kit llegará a ese lugar.",
             "editMailingToNonPOBox": "Si quiere cambiar su dirección postal por una que no sea un apartado postal, le enviaremos su kit a su dirección postal.",
-            "editMailingToNonIntlBox": "Tenga en cuenta que, si agrega un domicilio, su kit llegará a ese lugar. Si quiere cambiar su dirección postal por una que no sea un dirección internacional, le enviaremos su kit a su dirección postal.",
+            "editMailingToNonIntlBox": "Si quiere cambiar su dirección postal por una que no sea un dirección internacional, le enviaremos su kit a su dirección postal.",
             "doubleCheckAddress": "Revise bien su dirección. Si necesita más ayuda, comuníquese con el Centro de Asistencia de Connect.",
             "continueButton": "Continuar",
             "goBackButton": "Volver",
