@@ -329,6 +329,25 @@ export const validateContactInformation = async (mobilePhoneNumberComplete, home
     hasError = true;
   }
 
+   //IF no other errors were found then check to see if the email address was reused
+  if (!hasError && additionalEmail1) {
+    if ((preferredEmail && additionalEmail1 === preferredEmail)) {
+        errorMessage('newadditionalEmail1', '<span data-i18n="settingsHelpers.duplicateEmail">'+translateText('settingsHelpers.duplicateEmail')+'</span>', focus);
+        focus = false;
+        hasError = true;
+      }
+  }
+
+   //IF no other errors were found then check to see if the email address was reused
+  if (!hasError && additionalEmail2) {
+    if ((preferredEmail && additionalEmail2 === preferredEmail) || 
+      (additionalEmail1 && additionalEmail2 === additionalEmail1)) {
+        errorMessage('newadditionalEmail2', '<span data-i18n="settingsHelpers.duplicateEmail">'+translateText('settingsHelpers.duplicateEmail')+'</span>', focus);
+        focus = false;
+        hasError = true;
+      }
+  }
+
   if (!hasError) {
     const emailValidation = await emailAddressValidation({
       emails: {
@@ -728,7 +747,7 @@ export const showMailAddressSuggestionMyProfile = (uspsSuggestion, i18nTranslati
   }, 100);
 };
 
-export const validateAltContactInformation = async (altContactMobilePhoneComplete, altContactHomePhoneComplete, altContactEmail) => {
+export const validateAltContactInformation = async (altContactMobilePhoneComplete, altContactHomePhoneComplete, altContactEmail, userData) => {
   removeAllErrors();
   let hasError = false;
   let focus = true;
@@ -751,6 +770,17 @@ export const validateAltContactInformation = async (altContactMobilePhoneComplet
     errorMessage('newAltContactEmail', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
     focus = false;
     hasError = true;
+  }
+
+  //IF no other errors were found then check to see if the email address was reused
+  if (!hasError && userData) {
+    if ((userData[cId.prefEmail] && altContactEmail === userData[cId.prefEmail]) ||
+      (userData[cId.additionalEmail1] && altContactEmail === userData[cId.additionalEmail1]) ||
+      (userData[cId.additionalEmail2] && altContactEmail === userData[cId.additionalEmail2])) {
+        errorMessage('newAltContactEmail', '<span data-i18n="settingsHelpers.duplicateAltEmail">'+translateText('settingsHelpers.duplicateAltEmail')+'</span>', focus);
+        focus = false;
+        hasError = true;
+      }
   }
 
   if (!hasError) {

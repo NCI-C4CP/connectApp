@@ -1578,6 +1578,8 @@
         "clearButtonText": "Eliminar",
          "confirmationHeader": "Confirmación",
          "confirmationText": "¿Está seguro de que desea eliminar esta dirección?",
+         "duplicateEmail": "Este es el mismo correo electrónico que tenemos registrado para usted. Si deseaba actualizar su información existente, por favor desplácese hacia arriba en esta página hasta encontrar su información de contacto e ingrese allí los cambios.",
+         "duplicateAltEmail": "Este es el mismo correo electrónico que tenemos registrado para usted. Si deseaba actualizar su información existente, por favor desplácese hacia arriba en esta página hasta encontrar su información de contacto e ingrese allí los cambios. Si desea proporcionar el correo electrónico de otra persona (un contacto alternativo), ingréselo aquí.",
     },
     "shared": {
         "signIn": "Iniciar sesión",

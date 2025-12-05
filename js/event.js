@@ -962,9 +962,20 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             errorMessage('UPEmail2', '<span data-i18n="event.emailFormat">'+translateText('event.emailFormat')+'</span>', focus);
             focus = false;
             hasError = true;
+        } else if (email2 && email2.value &&
+            (email && (email.toLowerCase().trim() === email2.value.toLowerCase().trim()))) {
+            errorMessage('UPEmail2', '<span data-i18n="settingsHelpers.duplicateEmail">'+translateText('settingsHelpers.duplicateEmail')+'</span>', focus);
+            focus = false;
+            hasError = true;
         }
         if (email3 && email3.value && !validEmailFormat.test(email3.value.trim())) {
             errorMessage('UPAdditionalEmail2', '<span data-i18n="event.emailFormat">'+translateText('event.emailFormat')+'</span>', focus);
+            focus = false;
+            hasError = true;
+        }  else if (email3 && email3.value &&
+            ((email && (email.toLowerCase().trim() === email3.value.toLowerCase().trim())) ||
+            (email2 && email2.value && (email2.value.toLowerCase().trim() === email3.value.toLowerCase().trim())))) {
+            errorMessage('UPAdditionalEmail2', '<span data-i18n="settingsHelpers.duplicateEmail">'+translateText('settingsHelpers.duplicateEmail')+'</span>', focus);
             focus = false;
             hasError = true;
         }
@@ -972,9 +983,25 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             errorMessage('UPAdditionalEmail3', '<span data-i18n="event.emailFormat">'+translateText('event.emailFormat')+'</span>', focus);
             focus = false;
             hasError = true;
+        } else if (email4 && email4.value &&
+            ((email && (email.toLowerCase().trim() === email4.value.toLowerCase().trim())) ||
+            (email2 && email2.value && (email2.value.toLowerCase().trim() === email4.value.toLowerCase().trim())) || 
+            (email3 && email3.value && (email3.value.toLowerCase().trim() === email4.value.toLowerCase().trim())))) {
+            errorMessage('UPAdditionalEmail3', '<span data-i18n="settingsHelpers.duplicateEmail">'+translateText('settingsHelpers.duplicateEmail')+'</span>', focus);
+            focus = false;
+            hasError = true;
         }
+
         if (altContactEmail && !validEmailFormat.test(altContactEmail)) {
             errorMessage('altContactEmail', '<span data-i18n="event.emailFormat">'+translateText('event.emailFormat')+'</span>', focus);
+            focus = false;
+            hasError = true;
+        } else if (altContactEmail && (
+            (email && (email.toLowerCase().trim() === altContactEmail.toLowerCase())) ||
+            (email2 && email2.value && (email2.value.toLowerCase().trim() === altContactEmail.toLowerCase())) ||
+            (email3 && email3.value && (email3.value.toLowerCase().trim() === altContactEmail.toLowerCase())) ||
+            (email4 && email4.value && (email4.value.toLowerCase().trim() === altContactEmail.toLowerCase())))) {
+            errorMessage('altContactEmail', '<span data-i18n="settingsHelpers.duplicateAltEmail">'+translateText('settingsHelpers.duplicateAltEmail')+'</span>', focus);
             focus = false;
             hasError = true;
         }

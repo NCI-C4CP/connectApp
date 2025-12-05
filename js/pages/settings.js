@@ -520,7 +520,7 @@ const handleEditContactInformationSection = () => {
         optVars.additionalEmail1 = document.getElementById('newadditionalEmail1').value.toLowerCase().trim();
         optVars.additionalEmail2 = document.getElementById('newadditionalEmail2').value.toLowerCase().trim();
         
-          const { hasError, riskyEmails } = await validateContactInformation(optVars.mobilePhoneNumberComplete, optVars.homePhoneNumberComplete, preferredEmail, optVars.otherPhoneNumberComplete, optVars.additionalEmail1, optVars.additionalEmail2);
+          const { hasError, riskyEmails } = await validateContactInformation(optVars.mobilePhoneNumberComplete, optVars.homePhoneNumberComplete, preferredEmail, optVars.otherPhoneNumberComplete, optVars.additionalEmail1, optVars.additionalEmail2, userData);
           if (!hasError) {
               const submit = () => {
                   formVisBools.isContactInformationFormDisplayed = toggleElementVisibility(contactInformationElementArray, formVisBools.isContactInformationFormDisplayed);
@@ -1008,7 +1008,8 @@ const handleEditAltContactSection = () => {
             const { hasError, riskyEmails } = await validateAltContactInformation(
                 optVars.altContactMobilePhoneNumberComplete,
                 optVars.altContactHomePhoneNumberComplete,
-                optVars.altContactEmail
+                optVars.altContactEmail,
+                userData
             );
             if (!hasError) {
                 const submit = () => {
