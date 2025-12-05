@@ -1364,7 +1364,7 @@ const en = {
         "sureToRemovePhone": "<strong><i>Important</i></strong>: Are you sure you want to remove this phone sign in method?",
         "confirmText": "Confirm",
         "cancelText": "Cancel",
-        "noLoginEmail": "You don't currently have a email login. Would you like to add one? This will make it easy to access your account in the future.",
+        "noLoginEmail": "You don't currently have an email login. Would you like to add one? This will make it easy to access your account in the future.",
         "noLoginPhone": "You don't currently have a phone login. Would you like to add one? This will make it easy to access your account in the future.",
     },
     "ssn": {
