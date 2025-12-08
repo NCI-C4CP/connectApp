@@ -47,24 +47,33 @@ export default
     // Mailing Address
     "address1": 521824358,
     "address2": 442166669,
+    "address3": 512754567,
     "city": 703385619,
     "state": 634434746,
+    "country": 639871686,
     "zip": 892050548,
     "isPOBox": 250235523,
+    "isIntlAddr": 856368376,
     // Physical Address
     "physicalAddress1": 207908218,
     "physicalAddress2": 224392018,
+    "physicalAddress3": 987244039,
     "physicalCity": 451993790,
     "physicalState": 187799450,
     "physicalZip": 449168732,
+    "physicalCountry": 782945615,
+    "physicalAddrIntl": 805662986,
     // Alternate Address
     "doesAltAddressExist": 646504105,
     "altAddress1": 284580415,
     "altAddress2": 728926441,
+    "altAddress3": 161642261,
     "altCity": 907038282,
     "altState": 970839481,
+    "altCountry": 934567929,
     "altZip": 379899229,
     "isPOBoxAltAddress": 810747471,
+    "isIntlAltAddress": 306739670,
     // Alternate contact
     "altContactFirstName": 661719912,
     "altContactLastName": 801653230,
@@ -403,6 +412,7 @@ export default
     bioKitMouthwashBL1: 541483796,
     bioKitMouthwashBL2: 641006239,
     kitReceivedTime: 826941471,
+    uniqueKitID: 687158491,
     kitType: 379252329,
     kitTypeValues: {
         mouthwash: 390351864,
@@ -411,11 +421,16 @@ export default
     kitStatus: 221592017,
     kitStatusValues: {
         pending: 517216441,
+        initialized: 728267588,
         addressPrinted: 849527480,
         assigned: 241974920,
         shipped: 277438316,
         received: 375535639
     },
+    dateKitRequested: 759651991,
+    shippedDateTime: 661940160,
+    receivedDateTime: 826941471,
+    kitRequestEligible: 638781731,
 
     // Healthcare providers
 
@@ -457,6 +472,8 @@ export default
         viewed: 469323437,
         declined: 746038746,
     },
+    "cityOfBirth": 876546260,
+    "stateOfBirth": 337485417,
     "countryOfOrigin": 837244890,
     "countries": {
         "usa": 333208328,

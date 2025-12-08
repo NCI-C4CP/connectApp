@@ -394,6 +394,41 @@ export const getMyData = async () => {
     }
 };
 
+export const getKitTrackingNumber = async (uniqueKitID) => {
+    try {
+        const idToken = await getIdToken();
+        const response = await fetch(`${api}?api=getKitTrackingNumber&uniqueKitID=${uniqueKitID}`, {
+            headers: {
+                Authorization: "Bearer " + idToken,
+            },
+        });
+
+        return await response.json();
+    } catch (err) {
+        logDDRumError(err, "getMyDataError", {
+            userAction: "Get participant data",
+            timestamp: new Date().toISOString(),
+        });
+
+        return { code: 500, data: null, message: "Error occurred when calling getMyData()" };
+    }
+}
+
+/**
+ * Determines the type of shipping used for a package and returns the information.
+ * 
+ * @param {*} trackingNum 
+ * @returns 
+ */
+export const getTrackingNumberSource = (trackingNum = '') => {
+    if (`${trackingNum}`.length === 22 || `${trackingNum}`.length === 20) {
+        return 'USPS';
+    } else if (`${trackingNum}`.length === 12 || `${trackingNum}`.length === 34) {
+        return 'FedEx';
+    }
+    return '';
+}
+
 export const retrievePhysicalActivityReport = async () => {
 
     const idToken = await getIdToken();
@@ -3071,6 +3106,21 @@ export const addressValidation = async (data) => {
     return jsonResponse;
 }
 
+export const requestHomeKit = async (participant) => {
+    const idToken = await getIdToken();
+
+    const res = await fetch(`${api}?api=requestHomeKit`, {
+            method: 'POST',
+            headers:{
+                Authorization: "Bearer " + idToken,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({connectId: participant.Connect_ID})
+        });
+    const resJSON = await res.json();
+    return resJSON;
+}
+
 /**
  * Create a new Date object with adjusted time
  * @param {number | string | Date} inputTime - Input time to adjust
@@ -3524,4 +3574,13 @@ export const checkIfComplete = (data) => {
     let module4Complete = data[fieldMapping.Module4.statusFlag] === fieldMapping.moduleStatus.submitted;
 
     return module1Complete && module2Complete && module3Complete && module4Complete;
+};
+
+/**
+ * Merges and deduplicates an arbitrary number of arrays
+ * @param {...Array} arrays - Arrays to merge and deduplicate
+ * @returns {Array} - The merged and deduplicated array
+ */
+export const mergeAndDeduplicateArrays = (...arrays) => {
+    return [...new Set(arrays.flat())];
 };
