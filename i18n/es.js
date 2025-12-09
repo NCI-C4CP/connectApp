@@ -1298,7 +1298,7 @@
         "zipTitle": "5 caracteres de longitud, solo valor numérico.",
         "zipRequired": "Ingrese el campo de código postal de su dirección postal.",
         "submitMailUpdate": "Enviar modificación de dirección postal",
-        "submitPhysicalUpdate": "Enviar modificación de dirección postal",
+        "submitPhysicalUpdate": "Enviar modificación de dirección física",
         "submitAltUpdate": "Enviar modificación de dirección postal alternativa",
         "successMailUpdate": "Se completó el cambio de dirección postal",
         "failMailUpdate": "¡Error al cambiar la dirección postal!",
