@@ -271,6 +271,25 @@
         "mailAddressCountryRequired": "País <span class=\"required\">*</span>",
         "physicalAddress": "Dirección física (si es diferente de la dirección postal) ",
         "physicalAddressDesc": "Se necesita una dirección física para que Connect pueda enviarle paquetes por FedEx para algunas actividades del estudio. FedEx no hace envíos a apartados postales. ",
+        "physicalAddressLine1Field": {
+            "data-error-required": "Ingrese la primera línea de su dirección física.",
+            "placeholder": "Ingrese la calle, el apartado postal, la ruta rural"
+        },
+        "physicalAddressLine2Field": {
+            "placeholder": "Ingrese el apartamento, la suite, la unidad, el edificio"
+        },
+        "physicalAddressCityField": {
+            "data-error-required": "Ingrese el campo de ciudad de su dirección física.",
+            "placeholder": "Ingrese la ciudad"
+        },
+        "physicalAddressStateField": {
+            "data-error-required": "Seleccione el campo de estado de su dirección física."
+        },
+        "physicalAddressZipField": {
+            "data-error-validation": "Ingrese un código postal de 5 dígitos con este formato: 12345.",
+            "title": "5 caracteres de longitud, solo valor numérico.",
+            "data-error-required": "Ingrese el campo de código postal de su dirección física."
+        },
         "otherContactInformation": "Otra información de contacto",
         "otherContactIntroduction": "Queremos mantenernos en contacto con usted durante el tiempo que participe en el estudio. Por favor, bríndenos más información de contacto que nos ayude a comunicarnos con usted en el futuro.",
         "altAddressQuestion": "¿Hay alguna otra dirección de correo que utilice?",
@@ -279,21 +298,6 @@
         "altAddressLine1Field": {
             "data-error-required": "Ingrese la primera línea de su dirección alternativa.",
             "placeholder": "Ingrese la calle, el apartado postal, la ruta rural"
-        },
-        "altAddressLine2Field": {
-            "placeholder": "Ingrese el apartamento, la suite, la unidad, el edificio"
-        },
-        "altAddressCityField": {
-            "data-error-required": "Ingrese el campo de ciudad de su dirección alternativa.",
-            "placeholder": "Ingrese la ciudad"
-        },
-        "altAddressStateField": {
-            "data-error-required": "Seleccione el campo de estado de su dirección alternativa."
-        },
-        "altAddressZipField": {
-            "data-error-validation": "Ingrese un código postal de 5 dígitos con este formato: 12345.",
-            "title": "5 caracteres de longitud, solo valor numérico.",
-            "data-error-required": "Ingrese el campo de código postal de su dirección alternativa."
         },
         "isPOBoxCheckboxAltAddress": "Revise si la dirección postal es un apartado postal",
         "altContactHeader": "Contacto alternativo",
@@ -872,7 +876,60 @@
             "innerHTML": "ConnectAyuda@norc.org",
             "href": "mailto:ConnectAyuda@norc.org"
         },
-        "requestAKit": "Solicitud de kit de recolección en el hogar",
+        "requestAKit": {
+            "title": "Solicitud de kit de recolección en el hogar",
+            "confirmedBold": "¡Ha enviado su solicitud de kit de recolección de enjuague bucal en el hogar!",
+            "confirmedShippingTimeframe": "Pronto le enviaremos su kit, que debería llegar alrededor de una semana después.",
+            "eligibilityBlurb": "Hace poco le enviamos un mensaje para comunicarle que ahora puede solicitar un kit de recolección en el hogar para Connect.",
+            "cannotShipKitHeader": "No podemos enviarle su kit porque hay un problema con su dirección.",
+            "willShipToThisAddress": "Le enviaremos su kit a esta dirección:",
+            "cannotShipToPOBoxesFirstHalf": "No podemos enviar kits de recolección en el hogar a apartados postales ni direcciones internacionales, y su dirección postal actual es un apartado postal. ",
+            "cannotShipToIntlAddressesFirstHalf": "No podemos enviar kits de recolección en el hogar a apartados postales ni direcciones internacionales, y su dirección postal actual es un dirección internacional. ",
+            "updateMailingAddressLink": "Ponga al día su dirección postal",
+            "cannotShipToPOBoxesSecondHalf": " o haga clic en el botón de abajo para agregar un nuevo domicilio al cual podamos enviarle su kit.",
+            "updateMyPhysicalAddress": "Cambiar mi domicilio",
+            "updateMyMailingAddress": "Cambiar mi dirección postal",
+            "cannotShipToPOBoxesNote": "Nota: No podemos enviar kits a apartados postales o direcciones internacionales.",
+            "selectKitType": "Elija su tipo de kit:",
+            "chooseKitGhostValue": "Elija el kit que solicita",
+            "mouthwashOption": "Enjuague bucal",
+            "submitRequestText": "Enviar solicitud",
+            "addPhysicalAddress": "Agregar domicilio",
+            "addPhysicalAddressLowercase": "Agregar domicilio",
+            "modalClose": {
+                "aria-label": "Cerrar"
+            },
+            "confirmAddressPlaceholder": "",
+            "somethingWentWrong": "Tenemos una problema con su solicitud. Por favor comuníquese con myconnect.cancer.gov/supportel Centro de Assistencia de Connect</a> para ayuda.",
+            "pleaseNote": "Tenga en cuenta que,",
+            "addPhysicalAddressExplanation": "si agrega un domicilio, su kit llegará a ese lugar.",
+            "editMailingToNonPOBox": "Si quiere cambiar su dirección postal por una que no sea un apartado postal, le enviaremos su kit a su dirección postal.",
+            "editMailingToNonIntlBox": "Si quiere cambiar su dirección postal por una que no sea un dirección internacional, le enviaremos su kit a su dirección postal.",
+            "doubleCheckAddress": "Revise bien su dirección. Si necesita más ayuda, comuníquese con el Centro de Asistencia de Connect.",
+            "continueButton": "Continuar",
+            "goBackButton": "Volver",
+            "mouthwashKitShippedOn": "Su kit de enjuague bucal se envió el ",
+            "mouthwashShouldArriveBy": ". Debería llegar el ",
+            "mouthwashArrivalPostfix": " o antes.",
+            "weShippedYourKitThrough": "Hemos enviado su kit por ",
+            "kitTrackingInfo": "Puede hacer un seguimiento del envío con el número ",
+            "kitDelayMissingQuestionsContactInfo": "Si no recibe su kit dentro de la semana siguiente a la fecha de envío indicada más arriba, o tiene alguna pregunta sobre el kit o el proceso de recolección en el hogar, comuníquese con <a href=\"#support\">el Centro de Asistencia de Connect</a> para solicitar ayuda.",
+            "addressUpdateSuccess": "Ha modificado su domicilio y ha seleccionado esta dirección para recibir su kit.",
+            "addressUpdateEditInfo": "Puede encontrar y editar su nuevo domicilio en <a href=\"#myprofile\">la página de su Perfil</a>.",
+            "cancelText": "Cancelar",
+            "mwKitShipTimeframe": "Los kits de enjuague bucal llegan alrededor de una semana después del envío.",
+            "currentPhysicalAddress": "Domicilio actual",
+            "currentMailingAddress": "Dirección postal actual",
+            "newMailingAddress": "Dirección postal nuevo",
+            "newPhysicalAddress": "Nuevo domicilio"
+        },
+        "kitRequestHistory": {
+            "title": "Historial de solicitudes de kit de recolección en el hogar",
+            "kitTypeLabel": "Tipo de kit",
+            "Mouthwash": "Enjuague bucal",
+            "dateKitRequestedLabel": "Fecha de solicitud",
+            "dateKitReceivedLabel": "Fecha de recepción"
+        },
         "sampleInventory": "Inventario de muestra",
         "blood": "Sangre",
         "urine": "Orina",
@@ -1217,6 +1274,7 @@
             "placeholder": "Ingrese el apartamento, la suite, la unidad, el edificio"
         },
         "mailAddressLine2Placeholder": "Ingrese el apartamento, la suite, la unidad, el edificio",
+        "mailAddressLine3": "Línea 3",
         "city": "Ciudad <span class=\"required\">*</span>",
         "cityField": {
             "data-error-required": "Ingrese el campo de ciudad de su dirección postal.",
@@ -1228,6 +1286,9 @@
         "stateValidator": "Seleccione el campo de estado de su dirección postal.",
         "selectText": "-- Seleccione --",
         "zip": "Código postal <span class=\"required\">*</span>",
+        "region": "Región",
+        "postalCode": "Código postal",
+        "country": "País <span class=\"required\">*</span>",
         "zipField": {
             "title": "5 caracteres de longitud, solo valor numérico.",
             "data-error-validation": "Ingrese un código postal de 5 dígitos con este formato: 12345.",
@@ -1237,7 +1298,7 @@
         "zipTitle": "5 caracteres de longitud, solo valor numérico.",
         "zipRequired": "Ingrese el campo de código postal de su dirección postal.",
         "submitMailUpdate": "Enviar modificación de dirección postal",
-        "submitPhysicalUpdate": "Enviar modificación de dirección postal",
+        "submitPhysicalUpdate": "Enviar modificación de dirección física",
         "submitAltUpdate": "Enviar modificación de dirección postal alternativa",
         "successMailUpdate": "Se completó el cambio de dirección postal",
         "failMailUpdate": "¡Error al cambiar la dirección postal!",
@@ -1305,7 +1366,9 @@
         "sureToRemoveEmail": "<strong><i>Importante</i></strong>: ¿Está seguro de que desea eliminar este método de inicio de sesión con correo electrónico?",
         "sureToRemovePhone": "<strong><i>Importante</i></strong>: ¿Está seguro de que desea eliminar este método de inicio de sesión con número de teléfono?",
         "confirmText": "Confirmar",
-        "cancelText": "Cancelar"
+        "cancelText": "Cancelar",
+        "noLoginEmail": "Actualmente no tiene un inicio de sesión mediante correo electrónico. ¿Desea agregar uno? Esto facilitará el acceso a su cuenta en el futuro.",
+        "noLoginPhone": "Actualmente no tiene un inicio de sesión mediante teléfono. ¿Desea agregar uno? Esto facilitará el acceso a su cuenta en el futuro.",
     },
     "ssn": {
         "hardErrorNineFormat": "Introduzca un número de Seguro Social válido en este formato: 999-99-9999",
@@ -1505,6 +1568,7 @@
         "cityNotEmpty": "El campo “Ciudad” no puede quedar vacío. Seleccione una ciudad.",
         "stateNotEmpty": "El campo “Estado” no puede quedar vacío. Seleccione un estado.",
         "zipNotEmpty": "El campo “Código postal” no puede quedar en blanco. Solo puede contener números.",
+        "countryNotEmpty": "El campo “País” no puede quedar vacío. Seleccione una país.",
         "errorEmailFormat": "Error: El formato de la dirección de correo electrónico no es válido. Ingrese una dirección de correo electrónico con este formato: nombre@ejemplo.com.",
         "errorEmailsDoNotMatch": "Error: Las direcciones de correo electrónico no coinciden. Verifique que las direcciones de correo electrónico coincidan y, a continuación, vuelva a enviar el formulario.",
         "errorPhoneFormat": "Error: El formato del número de teléfono no es válido. Ingrese un número de teléfono con este formato: 999-999-9999",
@@ -1514,6 +1578,8 @@
         "clearButtonText": "Eliminar",
          "confirmationHeader": "Confirmación",
          "confirmationText": "¿Está seguro de que desea eliminar esta dirección?",
+         "duplicateEmail": "Este es el mismo correo electrónico que tenemos registrado para usted. Si deseaba actualizar su información existente, por favor desplácese hacia arriba en esta página hasta encontrar su información de contacto e ingrese allí los cambios.",
+         "duplicateAltEmail": "Este es el mismo correo electrónico que tenemos registrado para usted. Si deseaba actualizar su información existente, por favor desplácese hacia arriba en esta página hasta encontrar su información de contacto e ingrese allí los cambios. Si desea proporcionar el correo electrónico de otra persona (un contacto alternativo), ingréselo aquí.",
     },
     "shared": {
         "signIn": "Iniciar sesión",
@@ -2242,7 +2308,19 @@
         "formTitle": "Formularios",
         "formText": "Revise y descargue copias de los formularios que ha completado, o firme nuevos formularios.",
         "paymentTitle": "Pago",
-        "paymentText": "Revise la información sobre los pagos para los participantes de Connect."
+        "paymentText": "Revise la información sobre los pagos para los participantes de Connect.",
+        "secondaryLoginTitle": "Agregar un inicio de sesión secundario",
+        "secondaryWarning": "Facilite el acceso a su cuenta agregando un método de inicio de sesión secundario para MyConnect (por ejemplo, un número de teléfono si normalmente accede con su correo electrónico). Siempre podrá actualizar o modificar esta información en su perfil.",
+        "secondaryDismiss": "No mostrar este mensaje nuevamente",
+        "addSecondary": {
+            "title": "Agregar inicio de sesión secundario",
+            "innerText": "Agregar inicio de sesión secundario",
+        },
+        "closeButton": {
+            "title": "Cerrar",
+            "innerText": "Cerrar",
+        }
+        
     }
 }
 

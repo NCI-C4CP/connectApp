@@ -231,6 +231,17 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                     `
                 }
 
+                //Check for secondary Login options
+                if (data[fieldMapping.verification] === fieldMapping.verified &&
+                    sessionStorage.getItem('secondaryModalShown') !== "yes" &&
+                    (data[fieldMapping.revokeHipaa] !== fieldMapping.yes  && data[fieldMapping.consentWithdrawn] !== fieldMapping.yes) && 
+                    !isParticipantDataDestroyed(data) &&
+                    !data['secondaryDismissed'] && 
+                    (!data[fieldMapping.firebaseAuthEmail] || (data[fieldMapping.firebaseAuthEmail] && data[fieldMapping.firebaseAuthEmail].startsWith('noreply')) || !data[fieldMapping.firebaseAuthPhone]))
+                {
+                    showSecondaryLoginModal();
+                }
+
                 template += await renderMainBody(data, collections, 'todo');
                 template += `
                     </div>
@@ -302,6 +313,83 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
         }
         hideAnimation();
     }
+}
+
+const showSecondaryLoginModal = (data) => {
+    const modalElement = document.getElementById('connectMainModal');
+    if (!modalElement) return;
+    
+    let modal;
+
+    const hideModal = () => {
+        if (modal) {
+            modalElement.inert = true;
+            modal.hide();
+        }
+    }
+
+    const showModal = () => {
+        if (modal) {
+            modalElement.inert = false;
+            modal.show();
+        }
+    }
+    
+    const attachModalEventListeners = (modalElement) => {
+        const dismissalCheckbox = document.getElementById('dismissSecondaryLoginReminder');
+        if (dismissalCheckbox) {
+            dismissalCheckbox.addEventListener('change', async (event) => {
+                let formData = {};
+                if (event.target.checked) {
+                    formData['secondaryDismissed'] = true;
+                    await storeResponse(formData);
+                } else {
+                    formData['secondaryDismissed'] = null;
+                    await storeResponse(formData);
+                }
+            });
+        }
+
+        //Go to profile button
+        const continueButton = document.getElementById('secondaryLoginContinue');
+        if (continueButton) {
+            continueButton.addEventListener('click', () => {
+                hideModal();
+                window.location.href = "#myprofile";
+            });
+        }
+
+        // Return focus to the navbar when the modal is hidden
+        modalElement.addEventListener('hidden.bs.modal', (event) => {
+            sessionStorage.setItem('secondaryModalShown', "yes"); 
+            if (event.target === modalElement) {
+                const navbar = document.querySelector('.navbar');
+                if (navbar) {
+                    navbar.focus();
+                }
+            }
+        });
+    };
+    
+    modal = new bootstrap.Modal(modalElement);
+    showModal();
+
+    const header = document.getElementById('connectModalHeader');
+    const body = document.getElementById('connectModalBody');
+    const footer = document.getElementById('connectModalFooter');
+
+    if (header && body && footer) {
+        header.innerHTML = translateHTML(`<h5 class="modal-title" data-i18n="dashboard.secondaryLoginTitle"></h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>`);
+        body.innerHTML = translateHTML(`<span data-i18n="dashboard.secondaryWarning"></span><br><br><div class="d-flex justify-content-center"><input type="checkbox" class="m-1" id="dismissSecondaryLoginReminder"><label for="dismissSecondaryLoginReminder" data-i18n="dashboard.secondaryDismiss"></label></div>`);
+        footer.innerHTML = translateHTML(`
+            <div class="d-flex">
+            <button data-i18n="dashboard.addSecondary" type="button" id="secondaryLoginContinue" title="Add Secondary Login" class="btn btn-primary m-2">Add Secondary Login</button>
+            <button data-i18n="dashboard.closeButton" type="button" title="Close" class="btn btn-dark m-2" data-bs-dismiss="modal" aria-label="Close">Close</button>
+            </div>
+        `)
+    }
+
+    attachModalEventListeners(modalElement);
 }
 
 const renderWelcomeHeader = (data) => {

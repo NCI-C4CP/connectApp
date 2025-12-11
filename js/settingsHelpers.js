@@ -1,4 +1,4 @@
-import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML, closeModal, escapeHTML } from './shared.js';
+import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, swapKeysAndValues, translateHTML, closeModal, escapeHTML, country3Codes } from './shared.js';
 import { removeAllErrors } from './event.js';
 import cId from './fieldToConceptIdMapping.js';
 
@@ -329,6 +329,25 @@ export const validateContactInformation = async (mobilePhoneNumberComplete, home
     hasError = true;
   }
 
+   //IF no other errors were found then check to see if the email address was reused
+  if (!hasError && additionalEmail1) {
+    if ((preferredEmail && additionalEmail1 === preferredEmail)) {
+        errorMessage('newadditionalEmail1', '<span data-i18n="settingsHelpers.duplicateEmail">'+translateText('settingsHelpers.duplicateEmail')+'</span>', focus);
+        focus = false;
+        hasError = true;
+      }
+  }
+
+   //IF no other errors were found then check to see if the email address was reused
+  if (!hasError && additionalEmail2) {
+    if ((preferredEmail && additionalEmail2 === preferredEmail) || 
+      (additionalEmail1 && additionalEmail2 === additionalEmail1)) {
+        errorMessage('newadditionalEmail2', '<span data-i18n="settingsHelpers.duplicateEmail">'+translateText('settingsHelpers.duplicateEmail')+'</span>', focus);
+        focus = false;
+        hasError = true;
+      }
+  }
+
   if (!hasError) {
     const emailValidation = await emailAddressValidation({
       emails: {
@@ -474,11 +493,12 @@ const uspsValidateAddress = async (
   }
 };
 
-export const validateMailingAddress = async (id, addressLine1, city, state, zip) => {
+export const validateMailingAddress = async (id, addressLine1, city, state, zip, isInternational, country) => {
   removeAllErrors();
   let hasError = false;
   let focus = true;
   const zipRegExp = /[0-9]{5}/;
+  isInternational = isInternational ? isInternational : cId.no;
 
   if (!addressLine1) {
       errorMessage(
@@ -504,7 +524,7 @@ export const validateMailingAddress = async (id, addressLine1, city, state, zip)
       hasError = true;
   }
 
-  if (!state) {
+  if (isInternational === cId.no && !state) {
       errorMessage(
           `UPAddress${id}State`,
           '<span data-i18n="settingsHelpers.stateNotEmpty">' +
@@ -516,7 +536,7 @@ export const validateMailingAddress = async (id, addressLine1, city, state, zip)
       hasError = true;
   }
 
-  if (!zip || !zipRegExp.test(zip)) {
+  if (isInternational === cId.no && (!zip || !zipRegExp.test(zip))) {
       errorMessage(
           `UPAddress${id}Zip`,
           '<span data-i18n="settingsHelpers.zipNotEmpty">' +
@@ -528,6 +548,18 @@ export const validateMailingAddress = async (id, addressLine1, city, state, zip)
       hasError = true;
   }
 
+  if (isInternational === cId.yes && !country) {
+      errorMessage(
+          `UPAddress${id}Country`,
+          '<span data-i18n="settingsHelpers.countryNotEmpty">' +
+              translateText("settingsHelpers.countryNotEmpty") +
+              "</span>"
+      );
+      if (focus) document.getElementById(`UPAddress${id}Country`).focus();
+      focus = false;
+      hasError = true;
+  }
+
   if (hasError) {
     console.error('Error(s) found.');
     return {
@@ -535,19 +567,26 @@ export const validateMailingAddress = async (id, addressLine1, city, state, zip)
     };
   }
 
-  const {hasError: isInvalid, uspsSuggestion} = await uspsValidateAddress(
-      focus,
-      `UPAddress${id}Line1`,
-      `UPAddress${id}Line2`,
-      `UPAddress${id}City`,
-      `UPAddress${id}State`,
-      `UPAddress${id}Zip`
-  );
-
-  return {
-      hasError: isInvalid,
-      uspsSuggestion,
-  };
+  if (isInternational === cId.no) {
+    const {hasError: isInvalid, uspsSuggestion} = await uspsValidateAddress(
+        focus,
+        `UPAddress${id}Line1`,
+        `UPAddress${id}Line2`,
+        `UPAddress${id}City`,
+        `UPAddress${id}State`,
+        `UPAddress${id}Zip`
+    );
+  
+    return {
+        hasError: isInvalid,
+        uspsSuggestion,
+    };
+  } else {
+    return {
+        hasError,
+        uspsSuggestion: {},
+    };
+  }
 };
 
 export const showRiskyEmailWarningMyProfile = (riskyEmails, onSubmit) => {
@@ -708,7 +747,7 @@ export const showMailAddressSuggestionMyProfile = (uspsSuggestion, i18nTranslati
   }, 100);
 };
 
-export const validateAltContactInformation = async (altContactMobilePhoneComplete, altContactHomePhoneComplete, altContactEmail) => {
+export const validateAltContactInformation = async (altContactMobilePhoneComplete, altContactHomePhoneComplete, altContactEmail, userData) => {
   removeAllErrors();
   let hasError = false;
   let focus = true;
@@ -731,6 +770,17 @@ export const validateAltContactInformation = async (altContactMobilePhoneComplet
     errorMessage('newAltContactEmail', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
     focus = false;
     hasError = true;
+  }
+
+  //IF no other errors were found then check to see if the email address was reused
+  if (!hasError && userData) {
+    if ((userData[cId.prefEmail] && altContactEmail === userData[cId.prefEmail]) ||
+      (userData[cId.additionalEmail1] && altContactEmail === userData[cId.additionalEmail1]) ||
+      (userData[cId.additionalEmail2] && altContactEmail === userData[cId.additionalEmail2])) {
+        errorMessage('newAltContactEmail', '<span data-i18n="settingsHelpers.duplicateAltEmail">'+translateText('settingsHelpers.duplicateAltEmail')+'</span>', focus);
+        focus = false;
+        hasError = true;
+      }
   }
 
   if (!hasError) {
@@ -801,8 +851,8 @@ export const changeName = async (firstName, lastName, middleName, suffix, prefer
   };
   
   let { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValues, userData, 'changeName');
-  changedUserDataForProfile = handleNameField(firstNameTypes, 'firstName', changedUserDataForProfile, userData);
-  changedUserDataForProfile = handleNameField(lastNameTypes, 'lastName', changedUserDataForProfile, userData);
+  changedUserDataForProfile = handleQueryArrayField(firstNameTypes, 'query.firstName', normalizeNameForQuery, changedUserDataForProfile, userData);
+  changedUserDataForProfile = handleQueryArrayField(lastNameTypes, 'query.lastName', normalizeNameForQuery, changedUserDataForProfile, userData);
   const isSuccess = await processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'changeName');
   return isSuccess;
 };
@@ -837,8 +887,8 @@ export const changeContactInformation = async (mobilePhoneNumberComplete, homePh
   };
 
   let { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValues, userData, 'changeContactInformation');
-  changedUserDataForProfile = handleAllPhoneNoField(changedUserDataForProfile, userData);
-  changedUserDataForProfile = handleAllEmailField(changedUserDataForProfile, userData);
+  changedUserDataForProfile = handleQueryArrayField(primaryPhoneTypes, 'query.allPhoneNo', normalizePhoneForQuery, changedUserDataForProfile, userData);
+  changedUserDataForProfile = handleQueryArrayField(primaryEmailTypes, 'query.allEmails', normalizeEmailForQuery, changedUserDataForProfile, userData, (val) => !val.startsWith('noreply'));
   const isSuccess = await processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'changeContactInformation');
   return isSuccess;
 };
@@ -857,87 +907,78 @@ export const changePreferredLanguage = async (preferredLanguage, userData) => {
   return isSuccess;
 };
 
+// Source field groups for query arrays
 const firstNameTypes = [cId.consentFirstName, cId.fName, cId.prefName];
 const lastNameTypes = [cId.consentLastName, cId.lName];
+const primaryPhoneTypes = [cId.cellPhone, cId.homePhone, cId.otherPhone, cId.firebaseAuthPhone];
+const primaryEmailTypes = [cId.prefEmail, cId.additionalEmail1, cId.additionalEmail2, cId.firebaseAuthEmail];
+
+const compareArraysIgnoreOrder = (a = [], b = []) => {
+  if (a.length !== b.length) return false;
+  const setA = new Set(a);
+  for (const val of b) {
+    if (!setA.has(val)) return false;
+  }
+  return true;
+};
+
+// Remove +1 prefix (used with Firebase Auth only). Ensure 10 digits for consistent search experience.
+const normalizePhoneForQuery = (phoneNumber) => {
+  if (!phoneNumber) return '';
+  const digits = phoneNumber.replace(/\D/g, '');
+  return digits.length >= 10 ? digits.slice(-10) : digits;
+};
+
+const normalizeEmailForQuery = (email) => {
+  return (email || '').trim().toLowerCase();
+};
+
+const normalizeNameForQuery = (name) => {
+  return (name || '').trim().toLowerCase();
+};
 
 /**
- * Handle the query.frstName and query.lastName fields in the participant profile.
- * Check the changedUserDataForProfile object and then the participant profile for all name types. If a name is in changedUserDataForProfile, that's the up-to-date version. Add it to the queryNameArray.
- * If a nameType isn't in changedUserData, check the existing participant profile and add that to the queryNameArray.
- * If a nameType is an empty string in changedUserData, don't add it to the queryNameArray even if it exists in the participant profile. The empty string means the participant wants the name removed.
- * Lastly, remove duplicates. This can happen when the participant has a consent name that matches the first or last name.
- * @param {array} nameTypes - array of name types to check.
- * @param {string} fieldName - the name of the field to update.
- * @param {object} changedUserDataForProfile - the changed user data.
- * @param {object} userData - the existing participant object.
+ * Build the query array from the related fields in the participant profile.
+ * Values come from `changed` (if provided) otherwise from participant profile.
+ * @param {Object} participant - The participant object.
+ * @param {Object} changed - Object containing changed values.
+ * @param {Array<string>} types - Array of field types to extract and normalize.
+ * @param {function} normalizeFn - Field-specific normalization.
+ * @param {function} filterFn - Optional function to filter normalized values (e.g., exclude noreply emails).
+ * @returns {Array<string>} Array of unique, normalized, and (optionally) filtered values.
  */
-const handleNameField = (nameTypes, fieldName, changedUserDataForProfile, userData) => {
-  const queryNameArray = [];
-  nameTypes.forEach(nameType => {
-      if (changedUserDataForProfile[nameType]) {
-          queryNameArray.push(changedUserDataForProfile[nameType].toLowerCase());
-      } else if (userData[nameType] && changedUserDataForProfile[nameType] !== '') {
-          queryNameArray.push(userData[nameType].toLowerCase());
+const buildQueryArray = (participant, changed, types, normalizeFn, filterFn) => {
+  const values = new Set();
+  types.forEach((fieldType) => {
+    if (Object.prototype.hasOwnProperty.call(changed, fieldType)) {
+      const raw = changed[fieldType];
+      if (raw) {
+        const normalized = normalizeFn(raw);
+        if (normalized && (!filterFn || filterFn(normalized))) values.add(normalized);
       }
+    } else if (participant && participant[fieldType]) {
+      const normalized = normalizeFn(participant[fieldType]);
+      if (normalized && (!filterFn || filterFn(normalized))) values.add(normalized);
+    }
   });
-
-  changedUserDataForProfile[`query.${fieldName}`] = Array.from(new Set(queryNameArray));
-
-  return changedUserDataForProfile;
+  return Array.from(values);
 };
 
 /**
- * Handle the allPhoneNo field in the user profile
- * If a number is in the changedUserDataForProfile, the participant has added this phone number. Add it to the allPhoneNo field.
- * Then check the userData profile for an existing value at the field being updated. The participant is updating this phone number. Remove it from the allPhoneNo field.
- * If an empty string is in the changedUserDataForProfile, the participant has removed this phone number. Remove it from the allPhoneNo field.
+ * Keeps query.* arrays synchronized with profile field changes by merging
+ * existing participant values with any pending updates before normalizing.
  */
-const handleAllPhoneNoField = (changedUserDataForProfile, userData) => {
-  const allPhoneNo = userData.query.allPhoneNo ?? [];
-  const phoneTypes = [cId.cellPhone, cId.homePhone, cId.otherPhone];
+const handleQueryArrayField = (types, queryKey, normalizeFn, changedUserDataForProfile, participant, filterFn = null) => {
+  const [rootKey, arrayKey] = queryKey.split('.');
+  const existingArray = Array.isArray(participant?.[rootKey]?.[arrayKey]) 
+    ? participant[rootKey][arrayKey]
+    : [];
+  const nextArray = buildQueryArray(participant, changedUserDataForProfile, types, normalizeFn, filterFn);
 
-  phoneTypes.forEach(phoneType => {
-    if (changedUserDataForProfile[phoneType] && !allPhoneNo.includes(changedUserDataForProfile[phoneType])) {
-      allPhoneNo.push(changedUserDataForProfile[phoneType]);
-    }
+  if (!compareArraysIgnoreOrder(nextArray, existingArray)) {
+    changedUserDataForProfile[queryKey] = nextArray;
+  }
 
-    if (changedUserDataForProfile[phoneType] || changedUserDataForProfile[phoneType] === '') {
-      const indexToRemove = allPhoneNo.indexOf(userData[phoneType]);  
-      if (indexToRemove !== -1) {
-        allPhoneNo.splice(indexToRemove, 1);
-      }  
-    }
-  });
-
-  changedUserDataForProfile['query.allPhoneNo'] = allPhoneNo;
-  
-  return changedUserDataForProfile;
-};
-
-/**
- * Handle the allEmails field in the user profile
- * If an email is in the changedUserDataForProfile, the participant has added this email. Add it to the allEmails field.
- * If an email is in the changedUserDataForHistory, the participant has removed this email. Remove it from the allEmails field.
- */
-const handleAllEmailField = (changedUserDataForProfile, userData) => {
-  const allEmails = userData.query.allEmails ?? [];
-  const emailTypes = [cId.prefEmail, cId.additionalEmail1, cId.additionalEmail2];
-
-  emailTypes.forEach(emailType => {
-    if (changedUserDataForProfile[emailType] && !allEmails.includes(changedUserDataForProfile[emailType])) {
-      allEmails.push(changedUserDataForProfile[emailType].toLowerCase());
-    }
-
-    if (changedUserDataForProfile[emailType] || changedUserDataForProfile[emailType] === '') {
-      const indexToRemove = allEmails.indexOf(userData[emailType]);  
-      if (indexToRemove !== -1) {
-        allEmails.splice(indexToRemove, 1);
-      }  
-    }
-  });
-
-  changedUserDataForProfile['query.allEmails'] = allEmails;
-  
   return changedUserDataForProfile;
 };
 
@@ -956,7 +997,7 @@ const handleAllEmailField = (changedUserDataForProfile, userData) => {
  * @returns {boolean} - true if the update was successful, false otherwise
  */
 
-export const changeMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, userData, isPOBox, isClearing = false) => {
+export const changeMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, userData, isPOBox, isClearing = false, isInternational, addressLine3, country) => {
   document.getElementById(`mailingAddressFail${id}`).style.display = 'none';
   document.getElementById(`changeMailingAddressGroup${id}`).style.display = 'none';
 
@@ -969,7 +1010,10 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.city]: city,
       [cId.state]: state,
       [cId.zip]: zip.toString(),
-      [cId.isPOBox]: isPOBox ? cId.yes : cId.no
+      [cId.isPOBox]: isPOBox ? cId.yes : cId.no,
+      [cId.isIntlAddr]: isInternational,
+      [cId.address3]: addressLine3 && isInternational === cId.yes ? addressLine3 : '', 
+      [cId.country]: country && isInternational === cId.yes ? country : '', 
     };
   } else if (id === 2) {
     // For physical address (id=2), convert to null when clearing, otherwise use values as-is
@@ -979,6 +1023,9 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.physicalCity]: isClearing ? null : city,
       [cId.physicalState]: isClearing ? null : state,
       [cId.physicalZip]: isClearing ? null : (zip ? zip.toString() : ""),
+      [cId.physicalAddrIntl]: isClearing ? null : isInternational,
+      [cId.physicalAddress3]: isClearing ? null : (addressLine3 && isInternational === cId.yes ? addressLine3 : ''), 
+      [cId.physicalCountry]: isClearing ? null : (country && isInternational === cId.yes ? country : ''), 
     };
   } else if (id === 3) {
     const doesAltAddressExist = isClearing ? cId.no : (addressLine1 || addressLine2 || city || state || zip ? cId.yes : cId.no);
@@ -991,7 +1038,10 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.altCity]: isClearing ? null : city,
       [cId.altState]: isClearing ? null : state,
       [cId.altZip]: isClearing ? null : (zip ? zip.toString() : ""),
-      [cId.isPOBoxAltAddress]: isClearing ? null : (isPOBox ? cId.yes : cId.no)
+      [cId.isPOBoxAltAddress]: isClearing ? null : (isPOBox ? cId.yes : cId.no),
+      [cId.isIntlAltAddress]: isClearing ? null : isInternational,
+      [cId.altAddress3]: isClearing ? null : (addressLine3 && isInternational === cId.yes ? addressLine3 : ''), 
+      [cId.altCountry]: isClearing ? null : (country && isInternational === cId.yes ? country : ''), 
      };
   }
 
@@ -1084,7 +1134,10 @@ export const addOrUpdateAuthenticationMethod = async (email, phone, userData) =>
   }
 
   document.getElementById('changeLoginGroup').style.display = 'none';
-  const { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValuesForFirestore, userData);
+  let { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValuesForFirestore, userData);
+  // Keep query arrays in sync when auth identifiers change
+  changedUserDataForProfile = handleQueryArrayField(primaryPhoneTypes, 'query.allPhoneNo', normalizePhoneForQuery, changedUserDataForProfile, userData);
+  changedUserDataForProfile = handleQueryArrayField(primaryEmailTypes, 'query.allEmails', normalizeEmailForQuery, changedUserDataForProfile, userData, (val) => !val.startsWith('noreply'));
   const isSuccess = await processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'loginUpdate');
   return isSuccess;
 };
@@ -1184,7 +1237,7 @@ export const unlinkFirebaseAuthProvider = async (providerType, userData, newPhon
       console.error('bad providerType arg in unlinkFirebaseAuthProvider()');
     }
     if (updateResult === true) {
-      const changedUserDataForProfile = {};
+      let changedUserDataForProfile = {};
 
       if (providerType === 'email') {
         changedUserDataForProfile[cId.firebaseAuthEmail] = noReplyEmail;
@@ -1197,6 +1250,10 @@ export const unlinkFirebaseAuthProvider = async (providerType, userData, newPhon
         changedUserDataForProfile[cId.firebaseAuthPhone] = newPhone;
         userData[cId.firebaseAuthEmail] && !userData[cId.firebaseAuthEmail].startsWith('noreply') ? changedUserDataForProfile[cId.firebaseSignInMechanism] = 'passwordAndPhone' : changedUserDataForProfile[cId.firebaseSignInMechanism] = 'phone';
       }  
+
+      // Keep query arrays in sync when auth identifiers change
+      changedUserDataForProfile = handleQueryArrayField(primaryPhoneTypes, 'query.allPhoneNo', normalizePhoneForQuery, changedUserDataForProfile, userData);
+      changedUserDataForProfile = handleQueryArrayField(primaryEmailTypes, 'query.allEmails', normalizeEmailForQuery, changedUserDataForProfile, userData, (val) => !val.startsWith('noreply'));
 
       await storeResponse(changedUserDataForProfile)
         .catch(function (error) {
@@ -1505,3 +1562,36 @@ export const getFormerNameData = () => {
     });
     return result;
 };
+
+/**
+ * Renders the options for a country selector and places USA at the top
+ * 
+ * @param {String[]} excludeCountries - Array of country 3 codes to not render 
+ * @returns String
+ */
+export const renderCountries = (excludeCountries) => {
+    let countries = country3Codes.map((code) => {
+        return {code,
+            title: translateText('countries.' + code)
+        }
+    }).sort((a, b) => {
+        if (a.code === 'usa') {
+            return -1;
+        } else if (b.code === 'usa') {
+            return 1;
+        } else if (a.title < b.title) {
+            return -1
+        } else {
+            return 1;
+        }
+    });
+
+    let options = '';
+    for(const index in countries) {
+        let country = countries[index];
+        if (!excludeCountries || !excludeCountries.includes(country.code)) {
+            options += `<option class="option-dark-mode" value="${country.code}" data-i18n="countries.${country.code}">${country.title}</option>`;
+        } 
+    }
+    return options;
+}

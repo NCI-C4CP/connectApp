@@ -271,6 +271,25 @@ const en = {
         "mailAddressCountryRequired": "Country <span class=\"required\">*</span>",
         "physicalAddress": "Physical Address (if different from Mailing Address)",
         "physicalAddressDesc": "Physical address is needed so Connect can mail you packages via FedEx for some study activities. FedEx does not deliver to P.O. Boxes.",
+        "physicalAddressLine1Field": {
+            "data-error-required": "Please enter the first line of your physical address.",
+            "placeholder": "Enter street, PO box, rural route"
+        },
+        "physicalAddressLine2Field": {
+            "placeholder": "Enter apartment, suite, unit, building"
+        },
+        "physicalAddressCityField": {
+            "data-error-required": "Please enter the city field of your physical address.",
+            "placeholder": "Enter City"
+        },
+        "physicalAddressStateField": {
+            "data-error-required": "Please select the state field of your physical address."
+        },
+        "physicalAddressZipField": {
+            "data-error-validation": "Please enter a 5 digit zip code in this format: 12345.",
+            "title": "5 characters long, numeric-only value.",
+            "data-error-required": "Please enter the zip field of your physical address."
+        },
         "otherContactInformation": "Other Contact Information",
         "otherContactIntroduction": "We would like to keep in touch with you during your time in the study. Please share more contact information to help us reach you in the future.",
         "altAddressQuestion": "Are there any other mailing addresses that you use?",
@@ -279,21 +298,6 @@ const en = {
         "altAddressLine1Field": {
             "data-error-required": "Please enter the first line of your mailing address.",
             "placeholder": "Enter street, PO box, rural route"
-        },
-        "altAddressLine2Field": {
-            "placeholder": "Enter apartment, suite, unit, building"
-        },
-        "altAddressCityField": {
-            "data-error-required": "Please enter the city field of your alternate address.",
-            "placeholder": "Enter City"
-        },
-        "altAddressStateField": {
-            "data-error-required": "Please select the state field of your alternate address."
-        },
-        "altAddressZipField": {
-            "data-error-validation": "Please enter a 5 digit zip code in this format: 12345.",
-            "title": "5 characters long, numeric-only value.",
-            "data-error-required": "Please enter the zip field of your alternate address."
         },
         "isPOBoxCheckboxAltAddress": "Please check if alternate address is a P.O. Box",
         "altContactHeader": "Alternate Contact",
@@ -868,7 +872,61 @@ const en = {
             "innerHTML": "ConnectSupport@norc.org",
             "href": "mailto:ConnectSupport@norc.org"
         },
-        "requestAKit": "Home Collection Kit Request",
+        "requestAKit": {
+            "title": "Home Collection Kit Request",
+            "confirmedBold": "Your mouthwash home collection request has been submitted!",
+            "confirmedShippingTimeframe": "We will ship your kit soon, and you can expect it to arrive within one week.",
+            "eligibilityBlurb": "We sent you a message recently to let you know you can now request a home collection kit for Connect.",
+            "cannotShipKitHeader": "We can't ship your kit because of a problem with your address.",
+            "willShipToThisAddress": "We will ship your kit to this address:",
+            "cannotShipToPOBoxesFirstHalf": "We can't ship home collection kits to P.O. Boxes or international addresses, and your current mailing address is a P.O. Box. Please ",
+            "cannotShipToIntlAddressesFirstHalf": "We can't ship home collection kits to P.O. Boxes or international addresses, and your current mailing address is an international address. Please ",
+            "updateMailingAddressLink": "update your mailing address",
+            "cannotShipToPOBoxesSecondHalf": " or click the button below to add a new physical address where we should ship your kit.",
+            "updateMyPhysicalAddress": "Update my physical address",
+            "updateMyMailingAddress": "Update my mailing address",
+            "cannotShipToPOBoxesNote": "Note: we can't ship kits to P.O. Boxes or international addresses.",
+            "selectKitType": "Select your kit type:",
+            "chooseKitGhostValue": "Choose the kit you are requesting",
+            "mouthwashOption": "Mouthwash",
+            "submitRequestText": "Submit Request",
+            "addPhysicalAddress": "Add Physical Address",
+            "addPhysicalAddressLowercase": "Add physical address",
+            "modalClose": {
+                "aria-label": "Close"
+            },
+            "confirmAddressPlaceholder": "",
+            "somethingWentWrong": "We're experiencing an issue with your request. Please contact the <a href=\"myconnect.cancer.gov/support\">Connect Support Center</a> for help.",
+            "pleaseNote": "Please note:",
+            "addPhysicalAddressExplanation": "adding a physical address means that your kit will arrive there.",
+            "editMailingToNonPOBox": "If you want to edit your mailing address to a non-P.O. Box address, your kit will ship to your mailing address.",
+            "editMailingToNonIntlBox": "If you want to edit your mailing address to a non-international address, your kit will ship to your mailing address.",
+            "doubleCheckAddress": "Please double check your address information. Contact the Connect Support Center if you need further help.",
+            "continueButton": "Continue",
+            "goBackButton": "Go Back",
+            "mouthwashKitShippedOn": "Your mouthwash kit was shipped on ",
+            "mouthwashShouldArriveBy": ". Expect it to arrive by ",
+            "mouthwashArrivalPostfix": ".",
+            "weShippedYourKitThrough": "We shipped your kit through ",
+            "kitTrackingInfo": "You can track it using this number: ",
+            "kitDelayMissingQuestionsContactInfo": "If you don't receive your kit within one week of the above ship date, or have any questions about the kit or home collection process, please reach out to the <a href=\"#support\">Connect Support Center</a> for help.",
+            "addressUpdateSuccess": "You have successfully updated your physical address and selected this address to receive your kit.",
+            "addressUpdateEditInfo": "Your new physical address can be found and edited on your <a href=\"#myprofile\">Profile</a> page.",
+            "cancelText": "Cancel",
+            "mwKitShipTimeframe": "Mouthwash kits ship and arrive in about one week.",
+            "currentPhysicalAddress": "Current Physical Address",
+            "currentMailingAddress": "Current Mailing Address",
+            "newMailingAddress": "New Mailing Address",
+            "newPhysicalAddress": "New Physical Address"
+
+        },
+        "kitRequestHistory": {
+            "title": "Home Collection Kit Request History",
+            "kitTypeLabel": "Type of Kit",
+            "Mouthwash": "Mouthwash",
+            "dateKitRequestedLabel": "Date Requested",
+            "dateKitReceivedLabel": "Date Received"
+        },
         "sampleInventory": "Sample Inventory",
         "blood": "Blood",
         "urine": "Urine",
@@ -1214,6 +1272,7 @@ const en = {
             "placeholder": "Enter apartment, suite, unit, building"
         },
         "mailAddressLine2Placeholder": "Enter apartment, suite, unit, building",
+        "mailAddressLine3": "Line 3",
         "city": "City <span class=\"required\">*</span>",
         "cityField": {
             "data-error-required": "Please enter the city field of your mailing address.",
@@ -1225,6 +1284,9 @@ const en = {
         "stateValidator": "Please select the state field of your mailing address.",
         "selectText": "-- Select --",
         "zip": "Zip <span class=\"required\">*</span>",
+        "region": "Region",
+        "postalCode": "Postal Code",
+        "country": "Country <span class=\"required\">*</span>",
         "zipField": {
             "title": "5 characters long, numeric-only value.",
             "data-error-validation": "Please enter a 5 digit zip code in this format: 12345.",
@@ -1301,7 +1363,9 @@ const en = {
         "sureToRemoveEmail": "<strong><i>Important</i></strong>: Are you sure you want to remove this email sign in method?",
         "sureToRemovePhone": "<strong><i>Important</i></strong>: Are you sure you want to remove this phone sign in method?",
         "confirmText": "Confirm",
-        "cancelText": "Cancel"
+        "cancelText": "Cancel",
+        "noLoginEmail": "You don't currently have an email login. Would you like to add one? This will make it easy to access your account in the future.",
+        "noLoginPhone": "You don't currently have a phone login. Would you like to add one? This will make it easy to access your account in the future.",
     },
     "ssn": {
         "hardErrorNineFormat": "Please enter a valid Social Security Number in this format: 999-99-9999.",
@@ -1501,6 +1565,7 @@ const en = {
         "cityNotEmpty": "City must not be empty. Please select a City.",
         "stateNotEmpty": "State must not be empty. Please select a state.",
         "zipNotEmpty": "Zip code must not be blank. It can only contain numbers.",
+        "countryNotEmpty": "Country must not be empty. Please select a Country.",
         "errorEmailFormat": "Error: The email address format is not valid. Please enter an email address in this format: name@example.com.",
         "errorEmailsDoNotMatch": "Error - the email addresses do not match. Please make sure the email addresses match, then resubmit the form.",
         "errorPhoneFormat": "Error: The phone number format is not valid. Please enter a phone number in this format: 999-999-9999",
@@ -1510,7 +1575,8 @@ const en = {
         "clearButtonText": "Clear",
         "confirmationHeader": "Confirmation",
         "confirmationText": "Are you sure you want to delete this address?",
-
+        "duplicateEmail": "This is the same email we have on record for you. If you meant to update your existing information, please scroll up on this page until you see your contact information, and enter your changes there.",
+        "duplicateAltEmail": "This is the same email we have on record for you. If you meant to update your existing information, please scroll up on this page until you see your contact information, and enter your changes there. If you'd like to share an email for someone else (an alternate contact), please enter their email here.",
     },
     "shared": {
         "signIn": "Sign In",
@@ -2239,7 +2305,18 @@ const en = {
         "formTitle": "Forms",
         "formText": "Review and download copies of the forms you’ve completed, or sign new forms.",
         "paymentTitle": "Payment",
-        "paymentText": "Review information about payments for Connect participants."
+        "paymentText": "Review information about payments for Connect participants.",
+        "secondaryLoginTitle": "Add a secondary login",
+        "secondaryWarning": "Make it easy to access your account by adding a secondary login method for MyConnect (e.g., phone number if you usually log in with email). You can always update or change this information in your profile.",
+        "secondaryDismiss": "Don't show this message again",
+        "addSecondary": {
+            "title": "Add Secondary Login",
+            "innerText": "Add Secondary Login",
+        },
+        "closeButton": {
+            "title": "Close",
+            "innerText": "Close"
+        }
     }
 }
 
