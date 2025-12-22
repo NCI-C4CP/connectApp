@@ -1010,7 +1010,7 @@ const en = {
                 "FargoName": "<span class=\"site-info-underline\">Fargo, ND: Sanford Amber Valley</span>",
                 "FargoAddress": "4840 23<sup>rd</sup> Ave S<br>Fargo, ND 58104<br><span class=\"site-info-italic\">Enter through door 4840. Upon entering, follow the signs to “Sanford Research” on Floor 2.</span>",
                 "FargoParking": "Free patient parking is available in the lot near door 4840. No parking validation needed.",
-                "BemidjiName": "<span class=\"site-info-underline\">Bemidji, MN: 1705 Anne St clinic (Audiology)</span>",
+                "BemidjiName": "<span class=\"site-info-underline\">Bemidji, MN: 1705 Anne St Clinic (Audiology)</span>",
                 "BemidjiAddress": "1705 Anne St N.W.<br>Bemidji, MN 56601<br><span class=\"site-info-italic\">Enter through door 1 of the Audiology building.</span>",
                 "BemidjiParking": "Free patient parking is available in front of the Audiology building. No parking validation is needed."
             }
