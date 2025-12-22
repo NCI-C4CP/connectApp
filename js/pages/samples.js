@@ -1535,25 +1535,26 @@ const bswh = {
     support: '<p><span data-i18n="samples.bswh.support">Call 1-877-505-0253 (8:00 a.m. - 10:00 p.m. CT on weekdays and 9:00 a.m. - 6:00 p.m. CT on weekends).</span></p>',
     locationNotes: `<div data-i18n="samples.bswh.locationNotes"><div style="margin-bottom:2rem;"> 
                         <div>
-                            <span class="site-info-bold">Baylor Scott & White Health and Wellness Center- Dallas</span>
-                            <p>4500 Spring Ave<br>
+                            <span class="site-info-bold">Baylor Scott & White Health and Wellness Center - Dallas</span>
+                            <p>4500 Spring Ave.<br>
                                 Dallas, TX 75210<br>
                                 Parking Instructions: The site offers free surface level parking.
                             </p>
                         </div>
                         <div>
                             <span class="site-info-bold">Baylor Scott & White Community Care (BCC) - Fort Worth*</span>
-                            <p >1307 8th Ave, Ste 305<br>
+                            <p >1307 8th Ave., Suite 305<br>
                                 Fort Worth, TX 76104<br>
                                 Parking Instructions: The site offers free surface level parking.<br>
                                 <span style="font-size:1rem" class="site-info-underline-italic">*Note: Only patients of Baylor Scott & White Health Community Care - Fort Worth clinic can schedule an appointment at this location.</span>
                             </p>
                         </div>
                         <div>
-                            <span class="site-info-bold">Baylor Scott & White All Saints Hospital- Fort Worth</span>
-                            <p>1400 8th Avenue Fort Worth, TX 76104<br>
-                                6th Floor, C Building<br>
-                                Parking Instructions: Use the patient parking structure by the hospital.
+                            <span class="site-info-bold">Baylor Scott & White All Saints Hospital - Fort Worth</span>
+                            <p>1400 8th Avenue<br>
+                                Fort Worth, TX 76104<br>
+                                6th Floor, C Building<br><br>
+                                Parking Instructions: Park in self-parking garage located on the corner of 8th Avenue and Enderly Place. Parking is free for the first hour. ~Once parked, look for main hospital entrance and navigate to Building C.
                             </p>
                         </div>
                         <div>
@@ -1572,37 +1573,47 @@ const bswh = {
                             </p>
                         </div>
                         <div>
-                            <span class="site-info-bold">Baylor Scott & White - N. Garland Clinic</span>
-                            <p>7217 Telecom Pkwy, Suite 100<br>
+                            <span class="site-info-bold">Baylor Scott & White - North Garland Clinic</span>
+                            <p>7217 Telecom Pkwy., Suite 100<br>
                                 Garland, TX 75044<br>
                                 Parking Instructions: The site offers free surface level parking.
                             </p>
                         </div>
                         <div>
                             <span class="site-info-bold">Baylor Scott & White Medical Center - Irving</span>
-                            <p>1901 N. MacArthur Blvd, Suite 115<br>
+                            <p>1901 N. MacArthur Blvd., Suite 115<br>
                                 Irving, TX 75061<br>
-                                Parking Instructions: The site offers free surface level parking.<br>
+                                Parking Instructions: The site offers free surface level parking<br>
                                 Suite 115 is located within the Irving Hospital in the PAT lab.
                             </p>
                         </div>
                         <div>
                             <span class="site-info-bold">Baylor Scott & White Center for Diagnostic Medicine – Temple CDM</span>
-                            <p>1605 S 31st St<br>
+                            <p>1605 S 31st St.<br>
                                 Temple, TX 76508<br>
                                 Parking Instructions: The site offers free surface level parking.
                             </p>
                         </div>
                         <div>
                             <span class="site-info-bold">Baylor Scott & White, Temple Roney Bone & Joint – Temple Roney</span>
-                            <p>2401 S 31st St, Bldg 35<br>
+                            <p>2401 S 31st St., Bldg 35<br>
                                 Temple, TX 76508<br>
-                                Parking Instructions: The site offers free surface level parking.<br>
+                                Parking Instructions: The site offers free surface level parking.
                             </p>
                         </div>
                         <div>
                             <span class=\"site-info-bold\">Baylor Scott & White Temple Westfield Clinic</span>
-                            <p>7556 Honeysuckle <br>Temple, TX 76502 <br><br> Parking Instructions: The site offers free surface level parking.</p>
+                            <p>7556 Honeysuckle<br>
+                                Temple, TX 76502<br><br>
+                                Parking Instructions: The site offers free surface level parking.
+                            </p>
+                        </div>
+                        <div>
+                            <span class=\"site-info-bold\">Baylor Scott & White - Waco Fish Pond</span>
+                            <p>7700 Fish Pond Rd.<br>
+                                Waco, TX 76710<br><br>
+                                Parking Instructions: The site offers free surface level parking.
+                            </p>
                         </div>
                     </div>`,
     howLong: '<span data-i18n="samples.bswh.howLong">If you complete your first Connect survey before your appointment, please expect to spend about 45 minutes at your appointment to donate your samples and complete a short sample survey.</span>',
