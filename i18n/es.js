@@ -819,8 +819,8 @@
         "surveysCompleted": "Ha completado todas las encuestas de Connect disponibles. Nos comunicaremos con usted cuando haya nuevas encuestas y actividades de estudio para completar. ¡Gracias por sus contribuciones al estudio!",
         "mainBodyDHQ3Header": "Cuestionario de Historial Alimentación III (DHQ III, por sus siglas en ingles)",
         "mainBodyDHQ3Description": "Preguntas sobre su alimentación habitual en el último año. Tras hacer clic en \"Comenzar\", la encuesta se abrirá en una nueva pestaña o ventana del navegador y verá un mensaje federal estándar de advertencia sobre la seguridad de los datos. Haga clic en \"Continuar con el cuestionario\" (Continue with Questionnaire, en inglés) para comenzar la encuesta. Luego, seleccione su idioma preferido para completar la encuesta.",
-        "mainBodyReturnOfResults2025Header": "Encuesta de Preferencias para la Devolución de Resultados 2025",
-        "mainBodyReturnOfResults2025Description": "Preguntas sobre los tipos de resultados e información que le interesa recibir de la investigación de Connect."
+        "mainBodyReturnOfResults2026Header": "Encuesta de Preferencias para la Devolución de Resultados 2026",
+        "mainBodyReturnOfResults2026Description": "Preguntas sobre los tipos de resultados e información que le interesa recibir de la investigación de Connect."
     },
     "notifications": {
         "read": "Leídos",
@@ -1927,7 +1927,7 @@
         "mod2024ConnectExperienceSurvey": "2024 Encuesta Sobre Experiencia de Connect",
         "modCancerScreeningHistorySurvey": "Encuesta sobre historial de exámenes de detección de cáncer",
         "modDietHistoryQuestionnaireIIIDHQIII": "Cuestionario de Historial Alimentación III (DHQ III, por sus siglas en ingles)",
-        "mod2025ReturnofResultsPreferenceSurvey": "Encuesta de Preferencias para la Devolución de Resultados 2025",
+        "mod2026ReturnofResultsPreferenceSurvey": "Encuesta de Preferencias para la Devolución de Resultados 2026",
         "sessionInactiveTitle": "Inactivo",
         "sessionInactive": "Ha estado inactivo durante 20 minutos, ¿desea extender la sesión?<div class=\"modal-footer\"><button type=\"button\" title=\"Cerrar\" class=\"btn btn-dark log-out-user\" data-bs-dismiss=\"modal\">Cerrar sesión</button><button type=\"button\" title=\"Continuar\" class=\"btn btn-primary extend-user-session\" data-bs-dismiss=\"modal\">Continuar</button></div>",
         "homeTitle": "My Connect - Inicio",
