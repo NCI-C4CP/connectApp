@@ -1674,12 +1674,12 @@ export const questionnaireModules = () => {
                 moduleId: "DHQ3",
                 enabled: false,
             },
-            '2025 Return of Results Preference Survey': {
+            '2026 Return of Results Preference Survey': {
                 path: {
-                    en: 'prod/module2025ROIPreferencesStage.txt',
-                    es: 'prod/module2025ROIPreferencesStageSpanish.txt'
+                    en: 'prod/module2026ROIPreferencesStage.txt',
+                    es: 'prod/module2026ROIPreferencesStageSpanish.txt'
                 },
-                moduleId: "ROIPreference2025",
+                moduleId: "ROIPreference2026",
                 enabled: false
             },
         }
@@ -1795,12 +1795,12 @@ export const questionnaireModules = () => {
             moduleId: "DHQ3",
             enabled: false,
         },
-        '2025 Return of Results Preference Survey': {
+        '2026 Return of Results Preference Survey': {
             path: {
-                en: 'module2025ROIPreferencesStage.txt',
-                es: 'module2025ROIPreferencesStageSpanish.txt'
+                en: 'module2026ROIPreferencesStage.txt',
+                es: 'module2026ROIPreferencesStageSpanish.txt'
             },
-            moduleId: "ROIPreference2025",
+            moduleId: "ROIPreference2026",
             enabled: false
         },
     };
@@ -3351,9 +3351,9 @@ export const setModuleAttributes = async (data, modules, collections) => {
     modules['Diet History Questionnaire III (DHQ III)'].description = 'mytodolist.mainBodyDHQ3Description';
     modules['Diet History Questionnaire III (DHQ III)'].estimatedTime = 'mytodolist.45_60minutes';
 
-    modules['2025 Return of Results Preference Survey'].header = '2025 Return of Results Preference Survey';
-    modules['2025 Return of Results Preference Survey'].description = 'mytodolist.mainBodyReturnOfResults2025Description';
-    modules['2025 Return of Results Preference Survey'].estimatedTime = 'mytodolist.10_15minutes';
+    modules['2026 Return of Results Preference Survey'].header = '2026 Return of Results Preference Survey';
+    modules['2026 Return of Results Preference Survey'].description = 'mytodolist.mainBodyReturnOfResults2026Description';
+    modules['2026 Return of Results Preference Survey'].estimatedTime = 'mytodolist.10_15minutes';
 
     const currentTime = new Date();
     
@@ -3526,13 +3526,13 @@ export const setModuleAttributes = async (data, modules, collections) => {
         }
     }
 
-    // The 2025 Return of Results Preference Survey is available for participants verified on or before August 1, 2025
-    if (data[fieldMapping.ROIPreference2025.statusFlag]) {
-        modules['2025 Return of Results Preference Survey'].enabled = true;
+    // The 2026 Return of Results Preference Survey is available for participants verified on or before August 1, 2026
+    if (data[fieldMapping.ROIPreference2026.statusFlag]) {
+        modules['2026 Return of Results Preference Survey'].enabled = true;
     }
 
-    if (data[fieldMapping.ROIPreference2025.statusFlag] === fieldMapping.moduleStatus.submitted) {
-        modules['2025 Return of Results Preference Survey'].completed = true;
+    if (data[fieldMapping.ROIPreference2026.statusFlag] === fieldMapping.moduleStatus.submitted) {
+        modules['2026 Return of Results Preference Survey'].completed = true;
     }
     
     return modules;

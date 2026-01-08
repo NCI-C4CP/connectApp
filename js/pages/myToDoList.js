@@ -184,7 +184,7 @@ const renderMainBody = async (data, collections, tab) => {
 
     modules["Diet History Questionnaire III (DHQ III)"].enabled && toDisplaySystem.unshift({ body: ["Diet History Questionnaire III (DHQ III)"] });
 
-    modules["2025 Return of Results Preference Survey"].enabled && toDisplaySystem.unshift({ body: ["2025 Return of Results Preference Survey"] });
+    modules["2026 Return of Results Preference Survey"].enabled && toDisplaySystem.unshift({ body: ["2026 Return of Results Preference Survey"] });
 
     if(tab === 'todo'){
         for(let obj of toDisplaySystem){
