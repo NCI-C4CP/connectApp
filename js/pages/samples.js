@@ -1589,7 +1589,7 @@ const bswh = {
                         </div>
                         <div>
                             <span class="site-info-bold">Baylor Scott & White Center for Diagnostic Medicine – Temple CDM</span>
-                            <p>1605 S 31st St.<br>
+                            <p>1605 S. 31st St.<br>
                                 Temple, TX 76508<br><br>
                                 Parking Instructions: The site offers free surface level parking.
                             </p>
