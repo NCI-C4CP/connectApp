@@ -1029,7 +1029,7 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.state]: state,
       [cId.zip]: zip.toString(),
       [cId.isPOBox]: isPOBox ? cId.yes : cId.no,
-      [cId.isIntlAddr]: isInternational,
+      [cId.isIntlAddr]: isInternational ?? cId.no,
       [cId.address3]: addressLine3 && isInternational === cId.yes ? addressLine3 : '', 
       [cId.country]: country && isInternational === cId.yes ? country : '',
       [cId.isMailingAddressUSPSUnvalidated]: getUSPSUnvalidatedValue(isValidatedByUSPS, cId.yes, cId.no),
@@ -1048,7 +1048,7 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.isPhysicalAddressUSPSUnvalidated]: isClearing ? null : getUSPSUnvalidatedValue(isValidatedByUSPS, cId.yes, cId.no),
     };
   } else if (id === 3) {
-    const hasAltAddressInput = Boolean(addressLine1 || addressLine2 || addressLine3 || city || state || zip || country);
+    const hasAltAddressInput = Boolean(addressLine1 || addressLine2 || city || state || zip);
     const isAltClearing = isClearing || !hasAltAddressInput;
     const doesAltAddressExist = isAltClearing ? cId.no : cId.yes;
     

@@ -3194,7 +3194,7 @@ export const addressValidation = async (data) => {
 /**
  * Derive deliverability warnings from USPS validation response metadata.
  * This provides signals used to compute "USPS validated" flags and display warnings.
- * * Note: Retained for future use, but USPS DPV/Vacant/Business address validation is currently ignored (Jan 2026 release).*
+ * Note: Retained for future use, but USPS DPV/Vacant/Business address validation is currently ignored (Jan 2026 release).
  *
  * @param {Object} additionalInfo - USPS additionalInfo object
  * @param {Array<{code: string, text: string}>} matches - USPS matches array

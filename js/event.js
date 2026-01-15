@@ -1171,7 +1171,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
 
         if (!hasError) {
             const isMailingAddressInternational = document.getElementById("UPAddress1International")?.checked || false;
-            const validateMailAddress = await validateAddress(focus, "UPAddress1Line1", "UPAddress1Line2", "UPAddress1City", "UPAddress1State", "UPAddress1Zip", isMailingAddressInternational)
+            const validateMailAddress = await validateAddress(focus, "UPAddress1Line1", "UPAddress1Line2", "UPAddress1City", "UPAddress1State", "UPAddress1Zip", isMailingAddressInternational);
             uspsSuggestion.isMailAddressValid = !validateMailAddress.hasError
             uspsSuggestion.mailAddress = validateMailAddress.result
             
@@ -1240,7 +1240,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
 
             if (!hasError) {
                 const isPhysicalAddressInternational = document.getElementById("UPAddress2International")?.checked || false;
-                const validatePhysicalAddress = await validateAddress(focus, "UPAddress2Line1", "UPAddress2Line2", "UPAddress2City", "UPAddress2State", "UPAddress2Zip", isPhysicalAddressInternational)
+                const validatePhysicalAddress = await validateAddress(focus, "UPAddress2Line1", "UPAddress2Line2", "UPAddress2City", "UPAddress2State", "UPAddress2Zip", isPhysicalAddressInternational);
                 uspsSuggestion.isPhysicalAddressValid = !validatePhysicalAddress.hasError
                 uspsSuggestion.physicalAddress = validatePhysicalAddress.result
                 

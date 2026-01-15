@@ -1,5 +1,5 @@
 // USPS Address Validation responses for manual testing (temp until testing suite is implemented)
-// See js/shared.js -> addressValidation()for usage.
+// See js/shared.js -> addressValidation() for usage.
 export const USPS_TEST_RESPONSES = {
     // SUCCESS CASES
     success: {
