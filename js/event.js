@@ -37,7 +37,7 @@ export const addEventAddressAutoComplete = (id, country) => {
     if(!UPAddressLine1) return;
 
     const googlePlacesInitiation = () => {
-        if (UPAddressInternational.checked) {
+        if (UPAddressInternational && UPAddressInternational.checked) {
             return;
         }
 

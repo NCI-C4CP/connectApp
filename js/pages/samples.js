@@ -1342,15 +1342,21 @@ const sanford = {
         ],
         [
             '<span data-i18n="samples.sanford.locations.SiouxFallsName">Sioux Falls, SD: Edith Sanford Breast Center</span>',
-            '<span data-i18n="samples.sanford.locations.SiouxFallsAddress">1210 W. 18th St.<br>Sioux Falls, SD 57104<br><i>Enter Through Door BB</i></span>',
+            '<span data-i18n="samples.sanford.locations.SiouxFallsAddress">1210 W. 18th St.<br>Sioux Falls, SD 57104<br><i>Enter through door BB</i></span>',
             '',
             '<span data-i18n="samples.sanford.locations.SiouxFallsParking">Free valet parking is available near the front entrance of the Edith Sanford Breast Center. Free patient parking is also available in the lot on the corner of S Grange Ave and W 18th Street. Enter through door BB. No parking validation is needed.</span>'
         ],
         [
             '<span data-i18n="samples.sanford.locations.FargoName">Fargo, ND: Sanford Amber Valley</span>',
-            '<span data-i18n="samples.sanford.locations.FargoAddress">4840 23<sup>rd</sup> Ave S<br>Fargo, ND 58104<br><i>Enter Through Door 4840. Upon entering, follow the signs to “Sanford Research” on Floor 2.</i></span>',
+            '<span data-i18n="samples.sanford.locations.FargoAddress">4840 23<sup>rd</sup> Ave S<br>Fargo, ND 58104<br><i>Enter through door 4840. Upon entering, follow the signs to “Sanford Research” on Floor 2.</i></span>',
             '',
             '<span data-i18n="samples.sanford.locations.FargoParking">Free patient parking is available in the lot near door 4840. No parking validation needed.</span>',
+        ],
+        [
+            '<span data-i18n="samples.sanford.locations.BemidjiName">Bemidji, MN: 1705 Anne St Clinic (Audiology)</span>',
+            '<span data-i18n="samples.sanford.locations.BemidjiAddress">1705 Anne St N.W.<br>Bemidji, MN 56601<br><i>Enter through door 1 of the Audiology building.</i></span>',
+            '',
+            '<span data-i18n="samples.sanford.locations.BemidjiParking">Free patient parking is available in front of the Audiology building. No parking validation is needed.</span>'
         ]
       ]
 };
@@ -1526,7 +1532,7 @@ const u_chicago = {
 const bswh = {
     concept: '472940358',
     name: 'Baylor Scott & White Health (BSWH)',
-    donatingSamples: '<span data-i18n="samples.bswh.donatingSamples">As part of Connect, we ask you to donate blood, urine, and mouthwash samples and complete a short surveys.</span>',
+    donatingSamples: '<span data-i18n="samples.bswh.donatingSamples">As part of Connect, we ask you to donate blood, urine, and saliva samples and complete a short survey.</span>',
     whenToDonate: '<span data-i18n="samples.bswh.whenToDonate"><p>The Connect team will send you an email when it is time to donate your samples. Be sure to check your spam or junk folder. After you receive the email, it is important to donate your samples as soon as you can. It is easy to donate all of your samples in one visit.<p/><p> <span class="site-info-bold">Note:</span> If you have recently had a blood transfusion or donated blood, please wait at least <span class="site-info-bold">eight weeks</span> from your donation or transfusion before donating your samples for Connect. If you have recently donated plasma, please wait at least <span class="site-info-bold">four weeks</span> from your plasma donation before donating samples for Connect. If you have recently donated platelets, please wait at least <span class="site-info-bold">one week</span> from your platelet donation before donating samples for Connect. If you have an upcoming colonoscopy, please be sure that you <span class="site-info-bold">do not</span> donate samples for Connect on the <span class="site-info-bold">same day</span> as your colonoscopy.<p/></span>',
     howToDonate: '<span data-i18n="samples.bswh.howToDonate"><p>Contact the BSWH Connect team at 214-865-2427 or by email at <a href="mailto:ConnectStudy@bswhealth.org">ConnectStudy@bswhealth.org</a> to schedule your appointment.</p></span>',
     prepInstructionsHeader: '<span data-i18n="samples.bswh.prepInstructionsHeader">What Should I Bring to the Visit?</span>',
@@ -1537,25 +1543,26 @@ const bswh = {
     support: '<p><span data-i18n="samples.bswh.support">Call 1-877-505-0253 (8:00 a.m. - 10:00 p.m. CT on weekdays and 9:00 a.m. - 6:00 p.m. CT on weekends).</span></p>',
     locationNotes: `<div data-i18n="samples.bswh.locationNotes"><div style="margin-bottom:2rem;"> 
                         <div>
-                            <span class="site-info-bold">Baylor Scott & White Health and Wellness Center- Dallas</span>
-                            <p>4500 Spring Ave<br>
-                                Dallas, TX 75210<br>
+                            <span class="site-info-bold">Baylor Scott & White Health and Wellness Center - Dallas</span>
+                            <p>4500 Spring Ave.<br>
+                                Dallas, TX 75210<br><br>
                                 Parking Instructions: The site offers free surface level parking.
                             </p>
                         </div>
                         <div>
                             <span class="site-info-bold">Baylor Scott & White Community Care (BCC) - Fort Worth*</span>
-                            <p >1307 8th Ave, Ste 305<br>
-                                Fort Worth, TX 76104<br>
+                            <p >1307 8th Ave., Suite 305<br>
+                                Fort Worth, TX 76104<br><br>
                                 Parking Instructions: The site offers free surface level parking.<br>
                                 <span style="font-size:1rem" class="site-info-underline-italic">*Note: Only patients of Baylor Scott & White Health Community Care - Fort Worth clinic can schedule an appointment at this location.</span>
                             </p>
                         </div>
                         <div>
-                            <span class="site-info-bold">Baylor Scott & White All Saints Hospital- Fort Worth</span>
-                            <p>1400 8th Avenue Fort Worth, TX 76104<br>
-                                6th Floor, C Building<br>
-                                Parking Instructions: Use the patient parking structure by the hospital.
+                            <span class="site-info-bold">Baylor Scott & White All Saints Hospital - Fort Worth</span>
+                            <p>1400 8th Ave.<br>
+                                Fort Worth, TX 76104<br>
+                                6th Floor, C Building<br><br>
+                                Parking Instructions: Park in self-parking garage located on the corner of 8th Avenue and Enderly Place. Parking is free for the first hour. Once parked, look for main hospital entrance and navigate to Building C.
                             </p>
                         </div>
                         <div>
@@ -1568,50 +1575,60 @@ const bswh = {
                         </div>
                         <div>
                             <span class="site-info-bold">Baylor Scott & White Sammons Cancer Center</span>
-                            <p>3410 Worth St, Suite 530<br>
-                                Dallas, TX 75246<br>
+                            <p>3410 Worth St., Suite 530<br>
+                                Dallas, TX 75246<br><br>
                                 Parking Instructions: Drive to the back of the Sammons Cancer Center Building and park in the underground garage. You will get a ticket from the machine as you enter the garage. Please keep the ticket. During your visit, the Connect team will give you a voucher for free parking. 
                             </p>
                         </div>
                         <div>
-                            <span class="site-info-bold">Baylor Scott & White - N. Garland Clinic</span>
-                            <p>7217 Telecom Pkwy, Suite 100<br>
-                                Garland, TX 75044<br>
+                            <span class="site-info-bold">Baylor Scott & White North Garland Clinic</span>
+                            <p>7217 Telecom Pkwy., Suite 100<br>
+                                Garland, TX 75044<br><br>
                                 Parking Instructions: The site offers free surface level parking.
                             </p>
                         </div>
                         <div>
                             <span class="site-info-bold">Baylor Scott & White Medical Center - Irving</span>
-                            <p>1901 N. MacArthur Blvd, Suite 115<br>
-                                Irving, TX 75061<br>
-                                Parking Instructions: The site offers free surface level parking.<br>
+                            <p>1901 N. MacArthur Blvd., Suite 115<br>
+                                Irving, TX 75061<br><br>
+                                Parking Instructions: The site offers free surface level parking<br>
                                 Suite 115 is located within the Irving Hospital in the PAT lab.
                             </p>
                         </div>
                         <div>
                             <span class="site-info-bold">Baylor Scott & White Center for Diagnostic Medicine – Temple CDM</span>
-                            <p>1605 S 31st St<br>
-                                Temple, TX 76508<br>
+                            <p>1605 S. 31st St.<br>
+                                Temple, TX 76508<br><br>
                                 Parking Instructions: The site offers free surface level parking.
                             </p>
                         </div>
                         <div>
                             <span class="site-info-bold">Baylor Scott & White, Temple Roney Bone & Joint – Temple Roney</span>
-                            <p>2401 S 31st St, Bldg 35<br>
-                                Temple, TX 76508<br>
-                                Parking Instructions: The site offers free surface level parking.<br>
+                            <p>2401 S. 31st St., Bldg 35<br>
+                                Temple, TX 76508<br><br>
+                                Parking Instructions: The site offers free surface level parking.
                             </p>
                         </div>
                         <div>
                             <span class=\"site-info-bold\">Baylor Scott & White Temple Westfield Clinic</span>
-                            <p>7556 Honeysuckle <br>Temple, TX 76502 <br><br> Parking Instructions: The site offers free surface level parking.</p>
+                            <p>7556 Honeysuckle<br>
+                                Temple, TX 76502<br><br>
+                                Parking Instructions: The site offers free surface level parking.
+                            </p>
+                        </div>
+                        <div>
+                            <span class=\"site-info-bold\">Baylor Scott & White - Waco Fish Pond</span>
+                            <p>7700 Fish Pond Rd.<br>
+                                Waco, TX 76710<br><br>
+                                Parking Instructions: The site offers free surface level parking.
+                            </p>
                         </div>
                     </div>`,
     howLong: '<span data-i18n="samples.bswh.howLong">If you complete your first Connect survey before your appointment, please expect to spend about 45 minutes at your appointment to donate your samples and complete a short sample survey.</span>',
     prepareInstructions: '<span data-i18n="samples.bswh.prepareInstructions"><p>On the day of your appointment, you do not need to fast. Drink plenty of water to keep hydrated, but <span class="site-info-bold">stop drinking water one hour before your appointment.</span></p> <p><span class="site-info-bold">One hour before your appointment:</span> Please <span class="site-info-bold">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.</p> <p class="site-info-bold">Things to bring and remember</p><ul><li>Please remember to bring a valid photo ID that is not expired (driver’s license, passport, school photo ID, or other photo ID)</li><li>Make sure you know your login information for MyConnect</li><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:</li><ul><li>The last time you ate or drank before your appointment, and the times you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></li></ul></span>',
     whatHappens: `<span data-i18n="samples.bswh.whatHappens"><p>The research team will check you in for your appointment and then collect your samples. At the end of your visit, the research team will check you out of your appointment.</p>
                   <p>We will draw a blood sample, collect a urine sample, and collect a saliva sample by asking you to swish with mouthwash.</p>
-                  <p>We will also ask you to complete a short survey on MyConnect using your mobile phone. You will need your MyConnect login information to complete the survey. If you do not have a mobile phone, we will provide you with a tablet to complete your survey. We strongly encourage you to complete your survey at your appointment. If you choose to complete it after you leave your appointment, it is important to do so as soon as possible.</p>
+                  <p>We will also ask you to complete a short survey about your samples on MyConnect using your mobile phone. You will need your MyConnect login information to complete the survey. If you do not have a mobile phone, we will provide you with a tablet to complete your survey. We strongly encourage you to complete your survey at your appointment. If you choose to complete it after you leave your appointment, it is important to do so as soon as possible.</p>
                   </span>`,
     payment: `<span data-i18n="samples.bswh.payment">
                 You will receive your $25 payment after you donate a blood sample and complete all four sections of your first Connect survey.<br><br>
