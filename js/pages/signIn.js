@@ -1,5 +1,11 @@
 import { sendEmailLink } from "../shared.js";
 
+/**
+ * Configures the Firebase UI for sign-in/sign-up
+ * Docs: https://firebase.google.com/docs/auth/web/firebaseui
+ * @param {string} signInType - The type of sign-in to configure. Can be "phone", "email", or "all". Unrecognized values fall back to "all".
+ * @returns {Object} - The Firebase UI configuration object.
+ */
 export const signInConfig = (signInType = "all") => {
   const options = {
     phone: [firebase.auth.PhoneAuthProvider.PROVIDER_ID],

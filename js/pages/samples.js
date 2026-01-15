@@ -750,10 +750,13 @@ const renderSomethingWentWrongError = () => {
  * @param {*} zip 
  * @param {*} isPOBox 
  */
-const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, isPOBox = false) => {
+const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, isPOBox = false, isValidatedByUSPS = false) => {
     const data = await getMyData();
     const userData = data.data;
-    const isSuccess = await changeMailingAddress(id, addressLine1, addressLine2, city, state, zip, userData, isPOBox).catch(function (error) {
+    const isInternational = conceptId.no; // no international addresses here (kit shipments are for domestic, non-PO Box addresses only)
+    const addressLine3 = '';
+    const country = '';
+    const isSuccess = await changeMailingAddress(id, addressLine1, addressLine2, city, state, zip, userData, isInternational, addressLine3, country, isPOBox, false, isValidatedByUSPS).catch(function (error) {
         console.error('Error', error);
         document.getElementById(`mailingAddressFail${id}`).style.display = 'block';
         document.getElementById(`mailingAddressError${id}`).innerHTML = translateText('settings.failMailUpdate');
@@ -934,30 +937,32 @@ const bindUpdatePAddressBtn = (participant) => {
         const state = escapeHTML(document.getElementById('UPAddress2State').value.trim());
         const zip = escapeHTML(document.getElementById('UPAddress2Zip').value.trim());
 
-        const {hasError, uspsSuggestion} = await validateMailingAddress(2, addressLine1, city, state, zip);
+        const { hasError, uspsSuggestion, isValidatedByUSPSApi } = await validateMailingAddress(2, addressLine1, city, state, zip);
         
         if (!hasError) {
-            const submitNewAddress = (addressLine1, addressLine2, city, state, zip) => submitNewMailingAddress(
+            const submitNewAddress = (addressLine1, addressLine2, city, state, zip, isValidatedByUSPS = isValidatedByUSPSApi) => submitNewMailingAddress(
                 2,
                 addressLine1,
                 addressLine2,
                 city,
                 state,
                 zip,
-                participant[conceptId.isPOBox] === conceptId.yes
+                participant[conceptId.isPOBox] === conceptId.yes,
+                isValidatedByUSPS
             );
 
             if (uspsSuggestion.suggestion) {
                 showMailAddressSuggestion(
                     uspsSuggestion,
                     'event.addressSuggestionDescriptionPhysical',
-                    async (streetAddress, secondaryAddress, city, state, zipCode) => {
+                    async (streetAddress, secondaryAddress, city, state, zipCode, isValidatedByUSPSSelectionModal) => {
                         const success = await submitNewAddress(
                             streetAddress,
                             secondaryAddress,
                             city,
                             state,
-                            zipCode
+                            zipCode,
+                            isValidatedByUSPSSelectionModal
                         );
                         if (success) {
                             participant[conceptId.physicalAddress1] = streetAddress;
@@ -974,7 +979,7 @@ const bindUpdatePAddressBtn = (participant) => {
                     }
                 );
             } else {
-                const success = await submitNewAddress(addressLine1, addressLine2, city, state, zip);
+                const success = await submitNewAddress(addressLine1, addressLine2, city, state, zip, isValidatedByUSPSApi);
                 if (success) {
                     participant[conceptId.physicalAddress1] = addressLine1;
                     if (addressLine2) {
@@ -1000,30 +1005,32 @@ const bindUpdateMAddressBtn = (participant) => {
         const state = escapeHTML(document.getElementById('UPAddress1State').value.trim());
         const zip = escapeHTML(document.getElementById('UPAddress1Zip').value.trim());
 
-        const {hasError, uspsSuggestion} = await validateMailingAddress(1, addressLine1, city, state, zip);
+        const { hasError, uspsSuggestion, isValidatedByUSPSApi } = await validateMailingAddress(1, addressLine1, city, state, zip);
         
         if (!hasError) {
-            const submitNewAddress = (addressLine1, addressLine2, city, state, zip) => submitNewMailingAddress(
+            const submitNewAddress = (addressLine1, addressLine2, city, state, zip, isValidatedByUSPS = isValidatedByUSPSApi) => submitNewMailingAddress(
                 1,
                 addressLine1,
                 addressLine2,
                 city,
                 state,
                 zip,
-                false
+                false,
+                isValidatedByUSPS
             );
 
             if (uspsSuggestion.suggestion) {
                 showMailAddressSuggestion(
                     uspsSuggestion,
                     'event.addressSuggestionDescriptionPhysical',
-                    async (streetAddress, secondaryAddress, city, state, zipCode) => {
+                    async (streetAddress, secondaryAddress, city, state, zipCode, isValidatedByUSPSSelectionModal) => {
                         const success = await submitNewAddress(
                             streetAddress,
                             secondaryAddress,
                             city,
                             state,
-                            zipCode
+                            zipCode,
+                            isValidatedByUSPSSelectionModal
                         );
                         if (success) {
                             participant[conceptId.address1] = streetAddress;
@@ -1041,15 +1048,15 @@ const bindUpdateMAddressBtn = (participant) => {
                     }
                 );
             } else {
-                const success = await submitNewAddress(addressLine1, addressLine2, city, state, zip);
+                const success = await submitNewAddress(addressLine1, addressLine2, city, state, zip, isValidatedByUSPSApi);
                 if (success) {
-                    participant[conceptId.address1] = streetAddress;
+                    participant[conceptId.address1] = addressLine1;
                     if (addressLine2) {
-                        participant[conceptId.address2] = secondaryAddress;
+                        participant[conceptId.address2] = addressLine2;
                     }
                     participant[conceptId.city] = city;
                     participant[conceptId.state] = state;
-                    participant[conceptId.zip] = zipCode;
+                    participant[conceptId.zip] = zip;
                     participant[conceptId.isPOBox] = conceptId.no;
                     renderRequestAKitDisplay(participant);
                     // renderUpdateAddressSuccess();
@@ -1163,13 +1170,14 @@ export const showMailAddressSuggestion = (uspsSuggestion, i18nTranslation, submi
 
   document.getElementById("addressSuggestionKeepButton").addEventListener("click", async () => {
     const { streetAddress, secondaryAddress, city, state, zipCode } = uspsSuggestion.original;
-    await submit(streetAddress, secondaryAddress, city, state, zipCode);
+    await submit(streetAddress, secondaryAddress, city, state, zipCode, false);
     closeModal();
   });
 
   document.getElementById("addressSuggestionUseButton").addEventListener("click", async () => {
+    const isValidatedByUSPSSelectionModal = !(uspsSuggestion?.warnings?.length);
     const { streetAddress, secondaryAddress, city, state, zipCode } = uspsSuggestion.suggestion;
-    await submit(streetAddress, secondaryAddress, city, state, zipCode);
+    await submit(streetAddress, secondaryAddress, city, state, zipCode, isValidatedByUSPSSelectionModal);
     closeModal();
   });
 
