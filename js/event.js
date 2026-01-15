@@ -1,4 +1,4 @@
-import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, sitesNotEnrolling, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, swapKeysAndValues, escapeHTML, updateStartDHQParticipantData, mergeAndDeduplicateArrays } from "./shared.js";
+import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, sitesNotEnrolling, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, escapeHTML, updateStartDHQParticipantData, mergeAndDeduplicateArrays, analyzeUSPSAddressSuggestion, mapUSPSErrorsToFieldTargets, applyUSPSFieldErrors, getUSPSUnvalidatedValue } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
 import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, noLongerEnrollingRender,  requestPINTemplate } from "./pages/healthCareProvider.js";
 import { renderDashboard } from "./pages/dashboard.js";
@@ -41,6 +41,11 @@ export const addEventAddressAutoComplete = (id, country) => {
             return;
         }
 
+        if (typeof google === 'undefined' || !google.maps?.places?.Autocomplete) {
+            console.warn('Google Places API not available; autocomplete disabled.');
+            return;
+        }
+
         autocomplete = new google.maps.places.Autocomplete(document.getElementById(`UPAddress${id}Line1`), {types: ['geocode']});
         autocomplete.setFields(['address_component']);
         let addressLine1 = '';
@@ -50,7 +55,11 @@ export const addEventAddressAutoComplete = (id, country) => {
         let addressCountry = '';
         autocomplete.addListener('place_changed', () => {
             const address = autocomplete.getPlace();
-            const addressComponents = address['address_components']; // TODO: datadog error -- TypeError: undefined is not an object (evaluating 'address['address_components']')
+            const addressComponents = address?.address_components;
+            if (!Array.isArray(addressComponents)) {
+                console.warn('Google Places: address_components missing on place result', address);
+                return;
+            }
             addressComponents.forEach(value => {
                 if(value.types.indexOf('street_number') !== -1) addressLine1 = value.long_name;
                 if(value.types.indexOf('route') !== -1) addressLine1 += ' '+value.long_name;
@@ -560,9 +569,20 @@ const addAnotherEmailField = () => {
     document.getElementById('additionalEmailBtn').innerHTML = '';
 }
 
-const validateAddress = async (focus, addr1Id, addr2Id, cityId, stateId, zipId) => {
+const validateAddress = async (focus, addr1Id, addr2Id, cityId, stateId, zipId, isInternational = false) => {
     let hasError = false
-    const result = {}
+    const result = { warnings: [] }
+    let isValidatedByUSPS = false;
+
+    // Bypass USPS validation for international addresses
+    if (isInternational) {
+        return {
+            hasError: false,
+            result: {},
+            isValidatedByUSPS: false
+        }
+    }
+
     const streetAddress = document.getElementById(addr1Id).value
     const secondaryAddress = document.getElementById(addr2Id)?.value || ""
     const ct = document.getElementById(cityId).value
@@ -576,49 +596,67 @@ const validateAddress = async (focus, addr1Id, addr2Id, cityId, stateId, zipId) 
         zipCode
     }
     const _addressValidation = await addressValidation(addrValidationPayload);
-    if (_addressValidation.error) {
-        console.error('User Profile - Invalid Address', addrValidationPayload, _addressValidation.error)
+
+    // Missing object
+    if (!_addressValidation) {
+        console.error('User Profile - Invalid Address (empty response from USPS validation process)', addrValidationPayload, _addressValidation);
         hasError = true;
-        if (_addressValidation.error.errors.length) {
-            _addressValidation.error.errors.forEach((item) => {
-                if (item.code === "010005") {
-                    errorMessage(
-                        addr1Id,
-                        '<span data-i18n="event.invalidAddress">' +
-                        translateText("event.invalidAddress") +
-                        "</span>",
-                        focus
-                    );
-                    if (focus)
-                        document.getElementById(addr1Id).focus();
-                    focus = false;
-                }
-                if (item.code === "010002") {
-                    errorMessage(
-                        zipId,
-                        '<span data-i18n="event.invalidZip">' +
-                        translateText("event.invalidZip") +
-                        "</span>",
-                        focus
-                    );
-                    if (focus)
-                        document.getElementById(zipId).focus();
-                    focus = false;
-                }
-                if (item.code === "010004") {
-                    errorMessage(
-                        cityId,
-                        '<span data-i18n="event.invalidCity">' +
-                        translateText("event.invalidCity") +
-                        "</span>",
-                        focus
-                    );
-                    if (focus)
-                        document.getElementById(zipId).focus();
-                    focus = false;
-                }
+        errorMessage(
+            addr1Id,
+            '<span data-i18n="event.invalidAddress">' +
+            translateText("event.invalidAddress") +
+            "</span>",
+            focus
+        );
+        if (focus) document.getElementById(addr1Id).focus();
+        focus = false;
+
+    // Error response from USPS validation process
+    } else if (_addressValidation.error || !_addressValidation.address || (_addressValidation.status && _addressValidation.status >= 500)) {
+        const statusVal = Number(_addressValidation.error?.status ?? _addressValidation.status ?? 0);
+        const isServiceUnavailable = statusVal === 0 || statusVal >= 500;
+
+        // Do not block profile submission on service unavailable errors
+        if (isServiceUnavailable && !_addressValidation.error?.errors?.length) {
+            console.error('User Profile - USPS validation unavailable', addrValidationPayload, _addressValidation);
+            result.warnings = result.warnings || [];
+            result.warnings.push({
+                code: 'SERVICE_UNAVAILABLE',
+                text: 'USPS validation unavailable; address not verified'
             });
+            isValidatedByUSPS = false;
         } else {
+            console.error('User Profile - Invalid Address', addrValidationPayload, _addressValidation);
+            hasError = true;
+            let handledError = false;
+            if (_addressValidation.error?.errors?.length) {
+                const mapped = mapUSPSErrorsToFieldTargets(_addressValidation.error.errors, {
+                    addr1Id,
+                    cityId,
+                    stateId,
+                    zipId,
+                });
+                handledError = mapped.handled;
+                focus = applyUSPSFieldErrors(mapped.targets, focus);
+            }
+            if (!handledError) {
+                errorMessage(
+                    addr1Id,
+                    '<span data-i18n="event.invalidAddress">' +
+                    translateText("event.invalidAddress") +
+                    "</span>",
+                    focus
+                );
+                if (focus) document.getElementById(addr1Id).focus();
+                focus = false;
+            }
+        }
+
+    // Success response from USPS validation process
+    } else {
+        const { address } = _addressValidation || {};
+        if (!address) {
+            hasError = true;
             errorMessage(
                 addr1Id,
                 '<span data-i18n="event.invalidAddress">' +
@@ -628,27 +666,33 @@ const validateAddress = async (focus, addr1Id, addr2Id, cityId, stateId, zipId) 
             );
             if (focus) document.getElementById(addr1Id).focus();
             focus = false;
-        }
-    } else {
-        const { address } = _addressValidation
-        if (
-            streetAddress.toLowerCase() !== address.streetAddress.toLowerCase() ||
-            secondaryAddress.toLowerCase() !== address.secondaryAddress.toLowerCase() ||
-            ct.toLowerCase() !== address.city.toLowerCase() ||
-            statesWithAbbreviations[state].toLowerCase() !== address.state.toLowerCase() ||
-            zipCode !== address.ZIPCode
-        ) {
-            result.original = { ...addrValidationPayload, state }
-            result.suggestion = {
-                ...address,
-                state: swapKeysAndValues(statesWithAbbreviations)[address.state],
-                zipCode: address.ZIPCode
-            }
+        } else {
+            // Analyze USPS response to decide suggestion + validation status
+            const additionalInfo = _addressValidation.additionalInfo || {};
+            const matches = _addressValidation.matches || [];
+            const analysis = analyzeUSPSAddressSuggestion({
+                streetAddress,
+                secondaryAddress,
+                city: ct,
+                state,
+                zipCode,
+                uspsAddress: address,
+                matches,
+                additionalInfo,
+            });
+
+            if (analysis.warnings?.length) result.warnings = analysis.warnings;
+            if (analysis.original) result.original = analysis.original;
+            if (analysis.suggestion) result.suggestion = analysis.suggestion;
+
+            isValidatedByUSPS = analysis.isValidatedByUSPS;
         }
     }
+    
     return {
         hasError,
-        result
+        result,
+        isValidatedByUSPS
     }
 }
     
@@ -1119,10 +1163,20 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             physicalAddress: {},
             alternateAddress: {},
         }
+        
+        // Track USPS validation status for each address type
+        let isMailingAddressValidated = false;
+        let isPhysicalAddressValidated = false;
+        let isAltAddressValidated = false;
+
         if (!hasError) {
-            const validateMailAddress = await validateAddress(focus, "UPAddress1Line1", "UPAddress1Line2", "UPAddress1City", "UPAddress1State", "UPAddress1Zip")
+            const isMailingAddressInternational = document.getElementById("UPAddress1International")?.checked || false;
+            const validateMailAddress = await validateAddress(focus, "UPAddress1Line1", "UPAddress1Line2", "UPAddress1City", "UPAddress1State", "UPAddress1Zip", isMailingAddressInternational)
             uspsSuggestion.isMailAddressValid = !validateMailAddress.hasError
             uspsSuggestion.mailAddress = validateMailAddress.result
+            
+            // Only mark as validated if USPS API returned success (200 OK with address)
+            isMailingAddressValidated = validateMailAddress.isValidatedByUSPS;
         }
 
         // If any physical address field has a value, validate the required fields
@@ -1185,9 +1239,12 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             }
 
             if (!hasError) {
-                const validatePhysicalAddress = await validateAddress(focus, "UPAddress2Line1", "UPAddress2Line2", "UPAddress2City", "UPAddress2State", "UPAddress2Zip")
+                const isPhysicalAddressInternational = document.getElementById("UPAddress2International")?.checked || false;
+                const validatePhysicalAddress = await validateAddress(focus, "UPAddress2Line1", "UPAddress2Line2", "UPAddress2City", "UPAddress2State", "UPAddress2Zip", isPhysicalAddressInternational)
                 uspsSuggestion.isPhysicalAddressValid = !validatePhysicalAddress.hasError
                 uspsSuggestion.physicalAddress = validatePhysicalAddress.result
+                
+                isPhysicalAddressValidated = validatePhysicalAddress.isValidatedByUSPS;
             }
         }
         
@@ -1253,9 +1310,12 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             }
 
             if (!hasError) {
-                const validateAlternateAddress = await validateAddress(focus, "UPAddress3Line1", "UPAddress3Line2", "UPAddress3City", "UPAddress3State", "UPAddress3Zip");
+                const isAltAddressInternational = document.getElementById("UPAddress3International")?.checked || false;
+                const validateAlternateAddress = await validateAddress(focus, "UPAddress3Line1", "UPAddress3Line2", "UPAddress3City", "UPAddress3State", "UPAddress3Zip", isAltAddressInternational);
                 uspsSuggestion.isAlternateAddressValid = !validateAlternateAddress.hasError
                 uspsSuggestion.alternateAddress = validateAlternateAddress.result;
+                
+                isAltAddressValidated = validateAlternateAddress.isValidatedByUSPS;
             }
         }
 
@@ -1265,6 +1325,16 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         }
 
         let formData = {};
+        
+        // Save the validation status for all address types
+        formData[fieldMapping.isMailingAddressUSPSUnvalidated] = getUSPSUnvalidatedValue(isMailingAddressValidated, fieldMapping.yes, fieldMapping.no);
+        if (hasPhysicalAddressField) {
+            formData[fieldMapping.isPhysicalAddressUSPSUnvalidated] = getUSPSUnvalidatedValue(isPhysicalAddressValidated, fieldMapping.yes, fieldMapping.no);
+        }
+        if (hasAltAddressField) {
+            formData[fieldMapping.isAltAddressUSPSUnvalidated] = getUSPSUnvalidatedValue(isAltAddressValidated, fieldMapping.yes, fieldMapping.no);
+        }
+
         formData['399159511'] = document.getElementById('UPFirstName').value.trim();
         formData['231676651'] = document.getElementById('UPMiddleInitial').value.trim();
         formData['996038075'] = document.getElementById('UPLastName').value.trim();
@@ -1569,6 +1639,11 @@ const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, type) 
             ? uspsSuggestion.physicalAddress
             : uspsSuggestion.alternateAddress
 
+    // Even if the user selects the USPS-formatted suggestion, only mark the address as
+    // "USPS validated" when USPS confirmed deliverability (no deliverability warnings).
+    // Note: Retained for future use, but USPS DPV validation is currently disabled. See getUSPSDeliverabilityWarnings().
+    const isSuggestionValidatedByUSPS = !(addrSuggestion?.warnings?.length);
+
     const dataI18nString = type === 'mail'
         ? 'addressSuggestionDescription'
         : type === 'physical'
@@ -1610,11 +1685,16 @@ const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, type) 
 
     document.getElementById('addressSuggestionKeepButton').addEventListener('click', async () => {
         if (type === 'mail') {
+            formData[fieldMapping.isMailingAddressUSPSUnvalidated] = fieldMapping.yes;
             uspsSuggestion.mailAddress = {}
         } else if (type === 'physical') {
+            formData[fieldMapping.isPhysicalAddressUSPSUnvalidated] = fieldMapping.yes;
             uspsSuggestion.physicalAddress = {}
-        } else {
+        } else if (type === 'alternate') {
+            formData[fieldMapping.isAltAddressUSPSUnvalidated] = fieldMapping.yes;
             uspsSuggestion.alternateAddress = {}
+        } else {
+            console.error(`Invalid address type: ${type} in showMailAddressSuggestion()`);
         }
 
         document.getElementById('goBackButton').click()
@@ -1637,6 +1717,7 @@ const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, type) 
                 formData[fieldMapping.city] = addrSuggestion.suggestion.city
                 formData[fieldMapping.state] = addrSuggestion.suggestion.state
                 formData[fieldMapping.zip] = addrSuggestion.suggestion.zipCode
+                formData[fieldMapping.isMailingAddressUSPSUnvalidated] = getUSPSUnvalidatedValue(isSuggestionValidatedByUSPS, fieldMapping.yes, fieldMapping.no);
                 uspsSuggestion.mailAddress = {}
                 break;
             }
@@ -1654,6 +1735,7 @@ const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, type) 
                 formData[fieldMapping.physicalCity] = addrSuggestion.suggestion.city
                 formData[fieldMapping.physicalState] = addrSuggestion.suggestion.state
                 formData[fieldMapping.physicalZip] = addrSuggestion.suggestion.zipCode
+                formData[fieldMapping.isPhysicalAddressUSPSUnvalidated] = getUSPSUnvalidatedValue(isSuggestionValidatedByUSPS, fieldMapping.yes, fieldMapping.no);
                 uspsSuggestion.physicalAddress = {}
                 break;
             }
@@ -1671,6 +1753,7 @@ const showMailAddressSuggestion = (uspsSuggestion, riskyEmails, formData, type) 
                 formData[fieldMapping.altCity] = addrSuggestion.suggestion.city
                 formData[fieldMapping.altState] = addrSuggestion.suggestion.state
                 formData[fieldMapping.altZip] = addrSuggestion.suggestion.zipCode
+                formData[fieldMapping.isAltAddressUSPSUnvalidated] = getUSPSUnvalidatedValue(isSuggestionValidatedByUSPS, fieldMapping.yes, fieldMapping.no);
                 uspsSuggestion.alternateAddress = {}
                 break;
             }
