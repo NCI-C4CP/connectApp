@@ -701,7 +701,6 @@ const handleEditMailingAddressSection = () => {
                     submitNewAddress(addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country);
                 }
             } else if (addressNotFound) { //If the error is address not found then verify
-                console.log('Address Not Found');
                 showMailAddressConfirmationMyProfile(
                     {streetAddress: addressLine1, secondaryAddress: addressLine2, city, state, zipCode: zip},
                     'event.addressConfirmationDescription',
@@ -850,7 +849,6 @@ const handleEditPhysicalMailingAddressSection = () => {
                     submitNewAddress(addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country);
                 }
             } else if (addressNotFound) { //If the error is address not found then verify
-                console.log('Address Not Found');
                 showMailAddressConfirmationMyProfile(
                     {streetAddress: addressLine1, secondaryAddress: addressLine2, city, state, zipCode: zip},
                     'event.addressConfirmationDescriptionPhysical',
