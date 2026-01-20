@@ -404,13 +404,14 @@ const uspsValidateAddress = async (
     zipId
 ) => {
     let hasError = false;
+    let addressNotFound = false;
     let isValidatedByUSPSApi = false;
     const uspsSuggestion = { warnings: [] };
-    const streetAddress = document.getElementById(addr1Id).value
-    const secondaryAddress = document.getElementById(addr2Id)?.value || ""
-    const ct = document.getElementById(cityId).value
-    const state = document.getElementById(stateId).value
-    const zipCode = document.getElementById(zipId).value
+    const streetAddress = document.getElementById(addr1Id).value;
+    const secondaryAddress = document.getElementById(addr2Id)?.value || "";
+    const ct = document.getElementById(cityId).value;
+    const state = document.getElementById(stateId).value;
+    const zipCode = document.getElementById(zipId).value;
     const addrValidationPayload = {
         streetAddress,
         secondaryAddress,
@@ -420,33 +421,34 @@ const uspsValidateAddress = async (
     };
     const _addressValidation = await addressValidation(addrValidationPayload);
     if (!_addressValidation) {
-        console.error('My Profile - Invalid Address: empty response', addrValidationPayload, _addressValidation);
-        hasError = true;
-        errorMessage(
-            addr1Id,
-            '<span data-i18n="event.invalidAddress">' + translateText("event.invalidAddress") + '</span>'
-        );
-        if (focus) document.getElementById(addr1Id).focus();
-        focus = false;
+        console.error('My Profile - USPS validation empty response:', addrValidationPayload, _addressValidation);
+        uspsSuggestion.warnings.push({
+            code: 'EMPTY_RESPONSE',
+            text: 'USPS validation unavailable; empty response'
+        });
+        addressNotFound = true;
+        isValidatedByUSPSApi = false;
     } else if (_addressValidation.error || !_addressValidation.address || (_addressValidation.status && _addressValidation.status >= 500)) {
         const statusVal = Number(_addressValidation.error?.status ?? _addressValidation.status ?? 0);
         const isServiceUnavailable = statusVal === 0 || statusVal >= 500;
 
         // Do not block submission on service unavailable errors
         if (isServiceUnavailable && !_addressValidation.error?.errors?.length) {
-            console.error('My Profile - USPS validation unavailable:', addrValidationPayload, _addressValidation);
+            console.error('My Profile - USPS validation unavailable (service):', addrValidationPayload, _addressValidation);
             uspsSuggestion.warnings.push({
                 code: 'SERVICE_UNAVAILABLE',
                 text: 'USPS validation unavailable; address not verified'
             });
+            addressNotFound = true;
             isValidatedByUSPSApi = false;
             
         } else {
             console.error('My Profile - Invalid Address:', addrValidationPayload, _addressValidation);
             hasError = true;
             let handledError = false;
-            if (_addressValidation.error?.errors?.length) {
-                const mapped = mapUSPSErrorsToFieldTargets(_addressValidation.error.errors, {
+            const errorItems = _addressValidation.error?.errors || [];
+            if (errorItems.length) {
+                const mapped = mapUSPSErrorsToFieldTargets(errorItems, {
                     addr1Id,
                     cityId,
                     stateId,
@@ -454,6 +456,14 @@ const uspsValidateAddress = async (
                 });
                 handledError = mapped.handled;
                 focus = applyUSPSFieldErrors(mapped.targets, focus);
+                if (errorItems.length === 1) {
+                    const code = errorItems[0]?.code;
+                    if (code === "010001" || code === "010005") {
+                        addressNotFound = true;
+                    }
+                }
+            } else if (!_addressValidation.address) {
+                addressNotFound = true;
             }
             if (!handledError) {
                 errorMessage(
@@ -476,6 +486,7 @@ const uspsValidateAddress = async (
             );
             if (focus) document.getElementById(addr1Id).focus();
             focus = false;
+            addressNotFound = true;
         } else {
             const additionalInfo = _addressValidation.additionalInfo || {};
             const matches = _addressValidation.matches || [];
@@ -502,10 +513,11 @@ const uspsValidateAddress = async (
         }
     }
     return {
-      hasError,
-      uspsSuggestion,
-      isValidatedByUSPSApi
-  }
+        hasError,
+        uspsSuggestion,
+        addressNotFound,
+        isValidatedByUSPSApi
+    };
 };
 
 export const validateMailingAddress = async (id, addressLine1, city, state, zip, isInternational, country) => {
@@ -583,7 +595,7 @@ export const validateMailingAddress = async (id, addressLine1, city, state, zip,
   }
 
   if (isInternational === cId.no) {
-    const {hasError: isInvalid, uspsSuggestion, isValidatedByUSPSApi} = await uspsValidateAddress(
+    const {hasError: isInvalid, uspsSuggestion, isValidatedByUSPSApi, addressNotFound: isAddressNotFound} = await uspsValidateAddress(
         focus,
         `UPAddress${id}Line1`,
         `UPAddress${id}Line2`,
@@ -595,13 +607,15 @@ export const validateMailingAddress = async (id, addressLine1, city, state, zip,
     return {
         hasError: isInvalid,
         uspsSuggestion,
-        isValidatedByUSPSApi
+        isValidatedByUSPSApi,
+        addressNotFound: isAddressNotFound
     };
   } else {
     return {
         hasError,
         uspsSuggestion: {},
-        isValidatedByUSPSApi: false
+        isValidatedByUSPSApi: false,
+        addressNotFound: false
     };
   }
 };
@@ -696,6 +710,60 @@ export const showClearAddressConfirmation = (onSubmit) => {
         closeModal();
     });
 }
+
+export const showMailAddressConfirmationMyProfile = (address, i18nTranslation, submit) => {
+  const modalElement = document.getElementById("connectMainModal");
+  let modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+
+  // TODO: Need to refactor
+  const closeModal = () => {
+    const instance = bootstrap.Modal.getInstance(modalElement);
+    if (instance) instance.hide();
+  };
+
+  document.getElementById("connectModalHeader").innerHTML = translateHTML(`
+        <h2 style="color: #333;" data-i18n="event.addressSuggestionTitle">Address Verification</h2>
+    `);
+
+  document.getElementById("connectModalBody").innerHTML = translateHTML(`
+        <div style="margin-bottom: 20px;" data-i18n="${i18nTranslation}">
+            We can’t verify your address with the USPS. Please confirm the address you entered is correct below or click the Go Back button to enter a different address.
+        </div>
+        <div style="display: flex; gap: 20px; margin-left: 25%; margin-right: 25%">
+            <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
+                <div style="margin-bottom: 15px;">
+                    ${address.streetAddress} ${address.secondaryAddress} <br>
+                    ${address.city} ${address.state} ${address.zipCode} 
+                </div>
+                <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressKeepButton" data-i18n="event.addressSuggestionKeepButton">Keep address I entered</button>
+            </div>
+        </div>
+    `);
+
+  document.getElementById("connectModalFooter").innerHTML = translateHTML(`
+        <div class="d-flex justify-content-between w-100">
+            <button data-i18n="event.navButtonsClose" type="button" title="Go Back" class="btn btn-dark" id="goBackButton">Go Back</button>
+        </div>
+    `);
+
+  modalInstance.show();
+
+  document.getElementById("addressKeepButton").addEventListener("click", async () => {
+    const { streetAddress, secondaryAddress, city, state, zipCode } = address;
+    await submit(streetAddress, secondaryAddress, city, state, zipCode);
+    closeModal();
+  });
+
+  // Delay the 'goBackButton' since it's rendered dynamically
+  setTimeout(() => {
+    const goBackButton = document.getElementById("goBackButton");
+    if (goBackButton) {
+      goBackButton.addEventListener("click", () => {
+        closeModal();
+      });
+    }
+  }, 100);
+};
 
 export const showMailAddressSuggestionMyProfile = (uspsSuggestion, i18nTranslation, submit) => {
   const modalElement = document.getElementById("connectMainModal");
