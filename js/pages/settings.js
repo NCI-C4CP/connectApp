@@ -639,16 +639,16 @@ const handleEditMailingAddressSection = () => {
             const country = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress1Country').value.trim()) : '';
             const isPOBox = document.getElementById('poBoxCheckbox').checked;
         
-            const {hasError, uspsSuggestion, addressNotFound} = await validateMailingAddress(1, addressLine1, city, state, zip, isInternational, country);
+            const { hasError, uspsSuggestion, isValidatedByUSPSApi, addressNotFound } = await validateMailingAddress(1, addressLine1, city, state, zip, isInternational, country);
         
-            const submitNewAddress = async (addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country) => {
+            const submitNewAddress = async (addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isValidatedByUSPS = isValidatedByUSPSApi) => {
                 formVisBools.isMailingAddressFormDisplayed = toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed);
                 toggleButtonText();
 
                 if (isInternational === cId.yes) {
-                    await submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isPOBox, false, isInternational, addressLine3, country);
+                    await submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isPOBox, false, isValidatedByUSPS);
                 } else {
-                    await submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isPOBox, false, isInternational);
+                    await submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isInternational, undefined, undefined, isPOBox, false, isValidatedByUSPS);
                 }
                 //Reset the form
                 document.getElementById('UPAddress1International').checked = false;
@@ -685,36 +685,35 @@ const handleEditMailingAddressSection = () => {
                 }
                 document.getElementById(`UPAddress1Zip`).classList.remove('d-none');
                 document.getElementById(`UPAddress1Postal`).classList.add('d-none');
-            }
+            };
 
             if (!hasError) {
-                
                 if (uspsSuggestion.suggestion) {
                     showMailAddressSuggestionMyProfile(
                         uspsSuggestion,
                         'event.addressSuggestionDescription',
-                        (streetAddress, secondaryAddress, city, state, zipCode) => {
-                            submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational);
+                        (streetAddress, secondaryAddress, city, state, zipCode, isValidatedByUSPSSelectionModal) => {
+                            submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, isValidatedByUSPSSelectionModal);
                         }
                     );
                 } else {
-                    submitNewAddress(addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country);
+                    submitNewAddress(addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isValidatedByUSPSApi);
                 }
             } else if (addressNotFound) { //If the error is address not found then verify
                 showMailAddressConfirmationMyProfile(
                     {streetAddress: addressLine1, secondaryAddress: addressLine2, city, state, zipCode: zip},
                     'event.addressConfirmationDescription',
                     (streetAddress, secondaryAddress, city, state, zipCode) => {
-                        submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational);
+                        submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, false);
                     }
-                )
+                );
             } 
         });
     }
 };
 
-const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, isPOBox = false, isClearing = false, isInternational, addressLine3, country) => {
-  const isSuccess = await changeMailingAddress(id, addressLine1, addressLine2, city, state, zip, userData, isPOBox, isClearing, isInternational, addressLine3, country).catch(function (error) {
+const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isPOBox = false, isClearing = false, isValidatedByUSPS = false) => {
+  const isSuccess = await changeMailingAddress(id, addressLine1, addressLine2, city, state, zip, userData, isInternational, addressLine3, country, isPOBox, isClearing, isValidatedByUSPS).catch(function (error) {
     document.getElementById(`mailingAddressFail${id}`).style.display = 'block';
     document.getElementById(`mailingAddressError${id}`).innerHTML = translateText('settings.failMailUpdate');
   });
@@ -787,16 +786,16 @@ const handleEditPhysicalMailingAddressSection = () => {
             const zip = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress2Postal').value.trim()) : escapeHTML(document.getElementById('UPAddress2Zip').value.trim());
             const country = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress2Country').value.trim()) : '';
     
-            const {hasError, uspsSuggestion, addressNotFound} = await validateMailingAddress(2, addressLine1, city, state, zip, isInternational, country);
+            const { hasError, uspsSuggestion, isValidatedByUSPSApi, addressNotFound } = await validateMailingAddress(2, addressLine1, city, state, zip, isInternational, country);
         
-            const submitNewAddress = async (addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country) => {
+            const submitNewAddress = async (addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isValidatedByUSPS = isValidatedByUSPSApi) => {
                 formVisBools.isPhysicalMailingAddressFormDisplayed = toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed);
                 toggleButtonText();
 
                 if (isInternational === cId.yes) {
-                    await submitNewMailingAddress(2, addressLine1, addressLine2, city, state, zip, false, false, isInternational, addressLine3, country);
+                    await submitNewMailingAddress(2, addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, false, false, isValidatedByUSPS);
                 } else {
-                    await submitNewMailingAddress(2, addressLine1, addressLine2, city, state, zip, false, false, isInternational);
+                    await submitNewMailingAddress(2, addressLine1, addressLine2, city, state, zip, isInternational, undefined, undefined, false, false, isValidatedByUSPS);
                 }
                 //Reset the form
                 document.getElementById('UPAddress2International').checked = false;
@@ -833,29 +832,28 @@ const handleEditPhysicalMailingAddressSection = () => {
                 }
                 document.getElementById(`UPAddress2Zip`).classList.remove('d-none');
                 document.getElementById(`UPAddress2Postal`).classList.add('d-none');
-            }
+            };
 
             if (!hasError) {
-          
                 if (uspsSuggestion.suggestion) {
                     showMailAddressSuggestionMyProfile(
                         uspsSuggestion,
                         'event.addressSuggestionDescriptionPhysical',
-                        (streetAddress, secondaryAddress, city, state, zipCode) => {
-                            submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational);
+                        (streetAddress, secondaryAddress, city, state, zipCode, isValidatedByUSPSSelectionModal) => {
+                            submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, isValidatedByUSPSSelectionModal);
                         }
                     );
                 } else {
-                    submitNewAddress(addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country);
+                    submitNewAddress(addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isValidatedByUSPSApi);
                 }
             } else if (addressNotFound) { //If the error is address not found then verify
                 showMailAddressConfirmationMyProfile(
                     {streetAddress: addressLine1, secondaryAddress: addressLine2, city, state, zipCode: zip},
                     'event.addressConfirmationDescriptionPhysical',
                     (streetAddress, secondaryAddress, city, state, zipCode) => {
-                        submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational);
+                        submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, false);
                     }
-                )
+                );
             } 
         });
     }
@@ -865,7 +863,7 @@ const handleClearPhysicalAddress = () => {
     if (document.getElementById('clearPhysicalAddrBtn')) {
         document.getElementById('clearPhysicalAddrBtn').addEventListener('click', async (e) => {
             showClearAddressConfirmation(() => {
-                submitNewMailingAddress(2, "", "", "", "", "", false, true)
+                submitNewMailingAddress(2, "", "", "", "", "", undefined, undefined, undefined, false, true)
             })
         })
     }
@@ -875,7 +873,7 @@ const handleClearAlternateAddress = () => {
     if (document.getElementById('clearAlternateAddrBtn')) {
         document.getElementById('clearAlternateAddrBtn').addEventListener('click', async (e) => {
             showClearAddressConfirmation(() => {
-                submitNewMailingAddress(3, "", "", "", "", "", false, true)
+                submitNewMailingAddress(3, "", "", "", "", "", undefined, undefined, undefined, false, true)
             })
         })
     }
@@ -912,16 +910,16 @@ const handleEditAltAddressSection = () => {
             const country = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress3Country').value.trim()) : '';
             const altAddressIsPOBox = document.getElementById("poBoxCheckboxAltAddress")?.checked;
     
-            const { hasError, uspsSuggestion, addressNotFound } = await validateMailingAddress(3, altAddressLine1, altCity, altState, altZip, isInternational, country);
+            const { hasError, uspsSuggestion, isValidatedByUSPSApi, addressNotFound } = await validateMailingAddress(3, altAddressLine1, altCity, altState, altZip, isInternational, country);
     
-            const submitNewAddress = async (addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country) => {
+            const submitNewAddress = async (addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isValidatedByUSPS = isValidatedByUSPSApi) => {
                 formVisBools.isAltAddressFormDisplayed = toggleElementVisibility(altAddressElementArray, formVisBools.isAltAddressFormDisplayed);
                 toggleButtonText();
 
                 if (isInternational === cId.yes) {
-                     await submitNewMailingAddress(3, addressLine1, addressLine2, city, state, zip, altAddressIsPOBox, false, isInternational, addressLine3, country);
+                     await submitNewMailingAddress(3, addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, altAddressIsPOBox, false, isValidatedByUSPS);
                 } else {
-                    await submitNewMailingAddress(3, addressLine1, addressLine2, city, state, zip, altAddressIsPOBox, false, isInternational);
+                    await submitNewMailingAddress(3, addressLine1, addressLine2, city, state, zip, isInternational, undefined, undefined, altAddressIsPOBox, false, isValidatedByUSPS);
                 }
                 //Reset the form
                 document.getElementById('UPAddress3International').checked = false;
@@ -958,29 +956,28 @@ const handleEditAltAddressSection = () => {
                 }
                 document.getElementById(`UPAddress3Zip`).classList.remove('d-none');
                 document.getElementById(`UPAddress3Postal`).classList.add('d-none');
-            }
+            };
 
             if (!hasError) {
-
                 if (uspsSuggestion.suggestion) {
                     showMailAddressSuggestionMyProfile(
                         uspsSuggestion,
                         'event.addressSuggestionDescriptionAlternate',
-                        (streetAddress, secondaryAddress, city, state, zipCode) => {
-                            submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational);
+                        (streetAddress, secondaryAddress, city, state, zipCode, isValidatedByUSPSSelectionModal) => {
+                            submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, isValidatedByUSPSSelectionModal);
                         }
                     );
                 } else {
-                    await submitNewAddress(altAddressLine1, altAddressLine2, altCity, altState, altZip, isInternational, altAddressLine3, country);
+                    await submitNewAddress(altAddressLine1, altAddressLine2, altCity, altState, altZip, isInternational, altAddressLine3, country, isValidatedByUSPSApi);
                 }
             } else if (addressNotFound) { //If the error is address not found then verify
                 showMailAddressConfirmationMyProfile(
                     {streetAddress: altAddressLine1, secondaryAddress: altAddressLine2, city: altCity, state: altState, zipCode: altZip},
                     'event.addressConfirmationDescriptionAlternate',
                     (streetAddress, secondaryAddress, city, state, zipCode) => {
-                        submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational);
+                        submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, false);
                     }
-                )
+                );
             } 
         });
     }
