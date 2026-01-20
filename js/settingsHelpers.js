@@ -421,25 +421,25 @@ const uspsValidateAddress = async (
     };
     const _addressValidation = await addressValidation(addrValidationPayload);
     if (!_addressValidation) {
-        console.error('My Profile - Invalid Address: empty response', addrValidationPayload, _addressValidation);
-        hasError = true;
-        errorMessage(
-            addr1Id,
-            '<span data-i18n="event.invalidAddress">' + translateText("event.invalidAddress") + '</span>'
-        );
-        if (focus) document.getElementById(addr1Id).focus();
-        focus = false;
+        console.error('My Profile - USPS validation empty response:', addrValidationPayload, _addressValidation);
+        uspsSuggestion.warnings.push({
+            code: 'EMPTY_RESPONSE',
+            text: 'USPS validation unavailable; empty response'
+        });
+        addressNotFound = true;
+        isValidatedByUSPSApi = false;
     } else if (_addressValidation.error || !_addressValidation.address || (_addressValidation.status && _addressValidation.status >= 500)) {
         const statusVal = Number(_addressValidation.error?.status ?? _addressValidation.status ?? 0);
         const isServiceUnavailable = statusVal === 0 || statusVal >= 500;
 
         // Do not block submission on service unavailable errors
         if (isServiceUnavailable && !_addressValidation.error?.errors?.length) {
-            console.error('My Profile - USPS validation unavailable:', addrValidationPayload, _addressValidation);
+            console.error('My Profile - USPS validation unavailable (service):', addrValidationPayload, _addressValidation);
             uspsSuggestion.warnings.push({
                 code: 'SERVICE_UNAVAILABLE',
                 text: 'USPS validation unavailable; address not verified'
             });
+            addressNotFound = true;
             isValidatedByUSPSApi = false;
             
         } else {

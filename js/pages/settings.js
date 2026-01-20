@@ -687,7 +687,15 @@ const handleEditMailingAddressSection = () => {
                 document.getElementById(`UPAddress1Postal`).classList.add('d-none');
             };
 
-            if (!hasError) {
+            if (addressNotFound) { // Manual participant confirmation if USPS cannot validate
+                showMailAddressConfirmationMyProfile(
+                    {streetAddress: addressLine1, secondaryAddress: addressLine2, city, state, zipCode: zip},
+                    'event.addressConfirmationDescription',
+                    (streetAddress, secondaryAddress, city, state, zipCode) => {
+                        submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, false);
+                    }
+                );
+            } else if (!hasError) {
                 if (uspsSuggestion.suggestion) {
                     showMailAddressSuggestionMyProfile(
                         uspsSuggestion,
@@ -699,15 +707,8 @@ const handleEditMailingAddressSection = () => {
                 } else {
                     submitNewAddress(addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isValidatedByUSPSApi);
                 }
-            } else if (addressNotFound) { //If the error is address not found then verify
-                showMailAddressConfirmationMyProfile(
-                    {streetAddress: addressLine1, secondaryAddress: addressLine2, city, state, zipCode: zip},
-                    'event.addressConfirmationDescription',
-                    (streetAddress, secondaryAddress, city, state, zipCode) => {
-                        submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, false);
-                    }
-                );
-            } 
+            }
+            // Else scenario is handled with visual warnings in the UI
         });
     }
 };
@@ -834,7 +835,15 @@ const handleEditPhysicalMailingAddressSection = () => {
                 document.getElementById(`UPAddress2Postal`).classList.add('d-none');
             };
 
-            if (!hasError) {
+            if (addressNotFound) { // Manual participant confirmation if USPS cannot validate
+                showMailAddressConfirmationMyProfile(
+                    {streetAddress: addressLine1, secondaryAddress: addressLine2, city, state, zipCode: zip},
+                    'event.addressConfirmationDescriptionPhysical',
+                    (streetAddress, secondaryAddress, city, state, zipCode) => {
+                        submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, false);
+                    }
+                );
+            } else if (!hasError) {
                 if (uspsSuggestion.suggestion) {
                     showMailAddressSuggestionMyProfile(
                         uspsSuggestion,
@@ -846,15 +855,8 @@ const handleEditPhysicalMailingAddressSection = () => {
                 } else {
                     submitNewAddress(addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isValidatedByUSPSApi);
                 }
-            } else if (addressNotFound) { //If the error is address not found then verify
-                showMailAddressConfirmationMyProfile(
-                    {streetAddress: addressLine1, secondaryAddress: addressLine2, city, state, zipCode: zip},
-                    'event.addressConfirmationDescriptionPhysical',
-                    (streetAddress, secondaryAddress, city, state, zipCode) => {
-                        submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, false);
-                    }
-                );
-            } 
+            }
+            // Else scenario is handled with visual warnings in the UI
         });
     }
 };
@@ -958,7 +960,15 @@ const handleEditAltAddressSection = () => {
                 document.getElementById(`UPAddress3Postal`).classList.add('d-none');
             };
 
-            if (!hasError) {
+            if (addressNotFound) { // Manual participant confirmation if USPS cannot validate
+                showMailAddressConfirmationMyProfile(
+                    {streetAddress: altAddressLine1, secondaryAddress: altAddressLine2, city: altCity, state: altState, zipCode: altZip},
+                    'event.addressConfirmationDescriptionAlternate',
+                    (streetAddress, secondaryAddress, city, state, zipCode) => {
+                        submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, false);
+                    }
+                );
+            } else if (!hasError) {
                 if (uspsSuggestion.suggestion) {
                     showMailAddressSuggestionMyProfile(
                         uspsSuggestion,
@@ -970,15 +980,8 @@ const handleEditAltAddressSection = () => {
                 } else {
                     await submitNewAddress(altAddressLine1, altAddressLine2, altCity, altState, altZip, isInternational, altAddressLine3, country, isValidatedByUSPSApi);
                 }
-            } else if (addressNotFound) { //If the error is address not found then verify
-                showMailAddressConfirmationMyProfile(
-                    {streetAddress: altAddressLine1, secondaryAddress: altAddressLine2, city: altCity, state: altState, zipCode: altZip},
-                    'event.addressConfirmationDescriptionAlternate',
-                    (streetAddress, secondaryAddress, city, state, zipCode) => {
-                        submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, false);
-                    }
-                );
-            } 
+            }
+            // Else scenario is handled with visual warnings in the UI
         });
     }
 };
