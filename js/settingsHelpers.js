@@ -1136,7 +1136,7 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
      };
   }
 
-  const { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValues, userData);
+  const { changedUserDataForProfile, changedUserDataForHistory } = findChangedUserDataValues(newValues, userData, 'changeMailingAddress');
   const isSuccess = await processUserDataUpdate(changedUserDataForProfile, changedUserDataForHistory, userData[cId.userProfileHistory], userData[cId.prefEmail], 'mailingAddress');
   return isSuccess;
 };
@@ -1388,6 +1388,11 @@ const cleanPhoneNumber = (phoneNumber) => {
   return phoneNumber ? phoneNumber.replace(/\D/g, '') : '';
 };
 
+// Address field groups
+const mailingAddressFields = [cId.isIntlAddr, cId.address1, cId.address2, cId.address3, cId.city, cId.state, cId.country, cId.zip, cId.isPOBox];
+const physicalAddressFields = [cId.physicalAddrIntl, cId.physicalAddress1, cId.physicalAddress2, cId.physicalAddress3, cId.physicalCity, cId.physicalState, cId.physicalCountry, cId.physicalZip];
+const altAddressFields = [cId.isIntlAltAddress, cId.altAddress1, cId.altAddress2, cId.altAddress3, cId.altCity, cId.altState, cId.altCountry, cId.altZip, cId.isPOBoxAltAddress, cId.doesAltAddressExist];
+
 /**
  * Iterate the new values, compare them to existing values, and return the changed values.
  * write an empty string to firestore if the history value is null/undefined/empty --per spec on 05-09-2023
@@ -1467,6 +1472,24 @@ const findChangedUserDataValues = (newUserData, existingUserData, type) => {
     }
   }
 
+  // Force-include USPS validation flags in history when related address fields change
+  if (type === 'changeMailingAddress') {
+    const mailingAddressChanged = mailingAddressFields.some(field => field in changedUserDataForProfile);
+    if (mailingAddressChanged) {
+      changedUserDataForHistory[cId.isMailingAddressUSPSUnvalidated] = existingUserData[cId.isMailingAddressUSPSUnvalidated] ?? '';
+    }
+
+    const physicalAddressChanged = physicalAddressFields.some(field => field in changedUserDataForProfile);
+    if (physicalAddressChanged) {
+      changedUserDataForHistory[cId.isPhysicalAddressUSPSUnvalidated] = existingUserData[cId.isPhysicalAddressUSPSUnvalidated] ?? '';
+    }
+
+    const altAddressChanged = altAddressFields.some(field => field in changedUserDataForProfile);
+    if (altAddressChanged) {
+      changedUserDataForHistory[cId.isAltAddressUSPSUnvalidated] = existingUserData[cId.isAltAddressUSPSUnvalidated] ?? '';
+    }
+  }
+
   keysToSkipIfNull.forEach(key => {
     if (changedUserDataForHistory[key] === '') changedUserDataForHistory[key] = null;
   });
@@ -1539,39 +1562,10 @@ const populateUserHistoryMap = (existingData, preferredEmail, newSuffix) => {
     cId.canWeVoicemailHome,
     cId.otherPhone,
     cId.canWeVoicemailOther,
-    
-    // Mailing Address
-    cId.isIntlAddr,
-    cId.address1,
-    cId.address2,
-    cId.address3,
-    cId.city,
-    cId.state,
-    cId.country,
-    cId.zip,
-    cId.isPOBox,
-    
-    // Physical Address
-    cId.physicalAddrIntl,
-    cId.physicalAddress1,
-    cId.physicalAddress2,
-    cId.physicalAddress3,
-    cId.physicalCity,
-    cId.physicalState,
-    cId.physicalCountry,
-    cId.physicalZip,
-    
-    // Alternate Address
-    cId.isIntlAltAddress,
-    cId.altAddress1,
-    cId.altAddress2,
-    cId.altAddress3,
-    cId.altCity,
-    cId.altState,
-    cId.altCountry,
-    cId.altZip,
-    cId.isPOBoxAltAddress,
-    cId.doesAltAddressExist,
+    // Address fields
+    ...mailingAddressFields,
+    ...physicalAddressFields,
+    ...altAddressFields,
 
     // Address validation flags (Jan 2026. Will be missing/null in legacy records)
     cId.isMailingAddressUSPSUnvalidated,
