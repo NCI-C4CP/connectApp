@@ -1,5 +1,5 @@
 import { allStates, escapeHTML, showAnimation, hideAnimation, getMyData, hasUserData, firebaseSignInRender, validEmailFormat, validPhoneNumberFormat, checkAccount, translateHTML, translateText, languageTranslations } from '../shared.js';
-import { attachTabEventListeners, addOrUpdateAuthenticationMethod, changeAltContactInformation, changeContactInformation, changePreferredLanguage, changeMailingAddress, changeName, formatFirebaseAuthPhoneNumber, FormTypes, getCheckedRadioButtonValue, handleContactInformationRadioButtonPresets, handleOptionalFieldVisibility, hideOptionalElementsOnShowForm, hideSuccessMessage, openUpdateLoginForm, showAndPushElementToArrayIfExists, showEditButtonsOnUserVerified, suffixList, suffixToTextMap, toggleElementVisibility, togglePendingVerificationMessage, unlinkFirebaseAuthProvider, updatePhoneNumberInputFocus, validateAltContactInformation, validateContactInformation, validateLoginEmail, validateLoginPhone, validateMailingAddress, validateName, showMailAddressSuggestionMyProfile, showRiskyEmailWarningMyProfile, showClearAddressConfirmation, renderCountries } from '../settingsHelpers.js';
+import { attachTabEventListeners, addOrUpdateAuthenticationMethod, changeAltContactInformation, changeContactInformation, changePreferredLanguage, changeMailingAddress, changeName, formatFirebaseAuthPhoneNumber, FormTypes, getCheckedRadioButtonValue, handleContactInformationRadioButtonPresets, handleOptionalFieldVisibility, hideOptionalElementsOnShowForm, hideSuccessMessage, openUpdateLoginForm, showAndPushElementToArrayIfExists, showEditButtonsOnUserVerified, suffixList, suffixToTextMap, toggleElementVisibility, togglePendingVerificationMessage, unlinkFirebaseAuthProvider, updatePhoneNumberInputFocus, validateAltContactInformation, validateContactInformation, validateLoginEmail, validateLoginPhone, validateMailingAddress, validateName, showMailAddressSuggestionMyProfile, showRiskyEmailWarningMyProfile, showClearAddressConfirmation, renderCountries, showMailAddressConfirmationMyProfile } from '../settingsHelpers.js';
 import { addEventAddressAutoComplete, addEventInternationalAddressToggle } from '../event.js';
 import {addEventAgreementOptions} from './agreements.js';
 import cId from '../fieldToConceptIdMapping.js';
@@ -639,73 +639,82 @@ const handleEditMailingAddressSection = () => {
             const country = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress1Country').value.trim()) : '';
             const isPOBox = document.getElementById('poBoxCheckbox').checked;
         
-            const {hasError, uspsSuggestion} = await validateMailingAddress(1, addressLine1, city, state, zip, isInternational, country);
+            const { hasError, uspsSuggestion, isValidatedByUSPSApi, addressNotFound } = await validateMailingAddress(1, addressLine1, city, state, zip, isInternational, country);
         
-            if (!hasError) {
-                const submitNewAddress = async (addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country) => {
-                    formVisBools.isMailingAddressFormDisplayed = toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed);
-                    toggleButtonText();
+            const submitNewAddress = async (addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isValidatedByUSPS = isValidatedByUSPSApi) => {
+                formVisBools.isMailingAddressFormDisplayed = toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed);
+                toggleButtonText();
 
-                    if (isInternational === cId.yes) {
-                        await submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isPOBox, false, isInternational, addressLine3, country);
-                    } else {
-                        await submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isPOBox, false, isInternational);
-                    }
-                    //Reset the form
-                    document.getElementById('UPAddress1International').checked = false;
-                    document.getElementById(`UPAddress1Line1`).value = "";
-                    document.getElementById(`UPAddress1Line2`).value = "";
-                    document.getElementById(`UPAddress1Line3`).value = "";
-                    document.getElementById(`UPAddress1City`).value = "";
-                    document.getElementById(`UPAddress1State`).value = "";
-                    document.getElementById(`UPAddress1Region`).value = "";
-                    document.getElementById(`UPAddress1Zip`).value = "";
-                    document.getElementById(`UPAddress1Postal`).value = "";
-                    document.getElementById(`UPAddress1Country`).value = "";
-                    //Reset the ui
-                    document.getElementById(`UPAddress1Country`).parentNode.parentNode.classList.add('d-none');
-                    document.getElementById(`UPAddress1Line3`).parentNode.parentNode.classList.add('d-none');
-                    const UPAddressStateLabel = document.querySelector(`label[for="UPAddress1Region"]`);
-                    if (UPAddressStateLabel) {
-                        UPAddressStateLabel.dataset.i18n = 'settings.state';
-                        UPAddressStateLabel.setAttribute('for', `UPAddress1State`);
-                        UPAddressStateLabel.parentNode.classList.add('col-lg-2');
-                        UPAddressStateLabel.parentNode.classList.remove('col-lg-6');
-                        translateHTML(UPAddressStateLabel);
-                    }
-                    document.getElementById(`UPAddress1State`).classList.remove('d-none');
-                    document.getElementById(`UPAddress1Region`).classList.add('d-none');
-
-                    const UPAddressZipLabel = document.querySelector(`label[for="UPAddress1Postal"]`);
-                    if (UPAddressZipLabel) {
-                        UPAddressZipLabel.dataset.i18n = 'settings.zip';
-                        UPAddressZipLabel.setAttribute('for', `UPAddress1Zip`);
-                        UPAddressZipLabel.parentNode.classList.add('col-lg-2');
-                        UPAddressZipLabel.parentNode.classList.remove('col-lg-6');
-                        translateHTML(UPAddressZipLabel);
-                    }
-                    document.getElementById(`UPAddress1Zip`).classList.remove('d-none');
-                    document.getElementById(`UPAddress1Postal`).classList.add('d-none');
+                if (isInternational === cId.yes) {
+                    await submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isPOBox, false, isValidatedByUSPS);
+                } else {
+                    await submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isInternational, undefined, undefined, isPOBox, false, isValidatedByUSPS);
                 }
-                
+                //Reset the form
+                document.getElementById('UPAddress1International').checked = false;
+                document.getElementById(`UPAddress1Line1`).value = "";
+                document.getElementById(`UPAddress1Line2`).value = "";
+                document.getElementById(`UPAddress1Line3`).value = "";
+                document.getElementById(`UPAddress1City`).value = "";
+                document.getElementById(`UPAddress1State`).value = "";
+                document.getElementById(`UPAddress1Region`).value = "";
+                document.getElementById(`UPAddress1Zip`).value = "";
+                document.getElementById(`UPAddress1Postal`).value = "";
+                document.getElementById(`UPAddress1Country`).value = "";
+                //Reset the ui
+                document.getElementById(`UPAddress1Country`).parentNode.parentNode.classList.add('d-none');
+                document.getElementById(`UPAddress1Line3`).parentNode.parentNode.classList.add('d-none');
+                const UPAddressStateLabel = document.querySelector(`label[for="UPAddress1Region"]`);
+                if (UPAddressStateLabel) {
+                    UPAddressStateLabel.dataset.i18n = 'settings.state';
+                    UPAddressStateLabel.setAttribute('for', `UPAddress1State`);
+                    UPAddressStateLabel.parentNode.classList.add('col-lg-2');
+                    UPAddressStateLabel.parentNode.classList.remove('col-lg-6');
+                    translateHTML(UPAddressStateLabel);
+                }
+                document.getElementById(`UPAddress1State`).classList.remove('d-none');
+                document.getElementById(`UPAddress1Region`).classList.add('d-none');
+
+                const UPAddressZipLabel = document.querySelector(`label[for="UPAddress1Postal"]`);
+                if (UPAddressZipLabel) {
+                    UPAddressZipLabel.dataset.i18n = 'settings.zip';
+                    UPAddressZipLabel.setAttribute('for', `UPAddress1Zip`);
+                    UPAddressZipLabel.parentNode.classList.add('col-lg-2');
+                    UPAddressZipLabel.parentNode.classList.remove('col-lg-6');
+                    translateHTML(UPAddressZipLabel);
+                }
+                document.getElementById(`UPAddress1Zip`).classList.remove('d-none');
+                document.getElementById(`UPAddress1Postal`).classList.add('d-none');
+            };
+
+            if (addressNotFound) { // Manual participant confirmation if USPS cannot validate
+                showMailAddressConfirmationMyProfile(
+                    {streetAddress: addressLine1, secondaryAddress: addressLine2, city, state, zipCode: zip},
+                    'event.addressConfirmationDescription',
+                    (streetAddress, secondaryAddress, city, state, zipCode) => {
+                        submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, false);
+                    }
+                );
+            } else if (!hasError) {
                 if (uspsSuggestion.suggestion) {
                     showMailAddressSuggestionMyProfile(
                         uspsSuggestion,
                         'event.addressSuggestionDescription',
-                        (streetAddress, secondaryAddress, city, state, zipCode) => {
-                            submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational);
+                        (streetAddress, secondaryAddress, city, state, zipCode, isValidatedByUSPSSelectionModal) => {
+                            submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, isValidatedByUSPSSelectionModal);
                         }
                     );
                 } else {
-                    submitNewAddress(addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country);
+                    submitNewAddress(addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isValidatedByUSPSApi);
                 }
             }
+            // Else scenario is handled with visual warnings in the UI
         });
     }
 };
 
-const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, isPOBox = false, isClearing = false, isInternational, addressLine3, country) => {
-  const isSuccess = await changeMailingAddress(id, addressLine1, addressLine2, city, state, zip, userData, isPOBox, isClearing, isInternational, addressLine3, country).catch(function (error) {
+const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isPOBox = false, isClearing = false, isValidatedByUSPS = false) => {
+  const isSuccess = await changeMailingAddress(id, addressLine1, addressLine2, city, state, zip, userData, isInternational, addressLine3, country, isPOBox, isClearing, isValidatedByUSPS).catch(function (error) {
     document.getElementById(`mailingAddressFail${id}`).style.display = 'block';
     document.getElementById(`mailingAddressError${id}`).innerHTML = translateText('settings.failMailUpdate');
   });
@@ -778,67 +787,76 @@ const handleEditPhysicalMailingAddressSection = () => {
             const zip = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress2Postal').value.trim()) : escapeHTML(document.getElementById('UPAddress2Zip').value.trim());
             const country = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress2Country').value.trim()) : '';
     
-            const {hasError, uspsSuggestion} = await validateMailingAddress(2, addressLine1, city, state, zip, isInternational, country);
+            const { hasError, uspsSuggestion, isValidatedByUSPSApi, addressNotFound } = await validateMailingAddress(2, addressLine1, city, state, zip, isInternational, country);
         
-            if (!hasError) {
-                const submitNewAddress = async (addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country) => {
-                    formVisBools.isPhysicalMailingAddressFormDisplayed = toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed);
-                    toggleButtonText();
+            const submitNewAddress = async (addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isValidatedByUSPS = isValidatedByUSPSApi) => {
+                formVisBools.isPhysicalMailingAddressFormDisplayed = toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed);
+                toggleButtonText();
 
-                    if (isInternational === cId.yes) {
-                        await submitNewMailingAddress(2, addressLine1, addressLine2, city, state, zip, false, false, isInternational, addressLine3, country);
-                    } else {
-                        await submitNewMailingAddress(2, addressLine1, addressLine2, city, state, zip, false, false, isInternational);
-                    }
-                    //Reset the form
-                    document.getElementById('UPAddress2International').checked = false;
-                    document.getElementById(`UPAddress2Line1`).value = "";
-                    document.getElementById(`UPAddress2Line2`).value = "";
-                    document.getElementById(`UPAddress2Line3`).value = "";
-                    document.getElementById(`UPAddress2City`).value = "";
-                    document.getElementById(`UPAddress2State`).value = "";
-                    document.getElementById(`UPAddress2Region`).value = "";
-                    document.getElementById(`UPAddress2Zip`).value = "";
-                    document.getElementById(`UPAddress2Postal`).value = "";
-                    document.getElementById(`UPAddress2Country`).value = "";
-                    //Reset the ui
-                    document.getElementById(`UPAddress2Country`).parentNode.parentNode.classList.add('d-none');
-                    document.getElementById(`UPAddress2Line3`).parentNode.parentNode.classList.add('d-none');
-                    const UPAddressStateLabel = document.querySelector(`label[for="UPAddress2Region"]`);
-                    if (UPAddressStateLabel) {
-                        UPAddressStateLabel.dataset.i18n = 'settings.state';
-                        UPAddressStateLabel.setAttribute('for', `UPAddress2State`);
-                        UPAddressStateLabel.parentNode.classList.add('col-lg-2');
-                        UPAddressStateLabel.parentNode.classList.remove('col-lg-6');
-                        translateHTML(UPAddressStateLabel);
-                    }
-                    document.getElementById(`UPAddress2State`).classList.remove('d-none');
-                    document.getElementById(`UPAddress2Region`).classList.add('d-none');
-
-                    const UPAddressZipLabel = document.querySelector(`label[for="UPAddress2Postal"]`);
-                    if (UPAddressZipLabel) {
-                        UPAddressZipLabel.dataset.i18n = 'settings.zip';
-                        UPAddressZipLabel.setAttribute('for', `UPAddress2Zip`);
-                        UPAddressZipLabel.parentNode.classList.add('col-lg-2');
-                        UPAddressZipLabel.parentNode.classList.remove('col-lg-6');
-                        translateHTML(UPAddressZipLabel);
-                    }
-                    document.getElementById(`UPAddress2Zip`).classList.remove('d-none');
-                    document.getElementById(`UPAddress2Postal`).classList.add('d-none');
+                if (isInternational === cId.yes) {
+                    await submitNewMailingAddress(2, addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, false, false, isValidatedByUSPS);
+                } else {
+                    await submitNewMailingAddress(2, addressLine1, addressLine2, city, state, zip, isInternational, undefined, undefined, false, false, isValidatedByUSPS);
                 }
-          
+                //Reset the form
+                document.getElementById('UPAddress2International').checked = false;
+                document.getElementById(`UPAddress2Line1`).value = "";
+                document.getElementById(`UPAddress2Line2`).value = "";
+                document.getElementById(`UPAddress2Line3`).value = "";
+                document.getElementById(`UPAddress2City`).value = "";
+                document.getElementById(`UPAddress2State`).value = "";
+                document.getElementById(`UPAddress2Region`).value = "";
+                document.getElementById(`UPAddress2Zip`).value = "";
+                document.getElementById(`UPAddress2Postal`).value = "";
+                document.getElementById(`UPAddress2Country`).value = "";
+                //Reset the ui
+                document.getElementById(`UPAddress2Country`).parentNode.parentNode.classList.add('d-none');
+                document.getElementById(`UPAddress2Line3`).parentNode.parentNode.classList.add('d-none');
+                const UPAddressStateLabel = document.querySelector(`label[for="UPAddress2Region"]`);
+                if (UPAddressStateLabel) {
+                    UPAddressStateLabel.dataset.i18n = 'settings.state';
+                    UPAddressStateLabel.setAttribute('for', `UPAddress2State`);
+                    UPAddressStateLabel.parentNode.classList.add('col-lg-2');
+                    UPAddressStateLabel.parentNode.classList.remove('col-lg-6');
+                    translateHTML(UPAddressStateLabel);
+                }
+                document.getElementById(`UPAddress2State`).classList.remove('d-none');
+                document.getElementById(`UPAddress2Region`).classList.add('d-none');
+
+                const UPAddressZipLabel = document.querySelector(`label[for="UPAddress2Postal"]`);
+                if (UPAddressZipLabel) {
+                    UPAddressZipLabel.dataset.i18n = 'settings.zip';
+                    UPAddressZipLabel.setAttribute('for', `UPAddress2Zip`);
+                    UPAddressZipLabel.parentNode.classList.add('col-lg-2');
+                    UPAddressZipLabel.parentNode.classList.remove('col-lg-6');
+                    translateHTML(UPAddressZipLabel);
+                }
+                document.getElementById(`UPAddress2Zip`).classList.remove('d-none');
+                document.getElementById(`UPAddress2Postal`).classList.add('d-none');
+            };
+
+            if (addressNotFound) { // Manual participant confirmation if USPS cannot validate
+                showMailAddressConfirmationMyProfile(
+                    {streetAddress: addressLine1, secondaryAddress: addressLine2, city, state, zipCode: zip},
+                    'event.addressConfirmationDescriptionPhysical',
+                    (streetAddress, secondaryAddress, city, state, zipCode) => {
+                        submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, false);
+                    }
+                );
+            } else if (!hasError) {
                 if (uspsSuggestion.suggestion) {
                     showMailAddressSuggestionMyProfile(
                         uspsSuggestion,
                         'event.addressSuggestionDescriptionPhysical',
-                        (streetAddress, secondaryAddress, city, state, zipCode) => {
-                            submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational);
+                        (streetAddress, secondaryAddress, city, state, zipCode, isValidatedByUSPSSelectionModal) => {
+                            submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, isValidatedByUSPSSelectionModal);
                         }
                     );
                 } else {
-                    submitNewAddress(addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country);
+                    submitNewAddress(addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isValidatedByUSPSApi);
                 }
             }
+            // Else scenario is handled with visual warnings in the UI
         });
     }
 };
@@ -847,7 +865,7 @@ const handleClearPhysicalAddress = () => {
     if (document.getElementById('clearPhysicalAddrBtn')) {
         document.getElementById('clearPhysicalAddrBtn').addEventListener('click', async (e) => {
             showClearAddressConfirmation(() => {
-                submitNewMailingAddress(2, "", "", "", "", "", false, true)
+                submitNewMailingAddress(2, "", "", "", "", "", undefined, undefined, undefined, false, true)
             })
         })
     }
@@ -857,7 +875,7 @@ const handleClearAlternateAddress = () => {
     if (document.getElementById('clearAlternateAddrBtn')) {
         document.getElementById('clearAlternateAddrBtn').addEventListener('click', async (e) => {
             showClearAddressConfirmation(() => {
-                submitNewMailingAddress(3, "", "", "", "", "", false, true)
+                submitNewMailingAddress(3, "", "", "", "", "", undefined, undefined, undefined, false, true)
             })
         })
     }
@@ -894,67 +912,76 @@ const handleEditAltAddressSection = () => {
             const country = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress3Country').value.trim()) : '';
             const altAddressIsPOBox = document.getElementById("poBoxCheckboxAltAddress")?.checked;
     
-            const { hasError, uspsSuggestion } = await validateMailingAddress(3, altAddressLine1, altCity, altState, altZip, isInternational, country);
+            const { hasError, uspsSuggestion, isValidatedByUSPSApi, addressNotFound } = await validateMailingAddress(3, altAddressLine1, altCity, altState, altZip, isInternational, country);
     
-            if (!hasError) {
-                const submitNewAddress = async (addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country) => {
-                    formVisBools.isAltAddressFormDisplayed = toggleElementVisibility(altAddressElementArray, formVisBools.isAltAddressFormDisplayed);
-                    toggleButtonText();
+            const submitNewAddress = async (addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isValidatedByUSPS = isValidatedByUSPSApi) => {
+                formVisBools.isAltAddressFormDisplayed = toggleElementVisibility(altAddressElementArray, formVisBools.isAltAddressFormDisplayed);
+                toggleButtonText();
 
-                    if (isInternational === cId.yes) {
-                         await submitNewMailingAddress(3, addressLine1, addressLine2, city, state, zip, altAddressIsPOBox, false, isInternational, addressLine3, country);
-                    } else {
-                        await submitNewMailingAddress(3, addressLine1, addressLine2, city, state, zip, altAddressIsPOBox, false, isInternational);
-                    }
-                    //Reset the form
-                    document.getElementById('UPAddress3International').checked = false;
-                    document.getElementById(`UPAddress3Line1`).value = "";
-                    document.getElementById(`UPAddress3Line2`).value = "";
-                    document.getElementById(`UPAddress3Line3`).value = "";
-                    document.getElementById(`UPAddress3City`).value = "";
-                    document.getElementById(`UPAddress3State`).value = "";
-                    document.getElementById(`UPAddress3Region`).value = "";
-                    document.getElementById(`UPAddress3Zip`).value = "";
-                    document.getElementById(`UPAddress3Postal`).value = "";
-                    document.getElementById(`UPAddress3Country`).value = "";
-                    //Reset the ui
-                    document.getElementById(`UPAddress3Country`).parentNode.parentNode.classList.add('d-none');
-                    document.getElementById(`UPAddress3Line3`).parentNode.parentNode.classList.add('d-none');
-                    const UPAddressStateLabel = document.querySelector(`label[for="UPAddress3Region"]`);
-                    if (UPAddressStateLabel) {
-                        UPAddressStateLabel.dataset.i18n = 'settings.state';
-                        UPAddressStateLabel.setAttribute('for', `UPAddress3State`);
-                        UPAddressStateLabel.parentNode.classList.add('col-lg-2');
-                        UPAddressStateLabel.parentNode.classList.remove('col-lg-6');
-                        translateHTML(UPAddressStateLabel);
-                    }
-                    document.getElementById(`UPAddress3State`).classList.remove('d-none');
-                    document.getElementById(`UPAddress3Region`).classList.add('d-none');
-
-                    const UPAddressZipLabel = document.querySelector(`label[for="UPAddress3Postal"]`);
-                    if (UPAddressZipLabel) {
-                        UPAddressZipLabel.dataset.i18n = 'settings.zip';
-                        UPAddressZipLabel.setAttribute('for', `UPAddress3Zip`);
-                        UPAddressZipLabel.parentNode.classList.add('col-lg-2');
-                        UPAddressZipLabel.parentNode.classList.remove('col-lg-6');
-                        translateHTML(UPAddressZipLabel);
-                    }
-                    document.getElementById(`UPAddress3Zip`).classList.remove('d-none');
-                    document.getElementById(`UPAddress3Postal`).classList.add('d-none');
+                if (isInternational === cId.yes) {
+                     await submitNewMailingAddress(3, addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, altAddressIsPOBox, false, isValidatedByUSPS);
+                } else {
+                    await submitNewMailingAddress(3, addressLine1, addressLine2, city, state, zip, isInternational, undefined, undefined, altAddressIsPOBox, false, isValidatedByUSPS);
                 }
+                //Reset the form
+                document.getElementById('UPAddress3International').checked = false;
+                document.getElementById(`UPAddress3Line1`).value = "";
+                document.getElementById(`UPAddress3Line2`).value = "";
+                document.getElementById(`UPAddress3Line3`).value = "";
+                document.getElementById(`UPAddress3City`).value = "";
+                document.getElementById(`UPAddress3State`).value = "";
+                document.getElementById(`UPAddress3Region`).value = "";
+                document.getElementById(`UPAddress3Zip`).value = "";
+                document.getElementById(`UPAddress3Postal`).value = "";
+                document.getElementById(`UPAddress3Country`).value = "";
+                //Reset the ui
+                document.getElementById(`UPAddress3Country`).parentNode.parentNode.classList.add('d-none');
+                document.getElementById(`UPAddress3Line3`).parentNode.parentNode.classList.add('d-none');
+                const UPAddressStateLabel = document.querySelector(`label[for="UPAddress3Region"]`);
+                if (UPAddressStateLabel) {
+                    UPAddressStateLabel.dataset.i18n = 'settings.state';
+                    UPAddressStateLabel.setAttribute('for', `UPAddress3State`);
+                    UPAddressStateLabel.parentNode.classList.add('col-lg-2');
+                    UPAddressStateLabel.parentNode.classList.remove('col-lg-6');
+                    translateHTML(UPAddressStateLabel);
+                }
+                document.getElementById(`UPAddress3State`).classList.remove('d-none');
+                document.getElementById(`UPAddress3Region`).classList.add('d-none');
 
+                const UPAddressZipLabel = document.querySelector(`label[for="UPAddress3Postal"]`);
+                if (UPAddressZipLabel) {
+                    UPAddressZipLabel.dataset.i18n = 'settings.zip';
+                    UPAddressZipLabel.setAttribute('for', `UPAddress3Zip`);
+                    UPAddressZipLabel.parentNode.classList.add('col-lg-2');
+                    UPAddressZipLabel.parentNode.classList.remove('col-lg-6');
+                    translateHTML(UPAddressZipLabel);
+                }
+                document.getElementById(`UPAddress3Zip`).classList.remove('d-none');
+                document.getElementById(`UPAddress3Postal`).classList.add('d-none');
+            };
+
+            if (addressNotFound) { // Manual participant confirmation if USPS cannot validate
+                showMailAddressConfirmationMyProfile(
+                    {streetAddress: altAddressLine1, secondaryAddress: altAddressLine2, city: altCity, state: altState, zipCode: altZip},
+                    'event.addressConfirmationDescriptionAlternate',
+                    (streetAddress, secondaryAddress, city, state, zipCode) => {
+                        submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, false);
+                    }
+                );
+            } else if (!hasError) {
                 if (uspsSuggestion.suggestion) {
                     showMailAddressSuggestionMyProfile(
                         uspsSuggestion,
                         'event.addressSuggestionDescriptionAlternate',
-                        (streetAddress, secondaryAddress, city, state, zipCode) => {
-                            submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational);
+                        (streetAddress, secondaryAddress, city, state, zipCode, isValidatedByUSPSSelectionModal) => {
+                            submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, isValidatedByUSPSSelectionModal);
                         }
                     );
                 } else {
-                    await submitNewAddress(altAddressLine1, altAddressLine2, altCity, altState, altZip, isInternational, altAddressLine3, country);
+                    await submitNewAddress(altAddressLine1, altAddressLine2, altCity, altState, altZip, isInternational, altAddressLine3, country, isValidatedByUSPSApi);
                 }
             }
+            // Else scenario is handled with visual warnings in the UI
         });
     }
 };

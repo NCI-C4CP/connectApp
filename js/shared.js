@@ -3079,7 +3079,8 @@ export const getFirebaseUI = async () => {
 }
 
 export const emailAddressValidation = async (data) => {
-    const idToken = appState.getState().idToken;
+    const idToken = appState.getState().idToken || await getIdToken();
+
     const response = await fetch(`${api}?api=emailAddressValidation`, {
         method: "POST",
         headers: {
@@ -3092,19 +3093,371 @@ export const emailAddressValidation = async (data) => {
     return jsonResponse;
 }
 
+const summarizeAddressValidationPayload = (payload = {}) => {
+    if (!payload || typeof payload !== "object") {
+        return { hasPayload: !!payload, payloadType: typeof payload };
+    }
+
+    const streetAddress = payload.streetAddress?.toString().trim() || "";
+    const secondaryAddress = payload.secondaryAddress?.toString().trim() || "";
+    const city = payload.city?.toString().trim() || "";
+    const state = payload.state?.toString().trim() || "";
+    const zip = payload.zipCode?.toString().trim() || "";
+
+    return {
+        hasStreetAddress: !!streetAddress,
+        streetAddressLength: streetAddress.length,
+        hasSecondaryAddress: !!secondaryAddress,
+        secondaryAddressLength: secondaryAddress.length,
+        hasCity: !!city,
+        cityLength: city.length,
+        hasState: !!state,
+        stateLength: state.length,
+        hasZip: !!zip,
+        zipLength: zip.length,
+    };
+};
+
 export const addressValidation = async (data) => {
-    const idToken = appState.getState().idToken;
-    const response = await fetch(`${api}?api=addressValidation`, {
-        method: "POST",
-        headers: {
-            Authorization: "Bearer " + idToken
-        },
-        body: JSON.stringify(data)
+    const idToken = appState.getState().idToken || await getIdToken();
+    
+    // To test different response scenarios (from tests/usps.spec.js) until automated testing is implemented:
+    // import { USPS_TEST_RESPONSES } from '../tests/usps.spec.js';
+    // return USPS_TEST_RESPONSES?.__METHOD_NAME__
+    // METHOD_NAME options: success, successWithCorrections, successWithSecondaryAddress, invalidAddress, invalidZipCode, invalidCity, multipleErrors,
+    // addressNotFound, multipleAddresses, missingSecondaryAddress, vacantAddress, businessAddress, dpvConfirmationFailed, serverError, networkError.
+    // Example: return USPS_TEST_RESPONSES?.success; ... return USPS_TEST_RESPONSES?.successWithSecondaryAddress;
+
+    try {
+        const response = await fetch(`${api}?api=addressValidation`, {
+            method: "POST",
+            headers: {
+                Authorization: "Bearer " + idToken
+            },
+            body: JSON.stringify(data)
+        });
+
+        const status = response.status;
+        let jsonResponse = null;
+        try {
+            jsonResponse = await response.json();
+        } catch (jsonErr) {
+            console.error('addressValidation: failed to parse JSON', jsonErr);
+            logDDRumError(jsonErr, 'AddressValidationParseError', {
+                status,
+                ...summarizeAddressValidationPayload(data),
+            });
+            return {
+                error: {
+                    status,
+                    message: 'Invalid response from USPS'
+                }
+            };
+        }
+
+        if (!response.ok) {
+            console.error('addressValidation: non-OK response', status, jsonResponse);
+            if (status === 0 || status >= 500) {
+                const error = new Error(`addressValidation non-OK response (${status})`);
+                logDDRumError(error, 'AddressValidationError', {
+                    status,
+                    ...summarizeAddressValidationPayload(data),
+                });
+            }
+            return jsonResponse.error
+                ? jsonResponse
+                : {
+                      error: {
+                          status,
+                          message: jsonResponse?.message || 'USPS request failed'
+                      }
+                  };
+        }
+
+        return jsonResponse;
+
+    } catch (err) {
+        console.error('addressValidation: fetch failed', err);
+        logDDRumError(err, 'AddressValidationFetchError', {
+            status: err?.status || 0,
+            ...summarizeAddressValidationPayload(data),
+        });
+        return {
+            error: {
+                status: err?.status || 0,
+                message: err?.message || 'Network Error'
+            }
+        };
+    }
+}
+
+/**
+ * Derive deliverability warnings from USPS validation response metadata.
+ * This provides signals used to compute "USPS validated" flags and display warnings.
+ * Note: Retained for future use, but USPS DPV/Vacant/Business address validation is currently ignored (Jan 2026 release).
+ *
+ * @param {Object} additionalInfo - USPS additionalInfo object
+ * @param {Array<{code: string, text: string}>} matches - USPS matches array
+ * @returns {Array<{code: string, text: string}>}
+ */
+
+export const getUSPSDeliverabilityWarnings = (additionalInfo = {}, matches = []) => {
+    // Return early. Decision was made to ignore USPS DPV/Vacant/Business address validation. Remove this return statement to enable additional verification detail (Jan 2026 release).
+    return [];
+
+    // Additional verification detail provided by USPS is currently ignored.
+    const warnings = [];
+
+    const dpv = additionalInfo?.DPVConfirmation;
+    
+    // DPVConfirmation: 'Y' indicates USPS confirmed deliverability.
+    if (dpv && dpv.toUpperCase() !== 'Y') {
+        warnings.push({ code: 'DPV', text: 'USPS could not confirm delivery' });
+    }
+
+    const matchCode = matches?.[0]?.code;
+    if (matchCode === '32') {
+        warnings.push({ code: 'MULTIPLE', text: 'Multiple responses found' });
+    } else if (matchCode === '33') {
+        warnings.push({ code: 'MISSING_SECONDARY', text: 'Missing apartment or suite number' });
+    } else if (matchCode === '34') {
+        warnings.push({ code: 'NOT_CONFIRMED', text: 'Address found but not confirmed' });
+    }
+
+    if (additionalInfo?.vacant === 'Y') {
+        warnings.push({ code: 'VACANT', text: 'USPS marks this address as vacant' });
+    }
+
+    if (additionalInfo?.business === 'Y') {
+        warnings.push({ code: 'BUSINESS', text: 'Business address' });
+    }
+
+    return warnings;
+};
+
+/**
+ * USPS address validation "success" logic used by Sign-up, My Profile, and Samples flows.
+ * Given the user's entered address and the USPS address validation response, decide:
+ * - whether we should show a suggestion modal (original vs suggestion)
+ * - what warnings (if any) to carry forward
+ * - whether the address is considered validated by USPS without user intervention
+ *
+ * Note: If a suggestion is returned, the final `isValidatedByUSPS` must be decided by
+ * the UI choice (keep original => false, use suggested => warnings.length === 0).
+ */
+export const analyzeUSPSAddressSuggestion = ({ streetAddress, secondaryAddress = "", city, state, zipCode, uspsAddress, matches = [], additionalInfo = {} }) => {
+    const warnings = getUSPSDeliverabilityWarnings(additionalInfo, matches);
+
+    const directionalMap = {
+        n: "n",
+        north: "n",
+        s: "s",
+        south: "s",
+        e: "e",
+        east: "e",
+        w: "w",
+        west: "w",
+        ne: "ne",
+        northeast: "ne",
+        nw: "nw",
+        northwest: "nw",
+        se: "se",
+        southeast: "se",
+        sw: "sw",
+        southwest: "sw",
+    };
+
+    const streetTypeMap = {
+        street: "st",
+        st: "st",
+        road: "rd",
+        rd: "rd",
+        avenue: "ave",
+        ave: "ave",
+        boulevard: "blvd",
+        blvd: "blvd",
+        drive: "dr",
+        dr: "dr",
+        lane: "ln",
+        ln: "ln",
+        court: "ct",
+        ct: "ct",
+        circle: "cir",
+        cir: "cir",
+        place: "pl",
+        pl: "pl",
+        parkway: "pkwy",
+        pkwy: "pkwy",
+        highway: "hwy",
+        hwy: "hwy",
+        terrace: "ter",
+        ter: "ter",
+        trail: "trl",
+        trl: "trl",
+        way: "way",
+        alley: "aly",
+        aly: "aly",
+        square: "sq",
+        sq: "sq",
+        center: "ctr",
+        ctr: "ctr",
+        expressway: "expy",
+        expy: "expy",
+        junction: "jct",
+        jct: "jct",
+        mountain: "mtn",
+        mtn: "mtn",
+        plaza: "plz",
+        plz: "plz",
+        route: "rte",
+        rte: "rte",
+        apartment: "apt",
+        apt: "apt",
+        suite: "ste",
+        ste: "ste",
+        unit: "unit",
+    };
+
+    const normalizeTokens = (v) =>
+        (v || "")
+            .toString()
+            .trim()
+            .toLowerCase()
+            .replace(/[.,]/g, "")
+            .replace(/\s+/g, " ")
+            .split(" ")
+            .filter(Boolean)
+            .map((token) => directionalMap[token] || streetTypeMap[token] || token);
+
+    const normalizeStreetText = (v) => normalizeTokens(v).join(" ");
+
+    const normalizeCityText = (v) =>
+        (v || "")
+            .toString()
+            .trim()
+            .toLowerCase()
+            .replace(/[.,]/g, "")
+            .replace(/\s+/g, " ");
+
+    const normalizeZip5 = (v) => (v || "").toString().replace(/\D/g, "").slice(0, 5);
+
+    const inputStateAbbr = statesWithAbbreviations[state] || state;
+    const hasMatchCode = Array.isArray(matches) && matches.length > 0;
+    const uspsSaysExactMatch = matches?.[0]?.code === "31"; // "31" indicates an exact match.
+
+    const normalizedMatches =
+        normalizeStreetText(streetAddress) === normalizeStreetText(uspsAddress?.streetAddress) &&
+        normalizeStreetText(secondaryAddress) === normalizeStreetText(uspsAddress?.secondaryAddress) &&
+        normalizeCityText(city) === normalizeCityText(uspsAddress?.city) &&
+        normalizeCityText(inputStateAbbr) === normalizeCityText(uspsAddress?.state) &&
+        normalizeZip5(zipCode) === normalizeZip5(uspsAddress?.ZIPCode);
+
+    // Only accept USPS "exact match" if our normalized comparison agrees. USPS code "31" (match) lacks precision.
+    const isExactMatch = normalizedMatches && (!hasMatchCode || uspsSaysExactMatch);
+
+    const suggestion = isExactMatch
+        ? undefined
+        : {
+              ...uspsAddress,
+              state: swapKeysAndValues(statesWithAbbreviations)[uspsAddress?.state] || uspsAddress?.state,
+              zipCode: uspsAddress?.ZIPCode,
+          };
+
+    const original = suggestion
+        ? {
+              streetAddress,
+              secondaryAddress,
+              city,
+              state,
+              zipCode,
+          }
+        : undefined;
+
+    // "Validated by USPS" is only true when USPS confirmed deliverability and the entered address is an exact match (no suggestion needed).
+    // Otherwise, the final value depends on the user's choice in the UI modal.
+    const isValidatedByUSPS = warnings.length === 0 && !suggestion;
+
+    return {
+        warnings,
+        original,
+        suggestion,
+        isValidatedByUSPS,
+        isExactMatch,
+    };
+};
+
+// USPS "unvalidated" flags are inverted relative to isValidatedByUSPS. This was a data dictionary decision.
+export const getUSPSUnvalidatedValue = (isValidatedByUSPS, yesValue, noValue) =>
+    isValidatedByUSPS ? noValue : yesValue;
+
+/**
+ * Map USPS address validation errors to UI field targets and i18n keys.
+ * - 010001: Address Not Found
+ * - 010002: Invalid ZIP Code
+ * - 010003: Invalid State
+ * - 010004: Invalid City
+ * - 010005: Invalid Address
+ *
+ * @param {Array<{code, text}>} errors
+ * @param {{addr1Id, cityId, stateId, zipId}} ids
+ * @returns {{targets: Array<{id, i18nKey}>, handled: boolean}}
+ */
+export const mapUSPSErrorsToFieldTargets = (errors = [], ids) => {
+    const targets = [];
+
+    // Add a target (prevent duplicate errors on the same field).
+    const pushUniqueTarget = (id, i18nKey) => {
+        if (!id) return;
+        // de-dupe by id+i18nKey
+        if (!targets.some((t) => t.id === id && t.i18nKey === i18nKey)) {
+            targets.push({ id, i18nKey });
+        }
+    };
+
+    let handled = false;
+    errors.forEach((item) => {
+        const code = item?.code;
+
+        if (code === "010005" || code === "010001") {
+            handled = true;
+            pushUniqueTarget(ids.addr1Id, "event.invalidAddress");
+
+        } else if (code === "010002") {
+
+            handled = true;
+            pushUniqueTarget(ids.zipId, "event.invalidZip");
+
+        } else if (code === "010004") {
+            handled = true;
+            pushUniqueTarget(ids.cityId, "event.invalidCity");
+
+        } else if (code === "010003") {
+            handled = true;
+            pushUniqueTarget(ids.stateId, "event.invalidAddress");
+        }
     });
 
-    const jsonResponse = await response.json();
-    return jsonResponse;
-}
+    return { targets, handled };
+};
+
+/**
+ * Apply USPS field errors to the UI using the standard `errorMessage()`.
+ * Returns whether we focused an element (focus was true and at least one error target existed).
+ *
+ * @param {Array<{id, i18nKey}>} targets
+ * @param {boolean} focus
+ * @returns {boolean} nextFocus
+ */
+export const applyUSPSFieldErrors = (targets = [], focus = true) => {
+    let nextFocus = focus;
+    targets.forEach((t) => {
+        const translated = escapeHTML(translateText(t.i18nKey));
+        const msg = `<span data-i18n="${t.i18nKey}">${translated}</span>`;
+        errorMessage(t.id, msg, nextFocus);
+        if (nextFocus) nextFocus = false;
+    });
+    return nextFocus;
+};
 
 export const requestHomeKit = async (participant) => {
     const idToken = await getIdToken();
