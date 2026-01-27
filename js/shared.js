@@ -1676,8 +1676,8 @@ export const questionnaireModules = () => {
             },
             '2026 Return of Results Preference Survey': {
                 path: {
-                    en: 'prod/module2026ROIPreferencesStage.txt',
-                    es: 'prod/module2026ROIPreferencesStageSpanish.txt'
+                    en: 'prod/module2026ROIPreferences.txt',
+                    es: 'prod/module2026ROIPreferencesSpanish.txt'
                 },
                 moduleId: "ROIPreference2026",
                 enabled: false
