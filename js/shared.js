@@ -3842,13 +3842,13 @@ export const setModuleAttributes = async (data, modules, collections) => {
       data[fieldMapping.verifiedDate] &&
       currentTime > getAdjustedTime(data[fieldMapping.verifiedDate], 270)
     ) {
-      if (data[fieldMapping.CancerScreeningHistory.statusFlag]) {
-        modules["Cancer Screening History"].enabled = true;
-      }
-      
-      if (data[fieldMapping.CancerScreeningHistory.statusFlag] === fieldMapping.moduleStatus.submitted) {
-        modules["Cancer Screening History"].completed = true;
-      }
+        if (data[fieldMapping.CancerScreeningHistory.statusFlag]) {
+            modules["Cancer Screening History"].enabled = true;
+        }
+        
+        if (data[fieldMapping.CancerScreeningHistory.statusFlag] === fieldMapping.moduleStatus.submitted) {
+            modules["Cancer Screening History"].completed = true;
+        }
     }
 
     if (
