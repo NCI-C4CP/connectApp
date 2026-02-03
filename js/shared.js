@@ -3879,12 +3879,9 @@ export const setModuleAttributes = async (data, modules, collections) => {
         }
     }
 
-    // The 2026 Return of Results Preference Survey is available for participants verified on or before August 1, 2026
-    if (data[fieldMapping.ROIPreference2026.statusFlag]) {
-        modules['2026 Return of Results Preference Survey'].enabled = true;
-    }
-
+    // Survey is closed: only show for participants who have already submitted it
     if (data[fieldMapping.ROIPreference2026.statusFlag] === fieldMapping.moduleStatus.submitted) {
+        modules['2026 Return of Results Preference Survey'].enabled = true;
         modules['2026 Return of Results Preference Survey'].completed = true;
     }
     
