@@ -3884,10 +3884,6 @@ export const setModuleAttributes = async (data, modules, collections) => {
         modules['2026 Return of Results Preference Survey'].enabled = true;
         modules['2026 Return of Results Preference Survey'].completed = true;
     }
-
-    if (data[fieldMapping.ROIPreference2026.statusFlag] === fieldMapping.moduleStatus.submitted) {
-        modules['2026 Return of Results Preference Survey'].completed = true;
-    }
     
     return modules;
 };
