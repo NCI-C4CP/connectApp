@@ -832,7 +832,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         const email2 = document.getElementById('UPEmail2');
         const email3 = document.getElementById('UPAdditionalEmail2');
         const email4 = document.getElementById('UPAdditionalEmail3');
-        const altContactEmail = escapeHTML(document.getElementById('altContactEmail')?.value?.trim() || '');
+        const altContactEmail = document.getElementById('altContactEmail')?.value?.trim() || '';
         const zip = escapeHTML(document.getElementById('UPAddress1Zip').value || '');
         const physicalZip = escapeHTML(document.getElementById('UPAddress2Zip').value || '');
         const altAddressZip = escapeHTML(document.getElementById('UPAddress3Zip').value || '');
@@ -1526,8 +1526,8 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
                 return false;
             }
         }
-        if(document.getElementById('UPCancerType') && document.getElementById('UPCancerType').value) formData[fieldMapping.cancerType] = escapeHTML(document.getElementById('UPCancerType').value || '');
-        if(document.getElementById('UPCancerDiagnosis') && document.getElementById('UPCancerDiagnosis').value) formData[fieldMapping.cancerDiagnosis] = escapeHTML(document.getElementById('UPCancerDiagnosis').value || '');
+        if(document.getElementById('UPCancerType') && document.getElementById('UPCancerType').value) formData[fieldMapping.cancerType] = escapeHTML(document.getElementById('UPCancerType').value);
+        if(document.getElementById('UPCancerDiagnosis') && document.getElementById('UPCancerDiagnosis').value) formData[fieldMapping.cancerDiagnosis] = escapeHTML(document.getElementById('UPCancerDiagnosis').value);
 
         const ageToday = getAge(`${formData[fieldMapping.birthYear]}-${formData[fieldMapping.birthMonth]}-${formData[fieldMapping.birthDay]}`);
         formData[fieldMapping.ageToday] = ageToday;
