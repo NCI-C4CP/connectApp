@@ -97,7 +97,7 @@ export const addEventAddressAutoComplete = (id, country) => {
 }
 
 export const addEventInternationalAddressToggle = (id) => {
-    let autocomplete = {};
+    
     const UPAddressInternational = document.getElementById(`UPAddress${id}International`);
     const UPAddressLine3 = document.getElementById(`UPAddress${id}Line3`);
     const UPAddressState = document.getElementById(`UPAddress${id}State`);
@@ -304,7 +304,7 @@ export const addEventHealthCareProviderSubmit = () => {
 export const addEventHealthProviderModalSubmit = () => {
     const form = document.getElementById('modalConfirm');
     
-    form.addEventListener('click', async e => {
+    form.addEventListener('click', async () => {
         let disappear = document.getElementById('modalCancel');
         disappear.click();
         const value = parseInt(document.getElementById('827220437').value);
@@ -359,15 +359,6 @@ export const addEventHeardAboutStudy = () => {
             consentTemplate();
         }
     });
-}
-
-export const addEventSaveConsentBtn = () => {
-    const btn = document.getElementById('saveConsentBtn');
-    btn.addEventListener('click', () => {
-        html2canvas(document.getElementById('canvasContainer')).then(function(canvas) {
-            document.getElementById("consentImg").src= canvas.toDataURL();
-        });
-    })
 }
 
 const onBlurPhysicalAddressLine = (event, id) => {
@@ -705,8 +696,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         const requiredFields = document.getElementsByClassName('required-field');
         const confirmationFields = document.getElementsByClassName('confirmation-field');
         const validations = document.getElementsByClassName('input-validation');
-        const numberValidations = document.getElementsByClassName('num-val');
-        const radios = document.getElementsByName('UPRadio');
+        
         let hasError = false;
         let focus = true;
         Array.from(validations).forEach(element => {
@@ -832,24 +822,20 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             hasError = true;
             console.error('User Profile - Required Checked Input', 'UPCancerBtnGroup');
         }
-        let radioChecked = false;
-        Array.from(radios).forEach(element => {
-            if(element.checked) radioChecked = true;
-        });
 
         const phoneNo = `${escapeHTML(document.getElementById('UPPhoneNumber11').value)}${escapeHTML(document.getElementById('UPPhoneNumber12').value)}${escapeHTML(document.getElementById('UPPhoneNumber13').value)}`;
         const phoneNo2 = `${escapeHTML(document.getElementById('UPPhoneNumber21').value)}${escapeHTML(document.getElementById('UPPhoneNumber22').value)}${escapeHTML(document.getElementById('UPPhoneNumber23').value)}`;
         const phoneNo3 = `${escapeHTML(document.getElementById('UPPhoneNumber31').value)}${escapeHTML(document.getElementById('UPPhoneNumber32').value)}${escapeHTML(document.getElementById('UPPhoneNumber33').value)}`;
         const altContactMobilePhone = `${escapeHTML(document.getElementById('altContactMobilePhone1').value)}${escapeHTML(document.getElementById('altContactMobilePhone2').value)}${escapeHTML(document.getElementById('altContactMobilePhone3').value)}`;
         const altContactHomePhone = `${escapeHTML(document.getElementById('altContactHomePhone1').value)}${escapeHTML(document.getElementById('altContactHomePhone2').value)}${escapeHTML(document.getElementById('altContactHomePhone3').value)}`;
-        const email = document.getElementById('UPEmail').value?.trim();
+        const email = escapeHTML(document.getElementById('UPEmail').value?.trim() || '');
         const email2 = document.getElementById('UPEmail2');
         const email3 = document.getElementById('UPAdditionalEmail2');
         const email4 = document.getElementById('UPAdditionalEmail3');
-        const altContactEmail = document.getElementById('altContactEmail')?.value?.trim() || '';
-        const zip = document.getElementById('UPAddress1Zip').value;
-        const physicalZip = document.getElementById('UPAddress2Zip').value || '';
-        const altAddressZip = document.getElementById('UPAddress3Zip').value || '';
+        const altContactEmail = escapeHTML(document.getElementById('altContactEmail')?.value?.trim() || '');
+        const zip = escapeHTML(document.getElementById('UPAddress1Zip').value || '');
+        const physicalZip = escapeHTML(document.getElementById('UPAddress2Zip').value || '');
+        const altAddressZip = escapeHTML(document.getElementById('UPAddress3Zip').value || '');
         
         if(!email){
             errorMessage('UPEmail', '<span data-i18n="event.enterEmail">'+translateText('event.enterEmail')+'</span>', focus);
