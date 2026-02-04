@@ -828,7 +828,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         const phoneNo3 = `${escapeHTML(document.getElementById('UPPhoneNumber31').value)}${escapeHTML(document.getElementById('UPPhoneNumber32').value)}${escapeHTML(document.getElementById('UPPhoneNumber33').value)}`;
         const altContactMobilePhone = `${escapeHTML(document.getElementById('altContactMobilePhone1').value)}${escapeHTML(document.getElementById('altContactMobilePhone2').value)}${escapeHTML(document.getElementById('altContactMobilePhone3').value)}`;
         const altContactHomePhone = `${escapeHTML(document.getElementById('altContactHomePhone1').value)}${escapeHTML(document.getElementById('altContactHomePhone2').value)}${escapeHTML(document.getElementById('altContactHomePhone3').value)}`;
-        const email = escapeHTML(document.getElementById('UPEmail').value?.trim() || '');
+        const email = document.getElementById('UPEmail').value?.trim();
         const email2 = document.getElementById('UPEmail2');
         const email3 = document.getElementById('UPAdditionalEmail2');
         const email4 = document.getElementById('UPAdditionalEmail3');
@@ -1416,9 +1416,10 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
 
         // Email
         const allEmails = [];
-        if(email) {
-            formData[fieldMapping.prefEmail] = email;
-            allEmails.push(email.toLowerCase());
+        const emailValue = escapeHTML(email || '');
+        if(emailValue) {
+            formData[fieldMapping.prefEmail] = emailValue;
+            allEmails.push(emailValue.toLowerCase());
         }
 
         const email2Value = escapeHTML(email2?.value?.trim() || '');
