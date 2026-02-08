@@ -3,6 +3,7 @@ import { renderChangeMailingAddressGroup } from "./settings.js";
 import { toggleElementVisibility, validateMailingAddress, changeMailingAddress } from "../settingsHelpers.js";
 import { addEventAddressAutoComplete } from '../event.js';
 import conceptId from '../fieldToConceptIdMapping.js';
+import fieldToConceptIdMapping from "../fieldToConceptIdMapping.js";
 
 export const renderSamplesPage = async () => {
     document.title = translateText('samples.title');
@@ -10,6 +11,7 @@ export const renderSamplesPage = async () => {
 
         if (!hasUserData(res)) return;
         let participant = res.data;
+        console.log('Participant Data:', participant);
         const kitId = participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.uniqueKitID];
         const kitStatus = participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.kitStatus];
         if (kitStatus === conceptId.kitStatusValues.shipped && participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.kitRequestEligible] === conceptId.yes) {
@@ -24,6 +26,7 @@ export const renderSamplesPage = async () => {
         }
 
         let site = locations.filter(location => location.concept == participant[conceptId.healthcareProvider])[0];
+        console.log("🚀 ~ renderSamplesPage ~ sites:", site)
         let template = '';
 
         //Top Header
@@ -78,7 +81,7 @@ export const renderSamplesPage = async () => {
             </div>
             <div class="col-lg-2 col-xl-3"></div>
         </div>`);
-
+        console.log('site:', site);
         if (site && 
             site !== kpga && 
             site !== kphi && 
@@ -124,8 +127,7 @@ export const renderSamplesPage = async () => {
                     <div class="row" style="width:100%">
                         <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howToDonate" aria-expanded="false" aria-controls="howToDonate">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                            <div data-i18n="samples.howToDonate">
-                                How Do I Donate My Samples?
+                            ${(site === henry_ford) ? `<div data-i18n="samples.howToDonateBloodUrineHeader">` :  `<div data-i18n="samples.howToDonate">`}
                             </div>
                         </div>
                         <div class="messagesBodyFont collapse" style="width:100%" id="howToDonate">
@@ -270,7 +272,13 @@ export const renderSamplesPage = async () => {
             </div>    
             `);
         }
-        else if (site && (site === kpga || site ===  kphi || site ===  kpco || site ===  kpnw)) {
+        else if (site && 
+            (site === kpga || 
+                site ===  kphi || 
+                site ===  kpco || 
+                site ===  kpnw
+            )
+        ) {
             const locationTemplate = renderLocations(site);
             template += translateHTML(`
             <div class="row"  id="donatingInformation">
@@ -1408,15 +1416,43 @@ const marshfield = {
 const henry_ford = {
     concept: '548392715',
     name: 'Henry Ford Health',
-    donatingSamples: '<span data-i18n="samples.henry_ford.donatingSamples">Thank you for being part of the Connect for Cancer Prevention Study. As part of the study, we ask you to donate blood, urine, and saliva samples.</span>',
+    donatingSamples: '<span data-i18n="samples.henry_ford.donatingSamples">Thank you for being part of the Connect for Cancer Prevention Study. As part of the study, we ask you to donate blood, urine, and mouthwash samples and complete two short surveys.</span>',
     whenToDonateHeader: '<span data-i18n="samples.henry_ford.whenToDonateHeader">When Should I Donate My Samples?</span>',
     whenToDonate: '<span data-i18n="samples.henry_ford.whenToDonate">The Connect team will send you an email when it is time to donate your samples. Be sure to check your spam or junk folder. After you receive the email, it is important to donate your samples as soon as you can.<br><br><span class="site-info-bold">Important Notes:</span><br><br><ol><li> If you have had a blood transfusion or donated blood recently:<br> Please wait at least <span class="site-info-bold">eight weeks</span> from your donation or transfusion before donating your samples for Connect.</li><br><li> If you have recently donated plasma:<br> Please wait at least <span class="site-info-bold">four weeks</span> from your plasma donation before donating samples for Connect.</li><br><li>If you have recently donated platelets:<br>Please wait at least <span class="site-info-bold">one week</span> from your platelet donation before donating samples for Connect.</li><br><li> If you have an upcoming colonoscopy:<br> Please be sure that you <span class="site-info-bold">do not</span> donate samples for Connect on the <span class="site-info-bold">same day</span> as your colonoscopy.</li></ol></span>',
-    howToDonate: '<span data-i18n="samples.henry_ford.howToDonate">Connect participants at Henry Ford Health have two options for donating samples. You can choose the most convenient option for you.<br><br><span class="site-info-bold">Option 1:</span> Make an appointment to come into one of our Connect Research Labs to donate your samples.<br><br><span class="site-info-bold">Option 2:</span> A study team member can request a lab order be placed for you. After you receive the order confirmation email, you can donate samples by visiting a <span class="site-info-bold site-info-italic">participating</span> Henry Ford Health Lab Services location during normal hours of operation.<br> * See a list of labs where you can donate Connect samples below. <br><br> The table below includes more information about these options.<br><br> <table style="border: 1px solid;padding:10px"> <tr style="border: 1px solid;padding:10px"> <th style="border: 1px solid;padding:10px"><span class="site-info-bold">Option 1: Connect Research Lab</span> </th> <th style="border: 1px solid;padding:10px"><span class="site-info-bold">Option 2: HFH Lab Services</span></th> </tr> <tr style="border: 1px solid;padding:10px"> <td style="border: 1px solid;padding:10px">Connect team will greet you and walk you through your visit.</td> <td style="border: 1px solid;padding:10px">More hours and more locations, no need to schedule an appointment.</td> </tr> <tr style="border: 1px solid;padding:10px"> <td style="border: 1px solid;padding:10px">The team will draw blood, collect urine, and collect a saliva sample by asking you to swish with mouthwash.</td> <td style="border: 1px solid;padding:10px">Lab staff will collect blood and urine samples at your visit. You will receive a mouthwash collection kit in the mail with instructions on how to complete your saliva sample at home and mail back.</td> </tr> <tr style="border: 1px solid;padding:10px"> <td style="border: 1px solid;padding:10px">Schedule your appointment using the link in the email we send or schedule with Connect staff by calling 855-574-7540.</td> <td style="border: 1px solid;padding:10px">Request a lab order using the link in the email we send. The order will be placed by Connect staff.<span class="site-info-bold"> Please allow up to 48 hours to receive order confirmation via email.</span> Once you receive the confirmation email, visit a participating HFH Lab Services location.<span class="site-info-bold"> Orders expire after 90 days.</span></td> </tr> </table><br>When it is time to donate your samples, we will send you an email with a link to make your selection. Simply click the link to schedule a time that works for you to donate your samples at a Connect Research Lab or to request a lab order be placed so you can donate samples at a <span class="site-info-bold">participating</span> Henry Ford Health Lab Services location. <br><br> You can donate Connect samples and complete any labs ordered by your provider in the same visit.<br><br><span class="site-info-bold">For questions or assistance with transportation, please call 855-574-7540 or email <a href="mailto:ConnectStudy@hfhs.org">ConnectStudy@hfhs.org</a></span> </span>',
-    howLong: '<span data-i18n="samples.henry_ford.howLong"><span class="site-info-bold">For Option 1: Connect Research Lab Appointment</span><br>Please expect to spend about one hour at your appointment to donate your samples and complete a short survey.<br><br><span class="site-info-bold">For Option 2: Henry Ford Health Lab Services Locations</span><br>Wait times to donate samples may vary by location. To better serve HFH patients, Henry Ford Lab Services have started using <span class="site-info-bold">“Save My Spot".</span><br><br><span class="site-info-bold">“Save My Spot"</span> is an optional service to reserve your spot in line at one of the participating Henry Ford Health Lab Services locations (see table of locations above). All lab orders must be placed before using “Save My Spot,” including your lab order for Connect.<br><br>To use this optional service, click this link only after receiving order confirmation from Connect staff: <a href= "https://www.henryford.com/locations/henry-ford-hospital/lab-services">https://www.henryford.com/locations/henry-ford-hospital/lab-services</a> </span>',
+    howToDonateHeader: '<span data-i18n="samples.henry_ford.howToDonateHeader">How Do I Donate My Blood and Urine Samples?</span>',
+    howToDonate: '<p data-i18n="samples.henry_ford.howToDonate"> After you receive notification that we placed your Connect lab order, please visit any HFH Lab Services location listed in the "Where Do I Donate My Samples" section below. We are not able to collect samples for Connect at other HFH locations not currently listed, or outside of HFH (Like LabCorp or Quest).' 
+        + '<br><br> You can donate Connect samples and complete any labs ordered by your provider in the same visit. You do not need an appointment.' 
+        + '<br><br> You do not need to fast before you donate samples for Connect, so you may eat and drink before your visit.</p>',
+    howLong: '<span data-i18n="samples.henry_ford.howLong"><span class="site-info-bold">For Option 1: Connect Research Lab Appointment</span><br>Please expect to spend about one hour at your appointment to donate your samples and complete a short survey. <br><span class="site-info-bold">For Option 2: Henry Ford Health Lab Services Locations</span><br>Wait times to donate samples may vary by location. To better serve HFH patients, Henry Ford Lab Services have started using <span class="site-info-bold">“Save My Spot".</span><br><br><span class="site-info-bold">“Save My Spot"</span> is an optional service to reserve your spot in line at one of the participating Henry Ford Health Lab Services locations (see table of locations above). All lab orders must be placed before using “Save My Spot,” including your lab order for Connect.<br><br>To use this optional service, click this link only after receiving order confirmation from Connect staff: <a href= "https://www.henryford.com/locations/henry-ford-hospital/lab-services">https://www.henryford.com/locations/henry-ford-hospital/lab-services</a> </span>',
     prepareInstructions: '<span data-i18n="samples.henry_ford.prepareInstructions">On the day of your visit to donate samples for Connect, you do not need to fast unless told to do so by your provider for any other lab work they’ve ordered. We request you drink plenty of water to keep hydrated but <span class="site-info-bold">stop drinking water one hour before your visit.</span><br><br><span class="site-info-bold">One hour before your visit:</span> Please <span class="site-info-bold">do not</span> eat, drink, chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span class="site-info-bold">Things to bring and remember:</span> We will ask you to complete a short survey on MyConnect after you donate samples. You will need your login method for MyConnect and a personal device to complete the survey. <br><br>You will be asked questions related to:<ul><li>The last time you ate or drank before your appointment, and the time you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></span>',
     payment: '<span data-i18n="samples.henry_ford.payment">You will receive your $25 gift card after you donate a blood sample and complete <span class="site-info-bold">all four sections</span> of your first Connect survey.<br><br>You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<ol><li>Background and Overall Health</li><li>Medications, Reproductive Health, Exercise, and Sleep</li><li>Smoking, Alcohol, and Sun Exposure</li><li>Where you Live and Work</li></ol></span>',
     support: '<span data-i18n="samples.henry_ford.support">Call 855-574-7540 (9:00 a.m. – 7:00 p.m. on weekdays. On weekends and after business hours please leave a message with your name and a good time to call you back).</span>',
-    locationNotes: '<span data-i18n="samples.henry_ford.locationNotes">The table below lists Connect Research Lab and HFH Lab Services locations where you can donate samples for the study.<br><br>If you schedule a visit to donate Connect samples at a Connect Research Lab, you will receive a confirmation email with the address, time / date of your appointment, and parking information.<br><br> Please <a href="https://www.henryford.com/locations/search-results?|#services=&locationtype={6892DD84-8634-4F32-A6C0-8DC0F2E45486}&locationname=&&g=0|0" target="_plank">click here</a> to find address, business hours, and parking information for participating HFH Lab Services locations shown in the table below.<br><br><table style="width: 100%;border: 1px solid"><tr style="border: 1px solid"><td style="padding: 10px;vertical-align:top;border: 1px solid"><span class="site-info-bold">Connect Research Lab</span> </td><td style="padding: 10px;vertical-align:top;border: 1px solid"><span class="site-info-bold">HFH Lab Services Locations</span> </td></tr><tr style="border: 1px solid"><td style="padding: 10px;vertical-align:top;border: 1px solid">1. HFH Main K13 Research Clinic<br> 2. HFH Medical Center- Detroit Northwest </td><td style="padding: 10px;vertical-align:top;border: 1px solid">1. HFH Medical Center Brownstown<br>2. HFH Medical Center Columbus<br>3. HFH Detroit Main- K1<br>4. HFH Medical Center Fairlane<br>5. HFH Medical Center Ford Road<br>6. HFH Macomb<br>7. HFH Medical Center New Center One<br>8. HFH Medical Center Plymouth<br>9. HFH Medical Center Royal Oak<br>10.  HFH Medical Center Sterling Heights<br>11. HFH Medical Center Troy<br>12. HFH West Bloomfield<br>13. HFH Wyandotte </td></tr></table></span>',
+    locationNotes: '<span data-i18n="samples.henry_ford.locationNotes">The table below lists the HFH Lab Services locations where you can donate samples for the study.'
+        + '<br><br> Please <a href="https://www.henryford.com/locations/search-results?|#services=&locationtype={6892DD84-8634-4F32-A6C0-8DC0F2E45486}&locationname=&&g=0|0" target="_plank">click here</a> to find address, business hours, and parking information for participating HFH Lab Services locations shown in the table below.'
+        + '<br><br><table style="width: 100%;border: 1px solid">'
+        + '<tr style="border: 1px solid">'
+        + '<td style="padding: 10px;vertical-align:top;border: 1px solid"><span class="site-info-bold">HFH Lab Services Locations</span> </td></tr>'
+        + '<tr style="border: 1px solid">'
+        +     '<td style="padding: 10px;vertical-align:top;border: 1px solid">'
+        +         '<ol style="margin: 0; padding-left: 20px;">'
+        +             '<li>HFH Medical Center Brownstown</li>'
+        +             '<li>HFH Medical Center Columbus</li>'
+        +             '<li>HFH Detroit Main- K1</li>'
+        +             '<li>HFH Medical Center Fairlane</li>'
+        +             '<li>HFH Medical Center Ford Road</li>'
+        +             '<li>HFH Jackson Professional Building (Suite 104)</li>'
+        +             '<li>HFH Macomb Hospital</li>'
+        +             '<li>HFH Medical Center New Center One</li>'
+        +             '<li>HFH Medical Center Plymouth</li>'
+        +             '<li>HFH Medical Center Royal Oak</li>'
+        +             '<li>HFH Medical Center Sterling Heights</li>'
+        +             '<li>HFH Medical Center Troy</li>'
+        +             '<li>HFH West Bloomfield Hospital</li>'
+        +             '<li>HFH Wyandotte Hospital</li>'
+        +         '</ol>'
+        +     '</td>'
+        + '</tr>'
+        + '</table></span>',
     locations: [],
     questions: '<div data-i18n="samples.henry_ford.questions">Questions? Contact the Connect Study Team at Henry Ford Health</div>',
     contact: '<a href="mailto: connectstudy@hfhs.org">ConnectStudy@hfhs.org</a>'
