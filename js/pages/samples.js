@@ -427,13 +427,13 @@ export const renderSamplesPage = async () => {
                             </div>
                         </div>          
                     </div> 
-                    <hr>  
-                    <div class="row collapsed" style="width:100%"  data-bs-toggle="collapse" data-bs-target="#whatHappensAfter" aria-expanded="false" aria-controls="whatHappensAfter">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%">
-                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                            <div data-i18n="samples.afterVisit">
-                                What Will Happen After My Visit?
-                            </div>
+                    <hr>
+                    <div class="row" style="width:100%">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whatHappensAfter" aria-expanded="false" aria-controls="whatHappensAfter">
+                                <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
+                                <div data-i18n="samples.afterVisit">
+                                    What Will Happen After My Visit?
+                                </div>
                         </div>
                         <div class="messagesBodyFont collapse" style="width:100%" id="whatHappensAfter">
                             <div>
@@ -442,22 +442,40 @@ export const renderSamplesPage = async () => {
                         </div>          
                     </div>
                     <hr>
-                    <div class="row collapsed" style="width:100%" data-bs-toggle="collapse" data-bs-target="#howToDonateMouthwash" aria-expanded="false" aria-controls="howToDonateMouthwash">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%">
-                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                            <div data-i18n="samples.donatingMouthwashSample">
-                                How Do I Donate My Mouthwash Sample?
-                            </div>
+                    <div class="row" style="width:100%">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howToDonateMouthwash" aria-expanded="false" aria-controls="howToDonateMouthwash">
+                                <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
+                                <div data-i18n="samples.donatingMouthwashSample">
+                                    How Do I Donate My Mouthwash Sample?
+                                </div>
                         </div>
                         <div class="messagesBodyFont collapse" style="width:100%" id="howToDonateMouthwash">
                             <div>
                                 ${site.howToDonateMouthwash}
                             </div>
-                        </div>          
+                        </div>
                     </div>
                     <hr>
-                    <div class="row collapsed" style="width:100%" data-bs-toggle="collapse" data-bs-target="#supportQuestions" aria-expanded="false" aria-controls="supportQuestions">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%">
+                    ${(site === henry_ford) 
+                        ? `
+                        <div class="row" style="width:100%">
+                                <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whenPayment" aria-expanded="false" aria-controls="whenPayment">
+                                <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
+                                <div data-i18n="samples.whenPayment">
+                                    When Will I Receive My $25 Payment?
+                                </div>
+                            </div>
+                            <div class="messagesBodyFont collapse" style="width:100%" id="whenPayment">
+                                <div>
+                                    ${site.payment}
+                                </div>
+                            </div>
+                        </div>
+                        <hr>` 
+                        : '' 
+                    }
+                    <div class="row" style="width:100%">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#supportQuestions" aria-expanded="false" aria-controls="supportQuestions">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.questions">
                                 Questions? Contact the Connect Support Center
@@ -1519,7 +1537,7 @@ const henry_ford = {
         +    'When you collect your mouthwash sample, we will ask you to complete a short survey on MyConnect. It is important to complete this survey on the same day that you collect your mouthwash sample.'
         +    '</span>',
     prepareInstructions: '<span data-i18n="samples.henry_ford.prepareInstructions">On the day of your visit to donate samples for Connect, you do not need to fast unless told to do so by your provider for any other lab work they’ve ordered. We request you drink plenty of water to keep hydrated but <span class="site-info-bold">stop drinking water one hour before your visit.</span><br><br><span class="site-info-bold">One hour before your visit:</span> Please <span class="site-info-bold">do not</span> eat, drink, chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span class="site-info-bold">Things to bring and remember:</span> We will ask you to complete a short survey on MyConnect after you donate samples. You will need your login method for MyConnect and a personal device to complete the survey. <br><br>You will be asked questions related to:<ul><li>The last time you ate or drank before your appointment, and the time you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></span>',
-    payment: '<span data-i18n="samples.henry_ford.payment">You will receive your $25 gift card after you donate a blood sample and complete <span class="site-info-bold">all four sections</span> of your first Connect survey.<br><br>You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<ol><li>Background and Overall Health</li><li>Medications, Reproductive Health, Exercise, and Sleep</li><li>Smoking, Alcohol, and Sun Exposure</li><li>Where you Live and Work</li></ol></span>',
+    payment: '<span data-i18n="samples.henry_ford.payment">You will receive your $25 gift card after you donate a blood sample and complete <span class="site-info-bold">all four sections</span> of your first Connect survey.<br><br>You can find the four sections of your first survey within the Surveys card on your MyConnect Dashboard. These sections are:<ol><li>Background and Overall Health</li><li>Medications, Reproductive Health, Exercise, and Sleep</li><li>Smoking, Alcohol, and Sun Exposure</li><li>Where you Live and Work</li></ol></span>',
     support: '<span data-i18n="samples.henry_ford.support">Call 855-574-7540 (9:00 a.m. – 7:00 p.m. on weekdays. On weekends and after business hours please leave a message with your name and a good time to call you back).</span>',
     locationNotes: '<span data-i18n="samples.henry_ford.locationNotes">The table below lists the HFH Lab Services locations where you can donate samples for the study.'
         + '<br><br> Please <a href="https://www.henryford.com/locations/search-results?|#services=&locationtype={6892DD84-8634-4F32-A6C0-8DC0F2E45486}&locationname=&&g=0|0" target="_plank">click here</a> to find address, business hours, and parking information for participating HFH Lab Services locations shown in the table below.'
