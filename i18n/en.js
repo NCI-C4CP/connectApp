@@ -944,6 +944,7 @@ const en = {
         "whereToDonate": "Where Do I Donate My Samples?",
         "schedule": "Scheduling Information",
         "howLongAppt": "How Long Will My Appointment Take?",
+        "howLongVisit": "How Long Will My Visit Take?",
         "prepareAppt": "How Should I Prepare On the Day of My Appointment?",
         "duringAppt": "What Will Happen During My Appointment?",
         "questions": "Questions? Contact the Connect Support Center",
@@ -1052,9 +1053,28 @@ const en = {
             "howToDonate": "After you receive notification that we placed your Connect lab order, please visit any HFH Lab Services location listed in the “Where Do I Donate My Samples” section below. We are not able to collect samples for Connect at other HFH locations not currently listed, or outside of HFH (Like LabCorp or Quest)." 
                 + "<br><br> You can donate Connect samples and complete any labs ordered by your provider in the same visit. You do not need an appointment."
                 + "<br><br> You do not need to fast before you donate samples for Connect, so you may eat and drink before your visit." 
-                + "<br><br> <span class=\"site-info-bold\">For questions or assistance with transportation, please call 855-574-7540 or email" 
+                + "<br><br> <span class=\"site-info-bold\">For questions or assistance with transportation to a lab, please call 855-574-7540 or email" 
                 + " <a href=\"mailto:ConnectStudy@hfhs.org\">ConnectStudy@hfhs.org</a></span>",
-            "howLong": "<span class=\"site-info-bold\">For Option 1: Connect Research Lab Appointment</span><br>Please expect to spend about one hour at your appointment to donate your samples and complete a short survey.<br><br><span class=\"site-info-bold\">For Option 2: Henry Ford Health Lab Services Locations</span><br>Wait times to donate samples may vary by location. To better serve HFH patients, Henry Ford Lab Services have started using <span class=\"site-info-bold\">“Save My Spot\".</span><br><br><span class=\"site-info-bold\">“Save My Spot\"</span> is an optional service to reserve your spot in line at one of the participating Henry Ford Health Lab Services locations (see table of locations above). All lab orders must be placed before using “Save My Spot,” including your lab order for Connect.<br><br>To use this optional service, click this link only after receiving order confirmation from Connect staff: <a href= \"https://www.henryford.com/locations/henry-ford-hospital/lab-services\">https://www.henryford.com/locations/henry-ford-hospital/lab-services</a>",
+            "howLong": "<span data-i18n='samples.henry_ford.howLong'>"
+                    +       "<br>Wait times to donate samples may vary by location. To better serve HFH patients, Henry Ford Lab Services have started using “Save My Spot”."
+                    +       "<br><br><span class='site-info-bold'>“Save My Spot”</span> is an optional service to reserve your spot in line at one of the participating HFH locations (see table of locations above). All lab orders must be placed-before using “Save My Spot,” including your lab order for Connect."
+                    +       "<br><br>To use this optional service, click this link only after receiving order confirmation from Connect staff: <a href='https://www.henryford.com/locations/henry-ford-hospital/lab-services'>https://www.henryford.com/locations/henry-ford-hospital/lab-services</a>"
+                    +       "</span>",
+            "whatHappensDuring": "<span data-i18n=\"samples.henry_ford.whatDuringVisit\">Donating your research blood and urine samples is just like providing samples requested by your health care provider. When you arrive at the clinic, you may go directly to the lab and check in with front desk staff. When it is your turn, the lab will call you back and collect your samples. The lab techs will be able to see your blood and urine collection orders and instructions for Connect in their system.</span>",
+            "whatHappensAfter": "<span data-i18n=\"samples.henry_ford.whatAfterVisit\"> Within a day of your blood and urine collection, we will send you an email asking you to complete a short survey on MyConnect. The survey will ask about recent actions such as:"
+                +                   "<br><br>"
+                +                   "<ul style=\"margin: 0; padding-left: 2.5rem;\">"
+                +                       "<li>The last time you ate or drank before your lab visit, the time you went to sleep the night before your lab visit, and the time you woke up on the day or your visit. </li>"
+                +                       "<li>If you are menstruating, the start date of your most recent menstrural period in the last 12 months.</li>"
+                +                   "</ul>"
+                +                   "<br>"
+                +                   "When you receive our email, it is important that you complete the survey as soon as possible."
+                +                 "</span>",
+            "howToDonateMouthwash": "<span data-i18n=\"samples.henry_ford.howToDonateMouthwash\">"
+                +    "We will send you an email as soon as your mouthwash home collection kit is on the way. Once you receive the kit, you can collect your mouthwash sample in the comfort of your own home. The kit we mail you will include instructions and all of the items needed to collect your sample, including a return shipping box with a pre-paid shipping label to return your sample to us."
+                +    "<br><br>"
+                +    "When you collect your mouthwash sample, we will ask you to complete a short survey on MyConnect. It is important to complete this survey on the same day that you collect your mouthwash sample."
+                + "</span>",
             "prepareInstructions": "On the day of your visit to donate samples for Connect, you do not need to fast unless told to do so by your provider for any other lab work they’ve ordered. We request you drink plenty of water to keep hydrated but <span class=\"site-info-bold\">stop drinking water one hour before your visit.</span><br><br><span class=\"site-info-bold\">One hour before your visit:</span> Please <span class=\"site-info-bold\">do not</span> eat, drink, chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span class=\"site-info-bold\">Things to bring and remember:</span> We will ask you to complete a short survey on MyConnect after you donate samples. You will need your login method for MyConnect and a personal device to complete the survey. <br><br>You will be asked questions related to:<ul><li>The last time you ate or drank before your appointment, and the time you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul><br>",
             "payment": "You will receive your $25 gift card after you donate a blood sample and complete <span class=\"site-info-bold\">all four sections</span> of your first Connect survey.<br><br>You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<ol><li>Background and Overall Health</li><li>Medications, Reproductive Health, Exercise, and Sleep</li><li>Smoking, Alcohol, and Sun Exposure</li><li>Where you Live and Work</li></ol>",
             "support": "Call 855-574-7540 (9:00 a.m. – 7:00 p.m. on weekdays. On weekends and after business hours please leave a message with your name and a good time to call you back).",
@@ -1062,8 +1082,8 @@ const en = {
                 + '<br><br> Please <a href="https://www.henryford.com/locations/search-results?|#services=&locationtype={6892DD84-8634-4F32-A6C0-8DC0F2E45486}&locationname=&&g=0|0" target="_plank">click here</a> to find address, business hours, and parking information for participating HFH Lab Services locations shown in the table below.'
                 + '<br><br><table style="width: 100%;border: 1px solid">'
                 + '<tr style="border: 1px solid">'
-                + '<td style="padding: 10px;vertical-align:top;border: 1px solid"><span class="site-info-bold">HFH Lab Services Locations</span> </td></tr>'
-                + '<tr style="border: 1px solid">'
+                + '<td style="padding:10px; vertical-align:top; border:1px solid; text-align:center;"><span class="site-info-bold">HFH Lab Services Locations</span> </td></tr>'
+                +   '<tr style="border: 1px solid">'
                 +     '<td style="padding: 1rem 0 1rem 3rem; vertical-align:top;border: 1px solid">'
                 +         '<ol>'
                 +             '<li>HFH Medical Center Brownstown</li>'
@@ -1074,7 +1094,7 @@ const en = {
                 +             '<li>HFH Jackson Professional Building (Suite 104)</li>'
                 +             '<li>HFH Macomb Hospital</li>'
                 +             '<li>HFH Medical Center New Center One</li>'
-                +             '<li> HFH Medical Center Plymouth</li>'
+                +             '<li>HFH Medical Center Plymouth</li>'
                 +             '<li>HFH Medical Center Royal Oak</li>'
                 +             '<li>HFH Medical Center Sterling Heights</li>'
                 +             '<li>HFH Medical Center Troy</li>'
@@ -1082,7 +1102,7 @@ const en = {
                 +             '<li>HFH Wyandotte Hospital</li>'
                 +         '</ol>'
                 +     '</td>'
-                + '</tr>'
+                +   '</tr>'
                 + '</table></span>',
             "locations": {},
             "questions": "Questions? Contact the Connect Study Team at Henry Ford Health"
@@ -1144,6 +1164,7 @@ const en = {
         },
         "kpga": {
             "donatingSamples": "As part of Connect, we ask you to donate blood, urine, and mouthwash samples and complete two short surveys.",
+            "whenToDonateHeader": "When Should I Donate My Samples?",
             "whenToDonate": "We will send you an email when it is time to donate your samples. After you receive the email, it is important to donate your samples as soon as you can.<br><br><span class=\"site-info-bold\">Note:</span> If you have recently had a blood transfusion or donated blood, please wait at least <span class=\"site-info-bold\">eight weeks</span> from your donation or transfusion before donating your samples for Connect. If you have recently donated plasma, please wait at least <span class=\"site-info-bold\">four weeks</span> from your plasma donation before donating samples for Connect. If you have recently donated platelets, please wait at least <span class=\"site-info-bold\">one week</span> from your platelet donation before donating samples for Connect. If you have an upcoming colonoscopy, please be sure that you <span class=\"site-info-bold\">do not</span> donate samples for Connect on the <span class=\"site-info-bold\">same day</span> as your colonoscopy.",
             "howToDonateBloodAndUrine": "You may visit any KP medical office with lab near you to donate samples. We are not able to collect samples for Connect at any of KP’s affiliated locations (such as LabCorp and Quest). For locations, hours and directions, please visit <a style=\"text-decoration:underline\" href=\"https://healthy.kaiserpermanente.org/georgia/doctors-locations?kp_shortcut_referrer=kp.org/locations#/search-form\">kp.org/locations</a> or call 1-888-413-0601.<br></br><span class=\"site-info-bold\">You do not need an appointment</span> and there is no co-pay involved. You do not need to fast before you donate samples for Connect, so you may eat and drink before your visit.<br></br>When you arrive at the Kaiser Permanente lab, please use the lab kiosk to check in according to the steps below:<br></br><ol><li> Touch the screen to get started.</li><li> Enter your Medical Record Number (MRN).</li><li> Enter your Date of Birth.</li><li> Choose “Walk-in.”</li><li> Select “Other Lab Services.”</li><li> Answer COVID-19 symptoms questions if displayed.</li><li> Select “No” to answer questions regarding additional coverage, payment, or text messaging.</li><li> You will see a message on the kiosk screen that reads, “You are checked-in\" when you have finished the check in process.</li><li> Have a seat and lab staff will call you back when they are ready.</li><li> When called back, please communicate with the lab staff you are there for a “Research draw for Connect” and the KP lab staff will take it from there.</li></ol>",
             "prepInstructionsHeader": "What Should I Bring to the Visit?",
@@ -1155,6 +1176,7 @@ const en = {
         },
         "kphi": {
             "donatingSamples": "As part of Connect, we ask you to donate blood, urine, and mouthwash samples and complete two short surveys.",
+            "whenToDonateHeader": "When Should I Donate My Samples?",
             "whenToDonate": "We will send you an email when it is time to donate your samples. After you receive the email, it is important to donate your samples as soon as you can.<br><br><span class=\"site-info-bold\">Note:</span> If you have recently had a blood transfusion or donated blood, please wait at least <span class=\"site-info-bold\">eight weeks</span> from your donation or transfusion before donating your samples for Connect. If you have recently donated plasma, please wait at least <span class=\"site-info-bold\">four weeks</span> from your plasma donation before donating samples for Connect. If you have recently donated platelets, please wait at least <span class=\"site-info-bold\">one week</span> from your platelet donation before donating samples for Connect. If you have an upcoming colonoscopy, please be sure that you <span class=\"site-info-bold\">do not</span> donate samples for Connect on the <span class=\"site-info-bold\">same day</span> as your colonoscopy.",
             "howToDonateBloodAndUrine": "You may visit any KP medical office with lab near you to donate samples. We are not able to collect samples for Connect at any of KP’s affiliated locations (such as LabCorp and Quest). For locations, hours, and directions, please go to <a style=\"text-decoration:underline\" href=\"https://healthy.kaiserpermanente.org/hawaii/doctors-locations?kp_shortcut_referrer=kp.org/locations#/search-form\">kp.org/locations</a> or call <span class=\"site-info-bold\">toll-free 833-417-0846. <br></br><span class=\"site-info-bold\">You do not need an appointment</span> and there is no co-pay involved. You do not need to fast before you donate samples for Connect, so you may eat and drink before your visit.",
             "prepInstructionsHeader": "What Should I Bring to the Visit?",
@@ -1166,6 +1188,7 @@ const en = {
         },
         "kpco": {
             "donatingSamples": "As part of Connect, we ask you to donate blood, urine, and mouthwash samples and complete two short surveys.",
+            "whenToDonateHeader": "When Should I Donate My Samples?",
             "whenToDonate": "We will send you an email when it is time to donate your samples. After you receive the email, it is important to donate your samples as soon as you can.<br><br><span class=\"site-info-bold\">Note:</span> If you have recently had a blood transfusion or donated blood, please wait at least <span class=\"site-info-bold\">eight weeks</span> from your donation or transfusion before donating your samples for Connect. If you have recently donated plasma, please wait at least <span class=\"site-info-bold\">four weeks</span> from your plasma donation before donating samples for Connect. If you have recently donated platelets, please wait at least <span class=\"site-info-bold\">one week</span> from your platelet donation before donating samples for Connect. If you have an upcoming colonoscopy, please be sure that you <span class=\"site-info-bold\">do not</span> donate samples for Connect on the <span class=\"site-info-bold\">same day</span> as your colonoscopy. ",
             "howToDonateBloodAndUrine": "You may visit any KP medical office with a lab near you to donate samples. We are not able to collect samples for Connect at any of KP’s affiliated locations (such as LabCorp and Quest). For locations, hours and directions, please visit <a style=\"text-decoration:underline\" href=\"https://healthy.kaiserpermanente.org/colorado/doctors-locations?kp_shortcut_referrer=kp.org/locations#/search-form\">kp.org/locations</a> or call 303-338-3800.<br></br><span class=\"site-info-bold\">You do not need an appointment</span> and there is no co-pay involved. You do not need to fast before you donate samples for Connect, so you may eat and drink before your visit.",
             "prepInstructionsHeader": "What Should I Bring to the Visit?",
@@ -1177,6 +1200,7 @@ const en = {
         },
         "kpnw": {
             "donatingSamples": "As part of Connect, we ask you to donate blood, urine, and mouthwash samples and complete two short surveys.",
+            "whenToDonateHeader": "When Should I Donate My Samples?",
             "whenToDonate": "We will send you an email when it is time to donate your samples. After you receive the email, it is important to donate your samples as soon as you can.<br><br> <span class=\"site-info-bold\">Note:</span> If you have recently had a blood transfusion or donated blood, please wait at least <span class=\"site-info-bold\">eight weeks</span> from your donation or transfusion before donating your samples for Connect. If you have recently donated plasma, please wait at least <span class=\"site-info-bold\">four weeks</span> from your plasma donation before donating samples for Connect. If you have recently donated platelets, please wait at least <span class=\"site-info-bold\">one week</span> from your platelet donation before donating samples for Connect. If you have an upcoming colonoscopy, please be sure that you <span class=\"site-info-bold\">do not</span> donate samples for Connect on the <span class=\"site-info-bold\">same day</span> as your colonoscopy.",
             "howToDonateBloodAndUrine": "You may visit any KP medical office with lab near you to donate samples. We are not able to collect samples for Connect at any of KP’s affiliated locations (such as LabCorp and Quest). For locations, hours and directions, please visit <a style=\"text-decoration:underline\" href=\"https://healthy.kaiserpermanente.org/oregon-washington/community-providers/laboratory\">kp.org/locations.</a> <br></br><span class=\"site-info-bold\">You do not need an appointment</span> and there is no co-pay involved. You do not need to fast before you donate samples for Connect, so you may eat and drink before your visit.",
             "prepInstructionsHeader": "What Should I Bring to the Visit?",

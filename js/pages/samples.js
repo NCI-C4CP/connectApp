@@ -3,7 +3,7 @@ import { renderChangeMailingAddressGroup } from "./settings.js";
 import { toggleElementVisibility, validateMailingAddress, changeMailingAddress } from "../settingsHelpers.js";
 import { addEventAddressAutoComplete } from '../event.js';
 import conceptId from '../fieldToConceptIdMapping.js';
-import fieldToConceptIdMapping from "../fieldToConceptIdMapping.js";
+
 
 export const renderSamplesPage = async () => {
     document.title = translateText('samples.title');
@@ -87,7 +87,8 @@ export const renderSamplesPage = async () => {
             site !== kphi && 
             site !== kpco && 
             site !== kpnw && 
-            site !== u_chicago
+            site !== u_chicago 
+            && site !== henry_ford
         ) {
             const locationTemplate = renderLocations(site);
 
@@ -181,19 +182,41 @@ export const renderSamplesPage = async () => {
                         </div>
                     </div>
                     <hr>
-                    <div class="row" style="width:100%">
+                    
+                     <!-- Delete this later-->
+                    ${ (site === henry_ford) ?
+                        `<div class="row" style="width:100%">
+                        <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howLongVisit" aria-expanded="false" aria-controls="howLongVisit">
+                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
+                            <div data-i18n="samples.howLongVisit">
+                                How Long Will My Visit Take?
+                            </div>
+                        </div>
+                        <div class="messagesBodyFont collapse" style="width:100%" id="howLongVisit">
+                            <div>
+                                ${site.howLong}
+                            </div>
+                        </div>
+                    </div>`
+                    :
+                    
+                        `<!-- Work on later -->
+                        <div class="row" style="width:100%">
                         <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howLongAppt" aria-expanded="false" aria-controls="howLongAppt">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.howLongAppt">
                                 How Long Will My Appointment Take?
                             </div>
                         </div>
-                        <div class="messagesBodyFont  collapse" style="width:100%" id="howLongAppt">
+                        <div class="messagesBodyFont collapse" style="width:100%" id="howLongAppt">
                             <div>
                                 ${site.howLong}
                             </div>
                         </div>
-                    </div>
+                    </div>`
+                    }
+                    
+                    
                     <hr>
                     <div class="row" style="width:100%">
                         <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#prepareAppt" aria-expanded="false" aria-controls="prepareAppt">
@@ -276,7 +299,8 @@ export const renderSamplesPage = async () => {
             (site === kpga || 
                 site ===  kphi || 
                 site ===  kpco || 
-                site ===  kpnw
+                site ===  kpnw 
+                || site === henry_ford
             )
         ) {
             const locationTemplate = renderLocations(site);
@@ -300,8 +324,11 @@ export const renderSamplesPage = async () => {
                     <div class="row" style="width:100%">
                         <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whenToDonateSamples" aria-expanded="true" aria-controls="whenToDonateSamples">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                            <div data-i18n="samples.whenToDonateSamples">
-                                When Should I Donate My Blood and Urine Samples?
+                            ${
+                                (site === henry_ford)
+                                    ? `<div data-i18n="samples.whenToDonate">` 
+                                    : `<div data-i18n="samples.whenToDonateSamples">`
+                            }
                             </div>
                         </div>
                         <div class="messagesBodyFont collapse show" style="width:100%" id="whenToDonateSamples">
@@ -320,25 +347,73 @@ export const renderSamplesPage = async () => {
                         </div>
                         <div class="messagesBodyFont collapse" style="width:100%" id="howToDonateSamples">
                             <div>
-                                ${site.howToDonateBloodAndUrine}
+                                ${ 
+                                    (site === henry_ford) 
+                                        ? site.howToDonate
+                                        : site.howToDonateBloodUrine
+                                }
                             </div>
                         </div>          
                     </div>
                     <hr>
-                    <div class="row" style="width:100%">
-                        <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#prepInstructions" aria-expanded="false" aria-controls="prepInstructions">
-                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                            <div>
-                            ${site.prepInstructionsHeader}
+                    ${(site === henry_ford) ?
+                        `<div class="row" style="width:100%;">
+                            <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whereToDonate" aria-expanded="false" aria-controls="whereToDonate">
+                                <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
+                                <div data-i18n="samples.whereToDonate">
+                                    Where Do I Donate My Samples?
+                                </div>
                             </div>
-                        </div>
-                        <div class="messagesBodyFont collapse" style="width:100%" id="prepInstructions">
-                            <div>
-                                ${site.prepInstructionsText}
+                            <div class="messagesBodyFont collapse" style="width:100%" id="whereToDonate">
+                            ${site.locationNotes 
+                                ? `<div class="row" style="width:100%; padding-top:0;">
+                                        <div class="messagesBodyFont">
+                                            ${site.locationNotes}
+                                        </div>
+                                    </div>` 
+                                : ``}
                             </div>
-                        </div>          
-                    </div>
+                        </div>`
+                        : ``
+                    }
+                    
+                    ${(site !== henry_ford)
+                        ?   `<div class="row" style="width:100%">
+                                <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#prepInstructions" aria-expanded="false" aria-controls="prepInstructions">
+                                    <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
+                                    <div>
+                                    ${site.prepInstructionsHeader}
+                                    </div>
+                                </div>
+                                <div class="messagesBodyFont collapse" style="width:100%" id="prepInstructions">
+                                    <div>
+                                        ${site.prepInstructionsText}
+                                    </div>
+                                </div>          
+                            </div>`
+                        : ``
+                    }
+
                     <hr>          
+
+                    ${ (site === henry_ford)
+                        ?   `<div class="row" style="width:100%">
+                                <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howLongVisit" aria-expanded="false" aria-controls="howLongVisit">
+                                    <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
+                                    <div data-i18n="samples.howLongVisit">
+                                        How Long Will My Visit Take?
+                                    </div>
+                                </div>
+                                <div class="messagesBodyFont collapse" style="width:100%" id="howLongVisit">
+                                    <div>
+                                        ${site.howLong}
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>`
+                        : ''
+                    }
+
                     <div class="row" style="width:100%">
                         <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whatHappensDuring" aria-expanded="false" aria-controls="whatHappensDuring">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
@@ -1423,7 +1498,26 @@ const henry_ford = {
     howToDonate: '<p data-i18n="samples.henry_ford.howToDonate"> After you receive notification that we placed your Connect lab order, please visit any HFH Lab Services location listed in the "Where Do I Donate My Samples" section below. We are not able to collect samples for Connect at other HFH locations not currently listed, or outside of HFH (Like LabCorp or Quest).' 
         + '<br><br> You can donate Connect samples and complete any labs ordered by your provider in the same visit. You do not need an appointment.' 
         + '<br><br> You do not need to fast before you donate samples for Connect, so you may eat and drink before your visit.</p>',
-    howLong: '<span data-i18n="samples.henry_ford.howLong"><span class="site-info-bold">For Option 1: Connect Research Lab Appointment</span><br>Please expect to spend about one hour at your appointment to donate your samples and complete a short survey. <br><span class="site-info-bold">For Option 2: Henry Ford Health Lab Services Locations</span><br>Wait times to donate samples may vary by location. To better serve HFH patients, Henry Ford Lab Services have started using <span class="site-info-bold">“Save My Spot".</span><br><br><span class="site-info-bold">“Save My Spot"</span> is an optional service to reserve your spot in line at one of the participating Henry Ford Health Lab Services locations (see table of locations above). All lab orders must be placed before using “Save My Spot,” including your lab order for Connect.<br><br>To use this optional service, click this link only after receiving order confirmation from Connect staff: <a href= "https://www.henryford.com/locations/henry-ford-hospital/lab-services">https://www.henryford.com/locations/henry-ford-hospital/lab-services</a> </span>',
+    howLong: '<span data-i18n="samples.henry_ford.howLong">'
+        +       '<br>Wait times to donate samples may vary by location. To better serve HFH patients, Henry Ford Lab Services have started using “Save My Spot".'
+        +       '<br><br><span class="site-info-bold">“Save My Spot"</span> is an optional service to reserve your spot in line at one of the participating HFH locations (see table of locations above). All lab orders must be placed-before using “Save My Spot,” including your lab order for Connect.'
+        +       '<br><br>To use this optional service, click this link only after receiving order confirmation from Connect staff: <a href= "https://www.henryford.com/locations/henry-ford-hospital/lab-services">https://www.henryford.com/locations/henry-ford-hospital/lab-services</a>'
+        +    '</span>',
+    whatHappensDuring: '<span data-i18n="samples.henry_ford.whatDuringVisit">Donating your research blood and urine samples is just like providing samples requested by your health care provider. When you arrive at the clinic, you may go directly to the lab and check in with front desk staff. When it is your turn, the lab will call you back and collect your samples. The lab techs will be able to see your blood and urine collection orders and instructions for Connect in their system.</span>',
+    whatHappensAfter: '<span data-i18n="samples.henry_ford.whatAfterVisit"> Within a day of your blood and urine collection, we will send you an email asking you to complete a short survey on MyConnect. The survey will ask about recent actions such as:'
+        +             '<br><br>'
+        +             '<ul style="margin: 0; padding-left: 2.5rem;">'
+        +               '<li>The last time you ate or drank before your lab visit, the time you went to sleep the night before your lab visit, and the time you woke up on the day or your visit. </li>'
+        +               '<li>If you are menstruating, the start date of your most recent menstrural period in the last 12 months.</li>'
+        +              '</ul>'
+        +              '<br>'
+        +              'When you receive our email, it is important that you complete the survey as soon as possible.'
+        +              '</span>',
+    howToDonateMouthwash: '<span data-i18n="samples.henry_ford.howToDonateMouthwash">'
+        +    'We will send you an email as soon as your mouthwash home collection kit is on the way. Once you receive the kit, you can collect your mouthwash sample in the comfort of your own home. The kit we mail you will include instructions and all of the items needed to collect your sample, including a return shipping box with a pre-paid shipping label to return your sample to us.'
+        +    '<br><br>'
+        +    'When you collect your mouthwash sample, we will ask you to complete a short survey on MyConnect. It is important to complete this survey on the same day that you collect your mouthwash sample.'
+        +    '</span>',
     prepareInstructions: '<span data-i18n="samples.henry_ford.prepareInstructions">On the day of your visit to donate samples for Connect, you do not need to fast unless told to do so by your provider for any other lab work they’ve ordered. We request you drink plenty of water to keep hydrated but <span class="site-info-bold">stop drinking water one hour before your visit.</span><br><br><span class="site-info-bold">One hour before your visit:</span> Please <span class="site-info-bold">do not</span> eat, drink, chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span class="site-info-bold">Things to bring and remember:</span> We will ask you to complete a short survey on MyConnect after you donate samples. You will need your login method for MyConnect and a personal device to complete the survey. <br><br>You will be asked questions related to:<ul><li>The last time you ate or drank before your appointment, and the time you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></span>',
     payment: '<span data-i18n="samples.henry_ford.payment">You will receive your $25 gift card after you donate a blood sample and complete <span class="site-info-bold">all four sections</span> of your first Connect survey.<br><br>You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<ol><li>Background and Overall Health</li><li>Medications, Reproductive Health, Exercise, and Sleep</li><li>Smoking, Alcohol, and Sun Exposure</li><li>Where you Live and Work</li></ol></span>',
     support: '<span data-i18n="samples.henry_ford.support">Call 855-574-7540 (9:00 a.m. – 7:00 p.m. on weekdays. On weekends and after business hours please leave a message with your name and a good time to call you back).</span>',
@@ -1431,7 +1525,7 @@ const henry_ford = {
         + '<br><br> Please <a href="https://www.henryford.com/locations/search-results?|#services=&locationtype={6892DD84-8634-4F32-A6C0-8DC0F2E45486}&locationname=&&g=0|0" target="_plank">click here</a> to find address, business hours, and parking information for participating HFH Lab Services locations shown in the table below.'
         + '<br><br><table style="width: 100%;border: 1px solid">'
         + '<tr style="border: 1px solid">'
-        + '<td style="padding: 10px;vertical-align:top;border: 1px solid"><span class="site-info-bold">HFH Lab Services Locations</span> </td></tr>'
+        + '<td style="padding: 10px;vertical-align:top;border: 1px solid; text-align:center;"><span class="site-info-bold">HFH Lab Services Locations</span> </td></tr>'
         + '<tr style="border: 1px solid">'
         +     '<td style="padding: 10px;vertical-align:top;border: 1px solid">'
         +         '<ol style="margin: 0; padding-left: 20px;">'
@@ -1766,6 +1860,11 @@ const locations = [
     bswh,
 ];
 
+// const sectionConfigs = {
+//     u_chicago: {
+//         howLong: {i18nKey}. 
+    
+// }
 
 const renderLocations = (site) => {
     let template = '';
