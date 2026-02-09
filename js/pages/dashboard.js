@@ -393,9 +393,10 @@ const showSecondaryLoginModal = (data) => {
 }
 
 const renderWelcomeHeader = (data) => {
+    const displayName = data[fieldMapping.prefName] || data[fieldMapping.fName] || '';
     let template = `<div class="row welcome-header">
         <div class="col text-center">
-        <span data-i18n="shared.welcomeText">Welcome</span>${data[fieldMapping.fName] ? ', ' + data[fieldMapping.fName] : ''} 
+        <span data-i18n="shared.welcomeText">Welcome</span>${displayName ? ', ' + displayName : ''} 
         </div>
     </div>`;
 
