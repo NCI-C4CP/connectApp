@@ -147,7 +147,7 @@ export const renderSamplesPage = async () => {
                         </div>
                         <div class="messagesBodyFont collapse" style="width:100%" id="whereToDonate">
                         ${site.locationNotes ? `
-                        <div class="row" style="width:100%; padding-top:0;">
+                        <div style="width:100%; padding-top:0;">
                             <div class="messagesBodyFont">
                                 ${site.locationNotes}
                             </div>
@@ -183,25 +183,7 @@ export const renderSamplesPage = async () => {
                     </div>
                     <hr>
                     
-                     <!-- Delete this later-->
-                    ${ (site === henry_ford) ?
-                        `<div class="row" style="width:100%">
-                        <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howLongVisit" aria-expanded="false" aria-controls="howLongVisit">
-                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                            <div data-i18n="samples.howLongVisit">
-                                How Long Will My Visit Take?
-                            </div>
-                        </div>
-                        <div class="messagesBodyFont collapse" style="width:100%" id="howLongVisit">
-                            <div>
-                                ${site.howLong}
-                            </div>
-                        </div>
-                    </div>`
-                    :
-                    
-                        `<!-- Work on later -->
-                        <div class="row" style="width:100%">
+                    <div class="row" style="width:100%">
                         <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howLongAppt" aria-expanded="false" aria-controls="howLongAppt">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             <div data-i18n="samples.howLongAppt">
@@ -213,11 +195,9 @@ export const renderSamplesPage = async () => {
                                 ${site.howLong}
                             </div>
                         </div>
-                    </div>`
-                    }
-                    
-                    
+                    </div>
                     <hr>
+
                     <div class="row" style="width:100%">
                         <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#prepareAppt" aria-expanded="false" aria-controls="prepareAppt">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
@@ -366,7 +346,7 @@ export const renderSamplesPage = async () => {
                             </div>
                             <div class="messagesBodyFont collapse" style="width:100%" id="whereToDonate">
                             ${site.locationNotes 
-                                ? `<div class="row" style="width:100%; padding-top:0;">
+                                ? `<div style="width:100%; padding-top:0;">
                                         <div class="messagesBodyFont">
                                             ${site.locationNotes}
                                         </div>

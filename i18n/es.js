@@ -1063,12 +1063,11 @@
                 +                       "<li>Si está menstruando, la fecha de inicio de su período menstrual más reciente en los últimos 12 meses.</li>"
                 +                   "</ul>"
                 +                   "<br>"
-                +                   "Es importante que complete la encuesta tan pronto como sea posible después de recibir nuestro mensaje."
+                +                   "<span class=\"site-info-bold-italic\">Es importante que complete la encuesta tan pronto como sea posible después de recibir nuestro mensaje.</span>"
                 +                 "</span>",
             howToDonateMouthwash: '<span data-i18n="samples.henry_ford.howToDonateMouthwash">'
                 +    'Le enviaremos un mensaje por correo electrónico ni bien su kit de recolección de enjuague bucal en el hogar esté en camino. Cuando reciba el kit, puede tomar la muestra de enjuague bucal en la comodidad de su hogar. El kit que le enviemos por correo incluirá instrucciones y todos los artículos necesarios para tomar su muestra, incluida una caja de devolución con una etiqueta de envío prepagada para que nos envíe la muestra.'
                 +    '<br><br>'
-                +    'When you collect your mouthwash sample, we will ask you to complete a short survey on MyConnect. It is important to complete this survey on the same day that you collect your mouthwash sample.'
                 +    'Cuando tome su muestra de enjuague bucal, le pediremos que complete una breve encuesta en MyConnect. <span class="site-info-bold">Es importante completar esta encuesta el mismo día que tome la muestra de enjuague bucal.</span>'
                 +    '</span>',
             locationNotes: '<span data-i18n=\"samples.henry_ford.locationNotes\">En la tabla de abajo encontrará los centros de Servicios de Laboratorio de HFH donde puede donar muestras para el estudio.'
