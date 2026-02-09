@@ -1349,11 +1349,11 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         formData['query.firstName'] = queryFirstNameArray;
 
         if(document.getElementById('UPSuffix').value) formData['506826178'] = parseInt(document.getElementById('UPSuffix').value);
-        let month = document.getElementById('UPMonth').value;
+        let month = escapeHTML(document.getElementById('UPMonth').value);
 
         formData[fieldMapping.birthMonth] = month;
-        formData[fieldMapping.birthDay] = document.getElementById('UPDay').value;
-        formData[fieldMapping.birthYear] = document.getElementById('UPYear').value;
+        formData[fieldMapping.birthDay] = escapeHTML(document.getElementById('UPDay').value);
+        formData[fieldMapping.birthYear] = escapeHTML(document.getElementById('UPYear').value);
         formData[fieldMapping.dobConcat] = formData[fieldMapping.birthYear] + formData[fieldMapping.birthMonth] + formData[fieldMapping.birthDay];
 
         if(parseInt(formData[fieldMapping.birthMonth]) === 2 && parseInt(formData[fieldMapping.birthDay]) === 29){
