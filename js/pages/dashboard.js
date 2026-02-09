@@ -22,7 +22,7 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
         if (data[fieldMapping.consentSubmitted] === fieldMapping.yes) {
 
             let topMessage = "";
-            if (false && data[fieldMapping.userProfileSubmittedAutogen] && data[fieldMapping.userProfileSubmittedAutogen] === fieldMapping.yes) {
+            if (data[fieldMapping.userProfileSubmittedAutogen] && data[fieldMapping.userProfileSubmittedAutogen] === fieldMapping.yes) {
 
                 let template = `
                     ${renderWelcomeHeader(data)}

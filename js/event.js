@@ -1368,7 +1368,6 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         const nintyYearsInMs = 2840125680000; // 90 years times 31556952000 ms per year
         const eightteenYearsInMs = 568025136000; // 18 years times 31556952000 ms per year
         let dobInMs = +new Date() - +new Date(formData[fieldMapping.birthMonth] + '/' + formData[fieldMapping.birthDay]  + '/' + formData[fieldMapping.birthYear]);
-        console.log(nintyYearsInMs, eightteenYearsInMs, dobInMs);
         if  (dobInMs === NaN || 
             dobInMs > nintyYearsInMs || 
             dobInMs < eightteenYearsInMs) {
