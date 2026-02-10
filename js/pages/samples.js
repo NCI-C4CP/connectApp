@@ -125,7 +125,7 @@ export const renderSamplesPage = async () => {
                     <div class="row" style="width:100%">
                         <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howToDonate" aria-expanded="false" aria-controls="howToDonate">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                            ${(site === henry_ford) ? `<div data-i18n="samples.howToDonateBloodUrineHeader">` :  `<div data-i18n="samples.howToDonate">`}
+                                <div data-i18n="samples.howToDonate">
                             </div>
                         </div>
                         <div class="messagesBodyFont collapse" style="width:100%" id="howToDonate">
@@ -1513,7 +1513,7 @@ const henry_ford = {
         + '<br><br> You do not need to fast before you donate samples for Connect, so you may eat and drink before your visit.</p>',
     howLong: '<span data-i18n="samples.henry_ford.howLong">'
         +       '<br>Wait times to donate samples may vary by location. To better serve HFH patients, Henry Ford Lab Services have started using “Save My Spot".'
-        +       '<br><br><span class="site-info-bold">“Save My Spot"</span> is an optional service to reserve your spot in line at one of the participating HFH locations (see table of locations above). All lab orders must be placed-before using “Save My Spot,” including your lab order for Connect.'
+        +       '<br><br><span class="site-info-bold">“Save My Spot"</span> is an optional service to reserve your spot in line at one of the participating HFH locations (see table of locations above). All lab orders must be placed before using “Save My Spot,” including your lab order for Connect.'
         +       '<br><br>To use this optional service, click this link only after receiving order confirmation from Connect staff: <a href= "https://www.henryford.com/locations/henry-ford-hospital/lab-services">https://www.henryford.com/locations/henry-ford-hospital/lab-services</a>'
         +    '</span>',
     whatHappensDuring: '<span data-i18n="samples.henry_ford.whatHappensDuring">Donating your research blood and urine samples is just like providing samples requested by your health care provider. When you arrive at the clinic, you may go directly to the lab and check in with front desk staff. When it is your turn, the lab will call you back and collect your samples. The lab techs will be able to see your blood and urine collection orders and instructions for Connect in their system.</span>',
@@ -1521,7 +1521,7 @@ const henry_ford = {
         +             '<br><br>'
         +             '<ul style="margin: 0; padding-left: 2.5rem;">'
         +               '<li>The last time you ate or drank before your lab visit, the time you went to sleep the night before your lab visit, and the time you woke up on the day or your visit. </li>'
-        +               '<li>If you are menstruating, the start date of your most recent menstrural period in the last 12 months.</li>'
+        +               '<li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li>'
         +              '</ul>'
         +              '<br>'
         +              'When you receive our email, it is important that you complete the survey as soon as possible.'
