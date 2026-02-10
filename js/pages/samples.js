@@ -87,8 +87,8 @@ export const renderSamplesPage = async () => {
             site !== kphi && 
             site !== kpco && 
             site !== kpnw && 
-            site !== u_chicago 
-            && site !== henry_ford
+            site !== u_chicago && 
+            site !== henry_ford
         ) {
             const locationTemplate = renderLocations(site);
 
@@ -157,26 +157,26 @@ export const renderSamplesPage = async () => {
                         ${locationTemplate}
 
                         ${site.parkingInstructions ? `
-                        <div class="row" style="width:100%">
-                            <div style="width:100%">
+                        <div style="width:100%">
+
                                 <div class="messagesHeaderFont" data-i18n="samples.parkingInstructions">
                                 </div>
                                 <div class="messagesBodyFont removePaddingTop" data-i18n="samples.freeParkingAllCenters">
                                 </div>
-                            </div>
+
                         </div>`
                         : ''}
 
                         ${site.scheduling ? `
-                        <div class="row" style="width:100%">
-                            <div style="width:100%">
+                        <div style="width:100%">
+
                                 <div class="messagesHeaderFont" data-i18n="samples.schedule">
                                     Scheduling Information
                                 </div>
                                 <div class="messagesBodyFont removePaddingTop">
                                     ${site.scheduling}
                                 </div>
-                            </div>
+
                         </div>` : ''
                         }
                         </div>
@@ -362,7 +362,7 @@ export const renderSamplesPage = async () => {
                                 <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#prepInstructions" aria-expanded="false" aria-controls="prepInstructions">
                                     <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                                     <div>
-                                    ${site.prepInstructionsHeader}
+                                        ${site.prepInstructionsHeader}
                                     </div>
                                 </div>
                                 <div class="messagesBodyFont collapse" style="width:100%" id="prepInstructions">
@@ -1336,10 +1336,10 @@ const health_partners = {
             '<span data-i18n="samples.health_partners.locations.NicolletClinicParking">Parking at the Park Nicollet Clinic and Specialty Center is free in the visitor parking ramp. <br><br><div class="messagesHeaderFont">Scheduling Information</div><br>You can self-schedule using the link included in the scheduling email sent from the Connect team. For questions or to schedule over the phone, please call 952-967-5067.</span>'
         ],
         [
-            '<span data-i18n="samples.health_partners.locations.RiverwayName">HealthPartners Riverway Clinic Elk River</span>',
-            '<span data-i18n="samples.health_partners.locations.RiverwayAddress">530 3rd St NW<br>Elk River, MN 55330<br><br>Upon arrival, proceed past the main check in desk and go directly to the lab check in desk.</span>',
+            '<span data-i18n="samples.health_partners.locations.RiverwayElkName">HealthPartners Riverway Clinic Elk River</span>',
+            '<span data-i18n="samples.health_partners.locations.RiverwayElkAddress">530 3rd St NW<br>Elk River, MN 55330<br><br>Upon arrival, proceed past the main check in desk and go directly to the lab check in desk.</span>',
             '',
-            '<span data-i18n="samples.health_partners.locations.RiverwayParking">Parking is free in the Elk River Clinic parking lot.<br><br><div class="messagesHeaderFont">Scheduling Information</div><br>Self-scheduling is not currently available for the Elk River location. For questions and scheduling, please call 952-967-5067</span>'
+            '<span data-i18n="samples.health_partners.locations.RiverwayElkParking">Parking is free in the Elk River Clinic parking lot.<br><br><div class="messagesHeaderFont">Scheduling Information</div><br>Self-scheduling is not currently available for the Elk River location. For questions and scheduling, please call 952-967-5067</span>'
         ],
         [
             '<span data-i18n="samples.health_partners.locations.NicolletName">Park Nicollet Clinic Chanhassen</span>',
@@ -1370,6 +1370,24 @@ const health_partners = {
             '<span data-i18n="samples.health_partners.locations.NewRichmondClinicAddress">535 Hospital Rd<br>New Richmond, WI 54017 <br><br>Upon entering the building by the rotunda entrance, check in with the information desk. Ask for the “Connect Study at the Clinic lab and you will be guided through the double doors to your right to check in at the \"clinic lab\".</span>',
             '',
             '<span data-i18n="samples.health_partners.locations.NewRichmondClinicParking">"Free parking is available on-site at the front of the building.<br><br><div class="messagesSubHeader">Scheduling Information</div><br>Self-scheduling is not currently available for the New Richmond location. For questions and scheduling, please call 952-967-5067.</span>',
+        ],
+        [
+            '<span data-i18n="samples.health_partners.locations.ClinicStPaulWabashaName">HealthPartners Clinic St. Paul (Wabasha)</span>',
+            '<span data-i18n="samples.health_partners.locations.ClinicalStPaulWabashaAddress">205 Wabasha St S <br> St Paul, MN 55107 <br><br> Upon arrival, enter the clinic main doors and turn left. Walk past the main clinic greet station and follow signs to the lab greet station, which is located on the main floor of the clinic.</span>',
+            '',
+            '<span data-i18n="samples.health_partners.locations.ClinicalStPaulWabashaParking">"Free parking is available on-site at the front of the building.<br><br><div class=\"messagesSubHeader\">Scheduling Information</div> Self-scheduling is not currently available for the St. Paul (Wabasha) location. For questions and scheduling, please call 952-967-5067.</span>',
+        ],
+        [
+            '<span data-i18n="samples.health_partners.locations.NicolletBurnsvilleName">Park Nicollet Clinic and Specialty Center, Burnsville</span>',
+            '<span data-i18n="samples.health_partners.locations.NicolletBurnsvilleAddress">14000 Fairview Dr<br>Burnsville, MN 55337 <br><br>Upon entering the 14050 building, follow the 14000 building signage until you come to the elevators or stairs. The lab is on the second floor.</span>',
+            '',
+            '<span data-i18n="samples.health_partners.locations.NicolletBurnsvilleParking">Parking at the Park Nicollet Specialty Center is free in the visitor parking ramp.<br><br><div class=\"messagesSubHeader\">Scheduling Information</div>Self-scheduling is not currently available for the Burnsville location. For questions and scheduling, please call 952-967-5067.</span>',
+        ],
+        [
+            '<span data-i18n="samples.health_partners.locations.RiverwayAndoverName">HealthPartners Riverway Clinic Andover</span>',
+            '<span data-i18n="samples.health_partners.locations.RiverwayAndoverAddress">15245 Bluebird St NW <br> Andover, MN 55304 <br><br>Upon arrival, enter the clinic’s main doors and check in at the clinic front desk.</span>',
+            '',
+            '<span data-i18n="samples.health_partners.locations.RiverwayAndoverParking">Parking is free and available in the front of the clinic.<br><br><div class=\"messagesSubHeader\">Scheduling Information</div>Self-scheduling is not currently available for the Andover location. For questions and scheduling, please call 952-967-5067.</span>',
         ]
     ]
 };
@@ -1859,22 +1877,17 @@ const locations = [
     bswh,
 ];
 
-// const sectionConfigs = {
-//     u_chicago: {
-//         howLong: {i18nKey}. 
-    
-// }
-
 const renderLocations = (site) => {
     let template = '';
     if (site.locations){
         site.locations.forEach(location => {
             template += `
-                <div class="row" style="width:100%">
+                <div style="width:100%; margin-bottom:1rem;">
                     <div class="messagesHeaderFont">
                         ${location[0]}
                     </div>
-                </div>`
+                </div>
+                `
             if (site === henry_ford) {
                 template += `
                 <div class="row" style="width:100%">
@@ -1890,7 +1903,7 @@ const renderLocations = (site) => {
             } else if (site === marshfield) {
                 template += `
                 <div class="row removePaddingTop" style="width:100%">
-                    <div style="width:100%; margin-left: 2rem;">
+                    <div style="width:100%; margin-left:2rem;">
                         <div class="messagesHeaderFont " data-i18n="samples.addressText">
                             Address
                         </div>
@@ -1927,12 +1940,12 @@ const renderLocations = (site) => {
                 }
             } else {
                 template += `
-                <div class="row" style="width:100%">
+                <div style="width:100%">
                     <div style="width:100%">
                         <div class="messagesSubHeader" data-i18n="samples.directionsText">
                             Address and Directions
                         </div>
-                        <div class="messagesBodyFont">
+                        <div class="messagesBodyFont" style="padding: 0 0 1rem;">
                             ${location[1]}
                         </div>
                     </div>
@@ -1940,7 +1953,7 @@ const renderLocations = (site) => {
             }
             if (location[2])  {
                 template+=`    
-                <div class="row" style="width:100%;padding:5px 15px;">
+                <div style="width:100%;padding:5px 15px;">
                     <div style="width:100%">
                         <div class="messagesHeaderFont" data-i18n="samples.hoursText">
                             Hours
@@ -1954,7 +1967,7 @@ const renderLocations = (site) => {
             
             if (location[3])  {
             template+=` 
-                <div class="row" style="width:100%">
+                <div style="width:100%">
                     <div style="width:100%">
                         <div class="messagesSubHeader" data-i18n="samples.parkingInstructions">
                             Parking Instructions
