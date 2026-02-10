@@ -11,7 +11,6 @@ export const renderSamplesPage = async () => {
 
         if (!hasUserData(res)) return;
         let participant = res.data;
-        console.log('Participant Data:', participant);
         const kitId = participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.uniqueKitID];
         const kitStatus = participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.kitStatus];
         if (kitStatus === conceptId.kitStatusValues.shipped && participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[conceptId.kitRequestEligible] === conceptId.yes) {
@@ -26,7 +25,6 @@ export const renderSamplesPage = async () => {
         }
 
         let site = locations.filter(location => location.concept == participant[conceptId.healthcareProvider])[0];
-        console.log("🚀 ~ renderSamplesPage ~ sites:", site)
         let template = '';
 
         //Top Header
@@ -81,7 +79,6 @@ export const renderSamplesPage = async () => {
             </div>
             <div class="col-lg-2 col-xl-3"></div>
         </div>`);
-        console.log('site:', site);
         if (site && 
             site !== kpga && 
             site !== kphi && 
