@@ -995,7 +995,7 @@
                 +           "<li>Clínica HealthPartners Brooklyn Center</li>"
                 +           "<li>Clínica HealthPartners Stillwater</li>"
                 +           "<li>Clínica New Richmond, Hospital y Clínica Westfields</li>"
-                +           "<li>Clínica HealthPartners St.Paul (Wabansia)</li>"
+                +           "<li>Clínica HealthPartners St.Paul (Wabasha)</li>"
                 +           "<li>Clínica y centro especializado Park Nicollet, Burnsville</li>"
                 +           "<li>Clínica Riverway de HealthPartners en Andover</li>"
                 +         "</ol>"
@@ -1144,13 +1144,13 @@
                 +                   "<br>"
                 +                   "<span class=\"site-info-bold-italic\">Es importante que complete la encuesta tan pronto como sea posible después de recibir nuestro mensaje.</span>"
                 +                 "</span>",
-            howToDonateMouthwash: '<span data-i18n="samples.henry_ford.howToDonateMouthwash">'
+            "howToDonateMouthwash": '<span data-i18n="samples.henry_ford.howToDonateMouthwash">'
                 +    'Le enviaremos un mensaje por correo electrónico ni bien su kit de recolección de enjuague bucal en el hogar esté en camino. Cuando reciba el kit, puede tomar la muestra de enjuague bucal en la comodidad de su hogar. El kit que le enviemos por correo incluirá instrucciones y todos los artículos necesarios para tomar su muestra, incluida una caja de devolución con una etiqueta de envío prepagada para que nos envíe la muestra.'
                 +    '<br><br>'
                 +    'Cuando tome su muestra de enjuague bucal, le pediremos que complete una breve encuesta en MyConnect. <span class="site-info-bold">Es importante completar esta encuesta el mismo día que tome la muestra de enjuague bucal.</span>'
                 +    '</span>',
-            locationNotes: '<span data-i18n=\"samples.henry_ford.locationNotes\">En la tabla de abajo encontrará los centros de Servicios de Laboratorio de HFH donde puede donar muestras para el estudio.'
-                + '<br><br> Por favor, <a href=\"https://www.henryford.com/locations/search-results?|#services=&locationtype={6892DD84-8634-4F32-A6C0-8DC0F2E45486}&locationname=&&g=0|0\" target=\"_plank\">haga clic aquí </a> para buscar la dirección, el horario de atención y la información de estacionamiento de los centros participantes de Servicios de Laboratorio de HFH que aparecen en la tabla de abajo.'
+            "locationNotes": '<span data-i18n=\"samples.henry_ford.locationNotes\">En la tabla de abajo encontrará los centros de Servicios de Laboratorio de HFH donde puede donar muestras para el estudio.'
+                + '<br><br> Por favor, <a href=\"https://www.henryford.com/locations/search-results?|#services=&locationtype={6892DD84-8634-4F32-A6C0-8DC0F2E45486}&locationname=&&g=0|0\" target=\"_blank\" rel=\"noopener noreferrer\">haga clic aquí </a> para buscar la dirección, el horario de atención y la información de estacionamiento de los centros participantes de Servicios de Laboratorio de HFH que aparecen en la tabla de abajo.'
                 + '<br><br><table style="width: 100%;border: 1px solid">'
                 + '<tr style="border: 1px solid">'
                 + '<td style="padding:10px; vertical-align:top; border:1px solid; text-align:center;"><span class="site-info-bold">Centros de Servicios de Laboratorio de HFH</span> </td></tr>'
