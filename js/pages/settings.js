@@ -1686,7 +1686,7 @@ export const renderContactInformationData = () => {
                     <br>
                         <b>
                         <div id="profileadditionalEmail1">
-                            ${optVars.additionalEmail1}
+                            ${escapeHTML(optVars.additionalEmail1)}
                         </div>
                         </b>
                     </span>
@@ -1701,7 +1701,7 @@ export const renderContactInformationData = () => {
                     <br>
                         <b>
                         <div id="profileadditionalEmail2">
-                            ${optVars.additionalEmail2}
+                            ${escapeHTML(optVars.additionalEmail2)}
                         </div>
                         </b>
                     </span>
