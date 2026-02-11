@@ -732,8 +732,8 @@ export const showMailAddressConfirmationMyProfile = (address, i18nTranslation, s
         <div style="display: flex; gap: 20px; margin-left: 25%; margin-right: 25%">
             <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
                 <div style="margin-bottom: 15px;">
-                    ${address.streetAddress} ${address.secondaryAddress} <br>
-                    ${address.city} ${address.state} ${address.zipCode} 
+                    ${escapeHTML(address.streetAddress)} ${escapeHTML(address.secondaryAddress)} <br>
+                    ${escapeHTML(address.city)} ${escapeHTML(address.state)} ${escapeHTML(address.zipCode)} 
                 </div>
                 <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressKeepButton" data-i18n="event.addressSuggestionKeepButton">Keep address I entered</button>
             </div>
@@ -786,15 +786,15 @@ export const showMailAddressSuggestionMyProfile = (uspsSuggestion, i18nTranslati
         <div style="display: flex; gap: 20px;">
             <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
                 <div style="margin-bottom: 15px;">
-                    ${uspsSuggestion.original.streetAddress} ${uspsSuggestion.original.secondaryAddress} <br>
-                    ${uspsSuggestion.original.city} ${uspsSuggestion.original.state} ${uspsSuggestion.original.zipCode} 
+                    ${escapeHTML(uspsSuggestion.original.streetAddress)} ${escapeHTML(uspsSuggestion.original.secondaryAddress)} <br>
+                    ${escapeHTML(uspsSuggestion.original.city)} ${escapeHTML(uspsSuggestion.original.state)} ${escapeHTML(uspsSuggestion.original.zipCode)} 
                 </div>
                 <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressSuggestionKeepButton" data-i18n="event.addressSuggestionKeepButton">Keep address I entered</button>
             </div>
             <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
                 <div style="margin-bottom: 15px;">
-                    ${uspsSuggestion.suggestion.streetAddress} ${uspsSuggestion.suggestion.secondaryAddress}<br>
-                    ${uspsSuggestion.suggestion.city} ${uspsSuggestion.suggestion.state} ${uspsSuggestion.suggestion.zipCode} 
+                    ${escapeHTML(uspsSuggestion.suggestion.streetAddress)} ${escapeHTML(uspsSuggestion.suggestion.secondaryAddress)}<br>
+                    ${escapeHTML(uspsSuggestion.suggestion.city)} ${escapeHTML(uspsSuggestion.suggestion.state)} ${escapeHTML(uspsSuggestion.suggestion.zipCode)} 
                 </div>
                 <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressSuggestionUseButton" data-i18n="event.addressSuggestionUseButton">Use suggested address</button>
             </div>
