@@ -326,7 +326,7 @@ export const renderSamplesPage = async () => {
                                 ${ 
                                     (site === henry_ford) 
                                         ? site.howToDonate
-                                        : site.howToDonateBloodUrine
+                                        : site.howToDonateBloodAndUrine
                                 }
                             </div>
                         </div>          
