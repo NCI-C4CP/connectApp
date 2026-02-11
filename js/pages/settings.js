@@ -741,7 +741,7 @@ const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, sta
     } 
     addressString += `${escapeHTML(state)} ${escapeHTML(zip)}`;
     if (country && country !== '') {
-        addressString += translateHTML(`<br><span data-i18n="countries.${country}"></span>`);
+        addressString += translateHTML(`<br><span data-i18n="countries.${escapeHTML(country)}"></span>`);
     }
     
     addressString += poBoxText;
