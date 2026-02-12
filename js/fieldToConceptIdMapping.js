@@ -8,6 +8,7 @@ export default
     "birthDay": 795827569,
     "birthYear": 544150384,
     "dobConcat": 371067537,
+    "ageToday": 117249500,
     "consentFirstName": 471168198,
     "consentLastName": 736251808,
     "consentSuffix": 480305327,
@@ -38,6 +39,7 @@ export default
     "prefEmail": 869588347,
     "additionalEmail1": 849786503,
     "additionalEmail2": 635101039,
+    "additionalEmail3": 714419972,
     "cellPhone": 388711124,
     "otherPhone": 793072415,
     "prefContact": 524461170,
@@ -392,6 +394,10 @@ export default
         },
     },
 
+    cancerType: 266952173,
+    cancerDiagnosis: 494982282,
+    diagnosedWithCancer: 452166062,
+    yearDiagnosedCancer: 650597106,
 
     biospecimenFlag: 650516960,
     biospecimenResearch: 534621077,
