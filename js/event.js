@@ -1335,21 +1335,33 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         formData['query.firstName'] = queryFirstNameArray;
 
         if(document.getElementById('UPSuffix').value) formData['506826178'] = parseInt(document.getElementById('UPSuffix').value);
-        let month = document.getElementById('UPMonth').value;
+        let month = escapeHTML(document.getElementById('UPMonth').value);
 
-        formData['564964481'] = month;
-        formData['795827569'] = document.getElementById('UPDay').value;
-        formData['544150384'] = document.getElementById('UPYear').value;
-        formData['371067537'] = formData['544150384'] + formData['564964481'] + formData['795827569'];
+        formData[fieldMapping.birthMonth] = month;
+        formData[fieldMapping.birthDay] = escapeHTML(document.getElementById('UPDay').value);
+        formData[fieldMapping.birthYear] = escapeHTML(document.getElementById('UPYear').value);
+        formData[fieldMapping.dobConcat] = formData[fieldMapping.birthYear] + formData[fieldMapping.birthMonth] + formData[fieldMapping.birthDay];
 
-        if(parseInt(formData['564964481']) === 2 && parseInt(formData['795827569']) === 29){
-            const year = parseInt(formData['544150384']);
+        if(parseInt(formData[fieldMapping.birthMonth]) === 2 && parseInt(formData[fieldMapping.birthDay]) === 29){
+            const year = parseInt(formData[fieldMapping.birthYear]);
             const isLeapYear = ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
             if(!isLeapYear){
                 errorMessage('UPDay', '<span data-i18n="event.invalidDay">'+translateText('event.invalidDay')+'</span>', true);
                 return false;
             }
         }
+
+        const nintyYearsInMs = 2840125680000; // 90 years times 31556952000 ms per year
+        const eightteenYearsInMs = 568025136000; // 18 years times 31556952000 ms per year
+        let dobInMs = +new Date() - +new Date(formData[fieldMapping.birthMonth] + '/' + formData[fieldMapping.birthDay]  + '/' + formData[fieldMapping.birthYear]);
+        if  (dobInMs === NaN || 
+            dobInMs > nintyYearsInMs || 
+            dobInMs < eightteenYearsInMs) {
+            errorMessage('UPMonth', '<span data-i18n="event.notEligible">'+translateText('event.notEligible')+'</span>', true);
+            return false;
+        }
+
+
 
         formData[fieldMapping.userProfileHistory] = {};
         // User Profile Former Name
@@ -2031,15 +2043,15 @@ const verifyUserDetails = (formData) => {
         </div>
         <div class="row">
             <div class="col" data-i18n="event.month">Month</div>
-            <div class="col" ${formData['564964481'] ? `data-i18n="shared.month${BirthMonths[formData['564964481']].replace(/^\d+\s-\s/s,'')}"` : ''}>${formData['564964481'] ? translateText(`shared.month${BirthMonths[formData['564964481']].replace(/^\d+\s-\s/s,'')}`) : ''}</div>
+            <div class="col" ${formData[fieldMapping.birthMonth] ? `data-i18n="shared.month${BirthMonths[formData[fieldMapping.birthMonth]].replace(/^\d+\s-\s/s,'')}"` : ''}>${formData[fieldMapping.birthMonth] ? translateText(`shared.month${BirthMonths[formData[fieldMapping.birthMonth]].replace(/^\d+\s-\s/s,'')}`) : ''}</div>
         </div>
         <div class="row">
             <div class="col" data-i18n="event.day">Day</div>
-            <div class="col">${formData['795827569']}</div>
+            <div class="col">${formData[fieldMapping.birthDay]}</div>
         </div>
         <div class="row">
             <div class="col" data-i18n="event.year">Year</div>
-            <div class="col">${formData['544150384']}</div>
+            <div class="col">${formData[fieldMapping.birthYear]}</div>
         </div>
         <div class="row">
             <div class="col"><strong data-i18n="form.birthPlaceSubHeader">Place of birth</strong></div>
