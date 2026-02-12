@@ -811,7 +811,7 @@ const en = {
         "mainBodyExperience2024Header": "2024 Connect Experience Survey",
         "mainBodyExperience2024Description": "Questions about your experience with Connect and your preferences for completing study activities, using MyConnect, and getting messages.",
         "mainBodyCancerScreeningHistoryHeader": "Cancer Screening History Survey",
-        "mainBodyCancerScreeningHistoryDescription": "Questions about past tests you may have had to screen for cancer. These are tests that look for cancer in people without symptoms.",
+        "mainBodyCancerScreeningHistoryDescription": "Questions about past tests you may have had to screen for cancer. These are tests that look for cancer in people without symptoms. Please complete this survey even if you’ve never been screened for cancer. Your responses are important.",
         "surveysCompleted": "You've finished all available Connect surveys. We will reach out to you when there are new surveys and study activities to complete. Thank you for your contributions to the study!",
         "mainBodyDHQ3Header": "Diet History Questionnaire III (DHQ III)",
         "mainBodyDHQ3Description": "Questions about your typical diet in the past year. After clicking \"start\", the survey will open in a new browser tab or window and you will see a standard Federal data security warning message. Click \"Continue to Questionnaire\" to start the survey.",

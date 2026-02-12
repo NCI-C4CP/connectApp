@@ -97,7 +97,7 @@ export const addEventAddressAutoComplete = (id, country) => {
 }
 
 export const addEventInternationalAddressToggle = (id) => {
-    let autocomplete = {};
+    
     const UPAddressInternational = document.getElementById(`UPAddress${id}International`);
     const UPAddressLine3 = document.getElementById(`UPAddress${id}Line3`);
     const UPAddressState = document.getElementById(`UPAddress${id}State`);
@@ -304,7 +304,7 @@ export const addEventHealthCareProviderSubmit = () => {
 export const addEventHealthProviderModalSubmit = () => {
     const form = document.getElementById('modalConfirm');
     
-    form.addEventListener('click', async e => {
+    form.addEventListener('click', async () => {
         let disappear = document.getElementById('modalCancel');
         disappear.click();
         const value = parseInt(document.getElementById('827220437').value);
@@ -359,15 +359,6 @@ export const addEventHeardAboutStudy = () => {
             consentTemplate();
         }
     });
-}
-
-export const addEventSaveConsentBtn = () => {
-    const btn = document.getElementById('saveConsentBtn');
-    btn.addEventListener('click', () => {
-        html2canvas(document.getElementById('canvasContainer')).then(function(canvas) {
-            document.getElementById("consentImg").src= canvas.toDataURL();
-        });
-    })
 }
 
 const onBlurPhysicalAddressLine = (event, id) => {
@@ -705,8 +696,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         const requiredFields = document.getElementsByClassName('required-field');
         const confirmationFields = document.getElementsByClassName('confirmation-field');
         const validations = document.getElementsByClassName('input-validation');
-        const numberValidations = document.getElementsByClassName('num-val');
-        const radios = document.getElementsByName('UPRadio');
+        
         let hasError = false;
         let focus = true;
         Array.from(validations).forEach(element => {
@@ -832,10 +822,6 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             hasError = true;
             console.error('User Profile - Required Checked Input', 'UPCancerBtnGroup');
         }
-        let radioChecked = false;
-        Array.from(radios).forEach(element => {
-            if(element.checked) radioChecked = true;
-        });
 
         const phoneNo = `${escapeHTML(document.getElementById('UPPhoneNumber11').value)}${escapeHTML(document.getElementById('UPPhoneNumber12').value)}${escapeHTML(document.getElementById('UPPhoneNumber13').value)}`;
         const phoneNo2 = `${escapeHTML(document.getElementById('UPPhoneNumber21').value)}${escapeHTML(document.getElementById('UPPhoneNumber22').value)}${escapeHTML(document.getElementById('UPPhoneNumber23').value)}`;
@@ -847,9 +833,9 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         const email3 = document.getElementById('UPAdditionalEmail2');
         const email4 = document.getElementById('UPAdditionalEmail3');
         const altContactEmail = document.getElementById('altContactEmail')?.value?.trim() || '';
-        const zip = document.getElementById('UPAddress1Zip').value;
-        const physicalZip = document.getElementById('UPAddress2Zip').value || '';
-        const altAddressZip = document.getElementById('UPAddress3Zip').value || '';
+        const zip = escapeHTML(document.getElementById('UPAddress1Zip').value || '');
+        const physicalZip = escapeHTML(document.getElementById('UPAddress2Zip').value || '');
+        const altAddressZip = escapeHTML(document.getElementById('UPAddress3Zip').value || '');
         
         if(!email){
             errorMessage('UPEmail', '<span data-i18n="event.enterEmail">'+translateText('event.enterEmail')+'</span>', focus);
@@ -1349,21 +1335,33 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         formData['query.firstName'] = queryFirstNameArray;
 
         if(document.getElementById('UPSuffix').value) formData['506826178'] = parseInt(document.getElementById('UPSuffix').value);
-        let month = document.getElementById('UPMonth').value;
+        let month = escapeHTML(document.getElementById('UPMonth').value);
 
-        formData['564964481'] = month;
-        formData['795827569'] = document.getElementById('UPDay').value;
-        formData['544150384'] = document.getElementById('UPYear').value;
-        formData['371067537'] = formData['544150384'] + formData['564964481'] + formData['795827569'];
+        formData[fieldMapping.birthMonth] = month;
+        formData[fieldMapping.birthDay] = escapeHTML(document.getElementById('UPDay').value);
+        formData[fieldMapping.birthYear] = escapeHTML(document.getElementById('UPYear').value);
+        formData[fieldMapping.dobConcat] = formData[fieldMapping.birthYear] + formData[fieldMapping.birthMonth] + formData[fieldMapping.birthDay];
 
-        if(parseInt(formData['564964481']) === 2 && parseInt(formData['795827569']) === 29){
-            const year = parseInt(formData['544150384']);
+        if(parseInt(formData[fieldMapping.birthMonth]) === 2 && parseInt(formData[fieldMapping.birthDay]) === 29){
+            const year = parseInt(formData[fieldMapping.birthYear]);
             const isLeapYear = ((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0);
             if(!isLeapYear){
                 errorMessage('UPDay', '<span data-i18n="event.invalidDay">'+translateText('event.invalidDay')+'</span>', true);
                 return false;
             }
         }
+
+        const nintyYearsInMs = 2840125680000; // 90 years times 31556952000 ms per year
+        const eightteenYearsInMs = 568025136000; // 18 years times 31556952000 ms per year
+        let dobInMs = +new Date() - +new Date(formData[fieldMapping.birthMonth] + '/' + formData[fieldMapping.birthDay]  + '/' + formData[fieldMapping.birthYear]);
+        if  (dobInMs === NaN || 
+            dobInMs > nintyYearsInMs || 
+            dobInMs < eightteenYearsInMs) {
+            errorMessage('UPMonth', '<span data-i18n="event.notEligible">'+translateText('event.notEligible')+'</span>', true);
+            return false;
+        }
+
+
 
         formData[fieldMapping.userProfileHistory] = {};
         // User Profile Former Name
@@ -1391,37 +1389,37 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         // Contact Information
         const allPhoneNo = [];
         // Mobile phone
-        if(document.getElementById('UPPhoneNumber11').value && document.getElementById('UPPhoneNumber12').value && document.getElementById('UPPhoneNumber13').value) {
-            formData['388711124'] = `${document.getElementById('UPPhoneNumber11').value}${document.getElementById('UPPhoneNumber12').value}${document.getElementById('UPPhoneNumber13').value}`;
-            allPhoneNo.push(`${document.getElementById('UPPhoneNumber11').value}${document.getElementById('UPPhoneNumber12').value}${document.getElementById('UPPhoneNumber13').value}`);
+        if(phoneNo) {
+            formData[fieldMapping.cellPhone] = phoneNo;
+            allPhoneNo.push(phoneNo);
         }
         const voiceMailPermission = document.getElementsByName('voiceMailPermission1');
         Array.from(voiceMailPermission).forEach(radioBtn => {
-            if(radioBtn.checked) formData['271757434'] = parseInt(radioBtn.value);
+            if(radioBtn.checked) formData[fieldMapping.canWeVoicemailMobile] = parseInt(radioBtn.value);
         });
         const textPermission1 = document.getElementsByName('textPermission1');
         Array.from(textPermission1).forEach(radioBtn => {
-            if(radioBtn.checked) formData['646873644'] = parseInt(radioBtn.value);
+            if(radioBtn.checked) formData[fieldMapping.canWeText] = parseInt(radioBtn.value);
         });
 
         // Home phone
-        if(document.getElementById('UPPhoneNumber21').value && document.getElementById('UPPhoneNumber22').value && document.getElementById('UPPhoneNumber23').value) {
-            formData['438643922'] = `${document.getElementById('UPPhoneNumber21').value}${document.getElementById('UPPhoneNumber22').value}${document.getElementById('UPPhoneNumber23').value}`;
-            allPhoneNo.push(`${document.getElementById('UPPhoneNumber21').value}${document.getElementById('UPPhoneNumber22').value}${document.getElementById('UPPhoneNumber23').value}`)
+        if(phoneNo2) {
+            formData[fieldMapping.homePhone] = phoneNo2;
+            allPhoneNo.push(phoneNo2);
         }
         const voiceMailPermission2 = document.getElementsByName('voiceMailPermission2');
         Array.from(voiceMailPermission2).forEach(radioBtn => {
-            if(radioBtn.checked) formData['187894482'] = parseInt(radioBtn.value);
+            if(radioBtn.checked) formData[fieldMapping.canWeVoicemailHome] = parseInt(radioBtn.value);
         });
 
          // Other phone
-        if(document.getElementById('UPPhoneNumber31').value && document.getElementById('UPPhoneNumber32').value && document.getElementById('UPPhoneNumber33').value) {
-            formData['793072415'] = `${document.getElementById('UPPhoneNumber31').value}${document.getElementById('UPPhoneNumber32').value}${document.getElementById('UPPhoneNumber33').value}`;
-            allPhoneNo.push(`${document.getElementById('UPPhoneNumber31').value}${document.getElementById('UPPhoneNumber32').value}${document.getElementById('UPPhoneNumber33').value}`)
+        if(phoneNo3) {
+            formData[fieldMapping.otherPhone] = phoneNo3;
+            allPhoneNo.push(phoneNo3);
         }
         const voiceMailPermission3 = document.getElementsByName('voiceMailPermission3');
         Array.from(voiceMailPermission3).forEach(radioBtn => {
-            if(radioBtn.checked) formData['983278853'] = parseInt(radioBtn.value);
+            if(radioBtn.checked) formData[fieldMapping.canWeVoicemailOther] = parseInt(radioBtn.value);
         });
         
         if(allPhoneNo.length > 0) {
@@ -1430,22 +1428,26 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
 
         // Email
         const allEmails = [];
-        if(document.getElementById('UPEmail').value) {
-            formData['869588347'] = document.getElementById('UPEmail').value.trim();
-            allEmails.push(document.getElementById('UPEmail').value.toLowerCase().trim());
+        const emailValue = escapeHTML(email || '');
+        if(emailValue) {
+            formData[fieldMapping.prefEmail] = emailValue;
+            allEmails.push(emailValue.toLowerCase());
         }
 
-        if(document.getElementById('UPEmail2').value) {
-            formData['849786503'] = document.getElementById('UPEmail2').value.trim();
-            allEmails.push(document.getElementById('UPEmail2').value.toLowerCase().trim());
+        const email2Value = escapeHTML(email2?.value?.trim() || '');
+        if(email2Value) {
+            formData[fieldMapping.additionalEmail1] = email2Value;
+            allEmails.push(email2Value.toLowerCase());
         }
-        if(document.getElementById('UPAdditionalEmail2') && document.getElementById('UPAdditionalEmail2').value) {
-            formData['635101039'] = document.getElementById('UPAdditionalEmail2').value.trim();
-            allEmails.push(document.getElementById('UPAdditionalEmail2').value.toLowerCase().trim());
+        const email3Value = escapeHTML(email3?.value?.trim() || '');
+        if(email3Value) {
+            formData[fieldMapping.additionalEmail2] = email3Value;
+            allEmails.push(email3Value.toLowerCase());
         }
-        if(document.getElementById('UPAdditionalEmail3') && document.getElementById('UPAdditionalEmail3').value) {
-            formData['714419972'] = document.getElementById('UPAdditionalEmail3').value.trim();
-            allEmails.push(document.getElementById('UPAdditionalEmail3').value.toLowerCase().trim());
+        const email4Value = escapeHTML(email4?.value?.trim() || '');
+        if(email4Value) {
+            formData[fieldMapping.additionalEmail3] = email4Value;
+            allEmails.push(email4Value.toLowerCase());
         }
         
         if(allEmails.length > 0) {
@@ -1456,17 +1458,18 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         if(document.getElementsByName('methodOfContact')){
             Array.from(document.getElementsByName('methodOfContact')).forEach(radioBtn => {
                 if(radioBtn.checked){
-                    formData['524461170'] = parseInt(radioBtn.value);
+                    formData[fieldMapping.prefContact] = parseInt(radioBtn.value);
                 }
             })
         }
 
         // Mailing address
-        formData['521824358'] = document.getElementById('UPAddress1Line1').value;
-        if(document.getElementById('UPAddress1Line2').value !== "") formData['442166669'] = document.getElementById('UPAddress1Line2').value;
-        formData['703385619'] = document.getElementById('UPAddress1City').value;
-        formData['634434746'] = document.getElementById('UPAddress1State').value;
-        formData['892050548'] = document.getElementById('UPAddress1Zip').value;
+        formData[fieldMapping.address1] = escapeHTML(document.getElementById('UPAddress1Line1').value || '');
+        const mailingAddress2 = escapeHTML(document.getElementById('UPAddress1Line2').value || '');
+        if(mailingAddress2 !== "") formData[fieldMapping.address2] = mailingAddress2;
+        formData[fieldMapping.city] = escapeHTML(document.getElementById('UPAddress1City').value || '');
+        formData[fieldMapping.state] = escapeHTML(document.getElementById('UPAddress1State').value || '');
+        formData[fieldMapping.zip] = zip;
 
         const poBoxCheckbox = document.getElementById("poBoxCheckbox");
 
@@ -1476,11 +1479,11 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             fieldMapping.no
 
         // Physical address info is saved regardless of whether PO Box is checked
-        const physicalAddressLine1 = document.getElementById('UPAddress2Line1')?.value?.trim() || "";
-        const physicalAddressLine2 = document.getElementById('UPAddress2Line2')?.value?.trim() || "";
-        const physicalAddressCity = document.getElementById('UPAddress2City')?.value?.trim() || "";
-        const physicalAddressState = document.getElementById('UPAddress2State')?.value || "";
-        const physicalAddressZip = document.getElementById('UPAddress2Zip')?.value || "";
+        const physicalAddressLine1 = escapeHTML(document.getElementById('UPAddress2Line1')?.value?.trim() || '');
+        const physicalAddressLine2 = escapeHTML(document.getElementById('UPAddress2Line2')?.value?.trim() || '');
+        const physicalAddressCity = escapeHTML(document.getElementById('UPAddress2City')?.value?.trim() || '');
+        const physicalAddressState = escapeHTML(document.getElementById('UPAddress2State')?.value || '');
+        const physicalAddressZip = escapeHTML(document.getElementById('UPAddress2Zip')?.value?.trim() || '');
 
         // Update formData with physical address details
         if (physicalAddressLine1 !== "")  formData[fieldMapping.physicalAddress1] = physicalAddressLine1
@@ -1490,10 +1493,10 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         if (physicalAddressZip !== "")  formData[fieldMapping.physicalZip] = physicalAddressZip
 
         // Alternate address (altAddressZip is validated above)
-        const altAddressLine1 = document.getElementById('UPAddress3Line1')?.value?.trim() || "";
-        const altAddressLine2 = document.getElementById('UPAddress3Line2')?.value?.trim() || "";
-        const altAddressCity = document.getElementById('UPAddress3City')?.value?.trim() || "";
-        const altAddressState = document.getElementById('UPAddress3State')?.value || "";
+        const altAddressLine1 = escapeHTML(document.getElementById('UPAddress3Line1')?.value?.trim() || '');
+        const altAddressLine2 = escapeHTML(document.getElementById('UPAddress3Line2')?.value?.trim() || '');
+        const altAddressCity = escapeHTML(document.getElementById('UPAddress3City')?.value?.trim() || '');
+        const altAddressState = escapeHTML(document.getElementById('UPAddress3State')?.value || '');
         const altAddressPOBoxCheckbox = document.getElementById("poBoxCheckboxAltAddress");
 
         if (altAddressLine1 !== "") formData[fieldMapping.altAddress1] = altAddressLine1;
@@ -1514,8 +1517,8 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             : fieldMapping.no;
         
         // Alternate contact (phone and email fields validated above)
-        const altContactFirstName = document.getElementById('altContactFirstName')?.value?.trim() || "";
-        const altContactLastName = document.getElementById('altContactLastName')?.value?.trim() || "";
+        const altContactFirstName = escapeHTML(document.getElementById('altContactFirstName')?.value?.trim() || '');
+        const altContactLastName = escapeHTML(document.getElementById('altContactLastName')?.value?.trim() || '');
         if (altContactFirstName !== "") formData[fieldMapping.altContactFirstName] = altContactFirstName;
         if (altContactLastName !== "") formData[fieldMapping.altContactLastName] = altContactLastName;
         if (altContactMobilePhone) formData[fieldMapping.altContactMobilePhone] = altContactMobilePhone;
@@ -1524,25 +1527,23 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
 
         const cancer = document.getElementsByName('cancerHistory');
         Array.from(cancer).forEach(radioBtn => {
-            if(radioBtn.checked) formData['452166062'] = parseInt(radioBtn.value);
+            if(radioBtn.checked) formData[fieldMapping.diagnosedWithCancer] = parseInt(radioBtn.value);
         });
 
         if(document.getElementById('UPCancerYear') && document.getElementById('UPCancerYear').value) {
-            if(parseInt(document.getElementById('UPCancerYear').value) >= parseInt(formData['544150384'])){
-                formData['650597106'] = parseInt(document.getElementById('UPCancerYear').value);
+            if(parseInt(document.getElementById('UPCancerYear').value) >= parseInt(formData[fieldMapping.birthYear])){
+                formData[fieldMapping.yearDiagnosedCancer] = parseInt(document.getElementById('UPCancerYear').value);
             }
             else {
                 errorMessage('UPCancerYear', '<span data-i18n="event.yearCancerDiagnosed">'+translateText('event.yearCancerDiagnosed')+'</span>', true);
                 return false;
             }
         }
-        if(document.getElementById('UPCancerType') && document.getElementById('UPCancerType').value) formData['266952173'] = document.getElementById('UPCancerType').value;
-        if(document.getElementById('UPCancerDiagnosis') && document.getElementById('UPCancerDiagnosis').value) formData['494982282'] = document.getElementById('UPCancerDiagnosis').value;
+        if(document.getElementById('UPCancerType') && document.getElementById('UPCancerType').value) formData[fieldMapping.cancerType] = escapeHTML(document.getElementById('UPCancerType').value);
+        if(document.getElementById('UPCancerDiagnosis') && document.getElementById('UPCancerDiagnosis').value) formData[fieldMapping.cancerDiagnosis] = escapeHTML(document.getElementById('UPCancerDiagnosis').value);
 
-        const ageToday = getAge(`${formData['544150384']}-${formData['564964481']}-${formData['795827569']}`);
-
-        formData['117249500'] = ageToday;
-
+        const ageToday = getAge(`${formData[fieldMapping.birthYear]}-${formData[fieldMapping.birthMonth]}-${formData[fieldMapping.birthDay]}`);
+        formData[fieldMapping.ageToday] = ageToday;
 
         preVerifyUserDetails(uspsSuggestion, riskyEmails, formData)
     });
@@ -2042,15 +2043,15 @@ const verifyUserDetails = (formData) => {
         </div>
         <div class="row">
             <div class="col" data-i18n="event.month">Month</div>
-            <div class="col" ${formData['564964481'] ? `data-i18n="shared.month${BirthMonths[formData['564964481']].replace(/^\d+\s-\s/s,'')}"` : ''}>${formData['564964481'] ? translateText(`shared.month${BirthMonths[formData['564964481']].replace(/^\d+\s-\s/s,'')}`) : ''}</div>
+            <div class="col" ${formData[fieldMapping.birthMonth] ? `data-i18n="shared.month${BirthMonths[formData[fieldMapping.birthMonth]].replace(/^\d+\s-\s/s,'')}"` : ''}>${formData[fieldMapping.birthMonth] ? translateText(`shared.month${BirthMonths[formData[fieldMapping.birthMonth]].replace(/^\d+\s-\s/s,'')}`) : ''}</div>
         </div>
         <div class="row">
             <div class="col" data-i18n="event.day">Day</div>
-            <div class="col">${formData['795827569']}</div>
+            <div class="col">${formData[fieldMapping.birthDay]}</div>
         </div>
         <div class="row">
             <div class="col" data-i18n="event.year">Year</div>
-            <div class="col">${formData['544150384']}</div>
+            <div class="col">${formData[fieldMapping.birthYear]}</div>
         </div>
         <div class="row">
             <div class="col"><strong data-i18n="form.birthPlaceSubHeader">Place of birth</strong></div>
@@ -2294,10 +2295,10 @@ const verifyUserDetails = (formData) => {
             <div class="col">${formData[fieldMapping.altContactEmail] || ''}</div>
         </div>
 
-        ${formData['452166062'] ? `
+        ${formData[fieldMapping.diagnosedWithCancer] ? `
         <div class="row">
             <div class="col" data-i18n="event.invasiveCancer">Have you ever had invasive cancer?</div>
-            <div class="col" data-i18n="${parseInt(formData['452166062']) === 353358909 ? 'event.optYes' : 'event.optNo'}">${parseInt(formData['452166062']) === 353358909 ? translateText('event.optYes'): translateText('event.optNo')}</div>
+            <div class="col" data-i18n="${parseInt(formData[fieldMapping.diagnosedWithCancer]) === 353358909 ? 'event.optYes' : 'event.optNo'}">${parseInt(formData[fieldMapping.diagnosedWithCancer]) === 353358909 ? translateText('event.optYes'): translateText('event.optNo')}</div>
         </div>
         `:``}
         

@@ -155,7 +155,7 @@ export const renderSettingsPage = async () => {
         } else {
           headerMessage = 'settings.deleteInfoMessage';
         }
-    };
+    }
 
     //Top Header
     template += `
@@ -347,12 +347,12 @@ const buildPageTemplate = () => {
 const enableMobileTextWarning = () => {
     let yesRadio = document.getElementById('textPermissionYesRadio');
     let noRadio = document.getElementById('textPermissionNoRadio');
-    yesRadio.addEventListener('click', (event) => { 
+    yesRadio.addEventListener('click', () => { 
         if (yesRadio.dataset.initialNo === 'yes') {
             document.getElementById('mobileTextOptInWarning').classList.remove('d-none');
         }
     });
-    noRadio.addEventListener('click', (event) => { 
+    noRadio.addEventListener('click', () => { 
         document.getElementById('mobileTextOptInWarning').classList.add('d-none');
     });
 }
@@ -402,7 +402,7 @@ const handleEditNameSection = () => {
   }
 
   if (document.getElementById('changeNameSubmit')) {
-      document.getElementById('changeNameSubmit').addEventListener('click', e => {
+      document.getElementById('changeNameSubmit').addEventListener('click', () => {
         const firstNameField = document.getElementById('newFirstNameField');
         const lastNameField = document.getElementById('newLastNameField');
         const middleNameField = document.getElementById('newMiddleNameField');
@@ -498,18 +498,18 @@ const handleEditContactInformationSection = () => {
   }
 
   if (document.getElementById('changeContactInformationSubmit')) {
-      document.getElementById('changeContactInformationSubmit').addEventListener('click', async (e) => {
-        const mobilePhoneNumberPart1 = document.getElementById('mobilePhoneNumber1').value;
-        const mobilePhoneNumberPart2 = document.getElementById('mobilePhoneNumber2').value;
-        const mobilePhoneNumberPart3 = document.getElementById('mobilePhoneNumber3').value;
+      document.getElementById('changeContactInformationSubmit').addEventListener('click', async () => {
+        const mobilePhoneNumberPart1 = escapeHTML(document.getElementById('mobilePhoneNumber1').value);
+        const mobilePhoneNumberPart2 = escapeHTML(document.getElementById('mobilePhoneNumber2').value);
+        const mobilePhoneNumberPart3 = escapeHTML(document.getElementById('mobilePhoneNumber3').value);
         optVars.mobilePhoneNumberComplete = `${mobilePhoneNumberPart1}${mobilePhoneNumberPart2}${mobilePhoneNumberPart3}`;
-        const homePhoneNumberPart1 = document.getElementById('homePhoneNumber1').value;
-        const homePhoneNumberPart2 = document.getElementById('homePhoneNumber2').value;
-        const homePhoneNumberPart3 = document.getElementById('homePhoneNumber3').value;
+        const homePhoneNumberPart1 = escapeHTML(document.getElementById('homePhoneNumber1').value);
+        const homePhoneNumberPart2 = escapeHTML(document.getElementById('homePhoneNumber2').value);
+        const homePhoneNumberPart3 = escapeHTML(document.getElementById('homePhoneNumber3').value);
         optVars.homePhoneNumberComplete = `${homePhoneNumberPart1}${homePhoneNumberPart2}${homePhoneNumberPart3}`;
-        const otherPhoneNumberPart1 = document.getElementById('otherPhoneNumber1').value;
-        const otherPhoneNumberPart2 = document.getElementById('otherPhoneNumber2').value;
-        const otherPhoneNumberPart3 = document.getElementById('otherPhoneNumber3').value;
+        const otherPhoneNumberPart1 = escapeHTML(document.getElementById('otherPhoneNumber1').value);
+        const otherPhoneNumberPart2 = escapeHTML(document.getElementById('otherPhoneNumber2').value);
+        const otherPhoneNumberPart3 = escapeHTML(document.getElementById('otherPhoneNumber3').value);
         optVars.otherPhoneNumberComplete = `${otherPhoneNumberPart1}${otherPhoneNumberPart2}${otherPhoneNumberPart3}`;
     
         optVars.canWeVoicemailMobile = getCheckedRadioButtonValue('mobileVoicemailPermissionYesRadio');
@@ -517,9 +517,9 @@ const handleEditContactInformationSection = () => {
         optVars.canWeVoicemailHome = getCheckedRadioButtonValue('homeVoicemailPermissionYesRadio');
         optVars.canWeVoicemailOther = getCheckedRadioButtonValue('otherVoicemailPermissionYesRadio');
     
-        const preferredEmail = document.getElementById('newPreferredEmail').value.toLowerCase().trim();
-        optVars.additionalEmail1 = document.getElementById('newadditionalEmail1').value.toLowerCase().trim();
-        optVars.additionalEmail2 = document.getElementById('newadditionalEmail2').value.toLowerCase().trim();
+        const preferredEmail = escapeHTML(document.getElementById('newPreferredEmail').value.toLowerCase().trim() || '');
+        optVars.additionalEmail1 = escapeHTML(document.getElementById('newadditionalEmail1').value.toLowerCase().trim() || '');
+        optVars.additionalEmail2 = escapeHTML(document.getElementById('newadditionalEmail2').value.toLowerCase().trim() || '');
         
           const { hasError, riskyEmails } = await validateContactInformation(optVars.mobilePhoneNumberComplete, optVars.homePhoneNumberComplete, preferredEmail, optVars.otherPhoneNumberComplete, optVars.additionalEmail1, optVars.additionalEmail2, userData);
           if (!hasError) {
@@ -552,7 +552,7 @@ const handleEditPreferredLanguageSection = () => {
   }
 
   if (document.getElementById('changePreferredLanguageSubmit')) {
-      document.getElementById('changePreferredLanguageSubmit').addEventListener('click', e => {
+      document.getElementById('changePreferredLanguageSubmit').addEventListener('click', () => {
         const preferredLanguageField = document.getElementById('newpreferredLanguage');
         const preferredLanguage = escapeHTML(preferredLanguageField.value.trim());
         formVisBools.isPreferredLanguageFormDisplayed = toggleElementVisibility(preferredLanguageElementArray, formVisBools.isPreferredLanguageFormDisplayed);
@@ -629,7 +629,7 @@ const handleEditMailingAddressSection = () => {
   }
 
     if (document.getElementById('changeMailingAddressSubmit1')) {
-        document.getElementById('changeMailingAddressSubmit1').addEventListener('click', async (e) => {
+        document.getElementById('changeMailingAddressSubmit1').addEventListener('click', async () => {
             const isInternational = document.getElementById('UPAddress1International').checked ? cId.yes : cId.no;
             const addressLine1 = escapeHTML(document.getElementById('UPAddress1Line1').value.trim());
             const addressLine2 = escapeHTML(document.getElementById('UPAddress1Line2').value.trim());
@@ -715,7 +715,7 @@ const handleEditMailingAddressSection = () => {
 };
 
 const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isPOBox = false, isClearing = false, isValidatedByUSPS = false) => {
-  const isSuccess = await changeMailingAddress(id, addressLine1, addressLine2, city, state, zip, userData, isInternational, addressLine3, country, isPOBox, isClearing, isValidatedByUSPS).catch(function (error) {
+  const isSuccess = await changeMailingAddress(id, addressLine1, addressLine2, city, state, zip, userData, isInternational, addressLine3, country, isPOBox, isClearing, isValidatedByUSPS).catch(function () {
     document.getElementById(`mailingAddressFail${id}`).style.display = 'block';
     document.getElementById(`mailingAddressError${id}`).innerHTML = translateText('settings.failMailUpdate');
   });
@@ -778,7 +778,7 @@ const handleEditPhysicalMailingAddressSection = () => {
   }
 
     if (document.getElementById('changeMailingAddressSubmit2')) {
-        document.getElementById('changeMailingAddressSubmit2').addEventListener('click', async (e) => {
+        document.getElementById('changeMailingAddressSubmit2').addEventListener('click', async () => {
             const isInternational = document.getElementById('UPAddress2International').checked ? cId.yes : cId.no;
             const addressLine1 = escapeHTML(document.getElementById('UPAddress2Line1').value.trim());
             const addressLine2 = escapeHTML(document.getElementById('UPAddress2Line2').value.trim());
@@ -864,7 +864,7 @@ const handleEditPhysicalMailingAddressSection = () => {
 
 const handleClearPhysicalAddress = () => {
     if (document.getElementById('clearPhysicalAddrBtn')) {
-        document.getElementById('clearPhysicalAddrBtn').addEventListener('click', async (e) => {
+        document.getElementById('clearPhysicalAddrBtn').addEventListener('click', async () => {
             showClearAddressConfirmation(() => {
                 submitNewMailingAddress(2, "", "", "", "", "", undefined, undefined, undefined, false, true)
             })
@@ -874,7 +874,7 @@ const handleClearPhysicalAddress = () => {
 
 const handleClearAlternateAddress = () => {
     if (document.getElementById('clearAlternateAddrBtn')) {
-        document.getElementById('clearAlternateAddrBtn').addEventListener('click', async (e) => {
+        document.getElementById('clearAlternateAddrBtn').addEventListener('click', async () => {
             showClearAddressConfirmation(() => {
                 submitNewMailingAddress(3, "", "", "", "", "", undefined, undefined, undefined, false, true)
             })
@@ -1157,7 +1157,7 @@ const handleEditSignInInformationSection = () => {
     }
   });
 
-  document.getElementById('changeEmailSubmit').addEventListener('click', e => {
+  document.getElementById('changeEmailSubmit').addEventListener('click', () => {
     const email = escapeHTML(document.getElementById('newEmailField').value.trim());
     const emailConfirm = escapeHTML(document.getElementById('newEmailFieldCheck').value.trim());
     const isEmailValid = email && emailConfirm && validateLoginEmail(email, emailConfirm);
@@ -1166,7 +1166,7 @@ const handleEditSignInInformationSection = () => {
     }
   });
 
-  document.getElementById('changePhoneSubmit').addEventListener('click', e => {
+  document.getElementById('changePhoneSubmit').addEventListener('click', () => {
     const phone = escapeHTML(document.getElementById('newPhoneField').value.trim());
     const phoneConfirm = escapeHTML(document.getElementById('newPhoneFieldCheck').value.trim());
     const isPhoneValid = phone && phoneConfirm && validateLoginPhone(phone, phoneConfirm);
@@ -2735,7 +2735,7 @@ const renderEmailOrPhoneInput = (type) => {
             elementId: 'Phone',
         },
     };  
-    const { label, heading, placeholder, elementId } = phoneEmailMap[type] || phoneEmailMap.email;
+    const { heading, elementId } = phoneEmailMap[type] || phoneEmailMap.email;
 
     return translateHTML(`
         <label for="new${elementId}Field" class="custom-form-label" data-i18n="settings.headingLabel${elementId}">
@@ -2779,7 +2779,7 @@ const renderAgreementsHeading = () => {
 };
 
 const renderUnsignedAgreements = () => {
-    return translateHTML(`${((((userData.hasOwnProperty(cId.revokeHipaa) && userData[cId.revokeHipaa] == cId.yes)  || (userData[cId.consentWithdrawn] && userData[cId.consentWithdrawn] == cId.yes)) && (!userData[cId.hipaaRevocationSigned] || userData[cId.hipaaRevocationSigned] == cId.no) || (userData.hasOwnProperty(cId.destroyData) && userData[cId.destroyData] == cId.yes && (!userData[cId.destroyDataSigned] || userData[cId.destroyDataSigned] == cId.no)))) ?`
+    return translateHTML(`${((((Object.prototype.hasOwnProperty.call(userData, cId.revokeHipaa) && userData[cId.revokeHipaa] == cId.yes)  || (userData[cId.consentWithdrawn] && userData[cId.consentWithdrawn] == cId.yes)) && (!userData[cId.hipaaRevocationSigned] || userData[cId.hipaaRevocationSigned] == cId.no) || (Object.prototype.hasOwnProperty.call(userData, cId.destroyData) && userData[cId.destroyData] == cId.yes && (!userData[cId.destroyDataSigned] || userData[cId.destroyDataSigned] == cId.no)))) ?`
             <div class="row">
                 <div class="w-100">
                     <div class="row">
@@ -2790,7 +2790,7 @@ const renderUnsignedAgreements = () => {
                         <br>
                         </div>
                     </div>
-                    ${(userData.hasOwnProperty(cId.destroyData) && userData[cId.destroyData] == cId.yes && (!userData[cId.destroyDataSigned] || userData[cId.destroyDataSigned] == cId.no)) ?`
+                    ${(Object.prototype.hasOwnProperty.call(userData, cId.destroyData) && userData[cId.destroyData] == cId.yes && (!userData[cId.destroyDataSigned] || userData[cId.destroyDataSigned] == cId.no)) ?`
                         <div class="row">
                             <div class="col px-2">
                                 <div class="row gy-3">
@@ -2810,7 +2810,7 @@ const renderUnsignedAgreements = () => {
                             </div>
                         </div>
                     `:''}
-                    ${(((userData.hasOwnProperty(cId.revokeHipaa) && userData[cId.revokeHipaa] == cId.yes) || (userData[cId.consentWithdrawn] && userData[cId.consentWithdrawn] == cId.yes)) && (!userData[cId.hipaaRevocationSigned] || userData[cId.hipaaRevocationSigned] == cId.no)) ?`
+                    ${(((Object.prototype.hasOwnProperty.call(userData, cId.revokeHipaa) && userData[cId.revokeHipaa] == cId.yes) || (userData[cId.consentWithdrawn] && userData[cId.consentWithdrawn] == cId.yes)) && (!userData[cId.hipaaRevocationSigned] || userData[cId.hipaaRevocationSigned] == cId.no)) ?`
                         <div class="row">
                             <div class="col px-2">
                                 <div class="row gy-3">

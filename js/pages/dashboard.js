@@ -1,4 +1,4 @@
-import { hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML, reportConfiguration, setReportAttributes, sitesNotEnrolling, setModuleAttributes, checkIfComplete } from "../shared.js";
+import { hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML, reportConfiguration, setReportAttributes, sitesNotEnrolling, setModuleAttributes, checkIfComplete, escapeHTML } from "../shared.js";
 import { blockParticipant } from "./questionnaire.js";
 import { renderUserProfile } from "../components/form.js";
 import { consentTemplate } from "./consent.js";
@@ -393,9 +393,10 @@ const showSecondaryLoginModal = (data) => {
 }
 
 const renderWelcomeHeader = (data) => {
+    const displayName = data[fieldMapping.prefName] || data[fieldMapping.fName] || '';
     let template = `<div class="row welcome-header">
         <div class="col text-center">
-        <span data-i18n="shared.welcomeText">Welcome</span>${data[fieldMapping.fName] ? ', ' + data[fieldMapping.fName] : ''} 
+        <span data-i18n="shared.welcomeText">Welcome</span>${displayName ? ', ' + escapeHTML(displayName) : ''} 
         </div>
     </div>`;
 

@@ -815,7 +815,7 @@
         "mainBodyExperience2024Header": "2024 Encuesta Sobre Experiencia de Connect",
         "mainBodyExperience2024Description": "Preguntas acerca de su experiencia con Connect, y sus preferencias para realizar actividades del estudio, utilizar MyConnect, y recibir mensajes.",
         "mainBodyCancerScreeningHistoryHeader":"Encuesta sobre historial de exámenes de detección de cáncer",
-        "mainBodyCancerScreeningHistoryDescription": "Preguntas sobre pruebas anteriores para detectar el cáncer. Se trata de pruebas que buscan cáncer en personas sin síntomas.",
+        "mainBodyCancerScreeningHistoryDescription": "Preguntas sobre pruebas anteriores para detectar el cáncer. Se trata de pruebas que buscan cáncer en personas sin síntomas. Por favor, complete esta encuesta aunque nunca se haya realizado una prueba de detección de cáncer. Sus respuestas son importantes.",
         "surveysCompleted": "Ha completado todas las encuestas de Connect disponibles. Nos comunicaremos con usted cuando haya nuevas encuestas y actividades de estudio para completar. ¡Gracias por sus contribuciones al estudio!",
         "mainBodyDHQ3Header": "Cuestionario de Historial Alimentación III (DHQ III, por sus siglas en ingles)",
         "mainBodyDHQ3Description": "Preguntas sobre su alimentación habitual en el último año. Tras hacer clic en \"Comenzar\", la encuesta se abrirá en una nueva pestaña o ventana del navegador y verá un mensaje federal estándar de advertencia sobre la seguridad de los datos. Haga clic en \"Continuar con el cuestionario\" (Continue with Questionnaire, en inglés) para comenzar la encuesta. Luego, seleccione su idioma preferido para completar la encuesta.",
