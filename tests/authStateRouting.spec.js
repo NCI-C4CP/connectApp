@@ -88,7 +88,7 @@ describe('authStateRouting', () => {
     expect(hideAnimationFn).not.toHaveBeenCalled();
   });
 
-  it('showLegacyEmailVerificationInterstitial renders legacy verification UI and wires click handlers', async () => {
+  it('showLegacyEmailVerificationInterstitial renders legacy verification UI and sends verification on click', async () => {
     const clickHandlers = [];
     const verifyEmailElement = {
       addEventListener: vi.fn((event, handler) => {
@@ -115,9 +115,9 @@ describe('authStateRouting', () => {
 
     expect(isRendered).toBe(true);
     expect(mainContent.innerHTML).toContain('Please verify your email by clicking');
-    expect(verifyEmailElement.addEventListener).toHaveBeenCalledTimes(2);
+    expect(verifyEmailElement.addEventListener).toHaveBeenCalledTimes(1);
 
-    // Trigger both click handlers to validate side effects.
+    // Trigger click handler to validate both UI update and side-effect.
     clickHandlers.forEach((handler) => handler());
     await Promise.resolve();
 

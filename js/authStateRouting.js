@@ -69,15 +69,13 @@ export const showLegacyEmailVerificationInterstitial = ({
                         <div class="col-md-2">
                         </div>
                     </div>`;
-  });
 
-  hideAnimationFn();
-
-  verifyEmailElement.addEventListener('click', () => {
-    user.sendEmailVerification().catch((error) => {
+    user?.sendEmailVerification?.().catch((error) => {
       console.error('Error sending email verification: ', error);
     });
   });
+
+  hideAnimationFn();
 
   return true;
 };
