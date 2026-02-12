@@ -1,4 +1,4 @@
-import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, translateHTML, closeModal, escapeHTML, country3Codes, analyzeUSPSAddressSuggestion, mapUSPSErrorsToFieldTargets, applyUSPSFieldErrors, getUSPSUnvalidatedValue } from './shared.js';
+import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, translateHTML, closeModal, escapeHTML, country3Codes, analyzeUSPSAddressSuggestion, mapUSPSErrorsToFieldTargets, applyUSPSFieldErrors, getUSPSUnvalidatedValue, logDDRumAction, logAuthIssue, getAuthErrorMessageKey, createTelemetryId } from './shared.js';
 import { removeAllErrors } from './event.js';
 import cId from './fieldToConceptIdMapping.js';
 
@@ -1262,23 +1262,55 @@ const updateFirebaseAuthEmail = async (email) => {
  */
 const updateFirebaseAuthPhone = async (phone, userData) => {
   const changePhoneSubmit = document.getElementById('changePhoneSubmit');
+  const authFlowId = createTelemetryId('auth_flow');
+  const authAttemptId = createTelemetryId('auth_attempt');
+  const phoneLast4 = phone ? phone.replace(/\D/g, '').slice(-4) : '';
+  const logContext = {
+    authMethod: 'phone',
+    flow: 'settings_update',
+    screen: 'settings_login',
+    authFlowId,
+    authAttemptId,
+    attemptStartTs: Date.now(),
+    phoneLast4,
+    connectID: userData?.['Connect_ID'] || '',
+  };
   try {
       const firebaseAuthUser = firebase.auth().currentUser;
       if (changePhoneSubmit) changePhoneSubmit.style.display = 'none';
+      logDDRumAction('auth_attempt_started', logContext);
+      logDDRumAction('phone_auth_settings_requested', logContext);
       window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container');
+      logDDRumAction('phone_auth_recaptcha_rendered', logContext);
       const recaptchaVerifier = window.recaptchaVerifier;
       const provider = new firebase.auth.PhoneAuthProvider;
 
       const verificationId = await provider.verifyPhoneNumber(phone, recaptchaVerifier);
+      logDDRumAction('phone_auth_settings_code_sent', logContext);
+      logDDRumAction('phone_auth_code_prompted', logContext);
       const verificationCode = window.prompt(translateText('settingsHelpers.mobileVerificationCode'));
       if (!verificationCode) {
-          throw new Error("Verification code not provided");
+          logDDRumAction('phone_auth_cancelled', {
+            ...logContext,
+            errorCode: 'auth/missing-verification-code',
+            errorCategory: 'validation',
+          });
+          const verificationError = new Error("Verification code not provided");
+          verificationError.code = 'auth/missing-verification-code';
+          throw verificationError;
       }
+      logDDRumAction('phone_auth_code_submitted', logContext);
       
       const phoneCredential = firebase.auth.PhoneAuthProvider.credential(verificationId, verificationCode);
       const unlinkResult = firebaseAuthUser.phoneNumber ? await unlinkFirebaseAuthProvider('phone', userData, phone, false) : true;
       if (unlinkResult === true) {
         await firebaseAuthUser.linkWithCredential(phoneCredential);
+        logDDRumAction('phone_auth_settings_success', logContext);
+        logDDRumAction('auth_attempt_completed', {
+          ...logContext,
+          outcome: 'success',
+          durationMs: Date.now() - logContext.attemptStartTs,
+        });
         if (window.recaptchaVerifier) window.recaptchaVerifier.clear();
         return true;
       } else {
@@ -1288,6 +1320,20 @@ const updateFirebaseAuthPhone = async (phone, userData) => {
       if (window.recaptchaVerifier) window.recaptchaVerifier.clear();
       if (changePhoneSubmit) changePhoneSubmit.style.display = 'block';
       console.error('Error updating phone number: ', error);
+      const { errorCode, errorCategory } = logAuthIssue({
+        error,
+        errorType: 'PhoneAuthSettingsError',
+        action: 'phone_auth_settings_failure',
+        context: logContext,
+        fallbackMessage: 'Error updating phone number.',
+      });
+      logDDRumAction('auth_attempt_completed', {
+        ...logContext,
+        outcome: 'failure',
+        errorCode,
+        errorCategory,
+        durationMs: Date.now() - logContext.attemptStartTs,
+      });
       hideAnimation();
       throw error;
   }
@@ -1305,6 +1351,13 @@ const updateFirebaseAuthPhone = async (phone, userData) => {
  * @returns {boolean} - true if the unlink was successful, false otherwise
  */
 export const unlinkFirebaseAuthProvider = async (providerType, userData, newPhone, isPhoneRemoval) => {
+  const logContext = {
+    authMethod: providerType,
+    flow: 'settings_unlink',
+    isPhoneRemoval,
+    connectID: userData?.['Connect_ID'] || '',
+  };
+  
   try {
     const firebaseAuthUser = firebase.auth().currentUser;
 
@@ -1354,15 +1407,33 @@ export const unlinkFirebaseAuthProvider = async (providerType, userData, newPhon
           return false;
       });
 
+      logDDRumAction(`${providerType}_auth_unlink_success`, logContext);
       return true;
     } else {
-      handleUpdatePhoneEmailErrorInUI('unlinkFirebaseAuthProvider', updateResult);
-      return updateResult.message;
+      const errorCode = updateResult?.errorCode || updateResult?.code;
+      logDDRumAction(`${providerType}_auth_unlink_failure`, {
+        ...logContext,
+        errorCode,
+      });
+      const messageKey = getAuthErrorMessageKey(errorCode);
+      const translatedMessage = translateText(messageKey) || updateResult.message;
+      document.getElementById('loginUpdateFail').style.display = 'block';
+      document.getElementById('loginUpdateError').innerHTML = translatedMessage;
+      return translatedMessage;
     };
   } catch (error) {
     console.error('Failed to unlink provider:', error.message);
+    logAuthIssue({
+      error,
+      errorType: 'UnlinkProviderError',
+      action: `${providerType}_auth_unlink_failure`,
+      context: logContext,
+      fallbackMessage: 'Unlink provider failed.',
+    });
+    const messageKey = getAuthErrorMessageKey(error?.code);
+    const translatedMessage = translateText(messageKey) || error.message;
     hideAnimation();
-    return error.message;
+    return translatedMessage;
   }
 };
 
@@ -1377,11 +1448,6 @@ export const updateToNoReplyEmail = async (uid, noReplyEmail) => {
       console.error(`Error: updateFirebaseAuthEmail(): ${error}`);
       throw error;
     }
-};
-
-const handleUpdatePhoneEmailErrorInUI = (functionName, error) => {
-  document.getElementById('loginUpdateFail').style.display = 'block';
-  document.getElementById('loginUpdateError').innerHTML = error.message;
 };
 
 const cleanPhoneNumber = (phoneNumber) => {

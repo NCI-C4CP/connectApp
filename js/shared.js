@@ -128,7 +128,7 @@ const signInFlowRender = async (signInEmail) => {
 
         document
             .querySelector('a[class~="firebaseui-id-resend-email-link"]')
-            .addEventListener("click", () => sendEmailLink());
+            .addEventListener("click", triggerEmailLinkSend);
 
         document.querySelector('button[class~="firebaseui-id-secondary-link"]').addEventListener("click", async () => {
             if (type === "In") {
@@ -146,29 +146,264 @@ const signInFlowRender = async (signInEmail) => {
     });
 };
 
-export const sendEmailLink = () => {
+// Fire-and-forget wrapper for places where we do not want FirebaseUI (or click handlers)
+// to chain on the returned promise from sendEmailLink().
+export const triggerEmailLinkSend = () => {
+    sendEmailLink().catch(() => {});
+};
+
+const getEmailDomain = (email) => {
+    if (!email || !email.includes('@')) return '';
+    return email.split('@').pop().toLowerCase();
+};
+
+/**
+ * Build Auth UI context for logging.
+ * Keeps telemetry fields consistent across auth actions/outcomes.
+ * @param {HTMLElement|null} wrapperDiv - The sign-in wrapper element (`#signInWrapperDiv`).
+ * @returns {{
+ *   uiType: string,
+ *   accountType: string,
+ *   flow: string,
+ *   authFlowId: string,
+ *   authAttemptId: string,
+ *   attemptStartTs: number
+ * }}
+ */
+const getAuthUiContext = (wrapperDiv) => {
+    if (!wrapperDiv) {
+        return {
+            uiType: '',
+            accountType: '',
+            flow: '',
+            authFlowId: '',
+            authAttemptId: '',
+            attemptStartTs: 0,
+        };
+    }
+    const uiType = wrapperDiv.dataset.uiType || '';
+    const accountType = wrapperDiv.dataset.accountType || wrapperDiv.dataset.signupType || '';
+    const flow = uiType === 'signUp' ? 'sign_up' : 'sign_in';
+    const authFlowId = wrapperDiv.dataset.authFlowId || '';
+    const authAttemptId = wrapperDiv.dataset.authAttemptId || '';
+    const attemptStartTs = parseInt(wrapperDiv.dataset.authAttemptStartTs || '0', 10) || 0;
+    return {
+        uiType,
+        accountType,
+        flow,
+        authFlowId,
+        authAttemptId,
+        attemptStartTs,
+    };
+};
+
+const getUrlHost = (urlValue) => {
+    if (!urlValue) return '';
+    try {
+        return new URL(urlValue).host || '';
+    } catch (error) {
+        return '';
+    }
+};
+
+const parseResponseJson = async (response) => {
+    try {
+        const text = await response.text();
+        if (!text) return null;
+        return JSON.parse(text);
+
+    } catch (error) {
+        console.error('parseResponseJson: failed to parse JSON', error);
+        return null;
+    }
+};
+
+const AUTH_ERROR_MESSAGE_KEYS = {
+    'auth/invalid-phone-number': 'shared.authErrors.invalidPhoneNumber',
+    'auth/quota-exceeded': 'shared.authErrors.default',
+    'auth/too-many-requests': 'shared.authErrors.tooManyRequests',
+    'auth/network-request-failed': 'shared.authErrors.networkRequestFailed',
+    'auth/user-disabled': 'shared.authErrors.userDisabled',
+    'auth/invalid-email': 'shared.authErrors.invalidEmail',
+    'auth/missing-email': 'shared.authErrors.missingEmail',
+    'missing_email': 'shared.authErrors.missingEmail',
+    // Server config errors — all point to default message
+    'auth/operation-not-allowed': 'shared.authErrors.default',
+    'auth/missing-continue-uri': 'shared.authErrors.default',
+    'auth/unauthorized-continue-uri': 'shared.authErrors.default',
+    'auth/invalid-continue-uri': 'shared.authErrors.default',
+};
+
+export const getAuthErrorMessageKey = (errorCode) => (
+    AUTH_ERROR_MESSAGE_KEYS[errorCode] || 'shared.authErrors.default'
+);
+
+const ensureAuthErrorContainer = () => {
+    const wrapperDiv = document.getElementById('signInWrapperDiv');
+    if (!wrapperDiv) return null;
+
+    let errorContainer = document.getElementById('authErrorBanner');
+    if (!errorContainer) {
+        errorContainer = document.createElement('div');
+        errorContainer.id = 'authErrorBanner';
+        errorContainer.className = 'alert alert-warning mt-3';
+        errorContainer.setAttribute('role', 'alert');
+        errorContainer.setAttribute('aria-live', 'polite');
+        wrapperDiv.prepend(errorContainer);
+    }
+
+    return errorContainer;
+};
+
+export const showAuthErrorMessage = (messageKey) => {
+    const errorContainer = ensureAuthErrorContainer();
+    if (!errorContainer) return;
+
+    const translatedMessage = translateText(messageKey) || translateText('shared.authErrors.default');
+    errorContainer.innerHTML = translatedMessage || 'Something went wrong. Please try again.';
+    errorContainer.setAttribute('data-i18n', messageKey || 'shared.authErrors.default');
+    errorContainer.style.display = 'block';
+};
+
+export const clearAuthErrorMessage = () => {
+    const errorContainer = document.getElementById('authErrorBanner');
+    if (!errorContainer) return;
+    errorContainer.style.display = 'none';
+    errorContainer.innerHTML = '';
+};
+
+let emailLinkSendInFlight = false;
+let emailLinkSendRequestKey = '';
+
+const isMagicLinkCallbackUrl = () => {
+    const params = new URLSearchParams(window.location.search);
+    return params.get('mode') === 'signIn' && params.has('oobCode') && params.has('apiKey');
+};
+
+
+export const sendEmailLink = async () => {
     const preferredLanguage = getSelectedLanguage();
     const wrapperDiv = document.getElementById("signInWrapperDiv");
-    const signInEmail = wrapperDiv.getAttribute("data-account-value");
+    const signInEmail = wrapperDiv?.getAttribute("data-account-value") || '';
     const continueUrl = window.location.href;
 
     const continueUrlWithoutHash = continueUrl.endsWith("#")
         ? continueUrl.slice(0, -1)
         : continueUrl;
 
-    fetch(`${api}?api=sendEmailLink`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            email: signInEmail,
-            continueUrl: continueUrlWithoutHash,
-            preferredLanguage
-        })
-    }).then(() => {
+    const emailDomain = getEmailDomain(signInEmail);
+    const continueUrlHost = getUrlHost(continueUrlWithoutHash);
+    const initialAuthUiContext = getAuthUiContext(wrapperDiv);
+    const authFlowId = initialAuthUiContext.authFlowId || createTelemetryId('auth_flow');
+    const authAttemptId = initialAuthUiContext.authAttemptId || createTelemetryId('auth_attempt');
+    if (wrapperDiv) {
+        if (!wrapperDiv.dataset.authFlowId) wrapperDiv.dataset.authFlowId = authFlowId;
+        if (!wrapperDiv.dataset.authAttemptId) wrapperDiv.dataset.authAttemptId = authAttemptId;
+        if (!wrapperDiv.dataset.authAttemptStartTs) wrapperDiv.dataset.authAttemptStartTs = String(Date.now());
+    }
+    const authUiContext = getAuthUiContext(wrapperDiv);
+    const logContext = {
+        authMethod: 'email_link',
+        emailDomain,
+        continueUrlHost,
+        ...authUiContext,
+    };
+
+    if (!signInEmail) {
+        const error = new Error('Missing sign-in email for magic link.');
+        error.code = 'missing_email';
+        const { errorCode } = logAuthIssue({
+            error,
+            errorType: 'EmailLinkSendError',
+            action: 'email_link_send_failure',
+            context: logContext,
+        });
+        showAuthErrorMessage(getAuthErrorMessageKey(errorCode));
+        throw error;
+    }
+
+    if (isMagicLinkCallbackUrl()) {
+        logDDRumAction('email_link_send_skipped', {
+            ...logContext,
+            reason: 'magic_link_callback_url',
+        });
+        return { skipped: true, reason: 'magic_link_callback_url' };
+    }
+
+    const requestKey = `${signInEmail.toLowerCase()}|${continueUrlWithoutHash}`;
+    if (emailLinkSendInFlight && emailLinkSendRequestKey === requestKey) {
+        logDDRumAction('email_link_send_skipped', {
+            ...logContext,
+            reason: 'duplicate_request_in_flight',
+        });
+        return { skipped: true, reason: 'duplicate_request_in_flight' };
+    }
+
+    emailLinkSendInFlight = true;
+    emailLinkSendRequestKey = requestKey;
+    logDDRumAction('email_link_send_requested', logContext);
+
+    try {
+        const response = await fetch(`${api}?api=sendEmailLink`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                email: signInEmail,
+                continueUrl: continueUrlWithoutHash,
+                preferredLanguage,
+                authFlowId,
+                authAttemptId,
+                clientSendTs: new Date().toISOString(),
+            })
+        });
+
+        const responseJson = (await parseResponseJson(response)) || {};
+
+        if (!response.ok) {
+            const error = new Error(`sendEmailLink failed with status ${response.status}`);
+            error.code = responseJson?.errorCode || responseJson?.code || response.status;
+            error.status = response.status;
+            error.response = responseJson;
+            throw error;
+        }
+
+        logDDRumAction('email_link_send_success', {
+            ...logContext,
+            status: response.status,
+            messageId: responseJson?.messageId,
+            provider: responseJson?.provider,
+            providerRequestId: responseJson?.graphRequestId || responseJson?.providerRequestId,
+            providerClientRequestId: responseJson?.graphClientRequestId || responseJson?.providerClientRequestId,
+        });
+        clearAuthErrorMessage();
         signInFlowRender(signInEmail);
-    });
+        return responseJson;
+
+    } catch (error) {
+        const errorToLog = error instanceof Error ? error : new Error(error?.message || 'Email link send failed.');
+        const { errorCode } = logAuthIssue({
+            error: errorToLog,
+            errorType: 'EmailLinkSendError',
+            action: 'email_link_send_failure',
+            context: {
+                ...logContext,
+                status: error?.status,
+                providerRequestId: error?.response?.graphRequestId || error?.response?.providerRequestId,
+                providerClientRequestId: error?.response?.graphClientRequestId || error?.response?.providerClientRequestId,
+                providerErrorCode: error?.response?.graphErrorCode || error?.response?.providerErrorCode,
+            },
+        });
+        showAuthErrorMessage(getAuthErrorMessageKey(errorCode));
+        throw errorToLog;
+        
+    } finally {
+        if (emailLinkSendRequestKey === requestKey) {
+            emailLinkSendInFlight = false;
+            emailLinkSendRequestKey = '';
+        }
+    }
 };
 
 /**
@@ -2805,6 +3040,103 @@ export const logDDRumError = (error, errorType = 'CustomError', additionalContex
     }
 };
 
+export const logDDRumAction = (action, context = {}) => {
+    if (window.DD_RUM) {
+        window.DD_RUM.addAction(action, context);
+    }
+};
+
+const AUTH_ERROR_ALLOWLIST = new Set([
+    'auth/quota-exceeded',
+    'auth/network-request-failed',
+    'auth/captcha-check-failed',
+    'auth/operation-not-allowed',
+    'auth/user-disabled',
+]);
+
+export const shouldLogAuthErrorAsError = (errorCode) => (
+    AUTH_ERROR_ALLOWLIST.has(errorCode)
+);
+
+const AUTH_ERROR_CATEGORY_MAP = {
+    network: new Set([
+        'auth/network-request-failed',
+    ]),
+    rate_limit: new Set([
+        'auth/too-many-requests',
+        'auth/quota-exceeded',
+        'auth/captcha-check-failed',
+    ]),
+    validation: new Set([
+        'auth/invalid-phone-number',
+        'auth/invalid-email',
+        'auth/missing-email',
+        'auth/invalid-continue-uri',
+        'auth/missing-continue-uri',
+        'auth/unauthorized-continue-uri',
+        'auth/invalid-verification-code',
+        'auth/missing-verification-code',
+        'missing_email',
+    ]),
+    provider: new Set([
+        'auth/operation-not-allowed',
+        'auth/user-disabled',
+        'auth/credential-already-in-use',
+        'auth/email-already-in-use',
+        'auth/requires-recent-login',
+    ]),
+};
+
+export const getAuthErrorCategory = (errorCode) => {
+    if (!errorCode) return 'unknown';
+    if (AUTH_ERROR_CATEGORY_MAP.network.has(errorCode)) return 'network';
+    if (AUTH_ERROR_CATEGORY_MAP.rate_limit.has(errorCode)) return 'rate_limit';
+    if (AUTH_ERROR_CATEGORY_MAP.validation.has(errorCode)) return 'validation';
+    if (AUTH_ERROR_CATEGORY_MAP.provider.has(errorCode)) return 'provider';
+    return 'unknown';
+};
+
+/**
+ * Generate a short telemetry correlation ID with a prefix, timestamp component,
+ * and random suffix (e.g., `auth_attempt_lmno12_ab34cd56`).
+ * Used to correlate related client and server auth events without PII.
+ * @param {string} [prefix='id'] - Logical ID prefix such as `auth_flow` or `auth_attempt`.
+ * @returns {string} Correlation ID string.
+ */
+export const createTelemetryId = (prefix = 'id') => (
+    `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 10)}`
+);
+
+export const logAuthIssue = ({
+    error,
+    errorType = 'AuthIssue',
+    action = 'auth_issue',
+    context = {},
+    fallbackMessage = 'Auth flow issue.',
+}) => {
+    const errorCode = error?.code;
+    const errorCategory = getAuthErrorCategory(errorCode);
+    const normalizedError = error instanceof Error
+        ? error
+        : new Error(error?.message || fallbackMessage);
+
+    if (shouldLogAuthErrorAsError(errorCode)) {
+        logDDRumError(normalizedError, errorType, {
+            ...context,
+            errorCode,
+            errorCategory,
+        });
+    } else {
+        logDDRumAction(action, {
+            ...context,
+            errorCode,
+            errorCategory,
+        });
+    }
+
+    return { errorCode, errorCategory };
+};
+
 export const translateHTML = (source, language) => {
     if (!language) {
         language = appState.getState().language;
@@ -3120,13 +3452,6 @@ const summarizeAddressValidationPayload = (payload = {}) => {
 
 export const addressValidation = async (data) => {
     const idToken = appState.getState().idToken || await getIdToken();
-    
-    // To test different response scenarios (from tests/usps.spec.js) until automated testing is implemented:
-    // import { USPS_TEST_RESPONSES } from '../tests/usps.spec.js';
-    // return USPS_TEST_RESPONSES?.__METHOD_NAME__
-    // METHOD_NAME options: success, successWithCorrections, successWithSecondaryAddress, invalidAddress, invalidZipCode, invalidCity, multipleErrors,
-    // addressNotFound, multipleAddresses, missingSecondaryAddress, vacantAddress, businessAddress, dpvConfirmationFailed, serverError, networkError.
-    // Example: return USPS_TEST_RESPONSES?.success; ... return USPS_TEST_RESPONSES?.successWithSecondaryAddress;
 
     try {
         const response = await fetch(`${api}?api=addressValidation`, {
