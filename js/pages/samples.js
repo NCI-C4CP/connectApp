@@ -937,10 +937,9 @@ const bindUpdatePAddressBtn = (participant) => {
         const state = escapeHTML(document.getElementById('UPAddress2State').value.trim());
         const zip = escapeHTML(document.getElementById('UPAddress2Zip').value.trim());
 
-        const { hasError, uspsSuggestion, isValidatedByUSPSApi } = await validateMailingAddress(2, addressLine1, city, state, zip);
-        
-        if (!hasError) {
-            const submitNewAddress = (addressLine1, addressLine2, city, state, zip, isValidatedByUSPS = isValidatedByUSPSApi) => submitNewMailingAddress(
+        const { hasError, uspsSuggestion, isValidatedByUSPSApi, addressNotFound } = await validateMailingAddress(2, addressLine1, city, state, zip);
+
+        const submitNewAddress = (addressLine1, addressLine2, city, state, zip, isValidatedByUSPS = isValidatedByUSPSApi) => submitNewMailingAddress(
                 2,
                 addressLine1,
                 addressLine2,
@@ -950,6 +949,29 @@ const bindUpdatePAddressBtn = (participant) => {
                 participant[conceptId.isPOBox] === conceptId.yes,
                 isValidatedByUSPS
             );
+        
+        if (addressNotFound) { // Manual participant confirmation if USPS cannot validate
+            showMailAddressConfirmation(
+                {streetAddress: addressLine1, secondaryAddress: addressLine2, city, state, zipCode: zip},
+                'event.addressSuggestionDescriptionPhysical',
+                async (streetAddress, secondaryAddress, city, state, zipCode) => {
+                    const success = await submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, false);
+                    if (success) {
+                        participant[conceptId.physicalAddress1] = streetAddress;
+                        if (secondaryAddress) {
+                            participant[conceptId.physicalAddress2] = secondaryAddress;
+                        }
+                        participant[conceptId.physicalCity] = city;
+                        participant[conceptId.physicalState] = state;
+                        participant[conceptId.physicalZip] = zipCode;
+                        
+                        renderRequestAKitDisplay(participant);
+                        renderUpdateAddressSuccess();
+                    }
+                }
+            );
+        } else if (!hasError) {
+            
 
             if (uspsSuggestion.suggestion) {
                 showMailAddressSuggestion(
@@ -1005,19 +1027,40 @@ const bindUpdateMAddressBtn = (participant) => {
         const state = escapeHTML(document.getElementById('UPAddress1State').value.trim());
         const zip = escapeHTML(document.getElementById('UPAddress1Zip').value.trim());
 
-        const { hasError, uspsSuggestion, isValidatedByUSPSApi } = await validateMailingAddress(1, addressLine1, city, state, zip);
+        const { hasError, uspsSuggestion, isValidatedByUSPSApi, addressNotFound } = await validateMailingAddress(1, addressLine1, city, state, zip);
+        const submitNewAddress = (addressLine1, addressLine2, city, state, zip, isValidatedByUSPS = isValidatedByUSPSApi) => submitNewMailingAddress(
+            1,
+            addressLine1,
+            addressLine2,
+            city,
+            state,
+            zip,
+            false,
+            isValidatedByUSPS
+        );
         
-        if (!hasError) {
-            const submitNewAddress = (addressLine1, addressLine2, city, state, zip, isValidatedByUSPS = isValidatedByUSPSApi) => submitNewMailingAddress(
-                1,
-                addressLine1,
-                addressLine2,
-                city,
-                state,
-                zip,
-                false,
-                isValidatedByUSPS
+        if (addressNotFound) { // Manual participant confirmation if USPS cannot validate
+            showMailAddressConfirmation(
+                {streetAddress: addressLine1, secondaryAddress: addressLine2, city, state, zipCode: zip},
+                'event.addressConfirmationDescription',
+                async (streetAddress, secondaryAddress, city, state, zipCode) => {
+                    const success = await submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, false);
+                    if (success) {
+                        participant[conceptId.address1] = streetAddress;
+                        if (secondaryAddress) {
+                            participant[conceptId.address2] = secondaryAddress;
+                        }
+                        participant[conceptId.city] = city;
+                        participant[conceptId.state] = state;
+                        participant[conceptId.zip] = zipCode;
+                        participant[conceptId.isPOBox] = conceptId.no;
+                        
+                        renderRequestAKitDisplay(participant);
+                        // renderUpdateAddressSuccess();
+                    }
+                }
             );
+        } else if (!hasError) {
 
             if (uspsSuggestion.suggestion) {
                 showMailAddressSuggestion(
@@ -1123,6 +1166,59 @@ const renderAddPhysicalAddressInfo = (displayPOBoxInfo, displayIntlAddrInfo) => 
         </div>
         `);
 }
+
+export const showMailAddressConfirmation = (address, i18nTranslation, submit) => {
+  const modalElement = document.getElementById("connectMainModal");
+  let modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+
+    // TODO: Need to refactor
+    const closeModal = () => {
+        const instance = bootstrap.Modal.getInstance(modalElement);
+        if (instance) instance.hide();
+    };
+   document.getElementById("connectModalHeader").innerHTML = translateHTML(`
+        <h2 style="color: #333;" data-i18n="event.addressSuggestionTitle">Address Verification</h2>
+    `);
+
+  document.getElementById("connectModalBody").innerHTML = translateHTML(`
+        <div style="margin-bottom: 20px;" data-i18n="${i18nTranslation}">
+            We can’t verify your address with the USPS. Please confirm the address you entered is correct below or click the Go Back button to enter a different address.
+        </div>
+        <div style="display: flex; gap: 20px; margin-left: 25%; margin-right: 25%">
+            <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
+                <div style="margin-bottom: 15px;">
+                    ${escapeHTML(address.streetAddress)} ${escapeHTML(address.secondaryAddress)} <br>
+                    ${escapeHTML(address.city)} ${escapeHTML(address.state)} ${escapeHTML(address.zipCode)} 
+                </div>
+                <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressKeepButton" data-i18n="event.addressSuggestionKeepButton">Keep address I entered</button>
+            </div>
+        </div>
+    `);
+
+  document.getElementById("connectModalFooter").innerHTML = translateHTML(`
+        <div class="d-flex justify-content-between w-100">
+            <button data-i18n="event.navButtonsClose" type="button" title="Go Back" class="btn btn-dark" id="goBackButton">Go Back</button>
+        </div>
+    `);
+
+  modalInstance.show();
+
+  document.getElementById("addressKeepButton").addEventListener("click", async () => {
+    const { streetAddress, secondaryAddress, city, state, zipCode } = address;
+    await submit(streetAddress, secondaryAddress, city, state, zipCode);
+    closeModal();
+  });
+
+  // Delay the 'goBackButton' since it's rendered dynamically
+  setTimeout(() => {
+    const goBackButton = document.getElementById("goBackButton");
+    if (goBackButton) {
+      goBackButton.addEventListener("click", () => {
+        closeModal();
+      });
+    }
+  }, 100);
+};
 
 export const showMailAddressSuggestion = (uspsSuggestion, i18nTranslation, submit) => {
   const modalElement = document.getElementById("connectMainModal");
