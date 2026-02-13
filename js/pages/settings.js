@@ -406,13 +406,13 @@ const handleEditNameSection = () => {
         const firstNameField = document.getElementById('newFirstNameField');
         const lastNameField = document.getElementById('newLastNameField');
         const middleNameField = document.getElementById('newMiddleNameField');
-        optVars.suffix = escapeHTML(document.getElementById('newSuffixNameField').value.trim());
-        optVars.preferredFirstName = escapeHTML(document.getElementById('newPreferredFirstNameField').value.trim());
+        optVars.suffix = document.getElementById('newSuffixNameField').value.trim();
+        optVars.preferredFirstName = document.getElementById('newPreferredFirstNameField').value.trim();
         const isNameValid = validateName(firstNameField, lastNameField, middleNameField);
         if (isNameValid) {
-          const firstName = escapeHTML(firstNameField.value.trim());
-          const lastName = escapeHTML(lastNameField.value.trim());
-          optVars.middleName = escapeHTML(middleNameField.value.trim());
+          const firstName = firstNameField.value.trim();
+          const lastName = lastNameField.value.trim();
+          optVars.middleName = middleNameField.value.trim();
           formVisBools.isNameFormDisplayed = toggleElementVisibility(nameElementArray, formVisBools.isNameFormDisplayed);
           toggleButtonText();
           submitNewName(firstName, lastName);
@@ -424,7 +424,7 @@ const handleEditNameSection = () => {
 const submitNewName = async (firstName, lastName) => {
   const isSuccess = await changeName(firstName, lastName, optVars.middleName, optVars.suffix, optVars.preferredFirstName, userData).catch(function (error) {
     document.getElementById('changeNameFail').style.display = 'block';
-    document.getElementById('changeNameError').innerHTML = error.message;
+    document.getElementById('changeNameError').textContent = error.message;
   });
   if (isSuccess) {
     handleOptionalFieldVisibility(optVars.middleName, 'profileMiddleName', optRowEles.middleNameRow, nameElementArray[0], 'text');
@@ -499,17 +499,17 @@ const handleEditContactInformationSection = () => {
 
   if (document.getElementById('changeContactInformationSubmit')) {
       document.getElementById('changeContactInformationSubmit').addEventListener('click', async () => {
-        const mobilePhoneNumberPart1 = escapeHTML(document.getElementById('mobilePhoneNumber1').value);
-        const mobilePhoneNumberPart2 = escapeHTML(document.getElementById('mobilePhoneNumber2').value);
-        const mobilePhoneNumberPart3 = escapeHTML(document.getElementById('mobilePhoneNumber3').value);
+        const mobilePhoneNumberPart1 = document.getElementById('mobilePhoneNumber1').value;
+        const mobilePhoneNumberPart2 = document.getElementById('mobilePhoneNumber2').value;
+        const mobilePhoneNumberPart3 = document.getElementById('mobilePhoneNumber3').value;
         optVars.mobilePhoneNumberComplete = `${mobilePhoneNumberPart1}${mobilePhoneNumberPart2}${mobilePhoneNumberPart3}`;
-        const homePhoneNumberPart1 = escapeHTML(document.getElementById('homePhoneNumber1').value);
-        const homePhoneNumberPart2 = escapeHTML(document.getElementById('homePhoneNumber2').value);
-        const homePhoneNumberPart3 = escapeHTML(document.getElementById('homePhoneNumber3').value);
+        const homePhoneNumberPart1 = document.getElementById('homePhoneNumber1').value;
+        const homePhoneNumberPart2 = document.getElementById('homePhoneNumber2').value;
+        const homePhoneNumberPart3 = document.getElementById('homePhoneNumber3').value;
         optVars.homePhoneNumberComplete = `${homePhoneNumberPart1}${homePhoneNumberPart2}${homePhoneNumberPart3}`;
-        const otherPhoneNumberPart1 = escapeHTML(document.getElementById('otherPhoneNumber1').value);
-        const otherPhoneNumberPart2 = escapeHTML(document.getElementById('otherPhoneNumber2').value);
-        const otherPhoneNumberPart3 = escapeHTML(document.getElementById('otherPhoneNumber3').value);
+        const otherPhoneNumberPart1 = document.getElementById('otherPhoneNumber1').value;
+        const otherPhoneNumberPart2 = document.getElementById('otherPhoneNumber2').value;
+        const otherPhoneNumberPart3 = document.getElementById('otherPhoneNumber3').value;
         optVars.otherPhoneNumberComplete = `${otherPhoneNumberPart1}${otherPhoneNumberPart2}${otherPhoneNumberPart3}`;
     
         optVars.canWeVoicemailMobile = getCheckedRadioButtonValue('mobileVoicemailPermissionYesRadio');
@@ -517,9 +517,9 @@ const handleEditContactInformationSection = () => {
         optVars.canWeVoicemailHome = getCheckedRadioButtonValue('homeVoicemailPermissionYesRadio');
         optVars.canWeVoicemailOther = getCheckedRadioButtonValue('otherVoicemailPermissionYesRadio');
     
-        const preferredEmail = escapeHTML(document.getElementById('newPreferredEmail').value.toLowerCase().trim() || '');
-        optVars.additionalEmail1 = escapeHTML(document.getElementById('newadditionalEmail1').value.toLowerCase().trim() || '');
-        optVars.additionalEmail2 = escapeHTML(document.getElementById('newadditionalEmail2').value.toLowerCase().trim() || '');
+        const preferredEmail = document.getElementById('newPreferredEmail').value.toLowerCase().trim() || '';
+        optVars.additionalEmail1 = document.getElementById('newadditionalEmail1').value.toLowerCase().trim() || '';
+        optVars.additionalEmail2 = document.getElementById('newadditionalEmail2').value.toLowerCase().trim() || '';
         
           const { hasError, riskyEmails } = await validateContactInformation(optVars.mobilePhoneNumberComplete, optVars.homePhoneNumberComplete, preferredEmail, optVars.otherPhoneNumberComplete, optVars.additionalEmail1, optVars.additionalEmail2, userData);
           if (!hasError) {
@@ -554,7 +554,7 @@ const handleEditPreferredLanguageSection = () => {
   if (document.getElementById('changePreferredLanguageSubmit')) {
       document.getElementById('changePreferredLanguageSubmit').addEventListener('click', () => {
         const preferredLanguageField = document.getElementById('newpreferredLanguage');
-        const preferredLanguage = escapeHTML(preferredLanguageField.value.trim());
+        const preferredLanguage = preferredLanguageField.value.trim();
         formVisBools.isPreferredLanguageFormDisplayed = toggleElementVisibility(preferredLanguageElementArray, formVisBools.isPreferredLanguageFormDisplayed);
           toggleButtonText();
           submitNewPreferredLanguage(preferredLanguage);
@@ -565,7 +565,7 @@ const handleEditPreferredLanguageSection = () => {
 const submitNewPreferredLanguage = async (preferredLanguage) => {
   const isSuccess = await changePreferredLanguage(preferredLanguage, userData).catch(function (error) {
     document.getElementById('changePreferredLanguageFail').style.display = 'block';
-    document.getElementById('changePreferredLanguageError').innerHTML = error.message;
+    document.getElementById('changePreferredLanguageError').textContent = error.message;
   });
   if (isSuccess) {
     successMessageElement = document.getElementById('changePreferredLanguageSuccess');
@@ -580,7 +580,7 @@ const submitNewContactInformation = async preferredEmail => {
 
   const isSuccess = await changeContactInformation(optVars.mobilePhoneNumberComplete, optVars.homePhoneNumberComplete, optVars.canWeVoicemailMobile, optVars.canWeText, optVars.canWeVoicemailHome, preferredEmail, optVars.otherPhoneNumberComplete, optVars.canWeVoicemailOther, optVars.additionalEmail1, optVars.additionalEmail2, userData).catch(function (error) {
     document.getElementById('changeContactInformationFail').style.display = 'block';
-    document.getElementById('changeContactInformationError').innerHTML = error.message;
+    document.getElementById('changeContactInformationError').textContent = error.message;
   });
   if (isSuccess) {
     handleOptionalFieldVisibility(optVars.mobilePhoneNumberComplete, 'profileMobilePhoneNumber', optRowEles.mobilePhoneRow, contactInformationElementArray[0], 'phone');
@@ -631,13 +631,13 @@ const handleEditMailingAddressSection = () => {
     if (document.getElementById('changeMailingAddressSubmit1')) {
         document.getElementById('changeMailingAddressSubmit1').addEventListener('click', async () => {
             const isInternational = document.getElementById('UPAddress1International').checked ? cId.yes : cId.no;
-            const addressLine1 = escapeHTML(document.getElementById('UPAddress1Line1').value.trim());
-            const addressLine2 = escapeHTML(document.getElementById('UPAddress1Line2').value.trim());
-            const addressLine3 = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress1Line3').value.trim()) : '';
-            const city = escapeHTML(document.getElementById('UPAddress1City').value.trim());
-            const state = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress1Region').value.trim()) : escapeHTML(document.getElementById('UPAddress1State').value.trim());
-            const zip = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress1Postal').value.trim()) : escapeHTML(document.getElementById('UPAddress1Zip').value.trim());
-            const country = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress1Country').value.trim()) : '';
+            const addressLine1 = document.getElementById('UPAddress1Line1').value.trim();
+            const addressLine2 = document.getElementById('UPAddress1Line2').value.trim();
+            const addressLine3 = isInternational === cId.yes ? document.getElementById('UPAddress1Line3').value.trim() : '';
+            const city = document.getElementById('UPAddress1City').value.trim();
+            const state = isInternational === cId.yes ? document.getElementById('UPAddress1Region').value.trim() : document.getElementById('UPAddress1State').value.trim();
+            const zip = isInternational === cId.yes ? document.getElementById('UPAddress1Postal').value.trim() : document.getElementById('UPAddress1Zip').value.trim();
+            const country = isInternational === cId.yes ? document.getElementById('UPAddress1Country').value.trim() : '';
             const isPOBox = document.getElementById('poBoxCheckbox').checked;
         
             const { hasError, uspsSuggestion, isValidatedByUSPSApi, addressNotFound } = await validateMailingAddress(1, addressLine1, city, state, zip, isInternational, country);
@@ -717,7 +717,7 @@ const handleEditMailingAddressSection = () => {
 const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isPOBox = false, isClearing = false, isValidatedByUSPS = false) => {
   const isSuccess = await changeMailingAddress(id, addressLine1, addressLine2, city, state, zip, userData, isInternational, addressLine3, country, isPOBox, isClearing, isValidatedByUSPS).catch(function () {
     document.getElementById(`mailingAddressFail${id}`).style.display = 'block';
-    document.getElementById(`mailingAddressError${id}`).innerHTML = translateText('settings.failMailUpdate');
+    document.getElementById(`mailingAddressError${id}`).textContent = translateText('settings.failMailUpdate');
   });
   if (isSuccess) {
     await refreshUserDataAfterEdit();
@@ -742,13 +742,13 @@ const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, sta
     } 
     addressString += `${escapeHTML(state)} ${escapeHTML(zip)}`;
     if (country && country !== '') {
-        addressString += translateHTML(`<br><span data-i18n="countries.${country}"></span>`);
+        addressString += translateHTML(`<br><span data-i18n="countries.${escapeHTML(country)}"></span>`);
     }
     
     addressString += poBoxText;
 
     if (addressLine1 === ""){
-        document.getElementById(`profileMailingAddress${id}`).innerHTML = ""
+        document.getElementById(`profileMailingAddress${id}`).textContent = ""
     } else {
         document.getElementById(`profileMailingAddress${id}`).innerHTML = addressString;
     }
@@ -780,13 +780,13 @@ const handleEditPhysicalMailingAddressSection = () => {
     if (document.getElementById('changeMailingAddressSubmit2')) {
         document.getElementById('changeMailingAddressSubmit2').addEventListener('click', async () => {
             const isInternational = document.getElementById('UPAddress2International').checked ? cId.yes : cId.no;
-            const addressLine1 = escapeHTML(document.getElementById('UPAddress2Line1').value.trim());
-            const addressLine2 = escapeHTML(document.getElementById('UPAddress2Line2').value.trim());
-            const addressLine3 = escapeHTML(document.getElementById('UPAddress2Line3').value.trim());
-            const city = escapeHTML(document.getElementById('UPAddress2City').value.trim());
-            const state = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress2Region').value.trim()) : escapeHTML(document.getElementById('UPAddress2State').value.trim());
-            const zip = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress2Postal').value.trim()) : escapeHTML(document.getElementById('UPAddress2Zip').value.trim());
-            const country = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress2Country').value.trim()) : '';
+            const addressLine1 = document.getElementById('UPAddress2Line1').value.trim();
+            const addressLine2 = document.getElementById('UPAddress2Line2').value.trim();
+            const addressLine3 = document.getElementById('UPAddress2Line3').value.trim();
+            const city = document.getElementById('UPAddress2City').value.trim();
+            const state = isInternational === cId.yes ? document.getElementById('UPAddress2Region').value.trim() : document.getElementById('UPAddress2State').value.trim();
+            const zip = isInternational === cId.yes ? document.getElementById('UPAddress2Postal').value.trim() : document.getElementById('UPAddress2Zip').value.trim();
+            const country = isInternational === cId.yes ? document.getElementById('UPAddress2Country').value.trim() : '';
     
             const { hasError, uspsSuggestion, isValidatedByUSPSApi, addressNotFound } = await validateMailingAddress(2, addressLine1, city, state, zip, isInternational, country);
         
@@ -904,13 +904,13 @@ const handleEditAltAddressSection = () => {
     if (document.getElementById('changeMailingAddressSubmit3')) {
         document.getElementById('changeMailingAddressSubmit3').addEventListener('click', async () => {
             const isInternational = document.getElementById('UPAddress3International').checked ? cId.yes : cId.no;
-            const altAddressLine1 = escapeHTML(document.getElementById('UPAddress3Line1').value.trim());
-            const altAddressLine2 = escapeHTML(document.getElementById('UPAddress3Line2').value.trim());
-            const altAddressLine3 = escapeHTML(document.getElementById('UPAddress3Line3').value.trim());
-            const altCity = escapeHTML(document.getElementById('UPAddress3City').value.trim());
-            const altState = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress3Region').value.trim()) : escapeHTML(document.getElementById('UPAddress3State').value.trim());
-            const altZip = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress3Postal').value.trim()) : escapeHTML(document.getElementById('UPAddress3Zip').value.trim());
-            const country = isInternational === cId.yes ? escapeHTML(document.getElementById('UPAddress3Country').value.trim()) : '';
+            const altAddressLine1 = document.getElementById('UPAddress3Line1').value.trim();
+            const altAddressLine2 = document.getElementById('UPAddress3Line2').value.trim();
+            const altAddressLine3 = document.getElementById('UPAddress3Line3').value.trim();
+            const altCity = document.getElementById('UPAddress3City').value.trim();
+            const altState = isInternational === cId.yes ? document.getElementById('UPAddress3Region').value.trim() : document.getElementById('UPAddress3State').value.trim();
+            const altZip = isInternational === cId.yes ? document.getElementById('UPAddress3Postal').value.trim() : document.getElementById('UPAddress3Zip').value.trim();
+            const country = isInternational === cId.yes ? document.getElementById('UPAddress3Country').value.trim() : '';
             const altAddressIsPOBox = document.getElementById("poBoxCheckboxAltAddress")?.checked;
     
             const { hasError, uspsSuggestion, isValidatedByUSPSApi, addressNotFound } = await validateMailingAddress(3, altAddressLine1, altCity, altState, altZip, isInternational, country);
@@ -1062,7 +1062,7 @@ const handleEditAltContactSection = () => {
 const submitNewAltContactInformation = async () => {
     const isSuccess = await changeAltContactInformation(optVars.altContactFirstName, optVars.altContactLastName, optVars.altContactMobilePhoneNumberComplete, optVars.altContactHomePhoneNumberComplete, optVars.altContactEmail, userData).catch(function (error) {
         document.getElementById('changeAltContactInformationFail').style.display = 'block';
-        document.getElementById('changeAltContactInformationError').innerHTML = error.message;
+        document.getElementById('changeAltContactInformationError').textContent = error.message;
     });
     if (isSuccess) {
         await refreshUserDataAfterEdit();
@@ -1103,7 +1103,7 @@ const handleEditSignInInformationSection = () => {
         const handleSignInBtn = async (e) => {
             e.preventDefault();
             window.localStorage.setItem('signInUpdate', 'yes');
-            const inputStr = escapeHTML(accountInput.value.trim());
+            const inputStr = accountInput.value.trim();
             const isEmail = !!inputStr.match(validEmailFormat);
             const isPhone = !!inputStr.match(validPhoneNumberFormat);
             if (isEmail) {
@@ -1158,8 +1158,8 @@ const handleEditSignInInformationSection = () => {
   });
 
   document.getElementById('changeEmailSubmit').addEventListener('click', () => {
-    const email = escapeHTML(document.getElementById('newEmailField').value.trim());
-    const emailConfirm = escapeHTML(document.getElementById('newEmailFieldCheck').value.trim());
+    const email = document.getElementById('newEmailField').value.trim();
+    const emailConfirm = document.getElementById('newEmailFieldCheck').value.trim();
     const isEmailValid = email && emailConfirm && validateLoginEmail(email, emailConfirm);
     if (isEmailValid) {
         submitNewLoginMethod(email, null)
@@ -1167,8 +1167,8 @@ const handleEditSignInInformationSection = () => {
   });
 
   document.getElementById('changePhoneSubmit').addEventListener('click', () => {
-    const phone = escapeHTML(document.getElementById('newPhoneField').value.trim());
-    const phoneConfirm = escapeHTML(document.getElementById('newPhoneFieldCheck').value.trim());
+    const phone = document.getElementById('newPhoneField').value.trim();
+    const phoneConfirm = document.getElementById('newPhoneFieldCheck').value.trim();
     const isPhoneValid = phone && phoneConfirm && validateLoginPhone(phone, phoneConfirm);
     if (isPhoneValid) {
         submitNewLoginMethod(null, phone);
@@ -1197,7 +1197,7 @@ const submitNewLoginMethod = async (email, phone) => {
         fallbackMessage: 'Settings auth update failed.',
     });
 
-    document.getElementById('loginUpdateError').innerHTML = errorMessage;
+    document.getElementById('loginUpdateError').textContent = errorMessage;
   });
   
   if (isSuccess) {
@@ -1225,8 +1225,8 @@ const submitNewLoginMethod = async (email, phone) => {
     profileEmailElement.style.display = 'block';
     loginEmailDiv && (loginEmailDiv.style.display = 'block');
     if (optVars.loginEmail) {
-        profileEmailElement.innerHTML = optVars.loginEmail;
-        loginEmailField && (loginEmailField.innerHTML = optVars.loginEmail);
+        profileEmailElement.textContent = optVars.loginEmail;
+        loginEmailField && (loginEmailField.textContent = optVars.loginEmail);
     } else {
         profileEmailElement.innerHTML = translateHTML('<span data-i18n="settings.noLoginEmail"></span>');
     }
@@ -1235,8 +1235,8 @@ const submitNewLoginMethod = async (email, phone) => {
     profilePhoneElement.style.display = 'block';
     loginPhoneDiv && (loginPhoneDiv.style.display = 'block');        
     if (optVars.loginPhone) {
-        profilePhoneElement.innerHTML = `${optVars.loginPhone}`;
-        loginPhoneField && (loginPhoneField.innerHTML = optVars.loginPhone);
+        profilePhoneElement.textContent = optVars.loginPhone;
+        loginPhoneField && (loginPhoneField.textContent = optVars.loginPhone);
     } else {
         profilePhoneElement.innerHTML = translateHTML('<span data-i18n="settings.noLoginPhone"></span>');
     }
@@ -1440,7 +1440,7 @@ const updateUIAfterUnlink = async (isSuccess, type, error) => {
       document.getElementById('loginPhoneRow').style.display = 'block';
       profilePhoneElement.style.display = 'block';        
       if (optVars.loginPhone && type !== 'phone') {
-        profilePhoneElement.innerHTML = `${optVars.loginPhone}`;
+        profilePhoneElement.textContent = optVars.loginPhone;
       } else {
         profilePhoneElement.innerHTML = translateHTML('<span data-i18n="settings.noLoginPhone"></span>');
       }
@@ -1449,7 +1449,7 @@ const updateUIAfterUnlink = async (isSuccess, type, error) => {
       successMessageElement.style.display = 'block';
     } else {
         document.getElementById('loginUpdateFail').style.display = 'block';
-        document.getElementById('loginUpdateError').innerHTML = error;
+        document.getElementById('loginUpdateError').textContent = error;
     }
 
     if (!(optVars.loginEmail && optVars.loginPhone)) {
@@ -1531,7 +1531,7 @@ export const renderUserNameData = () => {
                         <br>
                             <b>
                             <div id="profileFirstName">
-                                ${userData[cId.fName]}
+                                ${escapeHTML(userData[cId.fName])}
                                 </div>    
                             </b>
                         </span>
@@ -1545,7 +1545,7 @@ export const renderUserNameData = () => {
                     <br>
                         <b>
                         <div id="profileMiddleName">
-                            ${optVars.middleName}
+                            ${escapeHTML(optVars.middleName)}
                             </div>
                         </b>
                     </span>
@@ -1559,7 +1559,7 @@ export const renderUserNameData = () => {
                     <br>
                         <b>
                         <div id="profileLastName">
-                            ${userData[cId.lName] ? userData[cId.lName] : '<br>'}
+                            ${userData[cId.lName] ? escapeHTML(userData[cId.lName]) : '<br>'}
                             </div>
                         </b>
                     </span>
@@ -1575,7 +1575,7 @@ export const renderUserNameData = () => {
                 <br>
                     <b>
                     <div id="profilePreferredFirstName">
-                            ${optVars.preferredFirstName}
+                            ${escapeHTML(optVars.preferredFirstName)}
                         </div>
                     </b>
                 </span>
@@ -1607,24 +1607,24 @@ export const renderChangeNameGroup = () => {
             </div>
             <div class="col-12 col-lg-4">
                 <label for="newFirstNameField" class="custom-form-label" data-i18n="settings.firstNameFieldLabel">First Name <span class="required">*</span></label>
-                <input type="text" value="${userData[cId.fName]}" class="form-control input-validation row ms-1" data-validation-pattern="alphabets" data-error-validation="Your first name should contain only uppercase and lowercase letters and can contain some special characters." id="newFirstNameField" placeholder="Enter first name" style="margin-left:0px; max-width:215px; !important;" data-i18n="settings.firstNameField">
+                <input type="text" value="${escapeHTML(userData[cId.fName])}" class="form-control input-validation row ms-1" data-validation-pattern="alphabets" data-error-validation="Your first name should contain only uppercase and lowercase letters and can contain some special characters." id="newFirstNameField" placeholder="Enter first name" style="margin-left:0px; max-width:215px; !important;" data-i18n="settings.firstNameField">
             </div>
             <br>
             <div class="col-12 col-lg-4">
                 <label  data-i18n="settings.middleNameFieldLabel" for="newMiddleNameField" class="custom-form-label">Middle Name </label><span data-i18n="settings.optional"> (optional)</span>
-                <input  data-i18n="settings.middleNameField" type="text" value="${userData[cId.mName] ? userData[cId.mName] : ''}" class="form-control input-validation row ms-1" data-validation-pattern="alphabets" data-error-validation="Your middle name should contain only uppercase and lowercase letters and can contain some special characters." id="newMiddleNameField" placeholder="Enter middle name (optional)" style="margin-left:0px; max-width:215px; !important;">
+                <input  data-i18n="settings.middleNameField" type="text" value="${userData[cId.mName] ? escapeHTML(userData[cId.mName]) : ''}" class="form-control input-validation row ms-1" data-validation-pattern="alphabets" data-error-validation="Your middle name should contain only uppercase and lowercase letters and can contain some special characters." id="newMiddleNameField" placeholder="Enter middle name (optional)" style="margin-left:0px; max-width:215px; !important;">
             </div>
             <br>
             <div class="col-12 col-lg-4">
                 <label for="newLastNameField" class="custom-form-label" data-i18n="settings.lastNameFieldLabel">Last Name <span class="required">*</span></label>
-                <input type="text" value="${userData[cId.lName]}" class="form-control input-validation row  ms-1" data-validation-pattern="alphabets" data-error-validation="${translateText("settings.lastNameFieldValidation")}" id="newLastNameField" placeholder="${translateText("settings.lastNameFieldPlaceholder")}" style="margin-left:0px; max-width:304px; !important;">
+                <input type="text" value="${escapeHTML(userData[cId.lName])}" class="form-control input-validation row  ms-1" data-validation-pattern="alphabets" data-error-validation="${translateText("settings.lastNameFieldValidation")}" id="newLastNameField" placeholder="${translateText("settings.lastNameFieldPlaceholder")}" style="margin-left:0px; max-width:304px; !important;">
             </div>
             <br>
             
             <br>
             <div class="col-12">
                 <label data-i18n="settings.preferredFirstNameFieldLabel" for="newPreferredFirstNameField" class="custom-form-label">Preferred First Name </label><span data-i18n="settings.optional"> (optional)</span>
-                <input data-i18n="settings.preferredFirstNameField" type="text" value="${userData[cId.prefName] ? userData[cId.prefName] : ''}" class="form-control input-validation row  ms-1" data-validation-pattern="alphabets" data-error-validation="${translateText("settings.preferredFirstNameFieldValidation")}" id="newPreferredFirstNameField" placeholder="${translateText("settings.preferredFirstNameFieldPlaceholder")}" style="margin-left:0px; max-width:215px; !important;">
+                <input data-i18n="settings.preferredFirstNameField" type="text" value="${userData[cId.prefName] ? escapeHTML(userData[cId.prefName]) : ''}" class="form-control input-validation row  ms-1" data-validation-pattern="alphabets" data-error-validation="${translateText("settings.preferredFirstNameFieldValidation")}" id="newPreferredFirstNameField" placeholder="${translateText("settings.preferredFirstNameFieldPlaceholder")}" style="margin-left:0px; max-width:215px; !important;">
             </div>
         </div>
         <div class="row">
@@ -1680,7 +1680,7 @@ export const renderContactInformationData = () => {
                     <br>
                         <b>
                         <div id="profilePreferredEmail"  ${!isParticipantDataDestroyed ? '' : 'data-i18n="settings.dataDeleted"'}>
-                            ${!isParticipantDataDestroyed ? userData[cId.prefEmail] : translateText('settings.dataDeleted')}
+                            ${!isParticipantDataDestroyed ? escapeHTML(userData[cId.prefEmail]) : translateText('settings.dataDeleted')}
                         </div>
                         </b>
                     </span>
@@ -1695,7 +1695,7 @@ export const renderContactInformationData = () => {
                     <br>
                         <b>
                         <div id="profileadditionalEmail1">
-                            ${optVars.additionalEmail1}
+                            ${escapeHTML(optVars.additionalEmail1)}
                         </div>
                         </b>
                     </span>
@@ -1710,7 +1710,7 @@ export const renderContactInformationData = () => {
                     <br>
                         <b>
                         <div id="profileadditionalEmail2">
-                            ${optVars.additionalEmail2}
+                            ${escapeHTML(optVars.additionalEmail2)}
                         </div>
                         </b>
                     </span>
@@ -1840,21 +1840,21 @@ export const renderChangeContactInformationGroup = () => {
                   <div class="form-group col-12 col-xl-6">
                       <div class="col">
                           <label for="newPreferredEmail" class="custom-form-label" data-i18n="settings.preferredEmailLabel">Preferred Email <span class="required">*</span></label>
-                          <input max-width:382px;" value="${userData[cId.prefEmail]}" type="email" class="form-control ms-1" id="newPreferredEmail" placeholder="abc@mail.com">
+                          <input max-width:382px;" value="${escapeHTML(userData[cId.prefEmail])}" type="email" class="form-control ms-1" id="newPreferredEmail" placeholder="abc@mail.com">
                       </div>
                   </div>
 
                   <div class="form-group col-12 col-xl-6">
                       <div class="col">
                           <label for="newadditionalEmail1" class="custom-form-label" data-i18n="settings.additionalEmail1Label">Additional Email 1 (optional)</label>
-                          <input max-width:382px;" value="${optVars.additionalEmail1 ? `${optVars.additionalEmail1}` : ''}" type="email" class="form-control ms-1" id="newadditionalEmail1" placeholder="abc@mail.com">
+                          <input max-width:382px;" value="${optVars.additionalEmail1 ? `${escapeHTML(optVars.additionalEmail1)}` : ''}" type="email" class="form-control ms-1" id="newadditionalEmail1" placeholder="abc@mail.com">
                       </div>
                   </div>
 
                   <div class="form-group col-12 col-xl-6">
                       <div class="col">
                           <label for="newadditionalEmail2" class="custom-form-label" data-i18n="settings.additionalEmail2Label">Additional Email 2 (optional)</label>
-                          <input max-width:382px;" value="${optVars.additionalEmail2 ? `${optVars.additionalEmail2}` : ''}" type="email" class="form-control ms-1" id="newadditionalEmail2" placeholder="abc@mail.com">
+                          <input max-width:382px;" value="${optVars.additionalEmail2 ? `${escapeHTML(optVars.additionalEmail2)}` : ''}" type="email" class="form-control ms-1" id="newadditionalEmail2" placeholder="abc@mail.com">
                       </div>
                   </div>
                   <div class="w-100"></div>
@@ -2111,10 +2111,10 @@ export const renderMailingAddressData = (id) => {
                     <div class="userProfileBodyFonts" id="profileMailingAddress${id}">
                         ${!isParticipantDataDestroyed ?
                         `
-                            ${userData[cId.address1]}</br>
-                            ${userData[cId.address2] ? `${userData[cId.address2]}</br>` : ''}
-                            ${userData[cId.address3] ? `${userData[cId.address3]}</br>` : ''}
-                            ${userData[cId.city]}${userData[cId.city] && userData[cId.state] ? ', ' : ''}${userData[cId.state]} ${userData[cId.zip]}</br>
+                            ${escapeHTML(userData[cId.address1])}</br>
+                            ${userData[cId.address2] ? `${escapeHTML(userData[cId.address2])}</br>` : ''}
+                            ${userData[cId.address3] ? `${escapeHTML(userData[cId.address3])}</br>` : ''}
+                            ${escapeHTML(userData[cId.city])}${userData[cId.city] && userData[cId.state] ? ', ' : ''}${escapeHTML(userData[cId.state])} ${escapeHTML(userData[cId.zip])}</br>
                             ${userData[cId.country] ? `<span data-i18n="countries.${userData[cId.country]}"></span></br>` : ''}
                             <br>
                             <span data-i18n="event.poBox">Mailing address is PO Box</span>:
@@ -2139,10 +2139,10 @@ export const renderPhysicalMailingAddressData = (id) => {
                             <b>
                             ${!isParticipantDataDestroyed ?
                                 `
-                                    ${userData[cId.physicalAddress1] || ''}</br>
-                                    ${userData[cId.physicalAddress2] ? `${userData[cId.physicalAddress2]}</br>` : ''}
-                                    ${userData[cId.physicalAddress3] ? `${userData[cId.physicalAddress3]}</br>` : ''}
-                                    ${userData[cId.physicalCity] || ''}${userData[cId.physicalCity] && userData[cId.physicalState] ? ', ':''}${userData[cId.physicalState] || ''} ${userData[cId.physicalZip] || ''}   
+                                    ${escapeHTML(userData[cId.physicalAddress1] || '')}</br>
+                                    ${userData[cId.physicalAddress2] ? `${escapeHTML(userData[cId.physicalAddress2])}</br>` : ''}
+                                    ${userData[cId.physicalAddress3] ? `${escapeHTML(userData[cId.physicalAddress3])}</br>` : ''}
+                                    ${escapeHTML(userData[cId.physicalCity] || '')}${userData[cId.physicalCity] && userData[cId.physicalState] ? ', ':''}${escapeHTML(userData[cId.physicalState] || '')} ${escapeHTML(userData[cId.physicalZip] || '')}   
                                     ${userData[cId.physicalCountry] ? `<br><span data-i18n="countries.${userData[cId.physicalCountry]}"></span>` : ''} 
                                 ` 
                                 : translateText('settings.dataDeleted')
@@ -2175,10 +2175,10 @@ export const renderAlternateAddressData = (id) => {
     if (hasAddressContent) {
         address = `
             <b>
-            ${userData[cId.altAddress1] || ''}</br>
-            ${userData[cId.altAddress2] ? `${userData[cId.altAddress2]}</br>` : ''}
-            ${userData[cId.altAddress3] ? `${userData[cId.altAddress3]}</br>` : ''}
-            ${userData[cId.altCity] || ''}${userData[cId.altCity] && userData[cId.altState] ? ', ' : ''}${userData[cId.altState] || ''} ${userData[cId.altZip] || ''}<br>
+            ${escapeHTML(userData[cId.altAddress1] || '')}</br>
+            ${userData[cId.altAddress2] ? `${escapeHTML(userData[cId.altAddress2])}</br>` : ''}
+            ${userData[cId.altAddress3] ? `${escapeHTML(userData[cId.altAddress3])}</br>` : ''}
+            ${escapeHTML(userData[cId.altCity] || '')}${userData[cId.altCity] && userData[cId.altState] ? ', ' : ''}${escapeHTML(userData[cId.altState] || '')} ${escapeHTML(userData[cId.altZip] || '')}<br>
             ${userData[cId.altCountry] ? `<span data-i18n="countries.${userData[cId.altCountry]}"></span><br>` : ''} 
             <br>
             <span data-i18n="event.poBoxAltAddress">Alternate address is PO Box</span>:
@@ -2390,7 +2390,7 @@ const renderAlternateContactInformationData = () => {
                         <br>
                             <b>
                             <div id="altContactFirstName">
-                                ${optVars.altContactFirstName || ''}
+                                ${escapeHTML(optVars.altContactFirstName || '')}
                             </div>    
                             </b>
                         </span>
@@ -2404,7 +2404,7 @@ const renderAlternateContactInformationData = () => {
                         <br>
                             <b>
                             <div id="altContactLastName">
-                                ${optVars.altContactLastName || ''}
+                                ${escapeHTML(optVars.altContactLastName || '')}
                             </div>
                             </b>
                         </span>
@@ -2452,7 +2452,7 @@ const renderAlternateContactInformationData = () => {
                         <br>
                             <b>
                             <div id="altContactEmail"  ${!isParticipantDataDestroyed ? '' : 'data-i18n="settings.dataDeleted"'}>
-                                ${!isParticipantDataDestroyed ? optVars.altContactEmail : translateText('settings.dataDeleted')}
+                                ${!isParticipantDataDestroyed ? escapeHTML(optVars.altContactEmail) : translateText('settings.dataDeleted')}
                             </div>
                             </b>
                         </span>
@@ -2470,14 +2470,14 @@ const renderChangeAltContactInformationGroup = () => {
                 <div class="form-group col-12 col-xl-6">
                     <div class="col">
                         <label for="newAltContactFirstNameField" class="custom-form-label" data-i18n="settings.altContactFirstNameFieldLabel">First Name</label>
-                        <input type="text" value="${optVars.altContactFirstName || ''}" class="form-control input-validation row ms-1" data-validation-pattern="alphabets" data-error-validation="Your first name should contain only uppercase and lowercase letters and can contain some special characters." id="newAltContactFirstNameField" placeholder="Enter first name" style="margin-left:0px; max-width:215px; !important;" data-i18n="settings.altContactFirstNameField">
+                        <input type="text" value="${escapeHTML(optVars.altContactFirstName || '')}" class="form-control input-validation row ms-1" data-validation-pattern="alphabets" data-error-validation="Your first name should contain only uppercase and lowercase letters and can contain some special characters." id="newAltContactFirstNameField" placeholder="Enter first name" style="margin-left:0px; max-width:215px; !important;" data-i18n="settings.altContactFirstNameField">
                     </div>
                 </div>
                 
                 <div class="form-group col-12 col-xl-6">
                     <div class="col">
                         <label for="newAltContactLastNameField" class="custom-form-label" data-i18n="settings.altContactLastNameFieldLabel">Last Name</label>
-                        <input type="text" value="${optVars.altContactLastName || ''}" class="form-control input-validation row  ms-1" data-validation-pattern="alphabets" data-error-validation="${translateText("settings.altContactLastNameFieldValidation")}" id="newAltContactLastNameField" placeholder="${translateText("settings.altContactLastNameFieldPlaceholder")}" style="margin-left:0px; max-width:304px; !important;" data-i18n="settings.altContactLastNameField">
+                        <input type="text" value="${escapeHTML(optVars.altContactLastName || '')}" class="form-control input-validation row  ms-1" data-validation-pattern="alphabets" data-error-validation="${translateText("settings.altContactLastNameFieldValidation")}" id="newAltContactLastNameField" placeholder="${translateText("settings.altContactLastNameFieldPlaceholder")}" style="margin-left:0px; max-width:304px; !important;" data-i18n="settings.altContactLastNameField">
                     </div>
                 </div>
 
@@ -2512,7 +2512,7 @@ const renderChangeAltContactInformationGroup = () => {
                 <div class="form-group  col-12 col-xl-4">
                     <div class="col">
                         <label for="newAltContactEmail" class="custom-form-label" data-i18n="settings.altContactEmail">Email</label>
-                        <input max-width:382px;" value="${optVars.altContactEmail || ''}" type="email" class="form-control ms-1" id="newAltContactEmail" placeholder="abc@mail.com">
+                        <input max-width:382px;" value="${escapeHTML(optVars.altContactEmail || '')}" type="email" class="form-control ms-1" id="newAltContactEmail" placeholder="abc@mail.com">
                     </div>
                 </div>
 
@@ -2558,7 +2558,7 @@ export const renderSignInInformationHeadingAndButton = () => {
 };
 
 export const renderSignInInformationData = () => {
-    const loginEmail = optVars.loginEmail ? optVars.loginEmail : '<span data-i18n="settings.noLoginEmail"></span>';
+    const loginEmail = optVars.loginEmail ? escapeHTML(optVars.loginEmail) : '<span data-i18n="settings.noLoginEmail"></span>';
     const loginPhone = optVars.loginPhone ? formatFirebaseAuthPhoneNumber(optVars.loginPhone) : '<span data-i18n="settings.noLoginPhone"></span>';
     return translateHTML(`
         <div class="row userProfileLinePaddings" id="currentSignInInformationDiv">
@@ -2680,7 +2680,7 @@ const renderTabbedForm = () => {
                 <div style="display: flex; justify-content: space-between; align-items: center;" id="loginEmailDiv">
                     <span>
                         <span data-i18n="settings.currentEmail">Current sign in email:</span> 
-                        <strong id="loginEmailField">${optVars.loginEmail}</strong>
+                        <strong id="loginEmailField">${escapeHTML(optVars.loginEmail)}</strong>
                     </span>
                     ${optVars.loginPhone ? `<button class="btn-remove-login" id="removeLoginEmailButton" data-i18n="settings.removeEmail">Remove this email address</button>` : ''}
                 </div>
