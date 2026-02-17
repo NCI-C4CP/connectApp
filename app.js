@@ -17,6 +17,7 @@ import { firebaseConfig as devFirebaseConfig } from "./dev/config.js";
 import { firebaseConfig as stageFirebaseConfig } from "./stage/config.js";
 import { firebaseConfig as prodFirebaseConfig } from "./prod/config.js";
 import conceptIdMap from "./js/fieldToConceptIdMapping.js";
+import { applyUnauthenticatedRouteState, showLegacyEmailVerificationInterstitial, shouldShowLegacyEmailVerificationInterstitial } from "./js/authStateRouting.js";
 
 let appVersion;
 
@@ -423,8 +424,7 @@ const userProfile = () => {
             }
         }
         else{
-            document.title = translateText('shared.homeTitle');
-            window.location.hash = '#';
+            applyUnauthenticatedRouteState({ translate: translateText });
         }
     });
 }
@@ -468,58 +468,31 @@ const renderSurveys = function () {
             }
         }
         else{
-            document.title = translateText('shared.homeTitle');
-            window.location.hash = '#';
+            applyUnauthenticatedRouteState({ translate: translateText });
         }
     });
 }
 
 /**
- * Route the user to the dashboard and show the verification email message if the user's email is not verified.
- * This is an older process, primarily.
+ * Route the user to the dashboard and show the legacy email-verification interstitial when needed.
+ * This might still evaluate true for users with:
+ * - an email present,
+ * - an unverified email,
+ * - no linked phone number,
+ * - and a non-system email (not `noreply...`).
+ * Current possible examples include legacy email-only accounts that never verified, and users
+ * who end up email-only + unverified after auth-method updates in Settings.
+ * This is an older process and should be analyzed for eventual removal.
  * @param {firebase.User} user - The current user.
  */
 const userProfileAuthStateUIHandler = async (user) => {
 
-    if (user.email && !user.emailVerified && !user.email.startsWith('noreply')) {
-        const mainContent = document.getElementById('root');
-        mainContent.innerHTML = `
-                    <br>
-                    <div class="row">
-                        <div class="col-md-2">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="verifyEmailText">Please verify your email by clicking <a id="verifyEmail">
-                            <br>
-                            <br>
-                            <button class="btn btn-primary consentNextButton" style="font-weight:bold;">Verify Email</button></a></div>
-                        </div>
-                        <div class="col-md-2">
-                        </div>
-                    </div>
-                        `
-
-        document.getElementById('verifyEmail').addEventListener('click', () => {
-            mainContent.innerHTML = `
-                    <br>
-                    <div class="row">
-                        <div class="col-md-2">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="verifyEmailText">Please click the link we sent to your email to verify your contact information.<br>Be sure to check your spam folder.</div>
-                        </div>
-                        <div class="col-md-2">
-                        </div>
-                    </div>`
-        });
-        hideAnimation();
-        document.getElementById('verifyEmail').addEventListener('click', () => {
-            user.sendEmailVerification().then(function () {
-
-            }).catch(function (error) {
-                console.error('Error sending email verification: ', error);
-            });
-        });
+    // Do not show legacy email verification interstitial for phone-auth users.
+    if (showLegacyEmailVerificationInterstitial({
+      user,
+      shouldShow: shouldShowLegacyEmailVerificationInterstitial,
+      hideAnimationFn: hideAnimation,
+    })) {
         return;
     }
 };

@@ -1720,6 +1720,15 @@ const en = {
         "emailSentMessageEnd": ". Please check your email and click the link we sent to finish signing in. Our email may take a few minutes to arrive in your inbox.",
         "troubleGettingEmail": "Trouble getting email?",
         "backText": "Back",
+        "authErrors": {
+            "default": "Something went wrong while signing you in. Please try again. If the issue continues, please contact the Connect Support Center at 1-877-505-0253 or <a href=\"mailto:connectsupport@norc.org\">ConnectSupport@norc.org</a>.",
+            "tooManyRequests": "We have blocked all requests from this device due to unusual activity. Try again later.",
+            "networkRequestFailed": "A network error has occurred. Try again later.",
+            "userDisabled": "The user account has been disabled by an administrator.",
+            "invalidPhoneNumber": "Please enter a valid email or phone number.",
+            "invalidEmail": "Please enter a valid email or phone number.",
+            "missingEmail": "Please enter a valid email or phone number."
+        },
         "usGov": "You are accessing a U.S. Government web site which may contain information that must be protected under the U.S. Privacy Act or other sensitive information and is intended for Government authorized use only. Unauthorized attempts to upload information, change information, or use of this web site may result in disciplinary action, civil, and/or criminal penalties. Unauthorized users of this web site should have no expectation of privacy regarding any communications or data processed by this web site. Anyone accessing this web site expressly consents to monitoring of their actions and all communication or data transitioning or stored on or related to this web site and is advised that if such monitoring reveals possible evidence of criminal activity, NIH may provide that evidence to law enforcement officials.",
         "tryFixes": "Try these common fixes:",
         "fixesList": "<li>Check if the email was marked as spam or filtered.</li><li>Check your internet connection.</li><li>Check that you did not misspell your email.</li><li>Check that your inbox space is not running out or other inbox settings related issues.</li>",

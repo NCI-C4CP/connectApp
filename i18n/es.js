@@ -1710,6 +1710,15 @@
         "emailSentMessageEnd": ". Revise su casilla de correo electrónico y haga clic en el enlace que le enviamos para terminar de iniciar sesión. Es posible que nuestro mensaje tarde unos minutos en llegar a su bandeja de entrada.",
         "troubleGettingEmail": "¿Tiene problemas para recibir el mensaje?",
         "backText": "Atrás",
+        "authErrors": {
+            "default": "Se ha producido un error al iniciar sesión. Inténtelo de nuevo. Si el problema persiste, póngase en contacto con el Centro de Asistencia de Connect en el 1-877-775-7004 o en <a href=\"mailto:ConnectAyuda@norc.org\">ConnectAyuda@norc.org</a>.",
+            "tooManyRequests": "Hemos bloqueado todas las solicitudes de este dispositivo porque se ha detectado una actividad inusual. Inténtalo de nuevo más tarde.",
+            "networkRequestFailed": "Se ha producido un error de red. Inténtalo de nuevo más tarde.",
+            "userDisabled": "Un administrador ha inhabilitado la cuenta de usuario.",
+            "invalidPhoneNumber": "Ingrese una dirección de correo electrónico o un número de teléfono válidos.",
+            "invalidEmail": "Ingrese una dirección de correo electrónico o un número de teléfono válidos.",
+            "missingEmail": "Ingrese una dirección de correo electrónico o un número de teléfono válidos."
+        },
         "usGov": "Está accediendo a un sitio web del Gobierno de los Estados Unidos que puede contener información que debe protegerse de conformidad con la Ley de Privacidad de los Estados Unidos u otra información confidencial, y solo puede utilizarse con autorización del Gobierno. Los intentos no autorizados de cargar información, modificar información o usar este sitio web pueden tener como consecuencia la aplicación de medidas disciplinarias y sanciones civiles o penales. Los usuarios no autorizados de este sitio web no deben tener expectativas de privacidad con respecto a las comunicaciones o datos que procese este sitio web. Toda persona que accede a este sitio web acepta expresamente que se controlen sus acciones y todas las comunicaciones o datos en transición o almacenados en este sitio web o relacionados con él, y se le informa que si dicho control revela posibles pruebas de actividad delictiva, los NIH pueden proporcionar esa evidencia a las autoridades del orden público.",
         "tryFixes": "Pruebe estas soluciones comunes:",
         "fixesList": "<li>Revise si el mensaje se marcó como correo no deseado o se lo filtró.</li><li>Revise su conexión a Internet.</li><li>Revise que no haya escrito mal su dirección de correo electrónico.</li><li>Verifique que la bandeja de entrada no se esté quedando sin espacio y que haya otros problemas relacionados con la configuración de la bandeja de entrada.</li>",

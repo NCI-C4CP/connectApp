@@ -1,4 +1,4 @@
-import { getMyData, hasUserData, urls, fragment, checkAccount, validEmailFormat, validPhoneNumberFormat, getCleanSearchString, firebaseSignInRender, signInAnonymously, usGov, translateHTML, translateText, getFirebaseUI, showAnimation, hideAnimation } from "../shared.js";
+import { getMyData, hasUserData, urls, fragment, checkAccount, validEmailFormat, validPhoneNumberFormat, getCleanSearchString, firebaseSignInRender, signInAnonymously, usGov, translateHTML, translateText, getFirebaseUI, showAnimation, hideAnimation, logDDRumAction, logDDRumError } from "../shared.js";
 import { signInConfig } from "./signIn.js";
 import { environmentWarningModal, downtimeWarning } from "../event.js";
 import fieldMapping from '../fieldToConceptIdMapping.js';
@@ -621,6 +621,12 @@ export function signInCheckRender () {
           const account = { type: 'email', value: inputStr };
           await firebaseSignInRender({ account });
         } else {
+          const emailDomain = inputStr.includes('@') ? inputStr.split('@').pop().toLowerCase() : '';
+          logDDRumAction('auth_account_not_found', {
+            authMethod: 'email',
+            flow: 'sign_in',
+            emailDomain,
+          });
           const account = { type: 'email', value: inputStr };
           accountNotFoundRender({ account });
         }
@@ -633,14 +639,29 @@ export function signInCheckRender () {
           const account = { type: 'phone', value: phoneNumberStr };
           await firebaseSignInRender({ account });
         } else {
+          const phoneLast4 = phoneNumberStr.slice(-4);
+          logDDRumAction('auth_account_not_found', {
+            authMethod: 'phone',
+            flow: 'sign_in',
+            phoneLast4,
+          });
           const account = { type: 'phone number', value: inputStr };
           accountNotFoundRender({ account });
         }
       } else {
+        logDDRumAction('auth_validation_failed', {
+          inputLength: inputStr.length,
+          looksLikeEmail: inputStr.includes('@'),
+          looksLikePhone: /\d/.test(inputStr)
+        });
         addWarning();
       }
     } catch (error) {
-      console.error('Error checking account', error);
+      logDDRumError(error, 'AuthCheckAccountError', {
+        inputLength: inputStr.length,
+        looksLikeEmail: inputStr.includes('@'),
+        looksLikePhone: /\d/.test(inputStr),
+      });
       addWarning();
     } finally {
       hideAnimation();
