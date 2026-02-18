@@ -973,7 +973,7 @@
                 + "<br><br>"
                 + "Cuando llegue el momento de donar sus muestras, le enviaremos por correo electrónico un enlace a más información. Si le interesa donar muestras en el centro de investigación de Connect, solo haga clic en el enlace para programar la hora que más le convenga."
                 + "<br><br>"
-                + "Si prefiere donar muestras en uno de nuestros centros de recolección clínica de HealthPartners, llame al equipo de Connect de HealthPartners al (952) 967-5067. La siguiente tabla incluye más información sobre estas opciones."
+                + "Si prefiere donar muestras en uno de nuestros centros de recolección clínica de HealthPartners, llame al equipo de Connect de HealthPartners al 952-967-5067. La siguiente tabla incluye más información sobre estas opciones."
                 + "<br><br>"
                 + "<table id=\"donateMySamplesTable\" border=\"1\">"
                 +   "<tbody>"
@@ -1066,10 +1066,10 @@
                 "ClinicalStPaulWabashaParking": "El estacionamiento gratuito está disponible en el lugar, al frente del edificio.<br><br><div class=\"messagesSubHeader\">Información sobre programación de citas</div>El auto-registro no está disponible actualmente en la ubicación de St. Paul (Wabasha). Para preguntas y para agendar, por favor llame al 952-967-5067.",
                 "NicolletBurnsvilleName": "Clínica y centro especializado Park Nicollet, Burnsville",
                 "NicolletBurnsvilleAddress": "14000 Fairview Dr<br>Burnsville, MN 55337 <br><br>Al entrar al edificio 14050, siga las señales del edificio 14000 hasta llegar a los ascensores o escaleras. El laboratorio está en el segundo piso.",
-                "NicolletBurnsvilleParking": "Puede estacionar gratis en la rampa de estacionamiento para visitantes del Park Nicollet Clinic and Specialty Center.<br><br><div class=\"messagesSubHeader\">Información sobre programación de citas</div>El auto-registro no está disponible actualmente en la ubicación de Burnsville (Wabasha). Para preguntas y para agendar, por favor llame al 952-967-5067.",
+                "NicolletBurnsvilleParking": "Puede estacionar gratis en la rampa de estacionamiento para visitantes del Park Nicollet Clinic and Specialty Center.<br><br><div class=\"messagesSubHeader\">Información sobre programación de citas</div>El auto-registro no está disponible actualmente en la ubicación de Burnsville. Para preguntas y para agendar, por favor llame al 952-967-5067.",
                 "RiverwayAndoverName": "Clínica Riverway de HealthPartners en Andover",
                 "RiverwayAndoverAddress": "15245 Bluebird St NW <br> Andover, MN 55304 <br><br>Al llegar, entre por las puertas principales de la clínica y regístrese en la recepción de la clínica.",
-                "RiverwayAndoverParking": "El estacionamiento es gratuito y está disponible al frente de la clínica.<br><br><div class=\"messagesSubHeader\">Información sobre programación de citas</div>El auto-registro no está disponible actualmente en la ubicación de Burnsville (Wabasha). Para preguntas y para agendar, por favor llame al 952-967-5067."
+                "RiverwayAndoverParking": "El estacionamiento es gratuito y está disponible al frente de la clínica.<br><br><div class=\"messagesSubHeader\">Información sobre programación de citas</div>El auto-registro no está disponible actualmente en la ubicación de Andover. Para preguntas y para agendar, por favor llame al 952-967-5067."
             }
         },
         "sanford": {
