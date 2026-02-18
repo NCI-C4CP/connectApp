@@ -1,5 +1,6 @@
-import { allStates, escapeHTML, showAnimation, hideAnimation, getMyData, hasUserData, firebaseSignInRender, validEmailFormat, validPhoneNumberFormat, checkAccount, translateHTML, translateText, languageTranslations } from '../shared.js';
+import { allStates, escapeHTML, showAnimation, hideAnimation, getMyData, hasUserData, firebaseSignInRender, validEmailFormat, validPhoneNumberFormat, checkAccount, translateHTML, translateText, languageTranslations, logDDRumAction, logDDRumError, logAuthIssue } from '../shared.js';
 import { attachTabEventListeners, addOrUpdateAuthenticationMethod, changeAltContactInformation, changeContactInformation, changePreferredLanguage, changeMailingAddress, changeName, formatFirebaseAuthPhoneNumber, FormTypes, getCheckedRadioButtonValue, handleContactInformationRadioButtonPresets, handleOptionalFieldVisibility, hideOptionalElementsOnShowForm, hideSuccessMessage, openUpdateLoginForm, showAndPushElementToArrayIfExists, showEditButtonsOnUserVerified, suffixList, suffixToTextMap, toggleElementVisibility, togglePendingVerificationMessage, unlinkFirebaseAuthProvider, updatePhoneNumberInputFocus, validateAltContactInformation, validateContactInformation, validateLoginEmail, validateLoginPhone, validateMailingAddress, validateName, showMailAddressSuggestionMyProfile, showRiskyEmailWarningMyProfile, showClearAddressConfirmation, renderCountries, showMailAddressConfirmationMyProfile } from '../settingsHelpers.js';
+import { buildSettingsAuthUpdateLogContext, canUnlinkAuthProvider, getSettingsAuthUpdateErrorMessage } from '../settingsAuthWorkflow.js';
 import { addEventAddressAutoComplete, addEventInternationalAddressToggle } from '../event.js';
 import {addEventAgreementOptions} from './agreements.js';
 import cId from '../fieldToConceptIdMapping.js';
@@ -1177,30 +1178,30 @@ const handleEditSignInInformationSection = () => {
 };
 
 const submitNewLoginMethod = async (email, phone) => {
+  const authMethod = email ? 'email' : 'phone';
+  const logContext = buildSettingsAuthUpdateLogContext({ email, phone, userData });
+
   const isSuccess = await addOrUpdateAuthenticationMethod(email, phone, userData).catch((error) => {
     document.getElementById('loginUpdateFail').style.display = 'block';
-    let errorMessage = error.message;
-    if (error.code) {
-        switch (error.code) {
-            case 'auth/credential-already-in-use':
-            case 'auth/email-already-in-use':
-                errorMessage = translateText(`settings.error${email ? 'Email' : 'Phone'}Used`);
-                break;
-            case 'auth/invalid-verification-code':
-                errorMessage = translateText('settings.errorInvalidCode');
-                break;
-            case 'auth/requires-recent-login':
-                errorMessage = translateText('settings.errorRequiresLogin');
-                break;
-            default:
-                errorMessage = translateText('settings.errorWhileSaving')
-        }
-    }
-        
+    const errorMessage = getSettingsAuthUpdateErrorMessage({
+      error,
+      isEmailUpdate: !!email,
+      translateText,
+    });
+
+    logAuthIssue({
+        error,
+        errorType: 'SettingsAuthUpdateError',
+        action: `${authMethod}_auth_settings_submit_failure`,
+        context: logContext,
+        fallbackMessage: 'Settings auth update failed.',
+    });
+
     document.getElementById('loginUpdateError').textContent = errorMessage;
   });
   
   if (isSuccess) {
+    logDDRumAction(`${authMethod}_auth_settings_submit_success`, logContext);
     await refreshUserDataAfterEdit();
     clearLoginFormFields();
     formVisBools.isLoginFormDisplayed = toggleElementVisibility(loginElementArray, formVisBools.isLoginFormDisplayed);
@@ -1377,21 +1378,29 @@ const attachLoginEditFormButtons = async () => {
 
             confirmButton && confirmButton.addEventListener('click', async () => {
                 if (removalType === type) {
+                    const authMethod = type.toLowerCase();
+                    const unlinkLogContext = {
+                        authMethod,
+                        flow: 'settings_unlink',
+                        connectID: userData?.['Connect_ID'] || '',
+                    };
                     let result;
                     try {
                         const firebaseUser = firebase.auth().currentUser;
-                        if (firebaseUser.email && firebaseUser.phoneNumber) {
-                            result = await unlinkFirebaseAuthProvider(type.toLowerCase(), userData, null, true);
+                        if (canUnlinkAuthProvider(firebaseUser)) {
+                            result = await unlinkFirebaseAuthProvider(authMethod, userData, null, true);
                             const isSuccess = result === true;
                             closeLoginUpdateModal(type);
                             updateUIAfterUnlink(isSuccess, type, isSuccess ? null : result);
                         } else {
                             closeLoginUpdateModal(type);
-                            //const otherLoginType = type === 'Email' ? 'phone number' : 'email';
-                            //const activeLoginType = otherLoginType === 'email' ? 'phone number' : 'email';
                             alert(translateText(`settings.oneLoginRequired${type}`));
                         }
                     } catch (error) {
+                        logDDRumError(error instanceof Error ? error : new Error(error?.message || 'Unlink provider failed.'), 'SettingsUnlinkError', {
+                            ...unlinkLogContext,
+                            errorCode: error?.code,
+                        });
                         const errorMessage = error.message ? error.message : translateText('settings.errorOccurred');
                         closeLoginUpdateModal(type);
                         updateUIAfterUnlink(false, type, errorMessage);
