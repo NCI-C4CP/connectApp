@@ -1129,7 +1129,7 @@ const en = {
             "whenToDonateHeader": "When Should I Donate My Samples?",
             "whenToDonate": "The Connect team will send you an email when it is time to donate your samples. Be sure to check your spam or junk folder. After you receive the email, it is important to donate your samples as soon as you can.<br><br><span class=\"site-info-bold\">Important Notes:</span><br><ol><li> If you have had a blood transfusion or donated blood recently:<br> <span class='my-samples-indent-text'>Please wait at least <span class=\"site-info-bold\">eight weeks</span> from your donation or transfusion before donating your samples for Connect.</span></li><br><li> If you have recently donated plasma:<br> <span class='my-samples-indent-text'>Please wait at least <span class=\"site-info-bold\">four weeks</span> from your plasma donation before donating samples for Connect.</span></li><br><li>If you have recently donated platelets:<br><span class='my-samples-indent-text'>Please wait at least <span class=\"site-info-bold\">one week</span> from your platelet donation before donating samples for Connect.</span></li><br><li> If you have an upcoming colonoscopy:<br> <span class='my-samples-indent-text'>Please be sure that you <span class=\"site-info-bold\">do not</span> donate samples for Connect on the <span class=\"site-info-bold\">same day</span> as your colonoscopy.</span></li></ol>",
             "howToDonateHeader": "How Do I Donate My Blood and Urine Samples?",      
-            "howToDonate": "After you receive notification that we placed your Connect lab order, please visit any HFH Lab Services location listed in the “Where Do I Donate My Samples” section below. We are <span class=\"site-info-bold\">not</span> able to collect samples for Connect at other HFH locations not currently listed, or outside of HFH (Like LabCorp or Quest)." 
+            "howToDonate": "After you receive notification that we placed your Connect lab order, please visit any HFH Lab Services location listed in the “Where Do I Donate My Samples” section below. We are <span class=\"site-info-bold\">not</span> able to collect samples for Connect at other HFH locations not currently listed, or outside of HFH (like LabCorp or Quest)." 
                 + "<br><br> You can donate Connect samples and complete any labs ordered by your provider in the same visit. <span class=\"site-info-bold\">You do not need an appointment.</span>"
                 + "<br><br> You do not need to fast before you donate samples for Connect, so you may eat and drink before your visit." 
                 + "<br><br> <span class=\"site-info-bold\">For questions or assistance with transportation to a lab, please call 855-574-7540 or email" 
@@ -1142,7 +1142,7 @@ const en = {
                 +                   "<br><br>"
                 +                   "<ul style=\"margin: 0; padding-left: 2.5rem;\">"
                 +                       "<li>The last time you ate or drank before your lab visit, the time you went to sleep the night before your lab visit, and the time you woke up on the day of your visit. </li>"
-                +                       "<li>If you are menstruating, the start date of your most recent menstrural period in the last 12 months.</li>"
+                +                       "<li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li>"
                 +                   "</ul>"
                 +                   "<br>"
                 +                   "<span class=\"site-info-bold-italic\">When you receive our email, it is important that you complete the survey as soon as possible.</span>",
@@ -1151,7 +1151,10 @@ const en = {
                 +                   "When you collect your mouthwash sample, we will ask you to complete a short survey on MyConnect. <span class=\"site-info-bold\">It is important to complete this survey on the same day that you collect your mouthwash sample.</span>",
             "prepareInstructions": "On the day of your visit to donate samples for Connect, you do not need to fast unless told to do so by your provider for any other lab work they’ve ordered. We request you drink plenty of water to keep hydrated but <span class=\"site-info-bold\">stop drinking water one hour before your visit.</span><br><br><span class=\"site-info-bold\">One hour before your visit:</span> Please <span class=\"site-info-bold\">do not</span> eat, drink, chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span class=\"site-info-bold\">Things to bring and remember:</span> We will ask you to complete a short survey on MyConnect after you donate samples. You will need your login method for MyConnect and a personal device to complete the survey. <br><br>You will be asked questions related to:<ul><li>The last time you ate or drank before your appointment, and the time you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul><br>",
             "payment": "You will receive your $25 gift card after you donate a blood sample and complete <span class=\"site-info-bold\">all four sections</span> of your first Connect survey.<br><br>You can find the four sections of your first survey within the Surveys card on your MyConnect Dashboard. These sections are: <br><br> <ol><li>Background and Overall Health</li><li>Medications, Reproductive Health, Exercise, and Sleep</li><li>Smoking, Alcohol, and Sun Exposure</li><li>Where you Live and Work</li></ol>",
-            "support": "Call 855-574-7540 (9:00 a.m. – 7:00 p.m. on weekdays. On weekends and after business hours please leave a message with your name and a good time to call you back).",
+            "support": "<a href=\"mailto:Connectstudy@hfhs.org\">Connectstudy@hfhs.org</a>"
+                +      "<br>"
+                +      "<br>"
+                +      "Call 855-574-7540 (9:00 a.m. – 7:00 p.m. on weekdays. On weekends and after business hours please leave a message with your name and a good time to call you back).",
             "locationNotes": '<span data-i18n="samples.henry_ford.locationNotes">The table below lists the HFH Lab Services locations where you can donate samples for the study.'
                 + '<br><br> Please <a href="https://www.henryford.com/locations/search-results?|#services=&locationtype={6892DD84-8634-4F32-A6C0-8DC0F2E45486}&locationname=&&g=0|0" target="_blank" rel="noopener noreferrer">click here</a> to find address, business hours, and parking information for participating HFH Lab Services locations shown in the table below.'
                 + '<br><br><table style="width: 100%;border: 1px solid">'
@@ -1179,7 +1182,7 @@ const en = {
                 +   '</tr>'
                 + '</table></span>',
             "locations": {},
-            "questions": "Questions? Contact the Connect Study Team at Henry Ford Health"
+            "questionsHeader": "Questions? Contact the Connect Study Team at Henry Ford Health"
         },
         "u_chicago": {
             "donatingSamples": "As part of  Connect, we ask you to donate blood, urine, and saliva samples and complete a short survey.",
@@ -1246,7 +1249,13 @@ const en = {
             "whatHappensDuring": "Donating your research blood and urine samples is just like providing samples requested by your health care provider. When you arrive at the facility, you may go directly to the lab to check in according to the steps above.<br></br>When it is your turn, the lab will call you back, confirm your ID, and collect your samples. Tell the lab techs that you are donating samples for NCI Connect. The techs will be able to see your blood and urine collection orders and instructions for Connect in their system.",
             "whatHappensAfter": "Within a day of your blood and urine collection, we will send you an email asking you to complete a short survey on MyConnect. The survey will ask about recent actions, such as:<br></br><ul style=\"list-style-type:circle;\"><li>The last time you ate or drank before your visit, and the times you went to sleep the night before your visit and woke up on the day of your visit.</li><li> If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul><span class=\"site-info-bold-italic\">When you receive our email, it is important that you complete the survey as soon as possible.</span>",
             "howToDonateMouthwash": "We will send you an email as soon as your mouthwash home collection kit is on its way.  Once you receive the kit, you can collect your mouthwash sample in the comfort of your own home. The kit we mail you will include instructions and all of the items needed to collect your sample, including a return shipping box with a pre-paid shipping label to return your sample to us.<br></br>When you collect your mouthwash sample, we will ask you to complete a short survey on MyConnect.<span class=\"site-info-bold-italic\"> It is important to complete this survey on the same day that you collect your mouthwash sample.</span>",
-            "support": "Call 1-877-505-0253 (9:00 a.m-11:00 p.m. ET on weekdays and 10:00 a.m.-7:00 p.m. ET on weekends)"
+            "support": "<a href=\"https://myconnect.cancer.gov/support\">MyConnect.cancer.gov/support</a>"
+                +      "<br>"         
+                +      "<br>"
+                +      "<a href=\"mailto: ConnectSupport@norc.org\">ConnectSupport@norc.org</a>"
+                +      "<br>"
+                +      "<br>"
+                +      "Call 1-877-505-0253 (9:00 a.m – 11:00 p.m. ET on weekdays and 10:00 a.m. – 7:00 p.m. ET on weekends)",
         },
         "kphi": {
             "donatingSamples": "As part of Connect, we ask you to donate blood, urine, and mouthwash samples and complete two short surveys.",
@@ -1258,7 +1267,13 @@ const en = {
             "whatHappensDuring": "Donating your research blood and urine samples is just like providing samples requested by your health care provider. When you arrive at the clinic, you may go directly to the lab. When it is your turn, the lab will call you back, check your ID, and collect your samples. Tell the lab techs that you are donating samples for NCI Connect. The techs will be able to see your blood and urine collection orders and instructions for Connect in their system.",
             "whatHappensAfter": "Within a day of your blood and urine collection, we will send you an email asking you to complete a short survey on MyConnect. The survey will ask about recent actions, such as:<br><br><ul style=\"list-style-type:circle;\"><li>The last time you ate or drank before your lab visit, and the times you went to sleep the night before your visit and woke up on the day of your visit.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul><span class=\"site-info-bold-italic\">When you receive our email, it is important that you complete the survey as soon as possible.</span>",
             "howToDonateMouthwash": "We will send you an email as soon as your mouthwash home collection kit is on its way.  Once you receive the kit, you can collect your mouthwash sample in the comfort of your own home. The kit we mail you will include instructions and all of the items needed to collect your sample, including a return shipping box with a pre-paid shipping label to return your sample to us.<br><br> When you collect your mouthwash sample, we will ask you to complete a short survey on MyConnect. <span class=\"site-info-bold-italic\">It is important to complete this survey on the same day that you collect your mouthwash sample.</span>",
-            "support": "Call 1-877-505-0253 (3:00 a.m-5:00 p.m. HT on weekdays and 4:00 a.m.-1:00 p.m. HT on weekends)"
+            "support": "<a href=\"https://myconnect.cancer.gov/support\">MyConnect.cancer.gov/support</a>"
+                +      "<br>"         
+                +      "<br>"
+                +      "<a href=\"mailto: ConnectSupport@norc.org\">ConnectSupport@norc.org</a>"
+                +      "<br>"
+                +      "<br>"
+                +      "Call 1-877-505-0253 (9:00 a.m – 11:00 p.m. ET on weekdays and 10:00 a.m. – 7:00 p.m. ET on weekends)",
         },
         "kpco": {
             "donatingSamples": "As part of Connect, we ask you to donate blood, urine, and mouthwash samples and complete two short surveys.",
@@ -1270,7 +1285,13 @@ const en = {
             "whatHappensDuring": "Donating your research blood and urine samples is just like providing samples requested by your health care provider. When you arrive at the clinic, you may go directly to the lab. When it is your turn, the lab will call you back, check your ID, and collect your samples. Tell the lab techs that you are donating samples for NCI Connect. The techs will be able to see your blood and urine collection orders and instructions for Connect in their system.",
             "whatHappensAfter": "Within a day of your blood and urine collection, we will send you an email asking you to complete a short survey on MyConnect. The survey will ask about recent actions, such as:<br></br><ul style=\"list-style-type:circle;\"><li>The last time you ate or drank before your lab visit, and the times you went to sleep the night before your visit and woke up on the day of your visit.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul><span class=\"site-info-bold-italic\">When you receive our email, it is important that you complete the survey as soon as possible.</span>",
             "howToDonateMouthwash": "We will send you an email as soon as your mouthwash home collection kit is on its way.  Once you receive the kit, you can collect your mouthwash sample in the comfort of your own home. The kit we mail you will include instructions and all of the items needed to collect your sample, including a return shipping box with a pre-paid shipping label to return your sample to us.<br></br>When you collect your mouthwash sample, we will ask you to complete a short survey on MyConnect.<span class=\"site-info-bold-italic\"> It is important to complete this survey on the same day that you collect your mouthwash sample.</span>",
-            "support": "Call 1-877-505-0253 (6:00 a.m-8:00 p.m. MT on weekdays and 7:00 a.m.-4:00 p.m. MT on weekends)"
+            "support": "<a href=\"https://myconnect.cancer.gov/support\">MyConnect.cancer.gov/support</a>"
+                +      "<br>"         
+                +      "<br>"
+                +      "<a href=\"mailto: ConnectSupport@norc.org\">ConnectSupport@norc.org</a>"
+                +      "<br>"
+                +      "<br>"
+                +      "Call 1-877-505-0253 (9:00 a.m – 11:00 p.m. ET on weekdays and 10:00 a.m. – 7:00 p.m. ET on weekends)",
         },
         "kpnw": {
             "donatingSamples": "As part of Connect, we ask you to donate blood, urine, and mouthwash samples and complete two short surveys.",
@@ -1282,7 +1303,13 @@ const en = {
             "whatHappensDuring": "Donating your research blood and urine samples is just like providing a clinical sample requested by your health care provider. When you arrive at the clinic, you may go directly to the lab, get a ticket with a number, and follow the instructions. When it is your turn, the lab staff will call your number and collect your samples similarly to a clinical sample collection for medical care. Tell the lab techs that you are donating samples for NCI Connect. The techs will be able to see your blood draw and urine collection orders and instructions for Connect in their system.",
             "whatHappensAfter": "Within a day of your blood and urine collection, we will send you an email asking you to complete a short survey on MyConnect. The survey will ask about recent actions, such as:<br></br><ul  style=\"list-style-type:circle;\"><li>The last time you ate or drank before your lab visit, and the times you went to sleep the night before your visit and woke up on the day of your visit.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul><span class=\"site-info-bold-italic\">When you receive our email, it is important that you complete the survey as soon as possible.</span>",
             "howToDonateMouthwash": "We will send you an email as soon as your mouthwash home collection kit is on its way.  Once you receive the kit, you can collect your mouthwash sample in the comfort of your own home. The kit we mail you will include instructions and all of the items you need to collect your sample, including a return shipping box with a pre-paid shipping label to return your sample to us.<br></br>When you collect your mouthwash sample, we will ask you to complete a short survey on MyConnect. <span class=\"site-info-bold-italic\">It is important to complete this survey on the same day that you collect your mouthwash sample.</span>",
-            "support": "Call 1-877-505-0253 (6:00 a.m-8:00 p.m. PT on weekdays and 7:00 a.m.-4:00 p.m. PT on weekends)"
+            "support": "<a href=\"https://myconnect.cancer.gov/support\">MyConnect.cancer.gov/support</a>"
+                +      "<br>"         
+                +      "<br>"
+                +      "<a href=\"mailto: ConnectSupport@norc.org\">ConnectSupport@norc.org</a>"
+                +      "<br>"
+                +      "<br>"
+                +      "Call 1-877-505-0253 (9:00 a.m – 11:00 p.m. ET on weekdays and 10:00 a.m. – 7:00 p.m. ET on weekends)",
         },
         "bswh": {
             "donatingSamples": "As part of Connect, we ask you to donate blood, urine, and saliva samples and complete a short survey.",

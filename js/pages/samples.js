@@ -276,8 +276,8 @@ export const renderSamplesPage = async () => {
             (site === kpga || 
                 site ===  kphi || 
                 site ===  kpco || 
-                site ===  kpnw 
-                || site === henry_ford
+                site ===  kpnw || 
+                site === henry_ford
             )
         ) {
             template += translateHTML(`
@@ -302,7 +302,7 @@ export const renderSamplesPage = async () => {
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             ${
                                 (site === henry_ford)
-                                    ? `<div data-i18n="samples.whenToDonate">` 
+                                    ? `<div data-i18n="samples.henry_ford.whenToDonateHeader">` 
                                     : `<div data-i18n="samples.whenToDonateSamples">`
                             }
                             </div>
@@ -451,21 +451,22 @@ export const renderSamplesPage = async () => {
                         <hr>` 
                         : '' 
                     }
+                    <!-- Add  -->
                     <div class="row" style="width:100%">
                         <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#supportQuestions" aria-expanded="false" aria-controls="supportQuestions">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                            <div data-i18n="samples.questions">
-                                Questions? Contact the Connect Support Center
-                            </div>
+                            ${(site === henry_ford) 
+                                ?  `<div data-i18n="samples.henry_ford.questionsHeader">
+                                        Questions? Contact the Connect Study Team at Henry Ford Health 
+                                    </div>`
+                                :  `<div data-i18n="samples.questions">
+                                        Questions? Contact the Connect Support Center 
+                                    </div>`
+                            }
+                            
                         </div>
                         <div class="messagesBodyFont collapse" style="width:100%" id="supportQuestions">
                             <div>
-                                <a href="https://myconnect.cancer.gov/support">MyConnect.cancer.gov/support</a>
-                                <br>
-                                <br>
-                                <a href="mailto: ConnectSupport@norc.org">ConnectSupport@norc.org</a>
-                                <br>
-                                <br>
                                 ${site.support}
                             </div>
                         </div>
@@ -1604,7 +1605,7 @@ const henry_ford = {
     whenToDonateHeader: '<span data-i18n="samples.henry_ford.whenToDonateHeader">When Should I Donate My Samples?</span>',
     whenToDonate: '<span data-i18n="samples.henry_ford.whenToDonate">The Connect team will send you an email when it is time to donate your samples. Be sure to check your spam or junk folder. After you receive the email, it is important to donate your samples as soon as you can.<br><br><span class="site-info-bold">Important Notes:</span><br><br><ol><li> If you have had a blood transfusion or donated blood recently:<br> Please wait at least <span class="site-info-bold">eight weeks</span> from your donation or transfusion before donating your samples for Connect.</li><br><li> If you have recently donated plasma:<br> Please wait at least <span class="site-info-bold">four weeks</span> from your plasma donation before donating samples for Connect.</li><br><li>If you have recently donated platelets:<br>Please wait at least <span class="site-info-bold">one week</span> from your platelet donation before donating samples for Connect.</li><br><li> If you have an upcoming colonoscopy:<br> Please be sure that you <span class="site-info-bold">do not</span> donate samples for Connect on the <span class="site-info-bold">same day</span> as your colonoscopy.</li></ol></span>',
     howToDonateHeader: '<span data-i18n="samples.henry_ford.howToDonateHeader">How Do I Donate My Blood and Urine Samples?</span>',
-    howToDonate: '<p data-i18n="samples.henry_ford.howToDonate"> After you receive notification that we placed your Connect lab order, please visit any HFH Lab Services location listed in the "Where Do I Donate My Samples" section below. We are not able to collect samples for Connect at other HFH locations not currently listed, or outside of HFH (Like LabCorp or Quest).' 
+    howToDonate: '<p data-i18n="samples.henry_ford.howToDonate"> After you receive notification that we placed your Connect lab order, please visit any HFH Lab Services location listed in the "Where Do I Donate My Samples" section below. We are not able to collect samples for Connect at other HFH locations not currently listed, or outside of HFH (like LabCorp or Quest).' 
         + '<br><br> You can donate Connect samples and complete any labs ordered by your provider in the same visit. You do not need an appointment.' 
         + '<br><br> You do not need to fast before you donate samples for Connect, so you may eat and drink before your visit.</p>',
     howLong: '<span data-i18n="samples.henry_ford.howLong">'
@@ -1657,7 +1658,7 @@ const henry_ford = {
         + '</tr>'
         + '</table></span>',
     locations: [],
-    questions: '<div data-i18n="samples.henry_ford.questions">Questions? Contact the Connect Study Team at Henry Ford Health</div>',
+    questionsHeader: '<div data-i18n="samples.henry_ford.questionsHeader">Questions? Contact the Connect Study Team at Henry Ford Health</div>',
     contact: '<a href="mailto: connectstudy@hfhs.org">ConnectStudy@hfhs.org</a>'
 };
 
