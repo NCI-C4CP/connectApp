@@ -1134,7 +1134,7 @@
             "howLong": "El tiempo de espera para donar muestras puede variar según la ubicación. Para atender mejor a los pacientes de HFH, los Servicios de Laboratorio de Henry Ford han comenzado a usar “Reserva mi lugar”.<br><br> <span class=\"site-info-bold\">“Reserva mi lugar”</span> es un servicio opcional para reservar su lugar en uno de los centros participantes de los Servicios de Laboratorio de HFH (consulte la tabla de centros de más arriba). Todas las órdenes de laboratorio deben haberse enviado antes de usar “Reserva mi lugar”, incluida su orden de laboratorio para Connect. <br/><br/>Para utilizar este servicio opcional, haga clic en este enlace solo después de que el personal de Connect le haya confirmado su orden: <a href=\"https://www.henryford.com/locations/henry-ford-hospital/lab-services\">https://www.henryford.com/locations/henry-ford-hospital/lab-services</a> ",
             "prepareInstructions": "El día de su visita para donar muestras para Connect, no es necesario que ayune, a menos que se lo haya pedido su proveedor para algún análisis de laboratorio que le hayan ordenado hacerse. Le pedimos que beba mucha agua para mantenerse hidratado, pero <span class=\"site-info-bold\">deje de beber agua una hora antes de su visita.</span><br/><br/><span class=\"site-info-bold\">Una hora antes de su visita:</span> <span class=\"site-info-bold\">No</span> coma, beba, masque chicle, fume cigarrillos normales o electrónicos ni masque ningún producto (incluido tabaco), no se enjuague la boca ni se cepille los dientes.<br/><br/><span class=\"site-info-bold\">Qué debe llevar y recordar:</span> Después de que done sus muestras, le pediremos que complete una breve encuesta en MyConnect. Necesitará su método de inicio de sesión para MyConnect y un dispositivo personal para completar la encuesta. <br/><br/>Se le harán preguntas relacionadas con lo siguiente:<ul><li>La última vez que comió o bebió antes de su cita, y la hora a la que se fue a dormir la noche anterior a la cita y a la que se despertó el día de la cita.</li><li>Si está menstruando, la fecha de inicio de su período menstrual más reciente en los últimos 12 meses.</li></ul>",
             "payment": "Recibirá su tarjeta de regalo de $25 después de donar una muestra de sangre y completar <span class=\"site-info-bold\">las cuatro secciones</span> de su primera encuesta de Connect.<br/><br/>Puede encontrar las cuatro secciones de su primera encuesta en la tarjeta de Encuestas en su Panel de MyConnect. <br><br> <ol><li>Antecedentes y estado general de salud</li><li>Medicamentos, salud reproductiva, ejercicio y sueño</li><li>Consumo de tabaco y alcohol, y exposición al sol</li><li>Dónde vive y trabaja</li></ol>",
-            "support": "<a href=\"mailto:Connectstudy@hfhs.org\">Connectstudy@hfhs.org</a>"
+            "support": "<a href=\"mailto:ConnectStudy@hfhs.org\">ConnectStudy@hfhs.org</a>"
                 +      "<br>"
                 +      "<br>"
                 +      "Llame al 855-574-7540 (De 9:00 a. m. a 7:00 p. m. los días de semana. Los fines de semana y después del horario de atención, deje un mensaje con su nombre y un horario en el que le quede cómodo que lo llamemos).",
@@ -1249,7 +1249,7 @@
                 +      "<a href=\"mailto: ConnectSupport@norc.org\">ConnectSupport@norc.org</a>"
                 +      "<br>"
                 +      "<br>"
-                +      "Llame al 1-877-775-7004 (de lunes a viernes de 9:00 a. m. a 11:00 p. m., hora del este de EE. UU., y los fines de semana de 10:00 a. m. a 7:00 p. m., hora del este de EE. UU.)",
+                +      "Llame al 1-877-505-0253 (de lunes a viernes de 9:00 a. m. a 11:00 p. m., hora del este de EE. UU., y los fines de semana de 10:00 a. m. a 7:00 p. m., hora del este de EE. UU.)",
         },
         "kphi": {
             "donatingSamples": "Como parte de Connect, le pedimos que done muestras de sangre, orina y enjuague bucal, y que complete una breve encuesta.",
@@ -1266,7 +1266,7 @@
                 +      "<a href=\"mailto: ConnectSupport@norc.org\">ConnectSupport@norc.org</a>"
                 +      "<br>"
                 +      "<br>"
-                +      "Llame al 1-877-775-7004 (de lunes a viernes de 9:00 a. m. a 11:00 p. m., hora del este de EE. UU., y los fines de semana de 10:00 a. m. a 7:00 p. m., hora del este de EE. UU.)",
+                +      "Llame al 1-877-505-0253 (de lunes a viernes de 9:00 a. m. a 11:00 p. m., hora del este de EE. UU., y los fines de semana de 10:00 a. m. a 7:00 p. m., hora del este de EE. UU.)",
         },
         "kpco": {
             "donatingSamples": "Como parte de Connect, le pedimos que done muestras de sangre, orina y enjuague bucal, y que complete una breve encuesta.",
@@ -1283,7 +1283,7 @@
                 +      "<a href=\"mailto: ConnectSupport@norc.org\">ConnectSupport@norc.org</a>"
                 +      "<br>"
                 +      "<br>"
-                +      "Llame al 1-877-775-7004 (de lunes a viernes de 9:00 a. m. a 11:00 p. m., hora del este de EE. UU., y los fines de semana de 10:00 a. m. a 7:00 p. m., hora del este de EE. UU.)",
+                +      "Llame al 1-877-505-0253 (de lunes a viernes de 9:00 a. m. a 11:00 p. m., hora del este de EE. UU., y los fines de semana de 10:00 a. m. a 7:00 p. m., hora del este de EE. UU.)",
         },
         "kpnw": {
             "donatingSamples": "Como parte de Connect, le pedimos que done muestras de sangre, orina y enjuague bucal, y que complete una breve encuesta.",
@@ -1300,7 +1300,7 @@
                 +      "<a href=\"mailto: ConnectSupport@norc.org\">ConnectSupport@norc.org</a>"
                 +      "<br>"
                 +      "<br>"
-                +      "Llame al 1-877-775-7004 (de lunes a viernes de 9:00 a. m. a 11:00 p. m., hora del este de EE. UU., y los fines de semana de 10:00 a. m. a 7:00 p. m., hora del este de EE. UU.)",
+                +      "Llame al 1-877-505-0253 (de lunes a viernes de 9:00 a. m. a 11:00 p. m., hora del este de EE. UU., y los fines de semana de 10:00 a. m. a 7:00 p. m., hora del este de EE. UU.)",
         },
         "bswh": {
             "donatingSamples": "Como parte de Connect, le pedimos que done muestras de sangre, orina y enjuague bucal, y que complete una breve encuesta.",
