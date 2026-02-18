@@ -451,7 +451,7 @@ export const renderSamplesPage = async () => {
                         <hr>` 
                         : '' 
                     }
-                    <!-- Add  -->
+
                     <div class="row" style="width:100%">
                         <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#supportQuestions" aria-expanded="false" aria-controls="supportQuestions">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
