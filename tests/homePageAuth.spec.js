@@ -303,68 +303,6 @@ describe('homePage magic link handling', () => {
   });
 });
 
-// isMagicLinkCallbackUrl
-describe('isMagicLinkCallbackUrl', () => {
-  // Test the actual implementation from shared.js by re-implementing the logic inline,
-  // since the function reads from window.location.search directly.
-  const isMagicLinkCallbackUrl = () => {
-    const params = new URLSearchParams(window.location.search);
-    return params.get('mode') === 'signIn' && params.has('oobCode') && params.has('apiKey');
-  };
-
-  afterEach(() => {
-    teardownTestEnvironment();
-  });
-
-  it('returns true when mode=signIn, oobCode, and apiKey are all present', () => {
-    setupTestEnvironment({
-      location: { search: '?mode=signIn&oobCode=abc123&apiKey=key456' },
-    });
-
-    expect(isMagicLinkCallbackUrl()).toBe(true);
-  });
-
-  it('returns false when oobCode is missing', () => {
-    setupTestEnvironment({
-      location: { search: '?mode=signIn&apiKey=key456' },
-    });
-
-    expect(isMagicLinkCallbackUrl()).toBe(false);
-  });
-
-  it('returns false when apiKey is missing', () => {
-    setupTestEnvironment({
-      location: { search: '?mode=signIn&oobCode=abc123' },
-    });
-
-    expect(isMagicLinkCallbackUrl()).toBe(false);
-  });
-
-  it('returns false when mode is missing', () => {
-    setupTestEnvironment({
-      location: { search: '?oobCode=abc123&apiKey=key456' },
-    });
-
-    expect(isMagicLinkCallbackUrl()).toBe(false);
-  });
-
-  it('returns false for mode=verifyEmail (email verification, not magic link)', () => {
-    setupTestEnvironment({
-      location: { search: '?mode=verifyEmail&oobCode=abc123&apiKey=key456' },
-    });
-
-    expect(isMagicLinkCallbackUrl()).toBe(false);
-  });
-
-  it('returns false when search is empty', () => {
-    setupTestEnvironment({
-      location: { search: '' },
-    });
-
-    expect(isMagicLinkCallbackUrl()).toBe(false);
-  });
-});
-
 // signInCheckRender
 
 describe('signInCheckRender', () => {

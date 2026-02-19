@@ -1,5 +1,5 @@
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
-import { installDocumentByIdMap } from './helpers.js';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { installDocumentByIdMap, setupTestEnvironment, teardownTestEnvironment } from './helpers.js';
 import { registerSharedRuntimeModuleMocks, sharedRuntimeMocks } from './moduleMocks.js';
 
 registerSharedRuntimeModuleMocks();
@@ -668,5 +668,61 @@ describe('userLoggedIn', () => {
     globalThis._authCallback({ isAnonymous: false });
     await promise;
     expect(unsubscribe).toHaveBeenCalledTimes(1);
+  });
+});
+
+// isMagicLinkCallbackUrl
+
+describe('isMagicLinkCallbackUrl', () => {
+  afterEach(() => {
+    teardownTestEnvironment();
+  });
+
+  it('returns true when mode=signIn, oobCode, and apiKey are all present', () => {
+    setupTestEnvironment({
+      location: { search: '?mode=signIn&oobCode=abc123&apiKey=key456' },
+    });
+
+    expect(shared.isMagicLinkCallbackUrl()).toBe(true);
+  });
+
+  it('returns false when oobCode is missing', () => {
+    setupTestEnvironment({
+      location: { search: '?mode=signIn&apiKey=key456' },
+    });
+
+    expect(shared.isMagicLinkCallbackUrl()).toBe(false);
+  });
+
+  it('returns false when apiKey is missing', () => {
+    setupTestEnvironment({
+      location: { search: '?mode=signIn&oobCode=abc123' },
+    });
+
+    expect(shared.isMagicLinkCallbackUrl()).toBe(false);
+  });
+
+  it('returns false when mode is missing', () => {
+    setupTestEnvironment({
+      location: { search: '?oobCode=abc123&apiKey=key456' },
+    });
+
+    expect(shared.isMagicLinkCallbackUrl()).toBe(false);
+  });
+
+  it('returns false for mode=verifyEmail (email verification, not magic link)', () => {
+    setupTestEnvironment({
+      location: { search: '?mode=verifyEmail&oobCode=abc123&apiKey=key456' },
+    });
+
+    expect(shared.isMagicLinkCallbackUrl()).toBe(false);
+  });
+
+  it('returns false when search is empty', () => {
+    setupTestEnvironment({
+      location: { search: '' },
+    });
+
+    expect(shared.isMagicLinkCallbackUrl()).toBe(false);
   });
 });
