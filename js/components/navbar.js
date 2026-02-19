@@ -19,10 +19,10 @@ export const userNavBar = (response) => {
 }
 
 export const userHeaderNavBar = (response) => {
-    const disabledClass = isParticipantDataDestroyed(response.data) ? 'disabled': '';
     let profileLinkText = '';
-    if (response.data && response.data[fieldMapping.fName]) {
-        profileLinkText = `<span data-i18n="navbar.profileLinkPre"></span>${response.data[fieldMapping.fName]}<span data-i18n="navbar.profileLinkPost">'s Profile</span>`;
+    const displayName = response.data && (response.data[fieldMapping.prefName] || response.data[fieldMapping.fName]);
+    if (displayName) {
+        profileLinkText = `<span data-i18n="navbar.profileLinkPre"></span>${displayName}<span data-i18n="navbar.profileLinkPost">'s Profile</span>`;
     } else {
         profileLinkText = '<span data-i18n="navbar.profileLink"></span>';
     }
