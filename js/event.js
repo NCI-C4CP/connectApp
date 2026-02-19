@@ -1357,7 +1357,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         if  (dobInMs === NaN || 
             dobInMs > nintyYearsInMs || 
             dobInMs < eightteenYearsInMs) {
-            errorMessage('UPMonth', '<span data-i18n="event.notEligible">'+translateText('event.notEligible')+'</span>', true);
+            errorMessage('UPYear', '<span data-i18n="event.notEligible">'+translateText('event.notEligible')+'</span>', true);
             return false;
         }
 
