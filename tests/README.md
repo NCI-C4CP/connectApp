@@ -16,11 +16,12 @@ npm run test:watch
 
 ## Test structure
 
+- `tests/app.spec.js`: tests for `app.js` exports — `signOut`, `router` (unauthenticated routing), `checkAuthDataConsistency`, `handleVerifyEmail`, `updateFirebaseAuthPhoneTrigger`.
 - `tests/auth.spec.js`: auth callback behavior tests for `js/pages/signIn.js`.
 - `tests/authStateRouting.spec.js`: auth-state routing helpers and legacy-interstitial policy tests used by `app.js`.
-- `tests/sharedAuth.spec.js`: shared auth behavior for `js/shared.js` (magic link, telemetry, FirebaseUI wiring).
+- `tests/sharedAuth.spec.js`: shared auth behavior for `js/shared.js` (magic link, telemetry, FirebaseUI wiring, `userLoggedIn`). Tests real `shared.js` exports via dynamic `import()` with mocked dependencies.
 - `tests/escapeHTML.spec.js`: escaping behavior and XSS-safety coverage for `escapeHTML` in `js/shared.js`.
-- `tests/homePageAuth.spec.js`: sign-up FirebaseUI integration tests for `js/pages/homePage.js`.
+- `tests/homePageAuth.spec.js`: tests for `js/pages/homePage.js` — `signUpRender` FirebaseUI integration, `homePage` magic link handling, `isMagicLinkCallbackUrl` contract tests, `signInCheckRender` form/validation flow.
 - `tests/usps.spec.js`: USPS/address validation behavior tests for `js/shared.js`.
 - `tests/settingsHelpers.spec.js`: utility and validation tests for `js/settingsHelpers.js`.
 - `tests/settingsAuthWorkflow.spec.js`: settings auth workflow helpers (error mapping/log context/unlink guard).
