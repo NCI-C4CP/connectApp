@@ -1032,7 +1032,7 @@ const bindUpdatePAddressBtn = (participant) => {
         if (addressNotFound) { // Manual participant confirmation if USPS cannot validate
             showMailAddressConfirmation(
                 {streetAddress: addressLine1, secondaryAddress: addressLine2, city, state, zipCode: zip},
-                'event.addressSuggestionDescriptionPhysical',
+                'event.addressConfirmationDescriptionPhysical',
                 async (streetAddress, secondaryAddress, city, state, zipCode) => {
                     const success = await submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, false);
                     if (success) {
@@ -1144,7 +1144,7 @@ const bindUpdateMAddressBtn = (participant) => {
             if (uspsSuggestion.suggestion) {
                 showMailAddressSuggestion(
                     uspsSuggestion,
-                    'event.addressSuggestionDescriptionPhysical',
+                    'event.addressSuggestionDescription',
                     async (streetAddress, secondaryAddress, city, state, zipCode, isValidatedByUSPSSelectionModal) => {
                         const success = await submitNewAddress(
                             streetAddress,
