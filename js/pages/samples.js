@@ -276,8 +276,8 @@ export const renderSamplesPage = async () => {
             (site === kpga || 
                 site ===  kphi || 
                 site ===  kpco || 
-                site ===  kpnw 
-                || site === henry_ford
+                site ===  kpnw || 
+                site === henry_ford
             )
         ) {
             template += translateHTML(`
@@ -302,7 +302,7 @@ export const renderSamplesPage = async () => {
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
                             ${
                                 (site === henry_ford)
-                                    ? `<div data-i18n="samples.whenToDonate">` 
+                                    ? `<div data-i18n="samples.henry_ford.whenToDonateHeader">` 
                                     : `<div data-i18n="samples.whenToDonateSamples">`
                             }
                             </div>
@@ -451,21 +451,22 @@ export const renderSamplesPage = async () => {
                         <hr>` 
                         : '' 
                     }
+
                     <div class="row" style="width:100%">
                         <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#supportQuestions" aria-expanded="false" aria-controls="supportQuestions">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                            <div data-i18n="samples.questions">
-                                Questions? Contact the Connect Support Center
-                            </div>
+                            ${(site === henry_ford) 
+                                ?  `<div data-i18n="samples.henry_ford.questionsHeader">
+                                        Questions? Contact the Connect Study Team at Henry Ford Health 
+                                    </div>`
+                                :  `<div data-i18n="samples.questions">
+                                        Questions? Contact the Connect Support Center 
+                                    </div>`
+                            }
+                            
                         </div>
                         <div class="messagesBodyFont collapse" style="width:100%" id="supportQuestions">
                             <div>
-                                <a href="https://myconnect.cancer.gov/support">MyConnect.cancer.gov/support</a>
-                                <br>
-                                <br>
-                                <a href="mailto: ConnectSupport@norc.org">ConnectSupport@norc.org</a>
-                                <br>
-                                <br>
                                 ${site.support}
                             </div>
                         </div>
@@ -1031,7 +1032,7 @@ const bindUpdatePAddressBtn = (participant) => {
         if (addressNotFound) { // Manual participant confirmation if USPS cannot validate
             showMailAddressConfirmation(
                 {streetAddress: addressLine1, secondaryAddress: addressLine2, city, state, zipCode: zip},
-                'event.addressSuggestionDescriptionPhysical',
+                'event.addressConfirmationDescriptionPhysical',
                 async (streetAddress, secondaryAddress, city, state, zipCode) => {
                     const success = await submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, false);
                     if (success) {
@@ -1143,7 +1144,7 @@ const bindUpdateMAddressBtn = (participant) => {
             if (uspsSuggestion.suggestion) {
                 showMailAddressSuggestion(
                     uspsSuggestion,
-                    'event.addressSuggestionDescriptionPhysical',
+                    'event.addressSuggestionDescription',
                     async (streetAddress, secondaryAddress, city, state, zipCode, isValidatedByUSPSSelectionModal) => {
                         const success = await submitNewAddress(
                             streetAddress,
@@ -1411,10 +1412,9 @@ const getMouthWashSample = (participant, path, itemName) => {
 const health_partners = {
     concept: '531629870',
     name: 'HealthPartners',
-
     donatingSamples: '<span data-i18n="samples.health_partners.donatingSamples">As a part of your Connect participation, we ask you to donate blood, urine, and saliva samples and complete a short survey related to the samples we are collecting.',
     whenToDonate: '<span data-i18n="samples.health_partners.whenToDonate">The Connect team will send you an email when it is time to donate your samples. Be sure to check your spam or junk folder. After you receive the email, it is important to donate your samples as soon as you can. It is easy to donate all of your samples in one visit.<br><br><span class="site-info-bold">Note:</span> If you have recently had a blood transfusion or donated blood, please wait at least <span class="site-info-bold">eight weeks</span> from your donation or transfusion before donating your samples for Connect. If you have recently donated plasma, please wait at least <span class="site-info-bold">four weeks</span> from your plasma donation before donating samples for Connect. If you have recently donated platelets, please wait at least <span class="site-info-bold">one week</span> from your platelet donation before donating samples for Connect. If you have an upcoming colonoscopy, please be sure that you <span class="site-info-bold">do not</span> donate samples for Connect on the <span class="site-info-bold">same day</span> as your colonoscopy.',
-    howToDonate: '<span data-i18n="samples.health_partners.howToDonate">Connect participants at HealthPartners have two options for donating samples. You can choose the most convenient option for you. There are no co-pays or charges associated with donating samples for Connect.<br><br><span class="site-info-bold">Option 1:</span> Make an appointment to come into our Connect research location, the Park Nicollet Clinic and Specialty Center, to donate your samples.<br><br><span class="site-info-bold">Option 2:</span> Make an appointment to come into one of the HealthPartners or Park Nicollet clinical collection locations.<br><br>When it is time to donate your samples, we will send you an email with a link for more information. If you are interested in donating samples at the Connect research location, simply click the link to schedule a time that works for you. If you prefer to donate samples at one of our HealthPartners clinical collection locations, please call the Connect team at HealthPartners at (952) 967-5067.  The table below includes more information about these options.<br><br><table border="1" style="width: 100`%;"><tr><th class="site-info-align" style="width: 50%;"><span class="site-info-bold">Option 1: Connect Research Location</span><br><i>Park Nicollet Clinic and Specialty Center, St. Louis Park</i>  </th><th style="width: 50%;"><span class="site-info-bold">Option 2: HealthPartners Clinical Collection Locations </span><br><i>HealthPartners Riverway Clinic Elk River and <br>Park Nicollet Clinic Chanhassen and Park Nicollet Clinic Minneapolis </i><br><br></th></tr><tr><td style="width: 50%;">Connect team will greet you and walk you through your visit.</td><td style="width: 50%;">HealthPartners clinical lab staff will collect your Connect samples.</td></tr><tr><td style="width: 50%;">The team will draw blood, collect urine, and collect a saliva sample by asking you to swish with mouthwash.<br><br>You will also complete a survey related to the samples we are collecting in MyConnect using your mobile phone. If you do not have a mobile phone, we will provide you with a tablet to complete your survey. You will need your MyConnect login information to complete the survey.</td><td style="width: 50%;">Lab staff will collect blood and urine samples at your visit. You can donate Connect samples and complete any labs ordered by your provider in the same visit. <br><br>Within 48 hours of your sample donation, you will receive an email with a link to a survey to complete on MyConnect. The survey is related to the samples that we collected. <br><br> The Connect team will send you a mouthwash collection kit with instructions to complete your saliva sample at home.</td></tr><tr><td style="width: 50%;">When you receive the scheduling email from the Connect team, please use the link included to schedule an appointment to donate your samples at a time that is convenient for you. You may also call the Connect team at 952-967-5357 if you would prefer to schedule your appointment over the phone.</td><td style="width: 50%;">To schedule at one of these locations, please call our team at 952-967-5357 after you receive the scheduling email from the Connect team.</td></tr></table><br>For questions, please contact the Connect team at HealthPartners at 952-967-5357 or ConnectStudy@healthpartners.com.',
+    howToDonate: '<span data-i18n="samples.health_partners.howToDonate">Connect participants at HealthPartners have two options for donating samples. You can choose the most convenient option for you. There are no co-pays or charges associated with donating samples for Connect.<br><br><span class="site-info-bold">Option 1:</span> Make an appointment to come into our Connect research location, the Park Nicollet Clinic and Specialty Center, to donate your samples.<br><br><span class="site-info-bold">Option 2:</span> Make an appointment to come into one of the HealthPartners or Park Nicollet clinical collection locations.<br><br>When it is time to donate your samples, we will send you an email with a link for more information. If you are interested in donating samples at the Connect research location, simply click the link to schedule a time that works for you. If you prefer to donate samples at one of our HealthPartners clinical collection locations, please call the Connect team at HealthPartners at 952-967-5067.  The table below includes more information about these options.<br><br><table border="1" style="width: 100`%;"><tr><th class="site-info-align" style="width: 50%;"><span class="site-info-bold">Option 1: Connect Research Location</span><br><i>Park Nicollet Clinic and Specialty Center, St. Louis Park</i>  </th><th style="width: 50%;"><span class="site-info-bold">Option 2: HealthPartners Clinical Collection Locations </span><br><i>HealthPartners Riverway Clinic Elk River and <br>Park Nicollet Clinic Chanhassen and Park Nicollet Clinic Minneapolis </i><br><br></th></tr><tr><td style="width: 50%;">Connect team will greet you and walk you through your visit.</td><td style="width: 50%;">HealthPartners clinical lab staff will collect your Connect samples.</td></tr><tr><td style="width: 50%;">The team will draw blood, collect urine, and collect a saliva sample by asking you to swish with mouthwash.<br><br>You will also complete a survey related to the samples we are collecting in MyConnect using your mobile phone. If you do not have a mobile phone, we will provide you with a tablet to complete your survey. You will need your MyConnect login information to complete the survey.</td><td style="width: 50%;">Lab staff will collect blood and urine samples at your visit. You can donate Connect samples and complete any labs ordered by your provider in the same visit. <br><br>Within 48 hours of your sample donation, you will receive an email with a link to a survey to complete on MyConnect. The survey is related to the samples that we collected. <br><br> The Connect team will send you a mouthwash collection kit with instructions to complete your saliva sample at home.</td></tr><tr><td style="width: 50%;">When you receive the scheduling email from the Connect team, please use the link included to schedule an appointment to donate your samples at a time that is convenient for you. You may also call the Connect team at 952-967-5357 if you would prefer to schedule your appointment over the phone.</td><td style="width: 50%;">To schedule at one of these locations, please call our team at 952-967-5357 after you receive the scheduling email from the Connect team.</td></tr></table><br>For questions, please contact the Connect team at HealthPartners at 952-967-5357 or ConnectStudy@healthpartners.com.',
     scheduling: '',
     howLong: '<span data-i18n="samples.health_partners.howLong"><span class="site-info-bold">Connect Research Location:</span><br><br>Please expect to spend about 30 minutes at your appointment to donate your samples. During your appointment, we will ask you to complete a short survey related to the samples we are collecting.<br><br><span class="site-info-bold">Connect Clinical Collection Location:</span><br><br>Please expect to spend about 10-15 minutes at your appointment to donate your blood and urine samples.',
     prepareInstructions: '<span data-i18n="samples.health_partners.prepareInstructions"><span class="site-info-bold">Connect Research Location:</span><br><br>On the day of your appointment, please drink plenty of water, but <span class="site-info-bold">stop drinking water one hour before your appointment.</span><br><br><span class="site-info-bold">One hour before your appointment:</span> Please <span class="site-info-bold">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span class="site-info-bold">Things to bring and remember:</span><br><br><ul><li>Please bring a valid government-issued photo ID, such as a driver\'s license.</li><li>Make sure you know your login information for your <a href="https://myconnect.cancer.gov">MyConnect account.</a><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:</li><ul><li>The last time you ate or drank, and the times you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></li></ul><br><span class="site-info-bold">Connect Clinical Collection Locations:</span><br><br>On the day of your appointment, you do not need to fast. Please drink plenty of water to keep hydrated.<br><br><span class="site-info-bold">Things to bring and remember:</span><br><br><ul><li>Please bring a valid government-issued photo ID, such as a driver\'s license.</li><li>After your appointment:<br><ul><li>Be sure to check your email for a link to a survey to complete on MyConnect. The survey asks questions about the day you donated samples, so it is important to complete it as soon as you can.</li><li>We will email you when we ship your mouthwash home collection kit. Please use this kit and included instructions to collect your mouthwash sample at home.</li></ul></li></ul>',
@@ -1604,7 +1604,7 @@ const henry_ford = {
     whenToDonateHeader: '<span data-i18n="samples.henry_ford.whenToDonateHeader">When Should I Donate My Samples?</span>',
     whenToDonate: '<span data-i18n="samples.henry_ford.whenToDonate">The Connect team will send you an email when it is time to donate your samples. Be sure to check your spam or junk folder. After you receive the email, it is important to donate your samples as soon as you can.<br><br><span class="site-info-bold">Important Notes:</span><br><br><ol><li> If you have had a blood transfusion or donated blood recently:<br> Please wait at least <span class="site-info-bold">eight weeks</span> from your donation or transfusion before donating your samples for Connect.</li><br><li> If you have recently donated plasma:<br> Please wait at least <span class="site-info-bold">four weeks</span> from your plasma donation before donating samples for Connect.</li><br><li>If you have recently donated platelets:<br>Please wait at least <span class="site-info-bold">one week</span> from your platelet donation before donating samples for Connect.</li><br><li> If you have an upcoming colonoscopy:<br> Please be sure that you <span class="site-info-bold">do not</span> donate samples for Connect on the <span class="site-info-bold">same day</span> as your colonoscopy.</li></ol></span>',
     howToDonateHeader: '<span data-i18n="samples.henry_ford.howToDonateHeader">How Do I Donate My Blood and Urine Samples?</span>',
-    howToDonate: '<p data-i18n="samples.henry_ford.howToDonate"> After you receive notification that we placed your Connect lab order, please visit any HFH Lab Services location listed in the "Where Do I Donate My Samples" section below. We are not able to collect samples for Connect at other HFH locations not currently listed, or outside of HFH (Like LabCorp or Quest).' 
+    howToDonate: '<p data-i18n="samples.henry_ford.howToDonate"> After you receive notification that we placed your Connect lab order, please visit any HFH Lab Services location listed in the "Where Do I Donate My Samples" section below. We are not able to collect samples for Connect at other HFH locations not currently listed, or outside of HFH (like LabCorp or Quest).' 
         + '<br><br> You can donate Connect samples and complete any labs ordered by your provider in the same visit. You do not need an appointment.' 
         + '<br><br> You do not need to fast before you donate samples for Connect, so you may eat and drink before your visit.</p>',
     howLong: '<span data-i18n="samples.henry_ford.howLong">'
@@ -1657,7 +1657,7 @@ const henry_ford = {
         + '</tr>'
         + '</table></span>',
     locations: [],
-    questions: '<div data-i18n="samples.henry_ford.questions">Questions? Contact the Connect Study Team at Henry Ford Health</div>',
+    questionsHeader: '<div data-i18n="samples.henry_ford.questionsHeader">Questions? Contact the Connect Study Team at Henry Ford Health</div>',
     contact: '<a href="mailto: connectstudy@hfhs.org">ConnectStudy@hfhs.org</a>'
 };
 
