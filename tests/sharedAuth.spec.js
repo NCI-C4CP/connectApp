@@ -1,4 +1,4 @@
-import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { installDocumentByIdMap } from './helpers.js';
 import { registerSharedRuntimeModuleMocks, sharedRuntimeMocks } from './moduleMocks.js';
 
@@ -617,5 +617,56 @@ describe('shared auth helpers', () => {
     expect(phoneLabel.remove).toHaveBeenCalledTimes(1);
     expect(title.innerText).toBe(shared.translateText('shared.signInPhone'));
     expect(title.setAttribute).toHaveBeenCalledWith('data-i18n', 'shared.signInPhone');
+  });
+});
+
+// userLoggedIn
+
+describe('userLoggedIn', () => {
+  let unsubscribe;
+
+  beforeEach(() => {
+    unsubscribe = vi.fn();
+    globalThis.firebase = {
+      auth: () => ({
+        onAuthStateChanged: vi.fn((callback) => {
+          globalThis._authCallback = callback;
+          return unsubscribe;
+        }),
+      }),
+    };
+  });
+
+  afterAll(() => {
+    delete globalThis.firebase;
+    delete globalThis._authCallback;
+  });
+
+  it('resolves true for non-anonymous user', async () => {
+    const promise = shared.userLoggedIn();
+    globalThis._authCallback({ isAnonymous: false });
+    const result = await promise;
+    expect(result).toBe(true);
+  });
+
+  it('resolves false for anonymous user', async () => {
+    const promise = shared.userLoggedIn();
+    globalThis._authCallback({ isAnonymous: true });
+    const result = await promise;
+    expect(result).toBe(false);
+  });
+
+  it('resolves false for null user', async () => {
+    const promise = shared.userLoggedIn();
+    globalThis._authCallback(null);
+    const result = await promise;
+    expect(result).toBe(false);
+  });
+
+  it('calls unsubscribe after first callback (one-shot behavior)', async () => {
+    const promise = shared.userLoggedIn();
+    globalThis._authCallback({ isAnonymous: false });
+    await promise;
+    expect(unsubscribe).toHaveBeenCalledTimes(1);
   });
 });

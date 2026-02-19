@@ -106,8 +106,12 @@ export const homePage = async () => {
       if ( location.search !== cleanSearchStr ) {
         location.search = cleanSearchStr; // Page reload with clean url
       }
-      
-        await firebaseSignInRender({account:{type:'magicLink', value:''}});
+        try {
+            showAnimation();
+            await firebaseSignInRender({account:{type:'magicLink', value:''}});
+        } finally {
+            hideAnimation();
+        }
     } else {
         signInSignUpEntryRender();
     }

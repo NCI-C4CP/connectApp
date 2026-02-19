@@ -1,4 +1,4 @@
-import { syncDHQ3RespondentInfo, getParameters, userLoggedIn, getMyData, hasUserData, getMyCollections, showAnimation, hideAnimation, storeResponse, isBrowserCompatible, inactivityTime, urls, appState, processAuthWithFirebaseAdmin, showErrorAlert, successResponse, logDDRumError, translateHTML, translateText, languageAcronyms, toggleNavbarMobileView, validateToken, retrieveNotifications } from "./js/shared.js";
+import { syncDHQ3RespondentInfo, getParameters, userLoggedIn, getMyData, hasUserData, getMyCollections, showAnimation, hideAnimation, storeResponse, isBrowserCompatible, inactivityTime, urls, appState, processAuthWithFirebaseAdmin, showErrorAlert, successResponse, logDDRumError, translateHTML, translateText, languageAcronyms, toggleNavbarMobileView, validateToken, retrieveNotifications, isMagicLinkCallbackUrl } from "./js/shared.js";
 import { userNavBar, homeNavBar, languageSelector, userHeaderNavBar, addMessageCounterToNavBar } from "./js/components/navbar.js";
 import { homePage, joinNowBtn, whereAmIInDashboard, renderHomeAboutPage, renderHomeExpectationsPage, renderHomePrivacyPage } from "./js/pages/homePage.js";
 import { addEventPinAutoUpperCase, addEventRequestPINForm, addEventRetrieveNotifications, toggleCurrentPage, toggleCurrentPageNoUser, addEventToggleSubmit, addEventLanguageSelection } from "./js/event.js";
@@ -50,6 +50,9 @@ if ("serviceWorker" in navigator) {
   }
 
 let auth = '';
+
+/** @internal Exposed for testing only. */
+export const setAuth = (a) => { auth = a; };
 let isDataDogUserSessionSet = false;
 
 const datadogConfig = {
@@ -204,7 +207,7 @@ window.onload = async () => {
     await router();
 }
 
-const handleVerifyEmail = (auth, actionCode) => {
+export const handleVerifyEmail = (auth, actionCode) => {
     auth.applyActionCode(actionCode).then(function() {
         window.location.hash = '#verified';
         location.reload();
@@ -217,7 +220,7 @@ window.onhashchange = async () => {
     await router();
 }
 
-const router = async () => {
+export const router = async () => {
 
     // Clean URL if it has UTM parameters and user is authenticated
     const user = firebase.auth().currentUser;
@@ -248,7 +251,7 @@ const router = async () => {
 
         renderLanguageSelector();
 
-        if (route === '#') {
+        if (isMagicLinkCallbackUrl() || route === '#') {
             await homePage();
         } else if (route === '#about') {
             renderHomeAboutPage();
@@ -563,17 +566,18 @@ const toggleNavBar = (route, data) => {
  * The 'else if' case handles the following: We write firebase auth and firestore participant data separately, one after another. There's a chance the first write (Firebase Auth) succeeds and the second write (Firestore) fails.
  * This only costs an API call if the data is inconsistent since we hava access to both datapoints from app init. It otherwise only costs the time to run the check.
  */
-const checkAuthDataConsistency = async (
+export const checkAuthDataConsistency = async (
   firebaseAuthEmail,
   firebaseAuthPhoneNumber,
   firestoreParticipantEmail,
   firestoreParticipantPhoneNumber,
-  shouldSaveLogin
+  shouldSaveLogin,
+  updateFirebaseAuthPhoneFunc = updateFirebaseAuthPhoneTrigger
 ) => {
   const isAuthEmailConsistent = firebaseAuthEmail === firestoreParticipantEmail;
   const isAuthPhoneConsistent = firebaseAuthPhoneNumber === firestoreParticipantPhoneNumber;
   if (firestoreParticipantPhoneNumber && !firebaseAuthPhoneNumber) {
-    await updateFirebaseAuthPhoneTrigger(firestoreParticipantPhoneNumber);
+    await updateFirebaseAuthPhoneFunc(firestoreParticipantPhoneNumber);
     return false;
   } else if (!isAuthEmailConsistent || !isAuthPhoneConsistent) {
     if (!shouldSaveLogin) return false;
@@ -675,7 +679,7 @@ const checkFirstSignInTimestamp = async (firstSignInFlag, firstSignInTimestamp, 
     }
 }
 
-const updateFirebaseAuthPhoneTrigger = async (phone) =>  {
+export const updateFirebaseAuthPhoneTrigger = async (phone) =>  {
     showAnimation();
     const uid = firebase.auth().currentUser.uid;
     if (phone && phone.startsWith('+1')) phone = phone.substring(2);

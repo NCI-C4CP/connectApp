@@ -275,7 +275,7 @@ export const clearAuthErrorMessage = () => {
 let emailLinkSendInFlight = false;
 let emailLinkSendRequestKey = '';
 
-const isMagicLinkCallbackUrl = () => {
+export const isMagicLinkCallbackUrl = () => {
     const params = new URLSearchParams(window.location.search);
     return params.get('mode') === 'signIn' && params.has('oobCode') && params.has('apiKey');
 };
