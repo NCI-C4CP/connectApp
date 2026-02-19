@@ -190,17 +190,17 @@ describe('homePage magic link handling', () => {
     teardownTestEnvironment();
   });
 
-  it('calls showAnimation() then firebaseSignInRender() then hideAnimation() when URL has magic link params', async () => {
-    const magicLinkSearch = '?mode=signIn&oobCode=abc123&apiKey=key456';
+  it('calls showAnimation() then firebaseSignInRender() then hideAnimation() when isMagicLinkCallbackUrl returns true', async () => {
     setupTestEnvironment({
       location: {
         host: 'localhost:3000',
-        search: magicLinkSearch,
+        search: '?mode=signIn&oobCode=abc123&apiKey=key456',
         hash: '#',
       },
     });
 
-    sharedMocks.getCleanSearchString.mockReturnValue(magicLinkSearch);
+    sharedMocks.isMagicLinkCallbackUrl.mockReturnValue(true);
+    sharedMocks.getCleanSearchString.mockReturnValue('?mode=signIn&oobCode=abc123&apiKey=key456');
 
     installDocumentByIdMap({
       root: { innerHTML: '' },
@@ -223,16 +223,16 @@ describe('homePage magic link handling', () => {
   });
 
   it('calls hideAnimation() even when firebaseSignInRender() throws', async () => {
-    const magicLinkSearch = '?mode=signIn&oobCode=abc123&apiKey=key456';
     setupTestEnvironment({
       location: {
         host: 'localhost:3000',
-        search: magicLinkSearch,
+        search: '?mode=signIn&oobCode=abc123&apiKey=key456',
         hash: '#',
       },
     });
 
-    sharedMocks.getCleanSearchString.mockReturnValue(magicLinkSearch);
+    sharedMocks.isMagicLinkCallbackUrl.mockReturnValue(true);
+    sharedMocks.getCleanSearchString.mockReturnValue('?mode=signIn&oobCode=abc123&apiKey=key456');
     sharedMocks.firebaseSignInRender.mockRejectedValue(new Error('render failed'));
 
     installDocumentByIdMap({
@@ -288,6 +288,7 @@ describe('homePage magic link handling', () => {
       },
     });
 
+    sharedMocks.isMagicLinkCallbackUrl.mockReturnValue(true);
     sharedMocks.getCleanSearchString.mockReturnValue(cleanSearch);
 
     installDocumentByIdMap({

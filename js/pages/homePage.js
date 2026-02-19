@@ -1,4 +1,4 @@
-import { getMyData, hasUserData, urls, fragment, checkAccount, validEmailFormat, validPhoneNumberFormat, getCleanSearchString, firebaseSignInRender, signInAnonymously, usGov, translateHTML, translateText, getFirebaseUI, showAnimation, hideAnimation, logDDRumAction, logDDRumError } from "../shared.js";
+import { getMyData, hasUserData, urls, fragment, checkAccount, validEmailFormat, validPhoneNumberFormat, getCleanSearchString, firebaseSignInRender, signInAnonymously, usGov, translateHTML, translateText, getFirebaseUI, showAnimation, hideAnimation, logDDRumAction, logDDRumError, isMagicLinkCallbackUrl } from "../shared.js";
 import { signInConfig } from "./signIn.js";
 import { environmentWarningModal, downtimeWarning } from "../event.js";
 import fieldMapping from '../fieldToConceptIdMapping.js';
@@ -99,8 +99,7 @@ export const homePage = async () => {
     `);
     
     const cleanSearchStr = getCleanSearchString(location.search);
-    const params = new URLSearchParams(cleanSearchStr);
-    const isMagicLinkSignIn = params.get('apiKey') !== null && params.get('mode') === 'signIn';
+    const isMagicLinkSignIn = isMagicLinkCallbackUrl();
 
     if (isMagicLinkSignIn) {
       if ( location.search !== cleanSearchStr ) {
