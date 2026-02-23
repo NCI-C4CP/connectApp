@@ -4,6 +4,7 @@ import { toggleElementVisibility, validateMailingAddress, changeMailingAddress }
 import { addEventAddressAutoComplete } from '../event.js';
 import conceptId from '../fieldToConceptIdMapping.js';
 
+
 export const renderSamplesPage = async () => {
     document.title = translateText('samples.title');
     getMyData().then(async res => {
@@ -78,13 +79,13 @@ export const renderSamplesPage = async () => {
             </div>
             <div class="col-lg-2 col-xl-3"></div>
         </div>`);
-
         if (site && 
             site !== kpga && 
             site !== kphi && 
             site !== kpco && 
             site !== kpnw && 
-            site !== u_chicago
+            site !== u_chicago && 
+            site !== henry_ford
         ) {
             const locationTemplate = renderLocations(site);
 
@@ -124,8 +125,7 @@ export const renderSamplesPage = async () => {
                     <div class="row" style="width:100%">
                         <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howToDonate" aria-expanded="false" aria-controls="howToDonate">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                            <div data-i18n="samples.howToDonate">
-                                How Do I Donate My Samples?
+                                <div data-i18n="samples.howToDonate">
                             </div>
                         </div>
                         <div class="messagesBodyFont collapse" style="width:100%" id="howToDonate">
@@ -144,7 +144,7 @@ export const renderSamplesPage = async () => {
                         </div>
                         <div class="messagesBodyFont collapse" style="width:100%" id="whereToDonate">
                         ${site.locationNotes ? `
-                        <div class="row" style="width:100%; padding-top:0;">
+                        <div style="width:100%; padding-top:0;">
                             <div class="messagesBodyFont">
                                 ${site.locationNotes}
                             </div>
@@ -154,31 +154,32 @@ export const renderSamplesPage = async () => {
                         ${locationTemplate}
 
                         ${site.parkingInstructions ? `
-                        <div class="row" style="width:100%">
-                            <div style="width:100%">
+                        <div style="width:100%">
+
                                 <div class="messagesHeaderFont" data-i18n="samples.parkingInstructions">
                                 </div>
                                 <div class="messagesBodyFont removePaddingTop" data-i18n="samples.freeParkingAllCenters">
                                 </div>
-                            </div>
+
                         </div>`
                         : ''}
 
                         ${site.scheduling ? `
-                        <div class="row" style="width:100%">
-                            <div style="width:100%">
+                        <div style="width:100%">
+
                                 <div class="messagesHeaderFont" data-i18n="samples.schedule">
                                     Scheduling Information
                                 </div>
                                 <div class="messagesBodyFont removePaddingTop">
                                     ${site.scheduling}
                                 </div>
-                            </div>
+
                         </div>` : ''
                         }
                         </div>
                     </div>
                     <hr>
+                    
                     <div class="row" style="width:100%">
                         <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howLongAppt" aria-expanded="false" aria-controls="howLongAppt">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
@@ -186,13 +187,14 @@ export const renderSamplesPage = async () => {
                                 How Long Will My Appointment Take?
                             </div>
                         </div>
-                        <div class="messagesBodyFont  collapse" style="width:100%" id="howLongAppt">
+                        <div class="messagesBodyFont collapse" style="width:100%" id="howLongAppt">
                             <div>
                                 ${site.howLong}
                             </div>
                         </div>
                     </div>
                     <hr>
+
                     <div class="row" style="width:100%">
                         <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#prepareAppt" aria-expanded="false" aria-controls="prepareAppt">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
@@ -270,8 +272,14 @@ export const renderSamplesPage = async () => {
             </div>    
             `);
         }
-        else if (site && (site === kpga || site ===  kphi || site ===  kpco || site ===  kpnw)) {
-            const locationTemplate = renderLocations(site);
+        else if (site && 
+            (site === kpga || 
+                site ===  kphi || 
+                site ===  kpco || 
+                site ===  kpnw || 
+                site === henry_ford
+            )
+        ) {
             template += translateHTML(`
             <div class="row"  id="donatingInformation">
             <div class="col-lg-2 col-xl-3">
@@ -292,8 +300,11 @@ export const renderSamplesPage = async () => {
                     <div class="row" style="width:100%">
                         <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whenToDonateSamples" aria-expanded="true" aria-controls="whenToDonateSamples">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                            <div data-i18n="samples.whenToDonateSamples">
-                                When Should I Donate My Blood and Urine Samples?
+                            ${
+                                (site === henry_ford)
+                                    ? `<div data-i18n="samples.henry_ford.whenToDonateHeader">` 
+                                    : `<div data-i18n="samples.whenToDonateSamples">`
+                            }
                             </div>
                         </div>
                         <div class="messagesBodyFont collapse show" style="width:100%" id="whenToDonateSamples">
@@ -312,25 +323,73 @@ export const renderSamplesPage = async () => {
                         </div>
                         <div class="messagesBodyFont collapse" style="width:100%" id="howToDonateSamples">
                             <div>
-                                ${site.howToDonateBloodAndUrine}
+                                ${ 
+                                    (site === henry_ford) 
+                                        ? site.howToDonate
+                                        : site.howToDonateBloodAndUrine
+                                }
                             </div>
                         </div>          
                     </div>
                     <hr>
-                    <div class="row" style="width:100%">
-                        <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#prepInstructions" aria-expanded="false" aria-controls="prepInstructions">
-                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                            <div>
-                            ${site.prepInstructionsHeader}
+                    ${(site === henry_ford) ?
+                        `<div class="row" style="width:100%;">
+                            <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whereToDonate" aria-expanded="false" aria-controls="whereToDonate">
+                                <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
+                                <div data-i18n="samples.whereToDonate">
+                                    Where Do I Donate My Samples?
+                                </div>
                             </div>
-                        </div>
-                        <div class="messagesBodyFont collapse" style="width:100%" id="prepInstructions">
-                            <div>
-                                ${site.prepInstructionsText}
+                            <div class="messagesBodyFont collapse" style="width:100%" id="whereToDonate">
+                            ${site.locationNotes 
+                                ? `<div style="width:100%; padding-top:0;">
+                                        <div class="messagesBodyFont">
+                                            ${site.locationNotes}
+                                        </div>
+                                    </div>` 
+                                : ``}
                             </div>
-                        </div>          
-                    </div>
+                        </div>`
+                        : ``
+                    }
+                    
+                    ${(site !== henry_ford)
+                        ?   `<div class="row" style="width:100%">
+                                <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#prepInstructions" aria-expanded="false" aria-controls="prepInstructions">
+                                    <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
+                                    <div>
+                                        ${site.prepInstructionsHeader}
+                                    </div>
+                                </div>
+                                <div class="messagesBodyFont collapse" style="width:100%" id="prepInstructions">
+                                    <div>
+                                        ${site.prepInstructionsText}
+                                    </div>
+                                </div>          
+                            </div>`
+                        : ``
+                    }
+
                     <hr>          
+
+                    ${ (site === henry_ford)
+                        ?   `<div class="row" style="width:100%">
+                                <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howLongVisit" aria-expanded="false" aria-controls="howLongVisit">
+                                    <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
+                                    <div data-i18n="samples.howLongVisit">
+                                        How Long Will My Visit Take?
+                                    </div>
+                                </div>
+                                <div class="messagesBodyFont collapse" style="width:100%" id="howLongVisit">
+                                    <div>
+                                        ${site.howLong}
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>`
+                        : ''
+                    }
+
                     <div class="row" style="width:100%">
                         <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whatHappensDuring" aria-expanded="false" aria-controls="whatHappensDuring">
                             <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
@@ -344,13 +403,14 @@ export const renderSamplesPage = async () => {
                             </div>
                         </div>          
                     </div> 
-                    <hr>  
-                    <div class="row collapsed" style="width:100%"  data-bs-toggle="collapse" data-bs-target="#whatHappensAfter" aria-expanded="false" aria-controls="whatHappensAfter">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%">
-                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                            <div data-i18n="samples.afterVisit">
-                                What Will Happen After My Visit?
-                            </div>
+                    <hr>
+
+                    <div class="row" style="width:100%">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whatHappensAfter" aria-expanded="false" aria-controls="whatHappensAfter">
+                                <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
+                                <div data-i18n="samples.afterVisit">
+                                    What Will Happen After My Visit?
+                                </div>
                         </div>
                         <div class="messagesBodyFont collapse" style="width:100%" id="whatHappensAfter">
                             <div>
@@ -359,35 +419,54 @@ export const renderSamplesPage = async () => {
                         </div>          
                     </div>
                     <hr>
-                    <div class="row collapsed" style="width:100%" data-bs-toggle="collapse" data-bs-target="#howToDonateMouthwash" aria-expanded="false" aria-controls="howToDonateMouthwash">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%">
-                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                            <div data-i18n="samples.donatingMouthwashSample">
-                                How Do I Donate My Mouthwash Sample?
-                            </div>
+                    <div class="row" style="width:100%">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#howToDonateMouthwash" aria-expanded="false" aria-controls="howToDonateMouthwash">
+                                <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
+                                <div data-i18n="samples.donatingMouthwashSample">
+                                    How Do I Donate My Mouthwash Sample?
+                                </div>
                         </div>
                         <div class="messagesBodyFont collapse" style="width:100%" id="howToDonateMouthwash">
                             <div>
                                 ${site.howToDonateMouthwash}
                             </div>
-                        </div>          
+                        </div>
                     </div>
                     <hr>
-                    <div class="row collapsed" style="width:100%" data-bs-toggle="collapse" data-bs-target="#supportQuestions" aria-expanded="false" aria-controls="supportQuestions">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%">
-                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
-                            <div data-i18n="samples.questions">
-                                Questions? Contact the Connect Support Center
+                    ${(site === henry_ford) 
+                        ? `
+                        <div class="row" style="width:100%">
+                                <div class="consentHeadersFont collapsed" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#whenPayment" aria-expanded="false" aria-controls="whenPayment">
+                                <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
+                                <div data-i18n="samples.whenPayment">
+                                    When Will I Receive My $25 Payment?
+                                </div>
                             </div>
+                            <div class="messagesBodyFont collapse" style="width:100%" id="whenPayment">
+                                <div>
+                                    ${site.payment}
+                                </div>
+                            </div>
+                        </div>
+                        <hr>` 
+                        : '' 
+                    }
+
+                    <div class="row" style="width:100%">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" data-bs-toggle="collapse" data-bs-target="#supportQuestions" aria-expanded="false" aria-controls="supportQuestions">
+                            <span class="float-end"><i class="fa-solid fa-plus"></i><i class="fa-solid fa-minus"></i></span>
+                            ${(site === henry_ford) 
+                                ?  `<div data-i18n="samples.henry_ford.questionsHeader">
+                                        Questions? Contact the Connect Study Team at Henry Ford Health 
+                                    </div>`
+                                :  `<div data-i18n="samples.questions">
+                                        Questions? Contact the Connect Support Center 
+                                    </div>`
+                            }
+                            
                         </div>
                         <div class="messagesBodyFont collapse" style="width:100%" id="supportQuestions">
                             <div>
-                                <a href="https://myconnect.cancer.gov/support">MyConnect.cancer.gov/support</a>
-                                <br>
-                                <br>
-                                <a href="mailto: ConnectSupport@norc.org">ConnectSupport@norc.org</a>
-                                <br>
-                                <br>
                                 ${site.support}
                             </div>
                         </div>
@@ -937,10 +1016,9 @@ const bindUpdatePAddressBtn = (participant) => {
         const state = escapeHTML(document.getElementById('UPAddress2State').value.trim());
         const zip = escapeHTML(document.getElementById('UPAddress2Zip').value.trim());
 
-        const { hasError, uspsSuggestion, isValidatedByUSPSApi } = await validateMailingAddress(2, addressLine1, city, state, zip);
-        
-        if (!hasError) {
-            const submitNewAddress = (addressLine1, addressLine2, city, state, zip, isValidatedByUSPS = isValidatedByUSPSApi) => submitNewMailingAddress(
+        const { hasError, uspsSuggestion, isValidatedByUSPSApi, addressNotFound } = await validateMailingAddress(2, addressLine1, city, state, zip);
+
+        const submitNewAddress = (addressLine1, addressLine2, city, state, zip, isValidatedByUSPS = isValidatedByUSPSApi) => submitNewMailingAddress(
                 2,
                 addressLine1,
                 addressLine2,
@@ -950,6 +1028,29 @@ const bindUpdatePAddressBtn = (participant) => {
                 participant[conceptId.isPOBox] === conceptId.yes,
                 isValidatedByUSPS
             );
+        
+        if (addressNotFound) { // Manual participant confirmation if USPS cannot validate
+            showMailAddressConfirmation(
+                {streetAddress: addressLine1, secondaryAddress: addressLine2, city, state, zipCode: zip},
+                'event.addressConfirmationDescriptionPhysical',
+                async (streetAddress, secondaryAddress, city, state, zipCode) => {
+                    const success = await submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, false);
+                    if (success) {
+                        participant[conceptId.physicalAddress1] = streetAddress;
+                        if (secondaryAddress) {
+                            participant[conceptId.physicalAddress2] = secondaryAddress;
+                        }
+                        participant[conceptId.physicalCity] = city;
+                        participant[conceptId.physicalState] = state;
+                        participant[conceptId.physicalZip] = zipCode;
+                        
+                        renderRequestAKitDisplay(participant);
+                        renderUpdateAddressSuccess();
+                    }
+                }
+            );
+        } else if (!hasError) {
+            
 
             if (uspsSuggestion.suggestion) {
                 showMailAddressSuggestion(
@@ -1005,24 +1106,45 @@ const bindUpdateMAddressBtn = (participant) => {
         const state = escapeHTML(document.getElementById('UPAddress1State').value.trim());
         const zip = escapeHTML(document.getElementById('UPAddress1Zip').value.trim());
 
-        const { hasError, uspsSuggestion, isValidatedByUSPSApi } = await validateMailingAddress(1, addressLine1, city, state, zip);
+        const { hasError, uspsSuggestion, isValidatedByUSPSApi, addressNotFound } = await validateMailingAddress(1, addressLine1, city, state, zip);
+        const submitNewAddress = (addressLine1, addressLine2, city, state, zip, isValidatedByUSPS = isValidatedByUSPSApi) => submitNewMailingAddress(
+            1,
+            addressLine1,
+            addressLine2,
+            city,
+            state,
+            zip,
+            false,
+            isValidatedByUSPS
+        );
         
-        if (!hasError) {
-            const submitNewAddress = (addressLine1, addressLine2, city, state, zip, isValidatedByUSPS = isValidatedByUSPSApi) => submitNewMailingAddress(
-                1,
-                addressLine1,
-                addressLine2,
-                city,
-                state,
-                zip,
-                false,
-                isValidatedByUSPS
+        if (addressNotFound) { // Manual participant confirmation if USPS cannot validate
+            showMailAddressConfirmation(
+                {streetAddress: addressLine1, secondaryAddress: addressLine2, city, state, zipCode: zip},
+                'event.addressConfirmationDescription',
+                async (streetAddress, secondaryAddress, city, state, zipCode) => {
+                    const success = await submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, false);
+                    if (success) {
+                        participant[conceptId.address1] = streetAddress;
+                        if (secondaryAddress) {
+                            participant[conceptId.address2] = secondaryAddress;
+                        }
+                        participant[conceptId.city] = city;
+                        participant[conceptId.state] = state;
+                        participant[conceptId.zip] = zipCode;
+                        participant[conceptId.isPOBox] = conceptId.no;
+                        
+                        renderRequestAKitDisplay(participant);
+                        // renderUpdateAddressSuccess();
+                    }
+                }
             );
+        } else if (!hasError) {
 
             if (uspsSuggestion.suggestion) {
                 showMailAddressSuggestion(
                     uspsSuggestion,
-                    'event.addressSuggestionDescriptionPhysical',
+                    'event.addressSuggestionDescription',
                     async (streetAddress, secondaryAddress, city, state, zipCode, isValidatedByUSPSSelectionModal) => {
                         const success = await submitNewAddress(
                             streetAddress,
@@ -1123,6 +1245,59 @@ const renderAddPhysicalAddressInfo = (displayPOBoxInfo, displayIntlAddrInfo) => 
         </div>
         `);
 }
+
+export const showMailAddressConfirmation = (address, i18nTranslation, submit) => {
+  const modalElement = document.getElementById("connectMainModal");
+  let modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
+
+    // TODO: Need to refactor
+    const closeModal = () => {
+        const instance = bootstrap.Modal.getInstance(modalElement);
+        if (instance) instance.hide();
+    };
+   document.getElementById("connectModalHeader").innerHTML = translateHTML(`
+        <h2 style="color: #333;" data-i18n="event.addressSuggestionTitle">Address Verification</h2>
+    `);
+
+  document.getElementById("connectModalBody").innerHTML = translateHTML(`
+        <div style="margin-bottom: 20px;" data-i18n="${i18nTranslation}">
+            We can’t verify your address with the USPS. Please confirm the address you entered is correct below or click the Go Back button to enter a different address.
+        </div>
+        <div style="display: flex; gap: 20px; margin-left: 25%; margin-right: 25%">
+            <div style="flex: 1; border: 1px solid #ddd; padding: 15px; border-radius: 4px;">
+                <div style="margin-bottom: 15px;">
+                    ${escapeHTML(address.streetAddress)} ${escapeHTML(address.secondaryAddress)} <br>
+                    ${escapeHTML(address.city)} ${escapeHTML(address.state)} ${escapeHTML(address.zipCode)} 
+                </div>
+                <button style="background-color: #4CAF50; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; width: 100%;" id="addressKeepButton" data-i18n="event.addressSuggestionKeepButton">Keep address I entered</button>
+            </div>
+        </div>
+    `);
+
+  document.getElementById("connectModalFooter").innerHTML = translateHTML(`
+        <div class="d-flex justify-content-between w-100">
+            <button data-i18n="event.navButtonsClose" type="button" title="Go Back" class="btn btn-dark" id="goBackButton">Go Back</button>
+        </div>
+    `);
+
+  modalInstance.show();
+
+  document.getElementById("addressKeepButton").addEventListener("click", async () => {
+    const { streetAddress, secondaryAddress, city, state, zipCode } = address;
+    await submit(streetAddress, secondaryAddress, city, state, zipCode);
+    closeModal();
+  });
+
+  // Delay the 'goBackButton' since it's rendered dynamically
+  setTimeout(() => {
+    const goBackButton = document.getElementById("goBackButton");
+    if (goBackButton) {
+      goBackButton.addEventListener("click", () => {
+        closeModal();
+      });
+    }
+  }, 100);
+};
 
 export const showMailAddressSuggestion = (uspsSuggestion, i18nTranslation, submit) => {
   const modalElement = document.getElementById("connectMainModal");
@@ -1237,10 +1412,9 @@ const getMouthWashSample = (participant, path, itemName) => {
 const health_partners = {
     concept: '531629870',
     name: 'HealthPartners',
-
     donatingSamples: '<span data-i18n="samples.health_partners.donatingSamples">As a part of your Connect participation, we ask you to donate blood, urine, and saliva samples and complete a short survey related to the samples we are collecting.',
     whenToDonate: '<span data-i18n="samples.health_partners.whenToDonate">The Connect team will send you an email when it is time to donate your samples. Be sure to check your spam or junk folder. After you receive the email, it is important to donate your samples as soon as you can. It is easy to donate all of your samples in one visit.<br><br><span class="site-info-bold">Note:</span> If you have recently had a blood transfusion or donated blood, please wait at least <span class="site-info-bold">eight weeks</span> from your donation or transfusion before donating your samples for Connect. If you have recently donated plasma, please wait at least <span class="site-info-bold">four weeks</span> from your plasma donation before donating samples for Connect. If you have recently donated platelets, please wait at least <span class="site-info-bold">one week</span> from your platelet donation before donating samples for Connect. If you have an upcoming colonoscopy, please be sure that you <span class="site-info-bold">do not</span> donate samples for Connect on the <span class="site-info-bold">same day</span> as your colonoscopy.',
-    howToDonate: '<span data-i18n="samples.health_partners.howToDonate">Connect participants at HealthPartners have two options for donating samples. You can choose the most convenient option for you. There are no co-pays or charges associated with donating samples for Connect.<br><br><span class="site-info-bold">Option 1:</span> Make an appointment to come into our Connect research location, the Park Nicollet Clinic and Specialty Center, to donate your samples.<br><br><span class="site-info-bold">Option 2:</span> Make an appointment to come into one of the HealthPartners or Park Nicollet clinical collection locations.<br><br>When it is time to donate your samples, we will send you an email with a link for more information. If you are interested in donating samples at the Connect research location, simply click the link to schedule a time that works for you. If you prefer to donate samples at one of our HealthPartners clinical collection locations, please call the Connect team at HealthPartners at (952) 967-5067.  The table below includes more information about these options.<br><br><table border="1" style="width: 100`%;"><tr><th class="site-info-align" style="width: 50%;"><span class="site-info-bold">Option 1: Connect Research Location</span><br><i>Park Nicollet Clinic and Specialty Center, St. Louis Park</i>  </th><th style="width: 50%;"><span class="site-info-bold">Option 2: HealthPartners Clinical Collection Locations </span><br><i>HealthPartners Riverway Clinic Elk River and <br>Park Nicollet Clinic Chanhassen and Park Nicollet Clinic Minneapolis </i><br><br></th></tr><tr><td style="width: 50%;">Connect team will greet you and walk you through your visit.</td><td style="width: 50%;">HealthPartners clinical lab staff will collect your Connect samples.</td></tr><tr><td style="width: 50%;">The team will draw blood, collect urine, and collect a saliva sample by asking you to swish with mouthwash.<br><br>You will also complete a survey related to the samples we are collecting in MyConnect using your mobile phone. If you do not have a mobile phone, we will provide you with a tablet to complete your survey. You will need your MyConnect login information to complete the survey.</td><td style="width: 50%;">Lab staff will collect blood and urine samples at your visit. You can donate Connect samples and complete any labs ordered by your provider in the same visit. <br><br>Within 48 hours of your sample donation, you will receive an email with a link to a survey to complete on MyConnect. The survey is related to the samples that we collected. <br><br> The Connect team will send you a mouthwash collection kit with instructions to complete your saliva sample at home.</td></tr><tr><td style="width: 50%;">When you receive the scheduling email from the Connect team, please use the link included to schedule an appointment to donate your samples at a time that is convenient for you. You may also call the Connect team at 952-967-5357 if you would prefer to schedule your appointment over the phone.</td><td style="width: 50%;">To schedule at one of these locations, please call our team at 952-967-5357 after you receive the scheduling email from the Connect team.</td></tr></table><br>For questions, please contact the Connect team at HealthPartners at 952-967-5357 or ConnectStudy@healthpartners.com.',
+    howToDonate: '<span data-i18n="samples.health_partners.howToDonate">Connect participants at HealthPartners have two options for donating samples. You can choose the most convenient option for you. There are no co-pays or charges associated with donating samples for Connect.<br><br><span class="site-info-bold">Option 1:</span> Make an appointment to come into our Connect research location, the Park Nicollet Clinic and Specialty Center, to donate your samples.<br><br><span class="site-info-bold">Option 2:</span> Make an appointment to come into one of the HealthPartners or Park Nicollet clinical collection locations.<br><br>When it is time to donate your samples, we will send you an email with a link for more information. If you are interested in donating samples at the Connect research location, simply click the link to schedule a time that works for you. If you prefer to donate samples at one of our HealthPartners clinical collection locations, please call the Connect team at HealthPartners at 952-967-5067.  The table below includes more information about these options.<br><br><table border="1" style="width: 100`%;"><tr><th class="site-info-align" style="width: 50%;"><span class="site-info-bold">Option 1: Connect Research Location</span><br><i>Park Nicollet Clinic and Specialty Center, St. Louis Park</i>  </th><th style="width: 50%;"><span class="site-info-bold">Option 2: HealthPartners Clinical Collection Locations </span><br><i>HealthPartners Riverway Clinic Elk River and <br>Park Nicollet Clinic Chanhassen and Park Nicollet Clinic Minneapolis </i><br><br></th></tr><tr><td style="width: 50%;">Connect team will greet you and walk you through your visit.</td><td style="width: 50%;">HealthPartners clinical lab staff will collect your Connect samples.</td></tr><tr><td style="width: 50%;">The team will draw blood, collect urine, and collect a saliva sample by asking you to swish with mouthwash.<br><br>You will also complete a survey related to the samples we are collecting in MyConnect using your mobile phone. If you do not have a mobile phone, we will provide you with a tablet to complete your survey. You will need your MyConnect login information to complete the survey.</td><td style="width: 50%;">Lab staff will collect blood and urine samples at your visit. You can donate Connect samples and complete any labs ordered by your provider in the same visit. <br><br>Within 48 hours of your sample donation, you will receive an email with a link to a survey to complete on MyConnect. The survey is related to the samples that we collected. <br><br> The Connect team will send you a mouthwash collection kit with instructions to complete your saliva sample at home.</td></tr><tr><td style="width: 50%;">When you receive the scheduling email from the Connect team, please use the link included to schedule an appointment to donate your samples at a time that is convenient for you. You may also call the Connect team at 952-967-5357 if you would prefer to schedule your appointment over the phone.</td><td style="width: 50%;">To schedule at one of these locations, please call our team at 952-967-5357 after you receive the scheduling email from the Connect team.</td></tr></table><br>For questions, please contact the Connect team at HealthPartners at 952-967-5357 or ConnectStudy@healthpartners.com.',
     scheduling: '',
     howLong: '<span data-i18n="samples.health_partners.howLong"><span class="site-info-bold">Connect Research Location:</span><br><br>Please expect to spend about 30 minutes at your appointment to donate your samples. During your appointment, we will ask you to complete a short survey related to the samples we are collecting.<br><br><span class="site-info-bold">Connect Clinical Collection Location:</span><br><br>Please expect to spend about 10-15 minutes at your appointment to donate your blood and urine samples.',
     prepareInstructions: '<span data-i18n="samples.health_partners.prepareInstructions"><span class="site-info-bold">Connect Research Location:</span><br><br>On the day of your appointment, please drink plenty of water, but <span class="site-info-bold">stop drinking water one hour before your appointment.</span><br><br><span class="site-info-bold">One hour before your appointment:</span> Please <span class="site-info-bold">do not</span> eat, drink any liquids (including water), chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span class="site-info-bold">Things to bring and remember:</span><br><br><ul><li>Please bring a valid government-issued photo ID, such as a driver\'s license.</li><li>Make sure you know your login information for your <a href="https://myconnect.cancer.gov">MyConnect account.</a><li>We will ask you to complete a short survey when you donate your samples. It may be helpful to have this information on hand:</li><ul><li>The last time you ate or drank, and the times you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></li></ul><br><span class="site-info-bold">Connect Clinical Collection Locations:</span><br><br>On the day of your appointment, you do not need to fast. Please drink plenty of water to keep hydrated.<br><br><span class="site-info-bold">Things to bring and remember:</span><br><br><ul><li>Please bring a valid government-issued photo ID, such as a driver\'s license.</li><li>After your appointment:<br><ul><li>Be sure to check your email for a link to a survey to complete on MyConnect. The survey asks questions about the day you donated samples, so it is important to complete it as soon as you can.</li><li>We will email you when we ship your mouthwash home collection kit. Please use this kit and included instructions to collect your mouthwash sample at home.</li></ul></li></ul>',
@@ -1254,10 +1428,10 @@ const health_partners = {
             '<span data-i18n="samples.health_partners.locations.NicolletClinicParking">Parking at the Park Nicollet Clinic and Specialty Center is free in the visitor parking ramp. <br><br><div class="messagesHeaderFont">Scheduling Information</div><br>You can self-schedule using the link included in the scheduling email sent from the Connect team. For questions or to schedule over the phone, please call 952-967-5067.</span>'
         ],
         [
-            '<span data-i18n="samples.health_partners.locations.RiverwayName">HealthPartners Riverway Clinic Elk River</span>',
-            '<span data-i18n="samples.health_partners.locations.RiverwayAddress">530 3rd St NW<br>Elk River, MN 55330<br><br>Upon arrival, proceed past the main check in desk and go directly to the lab check in desk.</span>',
+            '<span data-i18n="samples.health_partners.locations.RiverwayElkName">HealthPartners Riverway Clinic Elk River</span>',
+            '<span data-i18n="samples.health_partners.locations.RiverwayElkAddress">530 3rd St NW<br>Elk River, MN 55330<br><br>Upon arrival, proceed past the main check in desk and go directly to the lab check in desk.</span>',
             '',
-            '<span data-i18n="samples.health_partners.locations.RiverwayParking">Parking is free in the Elk River Clinic parking lot.<br><br><div class="messagesHeaderFont">Scheduling Information</div><br>Self-scheduling is not currently available for the Elk River location. For questions and scheduling, please call 952-967-5067</span>'
+            '<span data-i18n="samples.health_partners.locations.RiverwayElkParking">Parking is free in the Elk River Clinic parking lot.<br><br><div class="messagesHeaderFont">Scheduling Information</div><br>Self-scheduling is not currently available for the Elk River location. For questions and scheduling, please call 952-967-5067</span>'
         ],
         [
             '<span data-i18n="samples.health_partners.locations.NicolletName">Park Nicollet Clinic Chanhassen</span>',
@@ -1288,6 +1462,24 @@ const health_partners = {
             '<span data-i18n="samples.health_partners.locations.NewRichmondClinicAddress">535 Hospital Rd<br>New Richmond, WI 54017 <br><br>Upon entering the building by the rotunda entrance, check in with the information desk. Ask for the “Connect Study at the Clinic lab and you will be guided through the double doors to your right to check in at the \"clinic lab\".</span>',
             '',
             '<span data-i18n="samples.health_partners.locations.NewRichmondClinicParking">"Free parking is available on-site at the front of the building.<br><br><div class="messagesSubHeader">Scheduling Information</div><br>Self-scheduling is not currently available for the New Richmond location. For questions and scheduling, please call 952-967-5067.</span>',
+        ],
+        [
+            '<span data-i18n="samples.health_partners.locations.ClinicStPaulWabashaName">HealthPartners Clinic St. Paul (Wabasha)</span>',
+            '<span data-i18n="samples.health_partners.locations.ClinicalStPaulWabashaAddress">205 Wabasha St S <br> St Paul, MN 55107 <br><br> Upon arrival, enter the clinic main doors and turn left. Walk past the main clinic greet station and follow signs to the lab greet station, which is located on the main floor of the clinic.</span>',
+            '',
+            '<span data-i18n="samples.health_partners.locations.ClinicalStPaulWabashaParking">"Free parking is available on-site at the front of the building.<br><br><div class=\"messagesSubHeader\">Scheduling Information</div> Self-scheduling is not currently available for the St. Paul (Wabasha) location. For questions and scheduling, please call 952-967-5067.</span>',
+        ],
+        [
+            '<span data-i18n="samples.health_partners.locations.NicolletBurnsvilleName">Park Nicollet Clinic and Specialty Center, Burnsville</span>',
+            '<span data-i18n="samples.health_partners.locations.NicolletBurnsvilleAddress">14000 Fairview Dr<br>Burnsville, MN 55337 <br><br>Upon entering the 14050 building, follow the 14000 building signage until you come to the elevators or stairs. The lab is on the second floor.</span>',
+            '',
+            '<span data-i18n="samples.health_partners.locations.NicolletBurnsvilleParking">Parking at the Park Nicollet Specialty Center is free in the visitor parking ramp.<br><br><div class=\"messagesSubHeader\">Scheduling Information</div>Self-scheduling is not currently available for the Burnsville location. For questions and scheduling, please call 952-967-5067.</span>',
+        ],
+        [
+            '<span data-i18n="samples.health_partners.locations.RiverwayAndoverName">HealthPartners Riverway Clinic Andover</span>',
+            '<span data-i18n="samples.health_partners.locations.RiverwayAndoverAddress">15245 Bluebird St NW <br> Andover, MN 55304 <br><br>Upon arrival, enter the clinic’s main doors and check in at the clinic front desk.</span>',
+            '',
+            '<span data-i18n="samples.health_partners.locations.RiverwayAndoverParking">Parking is free and available in the front of the clinic.<br><br><div class=\"messagesSubHeader\">Scheduling Information</div>Self-scheduling is not currently available for the Andover location. For questions and scheduling, please call 952-967-5067.</span>',
         ]
     ]
 };
@@ -1408,17 +1600,64 @@ const marshfield = {
 const henry_ford = {
     concept: '548392715',
     name: 'Henry Ford Health',
-    donatingSamples: '<span data-i18n="samples.henry_ford.donatingSamples">Thank you for being part of the Connect for Cancer Prevention Study. As part of the study, we ask you to donate blood, urine, and saliva samples.</span>',
+    donatingSamples: '<span data-i18n="samples.henry_ford.donatingSamples">Thank you for being part of the Connect for Cancer Prevention Study. As part of the study, we ask you to donate blood, urine, and mouthwash samples and complete two short surveys.</span>',
     whenToDonateHeader: '<span data-i18n="samples.henry_ford.whenToDonateHeader">When Should I Donate My Samples?</span>',
     whenToDonate: '<span data-i18n="samples.henry_ford.whenToDonate">The Connect team will send you an email when it is time to donate your samples. Be sure to check your spam or junk folder. After you receive the email, it is important to donate your samples as soon as you can.<br><br><span class="site-info-bold">Important Notes:</span><br><br><ol><li> If you have had a blood transfusion or donated blood recently:<br> Please wait at least <span class="site-info-bold">eight weeks</span> from your donation or transfusion before donating your samples for Connect.</li><br><li> If you have recently donated plasma:<br> Please wait at least <span class="site-info-bold">four weeks</span> from your plasma donation before donating samples for Connect.</li><br><li>If you have recently donated platelets:<br>Please wait at least <span class="site-info-bold">one week</span> from your platelet donation before donating samples for Connect.</li><br><li> If you have an upcoming colonoscopy:<br> Please be sure that you <span class="site-info-bold">do not</span> donate samples for Connect on the <span class="site-info-bold">same day</span> as your colonoscopy.</li></ol></span>',
-    howToDonate: '<span data-i18n="samples.henry_ford.howToDonate">Connect participants at Henry Ford Health have two options for donating samples. You can choose the most convenient option for you.<br><br><span class="site-info-bold">Option 1:</span> Make an appointment to come into one of our Connect Research Labs to donate your samples.<br><br><span class="site-info-bold">Option 2:</span> A study team member can request a lab order be placed for you. After you receive the order confirmation email, you can donate samples by visiting a <span class="site-info-bold site-info-italic">participating</span> Henry Ford Health Lab Services location during normal hours of operation.<br> * See a list of labs where you can donate Connect samples below. <br><br> The table below includes more information about these options.<br><br> <table style="border: 1px solid;padding:10px"> <tr style="border: 1px solid;padding:10px"> <th style="border: 1px solid;padding:10px"><span class="site-info-bold">Option 1: Connect Research Lab</span> </th> <th style="border: 1px solid;padding:10px"><span class="site-info-bold">Option 2: HFH Lab Services</span></th> </tr> <tr style="border: 1px solid;padding:10px"> <td style="border: 1px solid;padding:10px">Connect team will greet you and walk you through your visit.</td> <td style="border: 1px solid;padding:10px">More hours and more locations, no need to schedule an appointment.</td> </tr> <tr style="border: 1px solid;padding:10px"> <td style="border: 1px solid;padding:10px">The team will draw blood, collect urine, and collect a saliva sample by asking you to swish with mouthwash.</td> <td style="border: 1px solid;padding:10px">Lab staff will collect blood and urine samples at your visit. You will receive a mouthwash collection kit in the mail with instructions on how to complete your saliva sample at home and mail back.</td> </tr> <tr style="border: 1px solid;padding:10px"> <td style="border: 1px solid;padding:10px">Schedule your appointment using the link in the email we send or schedule with Connect staff by calling 855-574-7540.</td> <td style="border: 1px solid;padding:10px">Request a lab order using the link in the email we send. The order will be placed by Connect staff.<span class="site-info-bold"> Please allow up to 48 hours to receive order confirmation via email.</span> Once you receive the confirmation email, visit a participating HFH Lab Services location.<span class="site-info-bold"> Orders expire after 90 days.</span></td> </tr> </table><br>When it is time to donate your samples, we will send you an email with a link to make your selection. Simply click the link to schedule a time that works for you to donate your samples at a Connect Research Lab or to request a lab order be placed so you can donate samples at a <span class="site-info-bold">participating</span> Henry Ford Health Lab Services location. <br><br> You can donate Connect samples and complete any labs ordered by your provider in the same visit.<br><br><span class="site-info-bold">For questions or assistance with transportation, please call 855-574-7540 or email <a href="mailto:ConnectStudy@hfhs.org">ConnectStudy@hfhs.org</a></span> </span>',
-    howLong: '<span data-i18n="samples.henry_ford.howLong"><span class="site-info-bold">For Option 1: Connect Research Lab Appointment</span><br>Please expect to spend about one hour at your appointment to donate your samples and complete a short survey.<br><br><span class="site-info-bold">For Option 2: Henry Ford Health Lab Services Locations</span><br>Wait times to donate samples may vary by location. To better serve HFH patients, Henry Ford Lab Services have started using <span class="site-info-bold">“Save My Spot".</span><br><br><span class="site-info-bold">“Save My Spot"</span> is an optional service to reserve your spot in line at one of the participating Henry Ford Health Lab Services locations (see table of locations above). All lab orders must be placed before using “Save My Spot,” including your lab order for Connect.<br><br>To use this optional service, click this link only after receiving order confirmation from Connect staff: <a href= "https://www.henryford.com/locations/henry-ford-hospital/lab-services">https://www.henryford.com/locations/henry-ford-hospital/lab-services</a> </span>',
+    howToDonateHeader: '<span data-i18n="samples.henry_ford.howToDonateHeader">How Do I Donate My Blood and Urine Samples?</span>',
+    howToDonate: '<p data-i18n="samples.henry_ford.howToDonate"> After you receive notification that we placed your Connect lab order, please visit any HFH Lab Services location listed in the "Where Do I Donate My Samples" section below. We are not able to collect samples for Connect at other HFH locations not currently listed, or outside of HFH (like LabCorp or Quest).' 
+        + '<br><br> You can donate Connect samples and complete any labs ordered by your provider in the same visit. You do not need an appointment.' 
+        + '<br><br> You do not need to fast before you donate samples for Connect, so you may eat and drink before your visit.</p>',
+    howLong: '<span data-i18n="samples.henry_ford.howLong">'
+        +       '<br>Wait times to donate samples may vary by location. To better serve HFH patients, Henry Ford Lab Services have started using “Save My Spot".'
+        +       '<br><br><span class="site-info-bold">“Save My Spot"</span> is an optional service to reserve your spot in line at one of the participating HFH locations (see table of locations above). All lab orders must be placed before using “Save My Spot,” including your lab order for Connect.'
+        +       '<br><br>To use this optional service, click this link only after receiving order confirmation from Connect staff: <a href= "https://www.henryford.com/locations/henry-ford-hospital/lab-services">https://www.henryford.com/locations/henry-ford-hospital/lab-services</a>'
+        +    '</span>',
+    whatHappensDuring: '<span data-i18n="samples.henry_ford.whatHappensDuring">Donating your research blood and urine samples is just like providing samples requested by your health care provider. When you arrive at the clinic, you may go directly to the lab and check in with front desk staff. When it is your turn, the lab will call you back and collect your samples. The lab techs will be able to see your blood and urine collection orders and instructions for Connect in their system.</span>',
+    whatHappensAfter: '<span data-i18n="samples.henry_ford.whatHappensAfter"> Within a day of your blood and urine collection, we will send you an email asking you to complete a short survey on MyConnect. The survey will ask about recent actions such as:'
+        +             '<br><br>'
+        +             '<ul style="margin: 0; padding-left: 2.5rem;">'
+        +               '<li>The last time you ate or drank before your lab visit, the time you went to sleep the night before your lab visit, and the time you woke up on the day or your visit. </li>'
+        +               '<li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li>'
+        +              '</ul>'
+        +              '<br>'
+        +              'When you receive our email, it is important that you complete the survey as soon as possible.'
+        +              '</span>',
+    howToDonateMouthwash: '<span data-i18n="samples.henry_ford.howToDonateMouthwash">'
+        +    'We will send you an email as soon as your mouthwash home collection kit is on the way. Once you receive the kit, you can collect your mouthwash sample in the comfort of your own home. The kit we mail you will include instructions and all of the items needed to collect your sample, including a return shipping box with a pre-paid shipping label to return your sample to us.'
+        +    '<br><br>'
+        +    'When you collect your mouthwash sample, we will ask you to complete a short survey on MyConnect. It is important to complete this survey on the same day that you collect your mouthwash sample.'
+        +    '</span>',
     prepareInstructions: '<span data-i18n="samples.henry_ford.prepareInstructions">On the day of your visit to donate samples for Connect, you do not need to fast unless told to do so by your provider for any other lab work they’ve ordered. We request you drink plenty of water to keep hydrated but <span class="site-info-bold">stop drinking water one hour before your visit.</span><br><br><span class="site-info-bold">One hour before your visit:</span> Please <span class="site-info-bold">do not</span> eat, drink, chew gum, smoke, vape, or chew any products (including tobacco), rinse your mouth, or brush your teeth.<br><br><span class="site-info-bold">Things to bring and remember:</span> We will ask you to complete a short survey on MyConnect after you donate samples. You will need your login method for MyConnect and a personal device to complete the survey. <br><br>You will be asked questions related to:<ul><li>The last time you ate or drank before your appointment, and the time you went to sleep the night before your appointment and woke up on the day of your appointment.</li><li>If you are menstruating, the start date of your most recent menstrual period in the last 12 months.</li></ul></span>',
-    payment: '<span data-i18n="samples.henry_ford.payment">You will receive your $25 gift card after you donate a blood sample and complete <span class="site-info-bold">all four sections</span> of your first Connect survey.<br><br>You can find the four sections of your first survey on your MyConnect Dashboard. These sections are:<ol><li>Background and Overall Health</li><li>Medications, Reproductive Health, Exercise, and Sleep</li><li>Smoking, Alcohol, and Sun Exposure</li><li>Where you Live and Work</li></ol></span>',
+    payment: '<span data-i18n="samples.henry_ford.payment">You will receive your $25 gift card after you donate a blood sample and complete <span class="site-info-bold">all four sections</span> of your first Connect survey.<br><br>You can find the four sections of your first survey within the Surveys card on your MyConnect Dashboard. These sections are:<ol><li>Background and Overall Health</li><li>Medications, Reproductive Health, Exercise, and Sleep</li><li>Smoking, Alcohol, and Sun Exposure</li><li>Where you Live and Work</li></ol></span>',
     support: '<span data-i18n="samples.henry_ford.support">Call 855-574-7540 (9:00 a.m. – 7:00 p.m. on weekdays. On weekends and after business hours please leave a message with your name and a good time to call you back).</span>',
-    locationNotes: '<span data-i18n="samples.henry_ford.locationNotes">The table below lists Connect Research Lab and HFH Lab Services locations where you can donate samples for the study.<br><br>If you schedule a visit to donate Connect samples at a Connect Research Lab, you will receive a confirmation email with the address, time / date of your appointment, and parking information.<br><br> Please <a href="https://www.henryford.com/locations/search-results?|#services=&locationtype={6892DD84-8634-4F32-A6C0-8DC0F2E45486}&locationname=&&g=0|0" target="_plank">click here</a> to find address, business hours, and parking information for participating HFH Lab Services locations shown in the table below.<br><br><table style="width: 100%;border: 1px solid"><tr style="border: 1px solid"><td style="padding: 10px;vertical-align:top;border: 1px solid"><span class="site-info-bold">Connect Research Lab</span> </td><td style="padding: 10px;vertical-align:top;border: 1px solid"><span class="site-info-bold">HFH Lab Services Locations</span> </td></tr><tr style="border: 1px solid"><td style="padding: 10px;vertical-align:top;border: 1px solid">1. HFH Main K13 Research Clinic<br> 2. HFH Medical Center- Detroit Northwest </td><td style="padding: 10px;vertical-align:top;border: 1px solid">1. HFH Medical Center Brownstown<br>2. HFH Medical Center Columbus<br>3. HFH Detroit Main- K1<br>4. HFH Medical Center Fairlane<br>5. HFH Medical Center Ford Road<br>6. HFH Macomb<br>7. HFH Medical Center New Center One<br>8. HFH Medical Center Plymouth<br>9. HFH Medical Center Royal Oak<br>10.  HFH Medical Center Sterling Heights<br>11. HFH Medical Center Troy<br>12. HFH West Bloomfield<br>13. HFH Wyandotte </td></tr></table></span>',
+    locationNotes: '<span data-i18n="samples.henry_ford.locationNotes">The table below lists the HFH Lab Services locations where you can donate samples for the study.'
+        + '<br><br> Please <a href="https://www.henryford.com/locations/search-results?|#services=&locationtype={6892DD84-8634-4F32-A6C0-8DC0F2E45486}&locationname=&&g=0|0" target="_blank" rel="noopener noreferrer">click here</a> to find address, business hours, and parking information for participating HFH Lab Services locations shown in the table below.'
+        + '<br><br><table style="width: 100%;border: 1px solid">'
+        + '<tr style="border: 1px solid">'
+        + '<td style="padding: 10px;vertical-align:top;border: 1px solid; text-align:center;"><span class="site-info-bold">HFH Lab Services Locations</span> </td></tr>'
+        + '<tr style="border: 1px solid">'
+        +     '<td style="padding: 10px;vertical-align:top;border: 1px solid">'
+        +         '<ol style="margin: 0; padding-left: 20px;">'
+        +             '<li>HFH Medical Center Brownstown</li>'
+        +             '<li>HFH Medical Center Columbus</li>'
+        +             '<li>HFH Detroit Main- K1</li>'
+        +             '<li>HFH Medical Center Fairlane</li>'
+        +             '<li>HFH Medical Center Ford Road</li>'
+        +             '<li>HFH Jackson Professional Building (Suite 104)</li>'
+        +             '<li>HFH Macomb Hospital</li>'
+        +             '<li>HFH Medical Center New Center One</li>'
+        +             '<li>HFH Medical Center Plymouth</li>'
+        +             '<li>HFH Medical Center Royal Oak</li>'
+        +             '<li>HFH Medical Center Sterling Heights</li>'
+        +             '<li>HFH Medical Center Troy</li>'
+        +             '<li>HFH West Bloomfield Hospital</li>'
+        +             '<li>HFH Wyandotte Hospital</li>'
+        +         '</ol>'
+        +     '</td>'
+        + '</tr>'
+        + '</table></span>',
     locations: [],
-    questions: '<div data-i18n="samples.henry_ford.questions">Questions? Contact the Connect Study Team at Henry Ford Health</div>',
+    questionsHeader: '<div data-i18n="samples.henry_ford.questionsHeader">Questions? Contact the Connect Study Team at Henry Ford Health</div>',
     contact: '<a href="mailto: connectstudy@hfhs.org">ConnectStudy@hfhs.org</a>'
 };
 
@@ -1730,17 +1969,17 @@ const locations = [
     bswh,
 ];
 
-
 const renderLocations = (site) => {
     let template = '';
     if (site.locations){
         site.locations.forEach(location => {
             template += `
-                <div class="row" style="width:100%">
+                <div style="width:100%; margin-bottom:1rem;">
                     <div class="messagesHeaderFont">
                         ${location[0]}
                     </div>
-                </div>`
+                </div>
+                `
             if (site === henry_ford) {
                 template += `
                 <div class="row" style="width:100%">
@@ -1756,7 +1995,7 @@ const renderLocations = (site) => {
             } else if (site === marshfield) {
                 template += `
                 <div class="row removePaddingTop" style="width:100%">
-                    <div style="width:100%; margin-left: 2rem;">
+                    <div style="width:100%; margin-left:2rem;">
                         <div class="messagesHeaderFont " data-i18n="samples.addressText">
                             Address
                         </div>
@@ -1793,12 +2032,12 @@ const renderLocations = (site) => {
                 }
             } else {
                 template += `
-                <div class="row" style="width:100%">
+                <div style="width:100%">
                     <div style="width:100%">
                         <div class="messagesSubHeader" data-i18n="samples.directionsText">
                             Address and Directions
                         </div>
-                        <div class="messagesBodyFont">
+                        <div class="messagesBodyFont" style="padding: 0 0 1rem;">
                             ${location[1]}
                         </div>
                     </div>
@@ -1806,7 +2045,7 @@ const renderLocations = (site) => {
             }
             if (location[2])  {
                 template+=`    
-                <div class="row" style="width:100%;padding:5px 15px;">
+                <div style="width:100%;padding:5px 15px;">
                     <div style="width:100%">
                         <div class="messagesHeaderFont" data-i18n="samples.hoursText">
                             Hours
@@ -1820,7 +2059,7 @@ const renderLocations = (site) => {
             
             if (location[3])  {
             template+=` 
-                <div class="row" style="width:100%">
+                <div style="width:100%">
                     <div style="width:100%">
                         <div class="messagesSubHeader" data-i18n="samples.parkingInstructions">
                             Parking Instructions

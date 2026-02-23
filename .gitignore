@@ -7,6 +7,4 @@ connectApp-translation
 node_modules/
 local-dev/
 npm-debug.log*
-package.json
-package-lock.json
 images/.DS_Store
