@@ -4154,11 +4154,9 @@ export const setModuleAttributes = async (data, modules, collections) => {
         modules['PROMIS'].completed = true;
     }
 
-    if (data[fieldMapping.Experience2024.statusFlag]) {
-        modules["Connect Experience 2024"].enabled = true;
-    }
-
+    // Survey is closed: only show for participants who have already submitted it
     if (data[fieldMapping.Experience2024.statusFlag] === fieldMapping.moduleStatus.submitted) { 
+        modules["Connect Experience 2024"].enabled = true;
         modules['Connect Experience 2024'].completed = true;
     }
 
