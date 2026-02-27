@@ -384,66 +384,6 @@ export const addEventHeardAboutStudy = () => {
     });
 }
 
-const onBlurPhysicalAddressLine = (event, id) => {
-    const UPAddressCity = document.getElementById(`UPAddress${id}City`);
-    const UPAddressState = document.getElementById(
-        `UPAddress${id}State`
-    );
-    const UPAddressZip = document.getElementById(`UPAddress${id}Zip`);
-
-    const UPAddressCityLabel = document.getElementById(
-        `UPAddress${id}CityLabel`
-    );
-    const UPAddressStateLabel = document.getElementById(
-        `UPAddress${id}StateLabel`
-    );
-    const UPAddressZipLabel = document.getElementById(
-        `UPAddress${id}ZipLabel`
-    );
-
-    UPAddressCity.classList.remove("required-field");
-    UPAddressState.classList.remove("required-field");
-    UPAddressZip.classList.remove("required-field");
-    UPAddressCityLabel.setAttribute(
-        "data-i18n",
-        "form.mailAddressCityLabel"
-    );
-    UPAddressStateLabel.setAttribute(
-        "data-i18n",
-        "form.mailAddressStateLabel"
-    );
-    UPAddressZipLabel.setAttribute(
-        "data-i18n",
-        "form.mailAddressZipLabel"
-    );
-
-    if (event.target.value) {
-        UPAddressCity.classList.add("required-field");
-        UPAddressState.classList.add("required-field");
-        UPAddressZip.classList.add("required-field");
-        UPAddressCityLabel.setAttribute(
-            "data-i18n",
-            "form.mailAddressCityLabelRequired"
-        );
-        UPAddressStateLabel.setAttribute(
-            "data-i18n",
-            "form.mailAddressStateLabelRequired"
-        );
-        UPAddressZipLabel.setAttribute(
-            "data-i18n",
-            "form.mailAddressZipLabelRequired"
-        );
-    }
-};
-
-export const addEventPhysicalAddressLine = (id) => {
-    const UPAddressLine1 = document.getElementById(
-        `UPAddress${id}Line1`
-    );
-
-    UPAddressLine1.addEventListener("blur", (event) => onBlurPhysicalAddressLine(event, id));
-};
-
 export const addEventFormerName = () => {
     const addMoreFormerNameDiv = document.getElementById("addMoreFormerName");
     addMoreFormerNameDiv.addEventListener("click", addMoreFormerName);
@@ -1186,7 +1126,9 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             return result;
         };
 
-        // Physical address: validate if any field has a value
+        // Physical address: only validate if the user selected "Yes" on the radio
+        const physicalAddressYesSelected = document.querySelector('input[name="physicalMailingAddress"][value="353358909"]')?.checked || false;
+
         const physicalAddressFields = {
             line1: document.getElementById('UPAddress2Line1')?.value?.trim() || '',
             line2: document.getElementById('UPAddress2Line2')?.value?.trim() || '',
@@ -1195,7 +1137,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             zip: document.getElementById('UPAddress2Zip')?.value?.trim() || ''
         };
 
-        const hasPhysicalAddressField = Object.values(physicalAddressFields).some(value => value !== '');
+        const hasPhysicalAddressField = physicalAddressYesSelected;
 
         if (hasPhysicalAddressField) {
             runAddressValidation('UPAddress2', 'physical', physicalAddressFields);
