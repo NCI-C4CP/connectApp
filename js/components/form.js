@@ -488,7 +488,7 @@ const renderAltAddressFields = () => {
             </div>
         </div>
 
-        <div class="form-group row" id="altAddressSection">
+        <div class="form-group row" id="altAddressSection" style="display:none">
             <div class="col">
                 <span data-i18n="form.whatIsTheAltAddress">What is the address?</span>
                 ${renderMailingAddress('', 3, false)}                    
