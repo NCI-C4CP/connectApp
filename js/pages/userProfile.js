@@ -75,24 +75,44 @@ export const runAddressValidation = ({
 };
 
 /**
- * Writes physical and alternate address values to formData only when enabled.
+ * Writes all address values to formData:
+ * - Mailing address fields are always written.
+ * - Physical address fields are written only when hasPhysicalAddressField is true.
+ * - Alternate address fields are written only when hasAltAddressField is true.
+ * - PO Box flags (mailing and alternate) are always written.
+ * - Alt address existence flag is derived from radio selection and field content.
  *
  * @param {Object} params
  * @param {Object} params.formData - Outgoing payload object to mutate.
  * @param {Object} params.fieldMapping - Field mapping object containing address keys.
+ * @param {{line1:string, line2:string, city:string, state:string, zip:string}} params.mailingAddress - Mailing address values.
  * @param {boolean} params.hasPhysicalAddressField - Whether physical address should be persisted.
  * @param {{line1:string, line2:string, city:string, state:string, zip:string}} params.physicalAddress - Physical address values.
  * @param {boolean} params.hasAltAddressField - Whether alternate address should be persisted.
  * @param {{line1:string, line2:string, city:string, state:string, zip:string}} params.altAddress - Alternate address values.
+ * @param {boolean} params.isPOBoxChecked - Whether the mailing PO Box checkbox is checked.
+ * @param {boolean} params.isAltPOBoxChecked - Whether the alternate PO Box checkbox is checked.
  */
-export const applyConditionalAddressWrites = ({
+export const applyAddressWrites = ({
     formData,
     fieldMapping,
+    mailingAddress,
     hasPhysicalAddressField,
     physicalAddress,
     hasAltAddressField,
     altAddress,
+    isPOBoxChecked,
+    isAltPOBoxChecked,
 }) => {
+    // Mailing address — always written
+    formData[fieldMapping.address1] = mailingAddress.line1;
+    if (mailingAddress.line2 !== "") formData[fieldMapping.address2] = mailingAddress.line2;
+    formData[fieldMapping.city] = mailingAddress.city;
+    formData[fieldMapping.state] = mailingAddress.state;
+    formData[fieldMapping.zip] = mailingAddress.zip;
+    formData[fieldMapping.isPOBox] = isPOBoxChecked ? fieldMapping.yes : fieldMapping.no;
+
+    // Physical address — conditional
     if (hasPhysicalAddressField) {
         if (physicalAddress.line1 !== "") formData[fieldMapping.physicalAddress1] = physicalAddress.line1;
         if (physicalAddress.line2 !== "") formData[fieldMapping.physicalAddress2] = physicalAddress.line2;
@@ -101,6 +121,7 @@ export const applyConditionalAddressWrites = ({
         if (physicalAddress.zip !== "") formData[fieldMapping.physicalZip] = physicalAddress.zip;
     }
 
+    // Alternate address — conditional
     if (hasAltAddressField) {
         if (altAddress.line1 !== "") formData[fieldMapping.altAddress1] = altAddress.line1;
         if (altAddress.line2 !== "") formData[fieldMapping.altAddress2] = altAddress.line2;
@@ -108,6 +129,16 @@ export const applyConditionalAddressWrites = ({
         if (altAddress.state) formData[fieldMapping.altState] = altAddress.state;
         if (altAddress.zip) formData[fieldMapping.altZip] = altAddress.zip;
     }
+
+    // Alt address existence — derived from radio selection and field content
+    if (hasAltAddressField) {
+        formData[fieldMapping.doesAltAddressExist] = fieldMapping.yes;
+    } else {
+        formData[fieldMapping.doesAltAddressExist] = fieldMapping.no;
+    }
+
+    // PO Box flag for alternate address
+    formData[fieldMapping.isPOBoxAltAddress] = isAltPOBoxChecked ? fieldMapping.yes : fieldMapping.no;
 };
 
 /**

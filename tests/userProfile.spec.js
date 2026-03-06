@@ -7,7 +7,7 @@ vi.mock('../js/fieldToConceptIdMapping.js', () => ({
 }));
 
 let validateAddressFields;
-let applyConditionalAddressWrites;
+let applyAddressWrites;
 let isPhysicalAddressYesSelected;
 let isAltAddressYesSelected;
 let addEventTogglePhysicalAddress;
@@ -16,7 +16,7 @@ let addEventToggleAltAddress;
 beforeAll(async () => {
   ({
     validateAddressFields,
-    applyConditionalAddressWrites,
+    applyAddressWrites,
     isPhysicalAddressYesSelected,
     isAltAddressYesSelected,
     addEventTogglePhysicalAddress,
@@ -77,8 +77,14 @@ describe('userProfile helpers', () => {
     });
   });
 
-  describe('applyConditionalAddressWrites', () => {
+  describe('applyAddressWrites', () => {
     const fieldMapping = {
+      address1: 'address1',
+      address2: 'address2',
+      city: 'city',
+      state: 'state',
+      zip: 'zip',
+      isPOBox: 'isPOBox',
       physicalAddress1: 'physicalAddress1',
       physicalAddress2: 'physicalAddress2',
       physicalCity: 'physicalCity',
@@ -89,6 +95,18 @@ describe('userProfile helpers', () => {
       altCity: 'altCity',
       altState: 'altState',
       altZip: 'altZip',
+      doesAltAddressExist: 'doesAltAddressExist',
+      isPOBoxAltAddress: 'isPOBoxAltAddress',
+      yes: 353358909,
+      no: 104430631,
+    };
+
+    const mailingAddress = {
+      line1: '50 Mailing Ln',
+      line2: 'Suite 10',
+      city: 'Bethesda',
+      state: 'MD',
+      zip: '20892',
     };
 
     const physicalAddress = {
@@ -107,41 +125,86 @@ describe('userProfile helpers', () => {
       zip: '20850',
     };
 
-    it('does not write when both flags are false', () => {
+    it('always writes mailing address and PO box flags', () => {
       const formData = {};
-      applyConditionalAddressWrites({
+      applyAddressWrites({
         formData,
         fieldMapping,
+        mailingAddress,
         hasPhysicalAddressField: false,
         physicalAddress,
         hasAltAddressField: false,
         altAddress,
+        isPOBoxChecked: true,
+        isAltPOBoxChecked: false,
       });
 
-      expect(Object.keys(formData)).toHaveLength(0);
+      expect(formData[fieldMapping.address1]).toBe('50 Mailing Ln');
+      expect(formData[fieldMapping.address2]).toBe('Suite 10');
+      expect(formData[fieldMapping.city]).toBe('Bethesda');
+      expect(formData[fieldMapping.state]).toBe('MD');
+      expect(formData[fieldMapping.zip]).toBe('20892');
+      expect(formData[fieldMapping.isPOBox]).toBe(fieldMapping.yes);
+      expect(formData[fieldMapping.isPOBoxAltAddress]).toBe(fieldMapping.no);
+      // Physical and alt fields should not be written
+      expect(formData[fieldMapping.physicalAddress1]).toBeUndefined();
+      expect(formData[fieldMapping.altAddress1]).toBeUndefined();
+      // Alt does not exist
+      expect(formData[fieldMapping.doesAltAddressExist]).toBe(fieldMapping.no);
     });
 
-    it('writes mapped fields when both flags are true', () => {
+    it('writes all address types when both flags are true', () => {
       const formData = {};
-      applyConditionalAddressWrites({
+      applyAddressWrites({
         formData,
         fieldMapping,
+        mailingAddress,
         hasPhysicalAddressField: true,
         physicalAddress,
         hasAltAddressField: true,
         altAddress,
+        isPOBoxChecked: false,
+        isAltPOBoxChecked: true,
       });
 
+      // Mailing
+      expect(formData[fieldMapping.address1]).toBe('50 Mailing Ln');
+      expect(formData[fieldMapping.isPOBox]).toBe(fieldMapping.no);
+
+      // Physical
       expect(formData[fieldMapping.physicalAddress1]).toBe('100 Physical St');
       expect(formData[fieldMapping.physicalAddress2]).toBe('Unit 2');
       expect(formData[fieldMapping.physicalCity]).toBe('Bethesda');
       expect(formData[fieldMapping.physicalState]).toBe('MD');
       expect(formData[fieldMapping.physicalZip]).toBe('20892');
+
+      // Alternate
       expect(formData[fieldMapping.altAddress1]).toBe('200 Alt Ave');
       expect(formData[fieldMapping.altAddress2]).toBe('Apt 3');
       expect(formData[fieldMapping.altCity]).toBe('Rockville');
       expect(formData[fieldMapping.altState]).toBe('MD');
       expect(formData[fieldMapping.altZip]).toBe('20850');
+
+      // Alt exists and PO box flags
+      expect(formData[fieldMapping.doesAltAddressExist]).toBe(fieldMapping.yes);
+      expect(formData[fieldMapping.isPOBoxAltAddress]).toBe(fieldMapping.yes);
+    });
+
+    it('sets doesAltAddressExist to no when alt fields are empty', () => {
+      const formData = {};
+      applyAddressWrites({
+        formData,
+        fieldMapping,
+        mailingAddress,
+        hasPhysicalAddressField: false,
+        physicalAddress,
+        hasAltAddressField: true,
+        altAddress: { line1: '', line2: '', city: '', state: '', zip: '' },
+        isPOBoxChecked: false,
+        isAltPOBoxChecked: false,
+      });
+
+      expect(formData[fieldMapping.doesAltAddressExist]).toBe(fieldMapping.no);
     });
   });
 

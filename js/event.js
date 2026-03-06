@@ -2,7 +2,7 @@ import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticip
 import { consentTemplate } from "./pages/consent.js";
 import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, noLongerEnrollingRender,  requestPINTemplate } from "./pages/healthCareProvider.js";
 import { renderDashboard } from "./pages/dashboard.js";
-import { applyConditionalAddressWrites, isPhysicalAddressYesSelected, isAltAddressYesSelected, runAddressValidation } from "./pages/userProfile.js";
+import { applyAddressWrites, isPhysicalAddressYesSelected, isAltAddressYesSelected, runAddressValidation } from "./pages/userProfile.js";
 import { suffixToTextMap, getFormerNameData, formerNameOptions } from "./settingsHelpers.js";
 import fieldMapping from "./fieldToConceptIdMapping.js";
 import {signUpRender} from "./pages/homePage.js";
@@ -1320,67 +1320,39 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             })
         }
 
-        // Mailing address
-        formData[fieldMapping.address1] = escapeHTML(document.getElementById('UPAddress1Line1').value || '');
-        const mailingAddress2 = escapeHTML(document.getElementById('UPAddress1Line2').value || '');
-        if(mailingAddress2 !== "") formData[fieldMapping.address2] = mailingAddress2;
-        formData[fieldMapping.city] = escapeHTML(document.getElementById('UPAddress1City').value || '');
-        formData[fieldMapping.state] = escapeHTML(document.getElementById('UPAddress1State').value || '');
-        formData[fieldMapping.zip] = zip;
-
+        // Collect address values for consolidated write
         const poBoxCheckbox = document.getElementById("poBoxCheckbox");
-
-        // Physical address
-        formData[fieldMapping.isPOBox] = poBoxCheckbox && poBoxCheckbox.checked ?
-            fieldMapping.yes :
-            fieldMapping.no
-
-        // Physical address info is saved regardless of whether PO Box is checked
-        const physicalAddressLine1 = escapeHTML(document.getElementById('UPAddress2Line1')?.value?.trim() || '');
-        const physicalAddressLine2 = escapeHTML(document.getElementById('UPAddress2Line2')?.value?.trim() || '');
-        const physicalAddressCity = escapeHTML(document.getElementById('UPAddress2City')?.value?.trim() || '');
-        const physicalAddressState = escapeHTML(document.getElementById('UPAddress2State')?.value || '');
-        const physicalAddressZip = escapeHTML(document.getElementById('UPAddress2Zip')?.value?.trim() || '');
-
-        // Alternate address (altAddressZip is validated above)
-        const altAddressLine1 = escapeHTML(document.getElementById('UPAddress3Line1')?.value?.trim() || '');
-        const altAddressLine2 = escapeHTML(document.getElementById('UPAddress3Line2')?.value?.trim() || '');
-        const altAddressCity = escapeHTML(document.getElementById('UPAddress3City')?.value?.trim() || '');
-        const altAddressState = escapeHTML(document.getElementById('UPAddress3State')?.value || '');
-        const altAddressZip = escapeHTML(document.getElementById('UPAddress3Zip')?.value?.trim() || '');
         const altAddressPOBoxCheckbox = document.getElementById("poBoxCheckboxAltAddress");
 
-        applyConditionalAddressWrites({
+        applyAddressWrites({
             formData,
             fieldMapping,
+            mailingAddress: {
+                line1: escapeHTML(document.getElementById('UPAddress1Line1').value || ''),
+                line2: escapeHTML(document.getElementById('UPAddress1Line2').value || ''),
+                city: escapeHTML(document.getElementById('UPAddress1City').value || ''),
+                state: escapeHTML(document.getElementById('UPAddress1State').value || ''),
+                zip,
+            },
             hasPhysicalAddressField,
             physicalAddress: {
-                line1: physicalAddressLine1,
-                line2: physicalAddressLine2,
-                city: physicalAddressCity,
-                state: physicalAddressState,
-                zip: physicalAddressZip,
+                line1: escapeHTML(document.getElementById('UPAddress2Line1')?.value?.trim() || ''),
+                line2: escapeHTML(document.getElementById('UPAddress2Line2')?.value?.trim() || ''),
+                city: escapeHTML(document.getElementById('UPAddress2City')?.value?.trim() || ''),
+                state: escapeHTML(document.getElementById('UPAddress2State')?.value || ''),
+                zip: escapeHTML(document.getElementById('UPAddress2Zip')?.value?.trim() || ''),
             },
             hasAltAddressField,
             altAddress: {
-                line1: altAddressLine1,
-                line2: altAddressLine2,
-                city: altAddressCity,
-                state: altAddressState,
-                zip: altAddressZip,
+                line1: escapeHTML(document.getElementById('UPAddress3Line1')?.value?.trim() || ''),
+                line2: escapeHTML(document.getElementById('UPAddress3Line2')?.value?.trim() || ''),
+                city: escapeHTML(document.getElementById('UPAddress3City')?.value?.trim() || ''),
+                state: escapeHTML(document.getElementById('UPAddress3State')?.value || ''),
+                zip: escapeHTML(document.getElementById('UPAddress3Zip')?.value?.trim() || ''),
             },
+            isPOBoxChecked: !!(poBoxCheckbox && poBoxCheckbox.checked),
+            isAltPOBoxChecked: !!(altAddressPOBoxCheckbox && altAddressPOBoxCheckbox.checked),
         });
-
-        // Set alt address existence based on user's radio selection and field values
-        if (altAddressYesSelected && (altAddressLine1 || altAddressLine2 || altAddressCity || altAddressState || altAddressZip)) {
-            formData[fieldMapping.doesAltAddressExist] = fieldMapping.yes;
-        } else {
-            formData[fieldMapping.doesAltAddressExist] = fieldMapping.no;
-        }
-
-        formData[fieldMapping.isPOBoxAltAddress] = altAddressPOBoxCheckbox && altAddressPOBoxCheckbox.checked
-            ? fieldMapping.yes
-            : fieldMapping.no;
         
         // Alternate contact (phone and email fields validated above)
         const altContactFirstName = escapeHTML(document.getElementById('altContactFirstName')?.value?.trim() || '');
