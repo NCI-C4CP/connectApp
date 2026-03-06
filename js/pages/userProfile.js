@@ -130,12 +130,8 @@ export const applyAddressWrites = ({
         if (altAddress.zip) formData[fieldMapping.altZip] = altAddress.zip;
     }
 
-    // Alt address existence — derived from radio selection and field content
-    if (hasAltAddressField) {
-        formData[fieldMapping.doesAltAddressExist] = fieldMapping.yes;
-    } else {
-        formData[fieldMapping.doesAltAddressExist] = fieldMapping.no;
-    }
+    // Alt address existence — derived from radio selection
+    formData[fieldMapping.doesAltAddressExist] = hasAltAddressField ? fieldMapping.yes : fieldMapping.no;
 
     // PO Box flag for alternate address
     formData[fieldMapping.isPOBoxAltAddress] = isAltPOBoxChecked ? fieldMapping.yes : fieldMapping.no;
