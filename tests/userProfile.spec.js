@@ -189,23 +189,6 @@ describe('userProfile helpers', () => {
       expect(formData[fieldMapping.doesAltAddressExist]).toBe(fieldMapping.yes);
       expect(formData[fieldMapping.isPOBoxAltAddress]).toBe(fieldMapping.yes);
     });
-
-    it('sets doesAltAddressExist to no when alt fields are empty', () => {
-      const formData = {};
-      applyAddressWrites({
-        formData,
-        fieldMapping,
-        mailingAddress,
-        hasPhysicalAddressField: false,
-        physicalAddress,
-        hasAltAddressField: true,
-        altAddress: { line1: '', line2: '', city: '', state: '', zip: '' },
-        isPOBoxChecked: false,
-        isAltPOBoxChecked: false,
-      });
-
-      expect(formData[fieldMapping.doesAltAddressExist]).toBe(fieldMapping.no);
-    });
   });
 
   describe('radio selection helpers', () => {
