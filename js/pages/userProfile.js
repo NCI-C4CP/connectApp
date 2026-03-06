@@ -80,7 +80,7 @@ export const runAddressValidation = ({
  * - Physical address fields are written only when hasPhysicalAddressField is true.
  * - Alternate address fields are written only when hasAltAddressField is true.
  * - PO Box flags (mailing and alternate) are always written.
- * - Alt address existence flag is derived from radio selection and field content.
+ * - Alt address existence flag is derived from radio selection.
  *
  * @param {Object} params
  * @param {Object} params.formData - Outgoing payload object to mutate.
