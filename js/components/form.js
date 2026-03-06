@@ -1,6 +1,7 @@
 import { allStates, allCountries, getMyData, hasUserData, translateHTML } from "../shared.js";
 import { addEventMonthSelection, addEventMonthConfirmationSelection, addEventUPSubmit, addEventCancerFollowUp, addEventChangeFocus, addEventAddressAutoComplete, addEventAdditionalEmail, addEventCheckCanText, addEventFormerName, addMoreFormerName } from "../event.js";
 import cId from '../fieldToConceptIdMapping.js';
+import { addEventTogglePhysicalAddress, addEventToggleAltAddress } from "../pages/userProfile.js";
 import { suffixList, suffixToTextMapDropdown, suffixToTextMap, numberOfDefaultFormerNames, renderCountries } from "../settingsHelpers.js";
 
 export const renderUserProfile = async () => {
@@ -451,65 +452,6 @@ const addEventNameConsistency = (cfn, cln) => {
             document.getElementById('lastNameConsistency').hidden = false;
             document.getElementById('UPLastNameVerify').hidden = false;
         }
-    });
-}
-
-// Show physical address section if "Yes" (353358909) is selected. Otherwise hide it and clear fields.
-const addEventTogglePhysicalAddress = () => {
-    const radioButtons = document.getElementsByName('physicalMailingAddress');
-    const section = document.getElementById('physicalAddressSection');
-
-    radioButtons.forEach(radio => {
-        radio.addEventListener('change', function () {
-            if (this.value == cId.yes) {
-                section.style.display = 'block';
-            } else {
-                section.style.display = 'none';
-
-                const line1 = document.getElementById('UPAddress2Line1');
-                const line2 = document.getElementById('UPAddress2Line2');
-                const city = document.getElementById('UPAddress2City');
-                const state = document.getElementById('UPAddress2State');
-                const zip = document.getElementById('UPAddress2Zip');
-
-                if (line1) line1.value = '';
-                if (line2) line2.value = '';
-                if (city) city.value = '';
-                if (state) state.value = '';
-                if (zip) zip.value = '';
-            }
-        });
-    });
-};
-
-// Show alternate address section if "Yes" (353358909) is selected. Otherwise hide it.
-const addEventToggleAltAddress = () => {
-    const altAddressRadioButtons = document.getElementsByName('altMailingAddress');
-    const altAddressSection = document.getElementById('altAddressSection');
-
-    altAddressRadioButtons.forEach(radio => {
-        radio.addEventListener('change', function () {
-            if (this.value == cId.yes) {
-                altAddressSection.style.display = 'block';
-            } else {
-                altAddressSection.style.display = 'none';
-
-                const line1 = document.getElementById('UPAddress3Line1');
-                const line2 = document.getElementById('UPAddress3Line2');
-                const city = document.getElementById('UPAddress3City');
-                const state = document.getElementById('UPAddress3State');
-                const zip = document.getElementById('UPAddress3Zip');
-
-                if (line1) line1.value = '';
-                if (line2) line2.value = '';
-                if (city) city.value = '';
-                if (state) state.value = '';
-                if (zip) zip.value = '';
-
-                const poBox = document.getElementById('poBoxCheckboxAltAddress');
-                if (poBox) poBox.checked = false;
-            }
-        });
     });
 }
 

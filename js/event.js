@@ -2,32 +2,10 @@ import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticip
 import { consentTemplate } from "./pages/consent.js";
 import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, noLongerEnrollingRender,  requestPINTemplate } from "./pages/healthCareProvider.js";
 import { renderDashboard } from "./pages/dashboard.js";
+import { applyConditionalAddressWrites, isPhysicalAddressYesSelected, isAltAddressYesSelected, runAddressValidation } from "./pages/userProfile.js";
 import { suffixToTextMap, getFormerNameData, formerNameOptions } from "./settingsHelpers.js";
 import fieldMapping from "./fieldToConceptIdMapping.js";
 import {signUpRender} from "./pages/homePage.js";
-
-/**
- * Validates address fields and returns any errors found.
- * Pure function — no DOM access, fully unit-testable.
- *
- * @param {Object} fields - { line1, line2, city, state, zip }
- * @param {string} addressType - 'physical' | 'alt'
- * @returns {{ hasError: boolean, errors: Array<{ field: string, errorKey: string }> }}
- */
-export const validateAddressFields = (fields, addressType) => {
-    const errors = [];
-
-    if (!fields.line1) errors.push({ field: 'line1', errorKey: `form.${addressType}AddressLine1Field.data-error-required` });
-    if (!fields.city)  errors.push({ field: 'city',  errorKey: `form.${addressType}AddressCityField.data-error-required` });
-    if (!fields.state) errors.push({ field: 'state', errorKey: `form.${addressType}AddressStateField.data-error-required` });
-    if (!fields.zip)   errors.push({ field: 'zip',   errorKey: `form.${addressType}AddressZipField.data-error-required` });
-
-    if (fields.zip && !/^[0-9]{5}$/.test(fields.zip)) {
-        errors.push({ field: 'zip', errorKey: 'event.zipOnlyNumbers' });
-    }
-
-    return { hasError: errors.length > 0, errors };
-};
 
 export const addEventsConsentSign = () => {
     document.getElementById('CSFirstName').addEventListener('keyup', () => {
@@ -1112,22 +1090,8 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             isMailingAddressValidated = validateMailAddress.isValidatedByUSPS;
         }
 
-        // Helper to bridge validateAddressFields() to the DOM error display
-        const fieldSuffixMap = { line1: 'Line1', line2: 'Line2', city: 'City', state: 'State', zip: 'Zip' };
-        const runAddressValidation = (idPrefix, addressType, fields) => {
-            const result = validateAddressFields(fields, addressType);
-            for (const err of result.errors) {
-                const elementId = `${idPrefix}${fieldSuffixMap[err.field]}`;
-                errorMessage(elementId, `<span data-i18n="${err.errorKey}">${translateText(err.errorKey)}</span>`, focus);
-                focus = false;
-                hasError = true;
-                console.error('User Profile - Required Field Value', elementId);
-            }
-            return result;
-        };
-
         // Physical address: only validate if the user selected "Yes" on the radio
-        const physicalAddressYesSelected = document.querySelector('input[name="physicalMailingAddress"][value="353358909"]')?.checked || false;
+        const physicalAddressYesSelected = isPhysicalAddressYesSelected();
 
         const physicalAddressFields = {
             line1: document.getElementById('UPAddress2Line1')?.value?.trim() || '',
@@ -1140,7 +1104,16 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         const hasPhysicalAddressField = physicalAddressYesSelected;
 
         if (hasPhysicalAddressField) {
-            runAddressValidation('UPAddress2', 'physical', physicalAddressFields);
+            const physicalValidation = runAddressValidation({
+                idPrefix: 'UPAddress2',
+                addressType: 'physical',
+                fields: physicalAddressFields,
+                focus,
+                errorMessage,
+                translateText,
+            });
+            focus = physicalValidation.focus;
+            if (physicalValidation.hasError) hasError = true;
 
             if (!hasError) {
                 const isPhysicalAddressInternational = document.getElementById("UPAddress2International")?.checked || false;
@@ -1155,7 +1128,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         document.getElementById('userProfileSubmitButton').disabled = false
 
         // Alternate address: only validate if the user selected "Yes" on the radio
-        const altAddressYesSelected = document.querySelector('input[name="altMailingAddress"][value="353358909"]')?.checked || false;
+        const altAddressYesSelected = isAltAddressYesSelected();
 
         const altAddressFields = {
             line1: document.getElementById('UPAddress3Line1')?.value?.trim() || '',
@@ -1168,7 +1141,16 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         const hasAltAddressField = altAddressYesSelected;
 
         if (hasAltAddressField) {
-            runAddressValidation('UPAddress3', 'alt', altAddressFields);
+            const altValidation = runAddressValidation({
+                idPrefix: 'UPAddress3',
+                addressType: 'alt',
+                fields: altAddressFields,
+                focus,
+                errorMessage,
+                translateText,
+            });
+            focus = altValidation.focus;
+            if (altValidation.hasError) hasError = true;
 
             if (!hasError) {
                 const isAltAddressInternational = document.getElementById("UPAddress3International")?.checked || false;
@@ -1360,13 +1342,6 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         const physicalAddressState = escapeHTML(document.getElementById('UPAddress2State')?.value || '');
         const physicalAddressZip = escapeHTML(document.getElementById('UPAddress2Zip')?.value?.trim() || '');
 
-        // Update formData with physical address details
-        if (physicalAddressLine1 !== "")  formData[fieldMapping.physicalAddress1] = physicalAddressLine1
-        if (physicalAddressLine2 !== "")  formData[fieldMapping.physicalAddress2] = physicalAddressLine2
-        if (physicalAddressCity !== "")  formData[fieldMapping.physicalCity] = physicalAddressCity
-        if (physicalAddressState !== "")  formData[fieldMapping.physicalState] = physicalAddressState
-        if (physicalAddressZip !== "")  formData[fieldMapping.physicalZip] = physicalAddressZip
-
         // Alternate address (altAddressZip is validated above)
         const altAddressLine1 = escapeHTML(document.getElementById('UPAddress3Line1')?.value?.trim() || '');
         const altAddressLine2 = escapeHTML(document.getElementById('UPAddress3Line2')?.value?.trim() || '');
@@ -1375,11 +1350,26 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         const altAddressZip = escapeHTML(document.getElementById('UPAddress3Zip').value || '');
         const altAddressPOBoxCheckbox = document.getElementById("poBoxCheckboxAltAddress");
 
-        if (altAddressLine1 !== "") formData[fieldMapping.altAddress1] = altAddressLine1;
-        if (altAddressLine2 !== "") formData[fieldMapping.altAddress2] = altAddressLine2;
-        if (altAddressCity !== "") formData[fieldMapping.altCity] = altAddressCity;
-        if (altAddressState) formData[fieldMapping.altState] = altAddressState;
-        if (altAddressZip) formData[fieldMapping.altZip] = altAddressZip;
+        applyConditionalAddressWrites({
+            formData,
+            fieldMapping,
+            hasPhysicalAddressField,
+            physicalAddress: {
+                line1: physicalAddressLine1,
+                line2: physicalAddressLine2,
+                city: physicalAddressCity,
+                state: physicalAddressState,
+                zip: physicalAddressZip,
+            },
+            hasAltAddressField,
+            altAddress: {
+                line1: altAddressLine1,
+                line2: altAddressLine2,
+                city: altAddressCity,
+                state: altAddressState,
+                zip: altAddressZip,
+            },
+        });
 
         // Set alt address existence based on user's radio selection and field values
         if (altAddressYesSelected && (altAddressLine1 || altAddressLine2 || altAddressCity || altAddressState || altAddressZip)) {
