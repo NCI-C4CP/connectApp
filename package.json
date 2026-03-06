@@ -5,8 +5,7 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:setModuleAttributes": "vitest run tests/setModuleAttributes.spec.js",
-    "test:addressValidation": "vitest run tests/addressValidation.spec.js"
+    "test:setModuleAttributes": "vitest run tests/setModuleAttributes.spec.js"
   },
   "devDependencies": {
     "vitest": "^3.2.4"
