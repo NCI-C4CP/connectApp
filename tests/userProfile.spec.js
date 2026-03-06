@@ -147,10 +147,11 @@ describe('userProfile helpers', () => {
 
   describe('radio selection helpers', () => {
     it('isPhysicalAddressYesSelected returns true only when yes radio is checked', () => {
-      vi.spyOn(document, 'querySelector').mockReturnValueOnce({ checked: true });
-      expect(isPhysicalAddressYesSelected()).toBe(true);
+      vi.spyOn(document, 'querySelector')
+        .mockReturnValueOnce({ checked: true })
+        .mockReturnValueOnce({ checked: false });
 
-      vi.spyOn(document, 'querySelector').mockReturnValueOnce({ checked: false });
+      expect(isPhysicalAddressYesSelected()).toBe(true);
       expect(isPhysicalAddressYesSelected()).toBe(false);
     });
 

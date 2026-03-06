@@ -1347,7 +1347,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         const altAddressLine2 = escapeHTML(document.getElementById('UPAddress3Line2')?.value?.trim() || '');
         const altAddressCity = escapeHTML(document.getElementById('UPAddress3City')?.value?.trim() || '');
         const altAddressState = escapeHTML(document.getElementById('UPAddress3State')?.value || '');
-        const altAddressZip = escapeHTML(document.getElementById('UPAddress3Zip').value || '');
+        const altAddressZip = escapeHTML(document.getElementById('UPAddress3Zip')?.value?.trim() || '');
         const altAddressPOBoxCheckbox = document.getElementById("poBoxCheckboxAltAddress");
 
         applyConditionalAddressWrites({

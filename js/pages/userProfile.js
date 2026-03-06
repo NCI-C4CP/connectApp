@@ -64,7 +64,11 @@ export const runAddressValidation = ({
         errorMessage(elementId, `<span data-i18n="${err.errorKey}">${translateText(err.errorKey)}</span>`, nextFocus);
         nextFocus = false;
         hasError = true;
-        console.error('User Profile - Required Field Value', elementId);
+        if (typeof err.errorKey === 'string' && err.errorKey.indexOf('data-error-required') !== -1) {
+            console.error('User Profile - Required Field Value', elementId);
+        } else {
+            console.error('User Profile - Address Validation Error', elementId, err.errorKey);
+        }
     }
 
     return { result, focus: nextFocus, hasError };
