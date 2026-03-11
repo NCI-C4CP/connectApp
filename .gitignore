@@ -8,3 +8,4 @@ node_modules/
 local-dev/
 npm-debug.log*
 images/.DS_Store
+coverage/

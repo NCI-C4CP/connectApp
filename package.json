@@ -5,9 +5,10 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "test:setModuleAttributes": "vitest run tests/setModuleAttributes.spec.js"
+    "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
+    "@vitest/coverage-v8": "^3.2.4",
     "vitest": "^3.2.4"
   }
 }
