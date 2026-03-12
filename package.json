@@ -5,6 +5,8 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:setModuleAttributes": "vitest run tests/setModuleAttributes.spec.js",
+    "test:userProfile": "vitest run tests/userProfile.spec.js",
     "test:coverage": "vitest run --coverage"
   },
   "devDependencies": {
