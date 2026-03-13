@@ -97,7 +97,8 @@
         "suffixList": "Sufijo",
         "preferredName": "Nombre de pila preferido",
         "preferredNameField": {
-            "placeholder": "Ingrese el nombre de pila preferido"
+            "placeholder": "Ingrese el nombre de pila preferido",
+            "data-error-validation": "Su nombre preferido debe contener solo letras mayúsculas y minúsculas. No use números ni caracteres especiales."
         },
         "formerNameSubHeader": "Nombres anteriores",
         "formerNameIntroduction": "Los nombres anteriores son otros nombres que ha utilizado en el pasado en documentos y procesos administrativos (por ejemplo, cambios de nombre legal, apellido de soltera, apellido de casada). Recopilamos esta información para poder vincular la información que recopilamos de otras fuentes, como los registros de salud estatales, con la suya. ",
