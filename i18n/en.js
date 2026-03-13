@@ -239,10 +239,6 @@ const en = {
             "data-error-required": "Please enter the first line of your mailing address.",
             "placeholder": "Enter street, PO box, rural route"
         },
-        "physicalAddressLine1Field": {
-            "data-error-required": "Please enter the first line of your mailing address.",
-            "placeholder": "Enter street, rural route"
-        },
         "mailAddressLine2Label": "Line 2 (apartment, suite, unit, building)",
         "mailAddressLine2Field": {
             "placeholder": "Enter apartment, suite, unit, building"
@@ -270,8 +266,9 @@ const en = {
         "isPOBoxChecked": "Please check if mailing address is a P.O. Box",
         "mailAddressCountry": "Country ",
         "mailAddressCountryRequired": "Country <span class=\"required\">*</span>",
-        "physicalAddress": "Physical Address (if different from Mailing Address)",
+        "physicalAddress": "Physical Address",
         "physicalAddressDesc": "Physical address is needed so Connect can mail you packages via FedEx for some study activities. FedEx does not deliver to P.O. Boxes.",
+        "physicalAddressQuestion": "Do you have a physical address that differs from your mailing address?",
         "physicalAddressLine1Field": {
             "data-error-required": "Please enter the first line of your physical address.",
             "placeholder": "Enter street, PO box, rural route"
