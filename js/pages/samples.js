@@ -5,24 +5,24 @@ import { addEventAddressAutoComplete } from '../event.js';
 import conceptId from '../fieldToConceptIdMapping.js';
 
 const noMatchHtmlObj = {
-    en: `<div class="row"  id="donatingInformation">
-                <div class="col-lg-2 col-xl-3">
-                </div>
-                <div class="col-lg-8 col-xl-6 NotoSansFont" data-i18n="samples.planCollecting">
-                    We plan to begin collecting samples later this year. We will send you an email with instructions and next steps when it is time to donate samples. Thank you for being part of Connect!
-                </div>
-                <div class="col-lg-2 col-xl-3">
-                </div>
-            </div>`,
-    es: `<div class="row"  id="donatingInformation">
-                <div class="col-lg-2 col-xl-3">
-                </div>
-                <div class="col-lg-8 col-xl-6 NotoSansFont" data-i18n="samples.planCollecting">
-                    Planeamos comenzar a recolectar muestras este mismo año. Cuando llegue el momento de donar muestras, le enviaremos por correo electrónico las instrucciones y los pasos a seguir. ¡Gracias por formar parte de Connect!
-                </div>
-                <div class="col-lg-2 col-xl-3">
-                </div>
-            </div>`,
+    en: `
+        <div class="col-lg-2 col-xl-3">
+        </div>
+        <div class="col-lg-8 col-xl-6 NotoSansFont" data-i18n="samples.planCollecting">
+            We plan to begin collecting samples later this year. We will send you an email with instructions and next steps when it is time to donate samples. Thank you for being part of Connect!
+        </div>
+        <div class="col-lg-2 col-xl-3">
+        </div>
+        `,
+    es: `
+        <div class="col-lg-2 col-xl-3">
+        </div>
+        <div class="col-lg-8 col-xl-6 NotoSansFont" data-i18n="samples.planCollecting">
+            Planeamos comenzar a recolectar muestras este mismo año. Cuando llegue el momento de donar muestras, le enviaremos por correo electrónico las instrucciones y los pasos a seguir. ¡Gracias por formar parte de Connect!
+        </div>
+        <div class="col-lg-2 col-xl-3">
+        </div>
+        `,
 };
 
 const getMySamplesHtmlObj = async (siteAcronym) => {
@@ -31,7 +31,7 @@ const getMySamplesHtmlObj = async (siteAcronym) => {
     siteHtmlObj = await getMySamples(siteAcronym);
     if (siteHtmlObj) {
       appState.set({
-          mySamples: {
+          mySamples: { ...appState.get().mySamples,
               [siteAcronym]: siteHtmlObj,
           },
       });
@@ -212,7 +212,11 @@ export const renderSamplesPage = async () => {
     bindEvents(participant);
 };
 
-appState.subscribe(state => state.language, renderSamplesPage);
+appState.subscribe(state => state.language, () => {
+        if (location.hash === '#samples') {
+            renderSamplesPage();
+        }
+    });
 
 const getParticipantMailToAddress = (participant) => {
     const {

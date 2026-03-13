@@ -695,7 +695,7 @@ export const getMyData = async () => {
 export const getMySamples = async (siteAcronym) => {
   const idToken = await getIdToken();
   try {
-    const resp = await fetch(`${api}?api=getMySamples&siteAronym=${siteAcronym}`, {
+    const resp = await fetch(`${api}?api=getMySamples&siteAcronym=${siteAcronym}`, {
       method: "GET",
       headers: {
         Authorization: "Bearer " + idToken,
