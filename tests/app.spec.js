@@ -102,6 +102,16 @@ vi.mock('../js/fieldToConceptIdMapping.js', () => ({
     firebaseAuthPhone: 348474836,
     yes: 353358909,
     consentSubmitted: 919254129,
+    healthcareProvider: 'healthcareProvider',
+    moduleStatus: {
+      started: 'started',
+    },
+    DHQ3: {
+      statusFlag: 'dhqStatusFlag',
+      statusFlagExternal: 'dhqStatusFlagExternal',
+      studyID: 'dhqStudyID',
+      username: 'dhqUsername',
+    },
     language: { en: 0 },
   },
 }));
@@ -120,6 +130,8 @@ import {
   handleVerifyEmail,
   updateFirebaseAuthPhoneTrigger,
 } from '../app.js';
+import { getMyData, hasUserData, getMyCollections, successResponse, syncDHQ3RespondentInfo } from '../js/shared.js';
+import { myToDoList } from '../js/pages/myToDoList.js';
 import { homePage, renderHomeAboutPage, renderHomeExpectationsPage, renderHomePrivacyPage } from '../js/pages/homePage.js';
 
 // signOut
@@ -322,6 +334,157 @@ describe('router — unauthenticated routing', () => {
     await router();
 
     expect(env.location.hash).toBe('#');
+  });
+});
+
+describe('router — authenticated #surveys DHQ refresh path', () => {
+  let env;
+  const authUser = {
+    isAnonymous: false,
+    email: 'user@example.com',
+    phoneNumber: '+15551234567',
+    metadata: { creationTime: '2025-01-01T00:00:00.000Z' },
+  };
+
+  const makeEl = () => ({
+    innerHTML: '',
+    style: { display: '' },
+    classList: { add: vi.fn(), remove: vi.fn(), contains: vi.fn(() => false) },
+    parentNode: {
+      insertBefore: vi.fn(),
+      parentNode: { classList: { add: vi.fn(), remove: vi.fn() } },
+    },
+  });
+
+  const createParticipantData = (dhqStatus) => ({
+    token: 'token-1',
+    healthcareProvider: 'site-1',
+    dhqStatusFlag: dhqStatus,
+    dhqStatusFlagExternal: 'external-started',
+    dhqStudyID: 'study-1',
+    dhqUsername: 'respondent-1',
+  });
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+    env = setupTestEnvironment();
+    env.location.hash = '#surveys';
+
+    const authStub = {
+      onAuthStateChanged: vi.fn((callback) => {
+        callback(authUser);
+        return vi.fn();
+      }),
+    };
+    setAuth(authStub);
+
+    globalThis.firebase = {
+      auth: () => ({
+        currentUser: authUser,
+        onAuthStateChanged: vi.fn(),
+      }),
+    };
+
+    installDocumentByIdMap({
+      languageSelectorContainer: makeEl(),
+      userNavBarContainer: makeEl(),
+      headerNavBarContainer: makeEl(),
+      headerNavBarToggler: makeEl(),
+      userNavBarToggler: makeEl(),
+      joinNow: null,
+      signInWrapperDiv: null,
+      nextStepWarning: null,
+    });
+
+    sharedMocks.userLoggedIn.mockResolvedValue(true);
+    sharedMocks.getParameters.mockReturnValue(null);
+    sharedMocks.isMagicLinkCallbackUrl.mockReturnValue(false);
+    successResponse.mockReturnValue(true);
+    hasUserData.mockReturnValue(true);
+    getMyCollections.mockResolvedValue({ data: ['collection-1'] });
+    syncDHQ3RespondentInfo.mockResolvedValue({ sync: 'ok' });
+  });
+
+  afterEach(() => {
+    teardownTestEnvironment();
+    delete globalThis.firebase;
+  });
+
+  it('calls syncDHQ3RespondentInfo when DHQ is started in #surveys flow', async () => {
+    const startedData = createParticipantData('started');
+    const refreshedData = { ...startedData, dhqStatusFlag: 'submitted' };
+
+    getMyData
+      .mockResolvedValueOnce({ data: {} })
+      .mockResolvedValueOnce({ data: startedData })
+      .mockResolvedValueOnce({ data: refreshedData });
+
+    await router();
+
+    await vi.waitFor(() => {
+      expect(syncDHQ3RespondentInfo).toHaveBeenCalledWith(
+        'study-1',
+        'respondent-1',
+        'started',
+        'external-started'
+      );
+    });
+  });
+
+  it('awaits sync and renders surveys with refreshed participant data', async () => {
+    const startedData = createParticipantData('started');
+    const refreshedData = { ...startedData, dhqStatusFlag: 'submitted' };
+
+    getMyData
+      .mockResolvedValueOnce({ data: {} })
+      .mockResolvedValueOnce({ data: startedData })
+      .mockResolvedValueOnce({ data: refreshedData });
+
+    await router();
+
+    await vi.waitFor(() => {
+      expect(myToDoList).toHaveBeenCalledWith(refreshedData, false, ['collection-1']);
+    });
+
+    expect(getMyData).toHaveBeenCalledTimes(3);
+    const syncOrder = syncDHQ3RespondentInfo.mock.invocationCallOrder[0];
+    const renderOrder = myToDoList.mock.invocationCallOrder[0];
+    expect(syncOrder).toBeLessThan(renderOrder);
+  });
+
+  it('does not sync or re-fetch when DHQ is not started', async () => {
+    const notStartedData = createParticipantData('notStarted');
+
+    getMyData
+      .mockResolvedValueOnce({ data: {} })
+      .mockResolvedValueOnce({ data: notStartedData });
+
+    await router();
+
+    await vi.waitFor(() => {
+      expect(myToDoList).toHaveBeenCalledWith(notStartedData, false, ['collection-1']);
+    });
+
+    expect(syncDHQ3RespondentInfo).not.toHaveBeenCalled();
+    expect(getMyData).toHaveBeenCalledTimes(2);
+  });
+
+  it('continues rendering surveys with existing data when DHQ sync fails', async () => {
+    const startedData = createParticipantData('started');
+    syncDHQ3RespondentInfo.mockRejectedValue(new Error('sync failed'));
+
+    getMyData
+      .mockResolvedValueOnce({ data: {} })
+      .mockResolvedValueOnce({ data: startedData });
+
+    await router();
+
+    await vi.waitFor(() => {
+      expect(myToDoList).toHaveBeenCalledWith(startedData, false, ['collection-1']);
+    });
+
+    expect(syncDHQ3RespondentInfo).toHaveBeenCalledTimes(1);
+    expect(getMyData).toHaveBeenCalledTimes(2);
   });
 });
 

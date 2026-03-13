@@ -445,14 +445,32 @@ const renderSurveys = function () {
                 firestoreUserData = await getMyData();
                 if (hasUserData(firestoreUserData)) {
                     // Authenticated user. Firestore profile exists.
-                    const participantData = firestoreUserData.data;
+                    let participantData = firestoreUserData.data;
 
                     // Need token and healthcare provider to get collections. These exist after the user has signed in and completed the healthcare provider form.
                     const myCollectionsPromise = participantData?.['token'] && participantData?.[conceptIdMap.healthcareProvider]
                         ? getMyCollections()
                         : { data: [] };
 
-                    const [collectionsData] = await Promise.allSettled([myCollectionsPromise]);
+                    // Check for DHQ3 completion status if it has been started.
+                    const shouldSyncDHQStatus = participantData?.[conceptIdMap.DHQ3.statusFlag] === conceptIdMap.moduleStatus.started;
+                    const dhqStatusPromise = shouldSyncDHQStatus
+                        ? syncDHQ3RespondentInfo(participantData[conceptIdMap.DHQ3.studyID], participantData[conceptIdMap.DHQ3.username], participantData[conceptIdMap.DHQ3.statusFlag], participantData[conceptIdMap.DHQ3.statusFlagExternal])
+                        : Promise.resolve(null);
+
+                    const settledResults = shouldSyncDHQStatus
+                        ? await Promise.allSettled([myCollectionsPromise, dhqStatusPromise])
+                        : await Promise.allSettled([myCollectionsPromise]);
+
+                    const collectionsData = settledResults[0];
+
+                    if (shouldSyncDHQStatus && settledResults[1]?.status === 'fulfilled') {
+                        const refreshedUserData = await getMyData();
+                        if (hasUserData(refreshedUserData)) {
+                            participantData = refreshedUserData.data;
+                        }
+                    }
+
                     await myToDoList(participantData, false, collectionsData.value?.data || []);
 
                 }
