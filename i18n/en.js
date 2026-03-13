@@ -238,10 +238,6 @@ const en = {
             "data-error-required": "Please enter the first line of your mailing address.",
             "placeholder": "Enter street, PO box, rural route"
         },
-        "physicalAddressLine1Field": {
-            "data-error-required": "Please enter the first line of your mailing address.",
-            "placeholder": "Enter street, rural route"
-        },
         "mailAddressLine2Label": "Line 2 (apartment, suite, unit, building)",
         "mailAddressLine2Field": {
             "placeholder": "Enter apartment, suite, unit, building"

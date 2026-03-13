@@ -238,10 +238,6 @@
             "data-error-required": "Ingrese la primera línea de su dirección postal.",
             "placeholder": "Ingrese la calle, el apartado postal, la ruta rural"
         },
-        "physicalAddressLine1Field": {
-            "data-error-required": "Ingrese la primera línea de su dirección postal.",
-            "placeholder": "Ingrese la calle, la ruta rural"
-        },
         "mailAddressLine2Label": "Línea 2 (apartamento, suite, unidad, edificio)",
         "mailAddressLine2Field": {
             "placeholder": "Ingrese el apartamento, la suite, la unidad, el edificio"
