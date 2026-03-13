@@ -1,6 +1,7 @@
 import { allStates, allCountries, getMyData, hasUserData, translateHTML } from "../shared.js";
-import { addEventMonthSelection, addEventMonthConfirmationSelection, addEventUPSubmit, addEventCancerFollowUp, addEventChangeFocus, addEventAddressAutoComplete, addEventAdditionalEmail, addEventCheckCanText, addEventFormerName, addMoreFormerName, addEventPhysicalAddressLine } from "../event.js";
+import { addEventMonthSelection, addEventMonthConfirmationSelection, addEventUPSubmit, addEventCancerFollowUp, addEventChangeFocus, addEventAddressAutoComplete, addEventAdditionalEmail, addEventCheckCanText, addEventFormerName, addMoreFormerName } from "../event.js";
 import cId from '../fieldToConceptIdMapping.js';
+import { addEventTogglePhysicalAddress, addEventToggleAltAddress } from "../pages/userProfile.js";
 import { suffixList, suffixToTextMapDropdown, suffixToTextMap, numberOfDefaultFormerNames, renderCountries } from "../settingsHelpers.js";
 
 export const renderUserProfile = async () => {
@@ -336,14 +337,28 @@ export const renderUserProfile = async () => {
                     <span  data-i18n="form.isPOBoxChecked">Please check if mailing address is a P.O. Box</span>
                 </label> 
             </div><br/>
-            <div id="physicalAddressSection" style="display:block">
-                <div style="font-weight:bold" data-i18n="form.physicalAddress">
-                    Physical Address (if different from Mailing Address)
-                </div><br/>
-                <div data-i18n="form.physicalAddressDesc">
-                    Physical address is needed so Connect can mail you packages via FedEx for some study activities. FedEx does not deliver to P.O. Boxes.
+            <div style="font-weight:bold" data-i18n="form.physicalAddress">
+                Physical Address
+            </div><br/>
+            <div data-i18n="form.physicalAddressDesc">
+                Physical address is needed so Connect can mail you packages via FedEx for some study activities. FedEx does not deliver to P.O. Boxes.
+            </div>
+
+            <div class="form-group row">
+                <div class="col">
+                    <label class="col-form-label" data-i18n="form.physicalAddressQuestion">Do you have a physical address that differs from your mailing address?</label>
+                    <br>
+                    <div class="btn-group btn-group-toggle col-md-4" style="margin-left:0px;">
+                        <label><input type="radio" name="physicalMailingAddress" value="353358909"> <span data-i18n="settings.optYes">Yes</span></label>
+                        <label style="margin-left:20px;"><input type="radio" name="physicalMailingAddress" value="104430631"> <span data-i18n="settings.optNo">No</span></label>
+                    </div>
                 </div>
-                ${renderMailingAddress('', 2)}
+            </div>
+
+            <div class="form-group row" id="physicalAddressSection" style="display:none">
+                <div class="col">
+                    ${renderMailingAddress('', 2)}
+                </div>
             </div>
             <hr>
             <!-- Other Address Info -->
@@ -402,7 +417,7 @@ export const renderUserProfile = async () => {
     const queryEmailArray = myData?.data?.['query.allEmails'] || [];
     addEventUPSubmit(queryPhoneNoArray, queryEmailArray);
     
-    addEventPhysicalAddressLine(2);
+    addEventTogglePhysicalAddress();
     addEventToggleAltAddress();
 
     for (let i = 0; i < numberOfDefaultFormerNames; i++) {
@@ -440,37 +455,6 @@ const addEventNameConsistency = (cfn, cln) => {
     });
 }
 
-// Show alternate address section if "Yes" (353358909) is selected. Otherwise hide it.
-const addEventToggleAltAddress = () => {
-    const altAddressRadioButtons = document.getElementsByName('altMailingAddress');
-    const altAddressSection = document.getElementById('altAddressSection');
-
-    altAddressRadioButtons.forEach(radio => {
-        radio.addEventListener('change', function () {
-            if (this.value == cId.yes) {
-                altAddressSection.style.display = 'block';
-            } else {
-                altAddressSection.style.display = 'none';
-
-                const line1 = document.getElementById('UPAddress3Line1');
-                const line2 = document.getElementById('UPAddress3Line2');
-                const city = document.getElementById('UPAddress3City');
-                const state = document.getElementById('UPAddress3State');
-                const zip = document.getElementById('UPAddress3Zip');
-
-                if (line1) line1.value = '';
-                if (line2) line2.value = '';
-                if (city) city.value = '';
-                if (state) state.value = '';
-                if (zip) zip.value = '';
-
-                const poBox = document.getElementById('poBoxCheckboxAltAddress');
-                if (poBox) poBox.checked = false;
-            }
-        });
-    });
-}
-
 const renderAltAddressFields = () => {
     return translateHTML(`
         <div class="userProfileSubHeaders" data-i18n="form.otherContactInformation">Other Contact Information</div>
@@ -488,7 +472,7 @@ const renderAltAddressFields = () => {
             </div>
         </div>
 
-        <div class="form-group row" id="altAddressSection">
+        <div class="form-group row" id="altAddressSection" style="display:none">
             <div class="col">
                 <span data-i18n="form.whatIsTheAltAddress">What is the address?</span>
                 ${renderMailingAddress('', 3, false)}                    
