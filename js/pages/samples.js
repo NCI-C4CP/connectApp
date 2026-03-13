@@ -47,13 +47,8 @@ export const renderSamplesPage = async () => {
     const participant = { ...appState.get().myData };
     const siteName = mySamplesSiteNames[participant[conceptId.healthcareProvider]];
     const siteAcronym = siteAcronyms()[participant[conceptId.healthcareProvider]];
-    if (!siteAcronym) {
-        document.getElementById('root').innerHTML = noMatchHtmlObj[langAcronym] || noMatchHtmlObj.en;
-        return;
-    }
-
     const siteHtmlObj = await getMySamplesHtmlObj(siteAcronym);
-    const donationInfoHtml = siteHtmlObj[langAcronym];
+    const donationInfoHtml = siteHtmlObj[langAcronym] || noMatchHtmlObj.en;
 
     const kitId =
         participant[conceptId.collectionDetails]?.[conceptId.baseline]?.[conceptId.bioKitMouthwash]?.[
@@ -171,6 +166,26 @@ export const renderSamplesPage = async () => {
             `;
     }
 
+    let onThisPageHtml = '';
+    if (siteName) {
+        onThisPageHtml = `
+            <div class="row">
+                <div class="col-lg-2 col-xl-3"></div>
+                <div class="col-lg-8 col-xl-6">
+                    <p class="consentHeadersFont" style="color:#606060; font-size: 1.5em;" data-i18n="settings.pageNav">
+                        On this page:
+                    </p>
+                    <ul class="onThisPage">
+                    <li><a href="javascript:document.getElementById('donatingInformation').scrollIntoView(true)"><span data-i18n="samples.donatingSamples">Donating Your Samples at</span> ${siteName}</a></li>
+                    ${showRequestAKit ? `<li><a href="javascript:document.getElementById('requestAKitRow').scrollIntoView(true);" data-i18n="samples.requestAKit.title">Home Collection Kit Request</a></li>` : ``}
+                    ${showKitRequestHistory ? `<li><a href="javascript:document.getElementById('kitRequestHistoryRow').scrollIntoView(true);" data-i18n="samples.kitRequestHistory.title">Home Collection Kit Request History</a></li>` : ``}
+                    <!-- <li><a href="javascript:document.getElementById('sampleInventory').scrollIntoView(true)" data-i18n="samples.sampleInventory">Sample Inventory</a></li> -->
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-xl-3"></div>
+            </div>`;
+    }
+
     const template = `
         <div class="row" style="margin-top:18px">
             <div class="col-lg-2 col-xl-3"></div>
@@ -181,21 +196,7 @@ export const renderSamplesPage = async () => {
             </div>
             <div class="col-lg-2 col-xl-3"></div>
         </div>
-        <div class="row">
-            <div class="col-lg-2 col-xl-3"></div>
-            <div class="col-lg-8 col-xl-6">
-                <p class="consentHeadersFont" style="color:#606060; font-size: 1.5em;" data-i18n="settings.pageNav">
-                    On this page:
-                </p>
-                <ul class="onThisPage">
-                <li><a href="javascript:document.getElementById('donatingInformation').scrollIntoView(true)"><span data-i18n="samples.donatingSamples">Donating Your Samples at</span> ${siteName}</a></li>
-                ${showRequestAKit ? `<li><a href="javascript:document.getElementById('requestAKitRow').scrollIntoView(true);" data-i18n="samples.requestAKit.title">Home Collection Kit Request</a></li>` : ``}
-                ${showKitRequestHistory ? `<li><a href="javascript:document.getElementById('kitRequestHistoryRow').scrollIntoView(true);" data-i18n="samples.kitRequestHistory.title">Home Collection Kit Request History</a></li>` : ``}
-                <!-- <li><a href="javascript:document.getElementById('sampleInventory').scrollIntoView(true)" data-i18n="samples.sampleInventory">Sample Inventory</a></li> -->
-                </ul>
-            </div>
-            <div class="col-lg-2 col-xl-3"></div>
-        </div>
+        ${onThisPageHtml}
         <div class="row" id="donatingInformation">
             <div class="col-lg-2 col-xl-3"></div>
             <div class="col-lg-8 col-xl-6">
