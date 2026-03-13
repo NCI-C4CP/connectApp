@@ -16,24 +16,87 @@ export const urls = {
     'dev': 'nci-c4cp.github.io'
 }
 
+const isDeepEqual = (value1, value2) => {
+    if (value1 === value2) return true;
+    if (typeof value1 !== 'object' || typeof value2 !== 'object' || value1 === null || value2 === null) {
+        return false;
+    }
+    if (Array.isArray(value1) !== Array.isArray(value2)) return false;
+    const keys1 = Object.keys(value1);
+    if (keys1.length !== Object.keys(value2).length) return false;
+    for (const key of keys1) {
+        if (!Object.hasOwn(value2, key) || !isDeepEqual(value1[key], value2[key])) {
+            return false;
+        }
+    }
+    return true;
+};
+
 function createStore(initialState = {}) {
-    let state = initialState;
+    let state = JSON.parse(JSON.stringify(initialState));
+    const listeners = new Set();
 
     const setState = (update) => {
         const currSlice = typeof update === 'function' ? update(state) : update;
-
-        if (currSlice !== state) {
-            state = { ...state, ...currSlice };
+        const updatedState = { ...state, ...currSlice };
+        if (!isDeepEqual(state, updatedState)) {
+            state = updatedState;
+            listeners.forEach((listener) => listener());
         }
     };
 
     const getState = () => state;
 
-    return { setState, getState };
+    /**
+     * Subscribe to changes in a selected slice of state.
+     *
+     * @example
+     * const unsubscribe = appState.subscribe((state) => state.theme, (theme) => renderSelectedTheme(theme));
+     * // later, to stop listening:
+     * unsubscribe();
+     *
+     * @param {Function} selector - Selects a slice of state to observe.
+     * @param {Function} handler - Called with the new slice value when it changes.
+     * @param {boolean} [persist=false] - If true, the listener persists across state clears.
+     * @returns {Function} Unsubscribe function that removes the listener when called.
+     */
+    const subscribe = (selector, handler, persist = false) => {
+        if (typeof selector !== 'function' || typeof handler !== 'function') {
+            throw new Error('Selector and handler must be functions.');
+        }
+
+        let prevSlice = selector(state);
+        const listener = () => {
+            const currSlice = selector(state);
+            if (!isDeepEqual(currSlice, prevSlice)) {
+                handler(currSlice);
+                prevSlice = currSlice;
+            }
+        };
+        listener.persist = persist;
+        listeners.add(listener);
+
+        return () => listeners.delete(listener);
+    };
+
+
+    const clear = () => {
+        state = {
+            ...JSON.parse(JSON.stringify(initialState)),
+            language: state.language,
+        };
+
+        listeners.forEach((listener) => {
+            if (!listener.persist) listeners.delete(listener);
+        });
+    };
+
+    return { setState, set: setState, getState, get: getState, subscribe, clear };
 }
 
 const initialAppState = {
     idToken: '',
+    mySamples: {},
 };
 
 export const appState = createStore(initialAppState);
@@ -629,6 +692,30 @@ export const getMyData = async () => {
     }
 };
 
+export const getMySamples = async (siteAcronym) => {
+  const idToken = await getIdToken();
+  try {
+    const resp = await fetch(`${api}?api=getMySamples&siteAronym=${siteAcronym}`, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + idToken,
+      },
+    });
+
+    const respJson = await resp.json();
+    if (respJson.code === 200) {
+      return respJson.data;
+    }
+  } catch (error) {
+    logDDRumError(error, "GetMySamplesError", {
+      userAction: "Get My Samples HTML content",
+      timestamp: new Date().toISOString(),
+    });
+  }
+
+  return null;
+};
+
 export const getKitTrackingNumber = async (uniqueKitID) => {
     try {
         const idToken = await getIdToken();
@@ -876,6 +963,21 @@ export const sites = () => {
     }
 }
 
+export const mySamplesSiteNames = {
+    657167265: 'Sanford',
+    531629870: 'HealthPartners',
+    548392715: 'Henry Ford Health',
+    303349821: 'Marshfield',
+    809703864: 'UChicago Medicine',
+    125001209: 'KP Colorado',
+    327912200: 'KP Georgia',
+    300267574: 'KP Hawaii',
+    452412599: 'KP Northwest',
+    472940358: 'Baylor Scott & White Health (BSWH)',
+    13: 'NCI'
+};
+
+
 export const sitesNotEnrolling = () => {
     if (location.host === urls.prod) {
         return {
@@ -910,6 +1012,10 @@ export const siteAcronyms = () => {
     }
 }
 
+export const getMySiteAcronym = () => {
+  const myData = appState.getState().myData || {};
+  return siteAcronyms()[myData[fieldMapping.healthcareProvider]] || "";
+};
 
 export const todaysDate = () => {
     const today = new Date();
@@ -3317,6 +3423,10 @@ export const getSelectedLanguage = () => {
     }
 
     return selectedLanguage;
+}
+
+export const getSelectedLanguageAcronym = () => {
+    return languageAcronyms()[getSelectedLanguage()];
 }
 
 /**
