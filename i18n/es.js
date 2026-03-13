@@ -269,8 +269,9 @@
         "isPOBoxChecked": "Revise si la dirección postal es un apartado postal",
         "mailAddressCountry": "País ",
         "mailAddressCountryRequired": "País <span class=\"required\">*</span>",
-        "physicalAddress": "Dirección física (si es diferente de la dirección postal) ",
-        "physicalAddressDesc": "Se necesita una dirección física para que Connect pueda enviarle paquetes por FedEx para algunas actividades del estudio. FedEx no hace envíos a apartados postales. ",
+        "physicalAddress": "Dirección física",
+        "physicalAddressDesc": "Se necesita una dirección física para que Connect pueda enviarle paquetes por FedEx para algunas actividades del estudio. FedEx no hace envíos a apartados postales.",
+        "physicalAddressQuestion": "¿Tiene una dirección física diferente a su dirección postal?",
         "physicalAddressLine1Field": {
             "data-error-required": "Ingrese la primera línea de su dirección física.",
             "placeholder": "Ingrese la calle, el apartado postal, la ruta rural"
