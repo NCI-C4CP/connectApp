@@ -97,7 +97,8 @@ const en = {
         "suffixList": "Suffix",
         "preferredName": "Preferred First Name",
         "preferredNameField": {
-            "placeholder": "Enter preferred name"
+            "placeholder": "Enter preferred name",
+            "data-error-validation": "Your preferred name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters."
         },
         "formerNameSubHeader": "Former Names",
         "formerNameIntroduction": "Former names are other name(s) you have used in the past for paperwork and administrative purposes (for example, legal name changes, unmarried or “maiden name”, married name). We collect this information so that we can match information we collect from other sources, like state health registries, to you.",

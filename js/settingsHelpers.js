@@ -230,15 +230,17 @@ export const updatePhoneNumberInputFocus = (formType) => {
   phoneElementIds.forEach(initFocusHandler);
 };
 
-export const validateName = (firstNameField, lastNameField, middleNameField) => {
+export const validateName = (firstNameField, lastNameField, middleNameField, preferredFirstNameField) => {
   removeAllErrors();
   let hasError = false;
   let focus = true;
   let nameFieldArray;
+  nameFieldArray = [firstNameField, lastNameField];
   if (middleNameField) {
-    nameFieldArray = [firstNameField, lastNameField, middleNameField];
-  } else {
-    nameFieldArray = [firstNameField, lastNameField];
+    nameFieldArray.push(middleNameField);
+  }
+  if (preferredFirstNameField) {
+    nameFieldArray.push(preferredFirstNameField);
   }
 
   nameFieldArray.forEach(item => {
