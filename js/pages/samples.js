@@ -4,6 +4,20 @@ import { toggleElementVisibility, validateMailingAddress, changeMailingAddress }
 import { addEventAddressAutoComplete } from '../event.js';
 import conceptId from '../fieldToConceptIdMapping.js';
 
+const isCollectingSamples = {
+    HP: true,
+    HFHS: true,
+    KPCO: true,
+    KPGA: true,
+    KPHI: true,
+    KPNW: true,
+    Marshfield: true,
+    Sanford: true,
+    BSWH: true,
+    NCI: true,
+    UChicago: false,
+};
+
 const noMatchHtmlObj = {
     en: `
         <div class="col-lg-2 col-xl-3">
@@ -196,7 +210,7 @@ export const renderSamplesPage = async () => {
     }
 
     let onThisPageHtml = '';
-    if (siteName && siteHtmlObj !== errorHtmlObj && siteHtmlObj !== noMatchHtmlObj) {
+    if (siteName && isCollectingSamples[siteAcronym] && siteHtmlObj !== errorHtmlObj && siteHtmlObj !== noMatchHtmlObj) {
         onThisPageHtml = `
             <div class="row">
                 <div class="col-lg-2 col-xl-3"></div>
