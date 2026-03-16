@@ -25,15 +25,43 @@ const noMatchHtmlObj = {
         `,
 };
 
+const errorHtmlObj = {
+    en: `
+        <div class="col-lg-2 col-xl-3">
+        </div>
+        <div class="col-lg-8 col-xl-6 NotoSansFont">
+            <div class="alert alert-danger">
+                There was an error when loading data. Please try again later.
+            </div>
+        </div>
+        <div class="col-lg-2 col-xl-3">
+        </div>
+        `,
+    es: `
+        <div class="col-lg-2 col-xl-3">
+        </div>
+        <div class="col-lg-8 col-xl-6 NotoSansFont">
+            <div class="alert alert-danger">
+                Hubo un error al cargar los datos. Por favor, inténtelo de nuevo más tarde.
+            </div>
+        </div>
+        <div class="col-lg-2 col-xl-3">
+        </div>
+        `,
+};
+
 const getMySamplesHtmlObj = async (siteAcronym) => {
   let siteHtmlObj = appState.get().mySamples[siteAcronym];
   if (!siteHtmlObj) {
-    siteHtmlObj = await getMySamples(siteAcronym);
+    try {
+      siteHtmlObj = await getMySamples(siteAcronym);
+    } catch {
+      return errorHtmlObj;
+    }
+
     if (siteHtmlObj) {
       appState.set({
-          mySamples: { ...appState.get().mySamples,
-              [siteAcronym]: siteHtmlObj,
-          },
+        mySamples: { ...appState.get().mySamples, [siteAcronym]: siteHtmlObj },
       });
     }
   }
@@ -167,7 +195,7 @@ export const renderSamplesPage = async () => {
     }
 
     let onThisPageHtml = '';
-    if (siteName) {
+    if (siteName && siteHtmlObj !== errorHtmlObj && siteHtmlObj !== noMatchHtmlObj) {
         onThisPageHtml = `
             <div class="row">
                 <div class="col-lg-2 col-xl-3"></div>

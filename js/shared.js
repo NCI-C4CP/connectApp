@@ -711,6 +711,7 @@ export const getMySamples = async (siteAcronym) => {
       userAction: "Get My Samples HTML content",
       timestamp: new Date().toISOString(),
     });
+    throw error;
   }
 
   return null;
