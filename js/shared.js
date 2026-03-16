@@ -694,27 +694,21 @@ export const getMyData = async () => {
 
 export const getMySamples = async (siteAcronym) => {
   const idToken = await getIdToken();
-  try {
-    const resp = await fetch(`${api}?api=getMySamples&siteAcronym=${siteAcronym}`, {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + idToken,
-      },
-    });
 
-    const respJson = await resp.json();
-    if (respJson.code === 200) {
-      return respJson.data;
-    }
-  } catch (error) {
-    logDDRumError(error, "GetMySamplesError", {
-      userAction: "Get My Samples HTML content",
-      timestamp: new Date().toISOString(),
-    });
-    throw error;
+  const resp = await fetch(`${api}?api=getMySamples&siteAcronym=${siteAcronym}`, {
+    method: 'GET',
+    headers: {
+      Authorization: 'Bearer ' + idToken,
+    },
+  });
+
+  const respJson = await resp.json();
+  if (respJson.code === 200) {
+    return respJson.data;
+  } else {
+    throw new Error(`Get My Samples Error: ${respJson.message}`);
   }
 
-  return null;
 };
 
 export const getKitTrackingNumber = async (uniqueKitID) => {

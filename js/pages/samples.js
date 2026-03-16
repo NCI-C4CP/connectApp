@@ -56,6 +56,7 @@ const getMySamplesHtmlObj = async (siteAcronym) => {
     try {
       siteHtmlObj = await getMySamples(siteAcronym);
     } catch {
+      console.error(`Error fetching my samples for site ${siteAcronym}`);
       return errorHtmlObj;
     }
 
@@ -242,7 +243,7 @@ export const renderSamplesPage = async () => {
 };
 
 appState.subscribe(state => state.language, () => {
-        if (location.hash === '#samples') {
+        if (location.hash === '#samples' && appState.get().myData) {
             renderSamplesPage();
         }
     });
