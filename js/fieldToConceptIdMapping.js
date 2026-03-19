@@ -456,7 +456,7 @@ export default
     marshfieldClinical: 303349821,
     sanfordHealth: 657167265,
     uChicagoMedicine: 809703864,
-    baylorScottAndWhiteHealth: 976883292,
+    baylorScottAndWhiteHealth: 472940358,
 
     utm: {
         source: 761057722,
