@@ -406,9 +406,10 @@ const handleEditNameSection = () => {
         const firstNameField = document.getElementById('newFirstNameField');
         const lastNameField = document.getElementById('newLastNameField');
         const middleNameField = document.getElementById('newMiddleNameField');
+        const preferredFirstNameField = document.getElementById('newPreferredFirstNameField');
         optVars.suffix = document.getElementById('newSuffixNameField').value.trim();
-        optVars.preferredFirstName = document.getElementById('newPreferredFirstNameField').value.trim();
-        const isNameValid = validateName(firstNameField, lastNameField, middleNameField);
+        optVars.preferredFirstName = preferredFirstNameField.value.trim();
+        const isNameValid = validateName(firstNameField, lastNameField, middleNameField, preferredFirstNameField);
         if (isNameValid) {
           const firstName = firstNameField.value.trim();
           const lastName = lastNameField.value.trim();
@@ -1624,7 +1625,7 @@ export const renderChangeNameGroup = () => {
             <br>
             <div class="col-12">
                 <label data-i18n="settings.preferredFirstNameFieldLabel" for="newPreferredFirstNameField" class="custom-form-label">Preferred First Name </label><span data-i18n="settings.optional"> (optional)</span>
-                <input data-i18n="settings.preferredFirstNameField" type="text" value="${userData[cId.prefName] ? escapeHTML(userData[cId.prefName]) : ''}" class="form-control input-validation row  ms-1" data-validation-pattern="alphabets" data-error-validation="${translateText("settings.preferredFirstNameFieldValidation")}" id="newPreferredFirstNameField" placeholder="${translateText("settings.preferredFirstNameFieldPlaceholder")}" style="margin-left:0px; max-width:215px; !important;">
+                <input data-i18n="settings.preferredFirstNameField" type="text" value="${userData[cId.prefName] ? escapeHTML(userData[cId.prefName]) : ''}" class="form-control input-validation row  ms-1" data-validation-pattern="alphabets" data-error-validation="Your preferred first name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters." id="newPreferredFirstNameField" placeholder="${translateText("settings.preferredFirstNameFieldPlaceholder")}" style="margin-left:0px; max-width:215px; !important;">
             </div>
         </div>
         <div class="row">
