@@ -2,6 +2,7 @@ import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticip
 import { consentTemplate } from "./pages/consent.js";
 import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, noLongerEnrollingRender,  requestPINTemplate } from "./pages/healthCareProvider.js";
 import { renderDashboard } from "./pages/dashboard.js";
+import { applyAddressWrites, isPhysicalAddressYesSelected, isAltAddressYesSelected, runAddressValidation } from "./pages/userProfile.js";
 import { suffixToTextMap, getFormerNameData, formerNameOptions } from "./settingsHelpers.js";
 import fieldMapping from "./fieldToConceptIdMapping.js";
 import {signUpRender} from "./pages/homePage.js";
@@ -360,66 +361,6 @@ export const addEventHeardAboutStudy = () => {
         }
     });
 }
-
-const onBlurPhysicalAddressLine = (event, id) => {
-    const UPAddressCity = document.getElementById(`UPAddress${id}City`);
-    const UPAddressState = document.getElementById(
-        `UPAddress${id}State`
-    );
-    const UPAddressZip = document.getElementById(`UPAddress${id}Zip`);
-
-    const UPAddressCityLabel = document.getElementById(
-        `UPAddress${id}CityLabel`
-    );
-    const UPAddressStateLabel = document.getElementById(
-        `UPAddress${id}StateLabel`
-    );
-    const UPAddressZipLabel = document.getElementById(
-        `UPAddress${id}ZipLabel`
-    );
-
-    UPAddressCity.classList.remove("required-field");
-    UPAddressState.classList.remove("required-field");
-    UPAddressZip.classList.remove("required-field");
-    UPAddressCityLabel.setAttribute(
-        "data-i18n",
-        "form.mailAddressCityLabel"
-    );
-    UPAddressStateLabel.setAttribute(
-        "data-i18n",
-        "form.mailAddressStateLabel"
-    );
-    UPAddressZipLabel.setAttribute(
-        "data-i18n",
-        "form.mailAddressZipLabel"
-    );
-
-    if (event.target.value) {
-        UPAddressCity.classList.add("required-field");
-        UPAddressState.classList.add("required-field");
-        UPAddressZip.classList.add("required-field");
-        UPAddressCityLabel.setAttribute(
-            "data-i18n",
-            "form.mailAddressCityLabelRequired"
-        );
-        UPAddressStateLabel.setAttribute(
-            "data-i18n",
-            "form.mailAddressStateLabelRequired"
-        );
-        UPAddressZipLabel.setAttribute(
-            "data-i18n",
-            "form.mailAddressZipLabelRequired"
-        );
-    }
-};
-
-export const addEventPhysicalAddressLine = (id) => {
-    const UPAddressLine1 = document.getElementById(
-        `UPAddress${id}Line1`
-    );
-
-    UPAddressLine1.addEventListener("blur", (event) => onBlurPhysicalAddressLine(event, id));
-};
 
 export const addEventFormerName = () => {
     const addMoreFormerNameDiv = document.getElementById("addMoreFormerName");
@@ -834,8 +775,6 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
         const email4 = document.getElementById('UPAdditionalEmail3');
         const altContactEmail = document.getElementById('altContactEmail')?.value?.trim() || '';
         const zip = escapeHTML(document.getElementById('UPAddress1Zip').value || '');
-        const physicalZip = escapeHTML(document.getElementById('UPAddress2Zip').value || '');
-        const altAddressZip = escapeHTML(document.getElementById('UPAddress3Zip').value || '');
         
         if(!email){
             errorMessage('UPEmail', '<span data-i18n="event.enterEmail">'+translateText('event.enterEmail')+'</span>', focus);
@@ -967,20 +906,6 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             hasError = true;
             console.error('User Profile - Invalid Zip Code', 'UPAddress1Zip');
 
-        }
-        if (physicalZip && !/[0-9]{5}/.test(physicalZip)) {
-            errorMessage('UPAddress2Zip', '<span data-i18n="event.zipOnlyNumbers">'+translateText('event.zipOnlyNumbers')+'</span>');
-            if(focus) document.getElementById('UPAddress2Zip').focus();
-            focus = false;
-            hasError = true;
-            console.error('User Profile - Invalid Zip Code', 'UPAddress2Zip');
-        }
-        if (altAddressZip && !/[0-9]{5}/.test(altAddressZip)) {
-            errorMessage('UPAddress3Zip', '<span data-i18n="event.zipOnlyNumbers">'+translateText('event.zipOnlyNumbers')+'</span>');
-            if(focus) document.getElementById('UPAddress3Zip').focus();
-            focus = false;
-            hasError = true;
-            console.error('User Profile - Invalid Zip Code', 'UPAddress3Zip');
         }
         
         if (email && !validEmailFormat.test(email)) {
@@ -1165,7 +1090,9 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             isMailingAddressValidated = validateMailAddress.isValidatedByUSPS;
         }
 
-        // If any physical address field has a value, validate the required fields
+        // Physical address: only validate if the user selected "Yes" on the radio
+        const physicalAddressYesSelected = isPhysicalAddressYesSelected();
+
         const physicalAddressFields = {
             line1: document.getElementById('UPAddress2Line1')?.value?.trim() || '',
             line2: document.getElementById('UPAddress2Line2')?.value?.trim() || '',
@@ -1174,69 +1101,35 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             zip: document.getElementById('UPAddress2Zip')?.value?.trim() || ''
         };
 
-        const hasPhysicalAddressField = Object.values(physicalAddressFields).some(value => value !== '');
+        const hasPhysicalAddressField = physicalAddressYesSelected;
 
         if (hasPhysicalAddressField) {
-            if (!physicalAddressFields.line1) {
-                errorMessage(
-                    'UPAddress2Line1',
-                    `<span data-i18n="form.physicalAddressLine1Field.data-error-required">${translateText('form.physicalAddressLine1Field.data-error-required')}</span>`,
-                    focus
-                );
-                focus = false;
-                hasError = true;
-                console.error('User Profile - Required Field Value', 'UPAddress2Line1');
-            }
-
-            if (!physicalAddressFields.city) {
-                errorMessage(
-                    'UPAddress2City',
-                    `<span data-i18n="form.physicalAddressCityField.data-error-required">${translateText('form.physicalAddressCityField.data-error-required')}</span>`,
-                    focus
-                );
-                focus = false;
-                hasError = true;
-                console.error('User Profile - Required Field Value', 'UPAddress2City');
-                console.error('User Profile - UPAddress2Line1', `|${physicalAddressFields.line1}|`);
-            }
-
-            if (!physicalAddressFields.state) {
-                errorMessage(
-                    'UPAddress2State',
-                    `<span data-i18n="form.physicalAddressStateField.data-error-required">${translateText('form.physicalAddressStateField.data-error-required')}</span>`,
-                    focus
-                );
-                focus = false;
-                hasError = true;
-                console.error('User Profile - Required Field Value', 'UPAddress2State');
-                console.error('User Profile - UPAddress2Line1', `|${physicalAddressFields.line1}|`);
-            }
-
-            if (!physicalAddressFields.zip) {
-                errorMessage(
-                    'UPAddress2Zip',
-                    `<span data-i18n="form.physicalAddressZipField.data-error-required">${translateText('form.physicalAddressZipField.data-error-required')}</span>`,
-                    focus
-                );
-                focus = false;
-                hasError = true;
-                console.error('User Profile - Required Field Value', 'UPAddress2Zip');
-                console.error('User Profile - UPAddress2Line1', `|${physicalAddressFields.line1}|`);
-            }
+            const physicalValidation = runAddressValidation({
+                idPrefix: 'UPAddress2',
+                addressType: 'physical',
+                fields: physicalAddressFields,
+                focus,
+                errorMessage,
+                translateText,
+            });
+            focus = physicalValidation.focus;
+            if (physicalValidation.hasError) hasError = true;
 
             if (!hasError) {
                 const isPhysicalAddressInternational = document.getElementById("UPAddress2International")?.checked || false;
                 const validatePhysicalAddress = await validateAddress(focus, "UPAddress2Line1", "UPAddress2Line2", "UPAddress2City", "UPAddress2State", "UPAddress2Zip", isPhysicalAddressInternational);
                 uspsSuggestion.isPhysicalAddressValid = !validatePhysicalAddress.hasError
                 uspsSuggestion.physicalAddress = validatePhysicalAddress.result
-                
+
                 isPhysicalAddressValidated = validatePhysicalAddress.isValidatedByUSPS;
             }
         }
-        
+
         document.getElementById('userProfileSubmitButton').disabled = false
 
-        // If any alt address field has a value, validate the required fields
+        // Alternate address: only validate if the user selected "Yes" on the radio
+        const altAddressYesSelected = isAltAddressYesSelected();
+
         const altAddressFields = {
             line1: document.getElementById('UPAddress3Line1')?.value?.trim() || '',
             line2: document.getElementById('UPAddress3Line2')?.value?.trim() || '',
@@ -1245,62 +1138,26 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             zip: document.getElementById('UPAddress3Zip')?.value?.trim() || ''
         };
 
-        const hasAltAddressField = Object.values(altAddressFields).some(value => value !== '');
+        const hasAltAddressField = altAddressYesSelected;
 
         if (hasAltAddressField) {
-            if (!altAddressFields.line1) {
-                errorMessage(
-                    'UPAddress3Line1',
-                    `<span data-i18n="form.altAddressLine1Field.data-error-required">${translateText('form.altAddressLine1Field.data-error-required')}</span>`,
-                    focus
-                );
-                focus = false;
-                hasError = true;
-                console.error('User Profile - Required Field Value', 'UPAddress3Line1');
-            }
-
-            if (!altAddressFields.city) {
-                errorMessage(
-                    'UPAddress3City',
-                    `<span data-i18n="form.altAddressCityField.data-error-required">${translateText('form.altAddressCityField.data-error-required')}</span>`,
-                    focus
-                );
-                focus = false;
-                hasError = true;
-                console.error('User Profile - Required Field Value', 'UPAddress3City');
-                console.error('User Profile - UPAddress3Line1', `|${altAddressFields.line1}|`);
-            }
-
-            if (!altAddressFields.state) {
-                errorMessage(
-                    'UPAddress3State',
-                    `<span data-i18n="form.altAddressStateField.data-error-required">${translateText('form.altAddressStateField.data-error-required')}</span>`,
-                    focus
-                );
-                focus = false;
-                hasError = true;
-                console.error('User Profile - Required Field Value', 'UPAddress3State');
-                console.error('User Profile - UPAddress3Line1', `|${altAddressFields.line1}|`);
-            }
-
-            if (!altAddressFields.zip) {
-                errorMessage(
-                    'UPAddress3Zip',
-                    `<span data-i18n="form.altAddressZipField.data-error-required">${translateText('form.altAddressZipField.data-error-required')}</span>`,
-                    focus
-                );
-                focus = false;
-                hasError = true;
-                console.error('User Profile - Required Field Value', 'UPAddress3Zip');
-                console.error('User Profile - UPAddress3Line1', `|${altAddressFields.line1}|`);
-            }
+            const altValidation = runAddressValidation({
+                idPrefix: 'UPAddress3',
+                addressType: 'alt',
+                fields: altAddressFields,
+                focus,
+                errorMessage,
+                translateText,
+            });
+            focus = altValidation.focus;
+            if (altValidation.hasError) hasError = true;
 
             if (!hasError) {
                 const isAltAddressInternational = document.getElementById("UPAddress3International")?.checked || false;
                 const validateAlternateAddress = await validateAddress(focus, "UPAddress3Line1", "UPAddress3Line2", "UPAddress3City", "UPAddress3State", "UPAddress3Zip", isAltAddressInternational);
                 uspsSuggestion.isAlternateAddressValid = !validateAlternateAddress.hasError
                 uspsSuggestion.alternateAddress = validateAlternateAddress.result;
-                
+
                 isAltAddressValidated = validateAlternateAddress.isValidatedByUSPS;
             }
         }
@@ -1463,58 +1320,39 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             })
         }
 
-        // Mailing address
-        formData[fieldMapping.address1] = escapeHTML(document.getElementById('UPAddress1Line1').value || '');
-        const mailingAddress2 = escapeHTML(document.getElementById('UPAddress1Line2').value || '');
-        if(mailingAddress2 !== "") formData[fieldMapping.address2] = mailingAddress2;
-        formData[fieldMapping.city] = escapeHTML(document.getElementById('UPAddress1City').value || '');
-        formData[fieldMapping.state] = escapeHTML(document.getElementById('UPAddress1State').value || '');
-        formData[fieldMapping.zip] = zip;
-
+        // Collect address values for consolidated write
         const poBoxCheckbox = document.getElementById("poBoxCheckbox");
-
-        // Physical address
-        formData[fieldMapping.isPOBox] = poBoxCheckbox && poBoxCheckbox.checked ?
-            fieldMapping.yes :
-            fieldMapping.no
-
-        // Physical address info is saved regardless of whether PO Box is checked
-        const physicalAddressLine1 = escapeHTML(document.getElementById('UPAddress2Line1')?.value?.trim() || '');
-        const physicalAddressLine2 = escapeHTML(document.getElementById('UPAddress2Line2')?.value?.trim() || '');
-        const physicalAddressCity = escapeHTML(document.getElementById('UPAddress2City')?.value?.trim() || '');
-        const physicalAddressState = escapeHTML(document.getElementById('UPAddress2State')?.value || '');
-        const physicalAddressZip = escapeHTML(document.getElementById('UPAddress2Zip')?.value?.trim() || '');
-
-        // Update formData with physical address details
-        if (physicalAddressLine1 !== "")  formData[fieldMapping.physicalAddress1] = physicalAddressLine1
-        if (physicalAddressLine2 !== "")  formData[fieldMapping.physicalAddress2] = physicalAddressLine2
-        if (physicalAddressCity !== "")  formData[fieldMapping.physicalCity] = physicalAddressCity
-        if (physicalAddressState !== "")  formData[fieldMapping.physicalState] = physicalAddressState
-        if (physicalAddressZip !== "")  formData[fieldMapping.physicalZip] = physicalAddressZip
-
-        // Alternate address (altAddressZip is validated above)
-        const altAddressLine1 = escapeHTML(document.getElementById('UPAddress3Line1')?.value?.trim() || '');
-        const altAddressLine2 = escapeHTML(document.getElementById('UPAddress3Line2')?.value?.trim() || '');
-        const altAddressCity = escapeHTML(document.getElementById('UPAddress3City')?.value?.trim() || '');
-        const altAddressState = escapeHTML(document.getElementById('UPAddress3State')?.value || '');
         const altAddressPOBoxCheckbox = document.getElementById("poBoxCheckboxAltAddress");
 
-        if (altAddressLine1 !== "") formData[fieldMapping.altAddress1] = altAddressLine1;
-        if (altAddressLine2 !== "") formData[fieldMapping.altAddress2] = altAddressLine2;
-        if (altAddressCity !== "") formData[fieldMapping.altCity] = altAddressCity;
-        if (altAddressState) formData[fieldMapping.altState] = altAddressState;
-        if (altAddressZip) formData[fieldMapping.altZip] = altAddressZip;
-
-        // Add P.O. Box status if any address field is filled
-        if (altAddressLine1 || altAddressLine2 || altAddressCity || altAddressState || altAddressZip) {
-            formData[fieldMapping.doesAltAddressExist] = fieldMapping.yes;
-        } else {
-            formData[fieldMapping.doesAltAddressExist] = fieldMapping.no;
-        }
-
-        formData[fieldMapping.isPOBoxAltAddress] = altAddressPOBoxCheckbox && altAddressPOBoxCheckbox.checked
-            ? fieldMapping.yes
-            : fieldMapping.no;
+        applyAddressWrites({
+            formData,
+            fieldMapping,
+            mailingAddress: {
+                line1: escapeHTML(document.getElementById('UPAddress1Line1').value || ''),
+                line2: escapeHTML(document.getElementById('UPAddress1Line2').value || ''),
+                city: escapeHTML(document.getElementById('UPAddress1City').value || ''),
+                state: escapeHTML(document.getElementById('UPAddress1State').value || ''),
+                zip,
+            },
+            hasPhysicalAddressField,
+            physicalAddress: {
+                line1: escapeHTML(document.getElementById('UPAddress2Line1')?.value?.trim() || ''),
+                line2: escapeHTML(document.getElementById('UPAddress2Line2')?.value?.trim() || ''),
+                city: escapeHTML(document.getElementById('UPAddress2City')?.value?.trim() || ''),
+                state: escapeHTML(document.getElementById('UPAddress2State')?.value || ''),
+                zip: escapeHTML(document.getElementById('UPAddress2Zip')?.value?.trim() || ''),
+            },
+            hasAltAddressField,
+            altAddress: {
+                line1: escapeHTML(document.getElementById('UPAddress3Line1')?.value?.trim() || ''),
+                line2: escapeHTML(document.getElementById('UPAddress3Line2')?.value?.trim() || ''),
+                city: escapeHTML(document.getElementById('UPAddress3City')?.value?.trim() || ''),
+                state: escapeHTML(document.getElementById('UPAddress3State')?.value || ''),
+                zip: escapeHTML(document.getElementById('UPAddress3Zip')?.value?.trim() || ''),
+            },
+            isPOBoxChecked: !!(poBoxCheckbox && poBoxCheckbox.checked),
+            isAltPOBoxChecked: !!(altAddressPOBoxCheckbox && altAddressPOBoxCheckbox.checked),
+        });
         
         // Alternate contact (phone and email fields validated above)
         const altContactFirstName = escapeHTML(document.getElementById('altContactFirstName')?.value?.trim() || '');
