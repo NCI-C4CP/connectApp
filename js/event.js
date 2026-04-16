@@ -1,4 +1,4 @@
-import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, sitesNotEnrolling, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, escapeHTML, updateStartDHQParticipantData, mergeAndDeduplicateArrays, analyzeUSPSAddressSuggestion, mapUSPSErrorsToFieldTargets, applyUSPSFieldErrors, getUSPSUnvalidatedValue } from "./shared.js";
+import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, sitesNotEnrolling, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, escapeHTML, updateStartDHQParticipantData, mergeAndDeduplicateArrays, analyzeUSPSAddressSuggestion, mapUSPSErrorsToFieldTargets, applyUSPSFieldErrors, getUSPSUnvalidatedValue, validPhoneNumberFormat } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
 import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, noLongerEnrollingRender,  requestPINTemplate } from "./pages/healthCareProvider.js";
 import { renderDashboard } from "./pages/dashboard.js";
@@ -849,7 +849,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             hasError = true;
             console.error('User Profile - Invalid Phone Length', 'altContactHomePhone');
         }
-        if(phoneNo && !/[1-9]{1}[0-9]{9}/.test(phoneNo) ){
+        if(phoneNo && !validPhoneNumberFormat.test(phoneNo) ){
             errorMessage('UPPhoneNumber11');
             errorMessage('UPPhoneNumber12');
             errorMessage('UPPhoneNumber13');
@@ -859,7 +859,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             hasError = true;
             console.error('User Profile - Invalid Phone Number', 'UPPhoneNumber1');
         }
-        if(phoneNo2 && !/[1-9]{1}[0-9]{9}/.test(phoneNo2) ){
+        if(phoneNo2 && !validPhoneNumberFormat.test(phoneNo2) ){
             errorMessage('UPPhoneNumber21');
             errorMessage('UPPhoneNumber22');
             errorMessage('UPPhoneNumber23');
@@ -869,7 +869,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             hasError = true;
             console.error('User Profile - Invalid Phone Number', 'UPPhoneNumber2');
         }
-        if(phoneNo3 && !/[1-9]{1}[0-9]{9}/.test(phoneNo3) ){
+        if(phoneNo3 && !validPhoneNumberFormat.test(phoneNo3) ){
             errorMessage('UPPhoneNumber31');
             errorMessage('UPPhoneNumber32');
             errorMessage('UPPhoneNumber33');
@@ -879,7 +879,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             hasError = true;
             console.error('User Profile - Invalid Phone Number', 'UPPhoneNumber3');
         }
-        if (altContactMobilePhone && !/[1-9]{1}[0-9]{9}/.test(altContactMobilePhone)) {
+        if (altContactMobilePhone && !validPhoneNumberFormat.test(altContactMobilePhone)) {
             errorMessage('altContactMobilePhone1');
             errorMessage('altContactMobilePhone2');
             errorMessage('altContactMobilePhone3');
@@ -889,7 +889,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             hasError = true;
             console.error('User Profile - Invalid Phone Number', 'altContactMobilePhone');
         }
-        if (altContactHomePhone && !/[1-9]{1}[0-9]{9}/.test(altContactHomePhone)) {
+        if (altContactHomePhone && !validPhoneNumberFormat.test(altContactHomePhone)) {
             errorMessage('altContactHomePhone1');
             errorMessage('altContactHomePhone2');
             errorMessage('altContactHomePhone3');
