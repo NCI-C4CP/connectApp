@@ -198,7 +198,7 @@
             "innerHTML": "Agregar más <i class=\"fas fa-plus\"></i>"
         },
         "phoneRequired": "<b>Debe ingresar un número de teléfono.<span class=\"required\">*</span></b>",
-        "mobilePhone": "Teléfono celular <span class=\"required\">*</span>",
+        "mobilePhone": "Teléfono celular",
         "onlyNumbers": {
             "title": "Solo se permiten números."
         },
