@@ -252,6 +252,7 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
 
                 mainContent.innerHTML = translateHTML(template);
                 hideAnimation();
+                bindCardEvents();
                 return;
             }
 
@@ -474,7 +475,7 @@ const renderPaymentCard = (data) => {
 
 const renderCard = (icon, type, href, newFlag) => {
     let template = `<div class=" col-sm-6 col-lg-4 col-xs-12">
-        <div class="card${newFlag ? ' new' : ''} h-100 text-center" id="${type}Card" onClick="javascript:window.location.href='${href}'">
+        <div class="card${newFlag ? ' new' : ''} h-100 text-center" id="${type}Card" tabindex="0" data-href-target="${href}">
             <div class="new-banner text-start">
                 <div class="new-text" data-i18n="dashboard.newText">New</div>
             </div>
@@ -493,6 +494,25 @@ const renderCard = (icon, type, href, newFlag) => {
     </div>`;
 
     return template;
+}
+
+const bindCardEvents = () => {
+    document.querySelectorAll('[data-href-target]').forEach((element) => {
+        element.addEventListener("keydown", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+            }
+        });
+        element.addEventListener("keyup", (event) => {
+            if (event.key === "Enter" || event.key === " ") {
+                event.preventDefault();
+                window.location.href = element.dataset.hrefTarget;
+            }
+        });
+        element.addEventListener("click", () => {
+            window.location.href = element.dataset.hrefTarget;
+        });
+    });
 }
 
 const checkForNewSurveys = async (data, collections) => {
