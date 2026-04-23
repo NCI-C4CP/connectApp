@@ -252,6 +252,29 @@ export const renderSamplesPage = async () => {
     `;
 
     document.getElementById('root').innerHTML = translateHTML(template);
+    document.querySelectorAll('[data-bs-toggle="collapse"]').forEach((element) => {
+        /**The collapser elements are generated in the smdb and the page does
+         * not have control of the html.  The existing markup does not use buttons or links
+         * for the collapser so we need to make the markup tabbable and accessable via the 
+         * enter and space buttons.
+        */
+        if (element.tagName !== 'BUTTON' && element.tagName !== 'A') {
+            element.setAttribute('tabindex', '0');
+            element.addEventListener("keydown", (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                }
+            });
+            element.addEventListener("keyup", (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                    element.click();
+                }
+            });
+            element.addEventListener("click", () => {
+                element.click();
+            });
+        }
+    });
     renderRequestAKitDisplay(participant);
     bindEvents(participant);
 };
@@ -489,6 +512,7 @@ const renderParticipantPhysicalAddress = (participant, displayCurrentPhysicalAdd
     }
 
     requestAKitInner.innerHTML = translateHTML(newInnerHTML);
+    document.getElementById('UPAddress2Line1').focus();
     toggleElementVisibility([document.getElementById(`currentMailingAddressDiv2`), document.getElementById(`changeMailingAddressGroup2`)], false);
     addEventAddressAutoComplete(2);
     

@@ -2913,7 +2913,7 @@ const renderSignedAgreements = () => {
                                         <span data-i18n="agreements.signed">Signed: </span>${new Date(userData[cId.consentDate]).toDateString()}
                                     </div>
                                     <div class="col-12 col-md-4">
-                                        <a data-i18n="agreements.downloadSigned" class="btn btn-outline-primary btn-agreement" id="downloadConsent" download="signed_consent.pdf" data-file="signed-consent"><i class="fas fa-file-download" ></i> Download Signed Form</a>
+                                        <button data-i18n="agreements.downloadSigned" class="btn btn-outline-primary btn-agreement" id="downloadConsent" download="signed_consent.pdf" data-file="signed-consent"><i class="fas fa-file-download" ></i> Download Signed Form</button>
                                     </div> 
                                 </div>
                             </div>
@@ -2936,7 +2936,7 @@ const renderSignedAgreements = () => {
                                         <span data-i18n="agreements.signed">Signed: </span>${new Date(userData[cId.hipaaTimestamp]).toDateString()}
                                     </div>
                                     <div class="col-12 col-md-4">
-                                        <a data-i18n="agreements.downloadSigned" class="btn btn-outline-primary btn-agreement" id="downloadHIPAA" download="signed_hipaa.pdf" data-file="signed-HIPAA"><i class="fas fa-file-download" ></i> Download Signed Form</a>
+                                        <button data-i18n="agreements.downloadSigned" class="btn btn-outline-primary btn-agreement" id="downloadHIPAA" download="signed_hipaa.pdf" data-file="signed-HIPAA"><i class="fas fa-file-download" ></i> Download Signed Form</button>
                                     </div>
                                 </div>
                             </div>

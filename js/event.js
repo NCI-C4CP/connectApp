@@ -208,71 +208,71 @@ export const addYearsOptions = () => {
 
 export const addEventChangeFocus = () => {
     const element11 = document.getElementById('UPPhoneNumber11');
-    element11.addEventListener('keyup', () => {
-        if(element11.value.trim().length === 3){
+    element11.addEventListener('keyup', (event) => {
+        if(event.key !== 'Shift' && event.key !== 'Tab' && element11.value.trim().length === 3){
             element11.nextElementSibling.nextElementSibling.focus()
         }
     });
 
     const element12 = document.getElementById('UPPhoneNumber12');
-    element12.addEventListener('keyup', () => {
-        if(element12.value.trim().length === 3){
+    element12.addEventListener('keyup', (event) => {
+        if(event.key !== 'Shift' && event.key !== 'Tab' && element12.value.trim().length === 3){
             element12.nextElementSibling.nextElementSibling.focus()
         }
     });
 
     const element21 = document.getElementById('UPPhoneNumber21');
-    element21.addEventListener('keyup', () => {
-        if(element21.value.trim().length === 3){
+    element21.addEventListener('keyup', (event) => {
+        if(event.key !== 'Shift' && event.key !== 'Tab' && element21.value.trim().length === 3){
             element21.nextElementSibling.nextElementSibling.focus()
         }
     });
 
     const element22 = document.getElementById('UPPhoneNumber22');
-    element22.addEventListener('keyup', () => {
-        if(element22.value.trim().length === 3){
+    element22.addEventListener('keyup', (event) => {
+        if(event.key !== 'Shift' && event.key !== 'Tab' && element22.value.trim().length === 3){
             element22.nextElementSibling.nextElementSibling.focus()
         }
     });
 
     const element31 = document.getElementById('UPPhoneNumber31');
-    element31.addEventListener('keyup', () => {
-        if(element31.value.trim().length === 3){
+    element31.addEventListener('keyup', (event) => {
+        if(event.key !== 'Shift' && event.key !== 'Tab' && element31.value.trim().length === 3){
             element31.nextElementSibling.nextElementSibling.focus()
         }
     });
     
     const element32 = document.getElementById('UPPhoneNumber32');
-    element32.addEventListener('keyup', () => {
-        if(element32.value.trim().length === 3){
+    element32.addEventListener('keyup', (event) => {
+        if(event.key !== 'Shift' && event.key !== 'Tab' && element32.value.trim().length === 3){
             element32.nextElementSibling.nextElementSibling.focus()
         }
     });
 
     const altMobile1 = document.getElementById('altContactMobilePhone1');
-    altMobile1.addEventListener('keyup', () => {
-        if (altMobile1.value.trim().length === 3) {
+    altMobile1.addEventListener('keyup', (event) => {
+        if (event.key !== 'Shift' && event.key !== 'Tab' && altMobile1.value.trim().length === 3) {
             altMobile1.nextElementSibling.nextElementSibling.focus()
         }
     });
 
     const altMobile2 = document.getElementById('altContactMobilePhone2');
-    altMobile2.addEventListener('keyup', () => {
-        if (altMobile2.value.trim().length === 3) {
+    altMobile2.addEventListener('keyup', (event) => {
+        if (event.key !== 'Shift' && event.key !== 'Tab' && altMobile2.value.trim().length === 3) {
             altMobile2.nextElementSibling.nextElementSibling.focus()
         }
     });
 
     const altHome1 = document.getElementById('altContactHomePhone1');
-    altHome1.addEventListener('keyup', () => {
-        if (altHome1.value.trim().length === 3) {
+    altHome1.addEventListener('keyup', (event) => {
+        if (event.key !== 'Shift' && event.key !== 'Tab' && altHome1.value.trim().length === 3) {
             altHome1.nextElementSibling.nextElementSibling.focus()
         }
     });
 
     const altHome2 = document.getElementById('altContactHomePhone2');
-    altHome2.addEventListener('keyup', () => {
-        if (altHome2.value.trim().length === 3) {
+    altHome2.addEventListener('keyup', (event) => {
+        if (event.key !== 'Shift' && event.key !== 'Tab' && altHome2.value.trim().length === 3) {
             altHome2.nextElementSibling.nextElementSibling.focus()
         }
     });
