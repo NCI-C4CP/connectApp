@@ -150,7 +150,7 @@ export const renderSamplesPage = async () => {
             <div class="row">
                 <div class="col-lg-2 col-xl-3"></div>
                     <div class="col-lg-8 col-xl-6">
-                        <div class="consentHeadersFont" style="color:#606060;width:100%" id="requestAKitRow">
+                        <div class="consentHeadersFont" style="color:#606060;width:100%" id="requestAKitRow" tabindex="-1">
                             <div data-i18n="samples.requestAKit.title">
                                 Home Collection Kit Request
                             </div>
@@ -174,7 +174,7 @@ export const renderSamplesPage = async () => {
             <div class="row">
                 <div class="col-lg-2 col-xl-3"></div>
                 <div class="col-lg-8 col-xl-6">
-                    <div class="consentHeadersFont" style="color:#606060;width:100%" id="kitRequestHistoryRow">
+                    <div class="consentHeadersFont" style="color:#606060;width:100%" id="kitRequestHistoryRow" tabindex="-1">
                         <div data-i18n="samples.kitRequestHistory.title">
                             Home Collection Kit Request History
                         </div>
@@ -219,10 +219,10 @@ export const renderSamplesPage = async () => {
                         On this page:
                     </p>
                     <ul class="onThisPage">
-                    <li><a href="javascript:document.getElementById('donatingInformation').scrollIntoView(true)"><span data-i18n="samples.donatingSamples">Donating Your Samples at</span> ${siteName}</a></li>
-                    ${showRequestAKit ? `<li><a href="javascript:document.getElementById('requestAKitRow').scrollIntoView(true);" data-i18n="samples.requestAKit.title">Home Collection Kit Request</a></li>` : ``}
-                    ${showKitRequestHistory ? `<li><a href="javascript:document.getElementById('kitRequestHistoryRow').scrollIntoView(true);" data-i18n="samples.kitRequestHistory.title">Home Collection Kit Request History</a></li>` : ``}
-                    <!-- <li><a href="javascript:document.getElementById('sampleInventory').scrollIntoView(true)" data-i18n="samples.sampleInventory">Sample Inventory</a></li> -->
+                    <li><a href="javascript:document.getElementById('donatingInformation').scrollIntoView(true); document.getElementById('donatingInformation').focus()"><span data-i18n="samples.donatingSamples">Donating Your Samples at</span> ${siteName}</a></li>
+                    ${showRequestAKit ? `<li><a href="javascript:document.getElementById('requestAKitRow').scrollIntoView(true); document.getElementById('requestAKitRow').focus()" data-i18n="samples.requestAKit.title">Home Collection Kit Request</a></li>` : ``}
+                    ${showKitRequestHistory ? `<li><a href="javascript:document.getElementById('kitRequestHistoryRow').scrollIntoView(true); document.getElementById('kitRequestHistoryRow').focus()" data-i18n="samples.kitRequestHistory.title">Home Collection Kit Request History</a></li>` : ``}
+                    <!-- <li><a href="javascript:document.getElementById('sampleInventory').scrollIntoView(true); document.getElementById('sampleInventory').focus()" data-i18n="samples.sampleInventory">Sample Inventory</a></li> -->
                     </ul>
                 </div>
                 <div class="col-lg-2 col-xl-3"></div>
@@ -240,7 +240,7 @@ export const renderSamplesPage = async () => {
             <div class="col-lg-2 col-xl-3"></div>
         </div>
         ${onThisPageHtml}
-        <div class="row" id="donatingInformation">
+        <div class="row" id="donatingInformation" tabindex="-1">
             <div class="col-lg-2 col-xl-3"></div>
             <div class="col-lg-8 col-xl-6">
                 ${donationInfoHtml}
