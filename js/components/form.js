@@ -414,7 +414,6 @@ export const renderUserProfile = async () => {
     //Disable Enter for form submit - When using keyboard navigation if you hit enter to select an address suggestion it causes the form to submit
     //Generally this for is just too long for enter to submit it just causes the form to validate too soon
     document.getElementById('userProfileForm').addEventListener('keydown', (event) => {
-        console.log(event);
         if (event.key === "Enter" && event.target.id !== "userProfileSubmitButton") {
             event.preventDefault();
         }
