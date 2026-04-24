@@ -875,9 +875,21 @@ export function addEventDownloadSignedConsentAndHipaa(anchorIdArray, data) {
     const aEle = document.getElementById(anchorId);
     if (!aEle || aEle.hasClickListener) continue;
     aEle.hasClickListener = true;
-    aEle.addEventListener("click", async (e) => {
-      e.preventDefault();
-      await handlePdfDownload(e, data);
+    aEle.addEventListener("click", async (event) => {
+      event.preventDefault();
+      await handlePdfDownload(event, data);
     });
+    aEle.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+        }
+    });
+    aEle.addEventListener("keyup", async (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            await handlePdfDownload(event, data);
+        }
+    });
+
   }
 };

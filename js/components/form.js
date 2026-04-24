@@ -411,6 +411,14 @@ export const renderUserProfile = async () => {
     addEventAddressAutoComplete(3);
     addEventCheckCanText();
 
+    //Disable Enter for form submit - When using keyboard navigation if you hit enter to select an address suggestion it causes the form to submit
+    //Generally this for is just too long for enter to submit it just causes the form to validate too soon
+    document.getElementById('userProfileForm').addEventListener('keydown', (event) => {
+        if (event.key === "Enter" && event.target.id !== "userProfileSubmitButton") {
+            event.preventDefault();
+        }
+    });
+
     // Either query.allPhoneNo or query.allEmails will already have an entry from consenting. These are used for participant search.
     // We add to them as the participant submits the profile form.
     const queryPhoneNoArray = myData?.data?.['query.allPhoneNo'] || [];
