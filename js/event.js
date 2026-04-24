@@ -2162,6 +2162,7 @@ const verifyUserDetails = (formData) => {
         `:``}
     `
     document.getElementById('connectModalBody').innerHTML = translateHTML(bodyHtml);
+    document.getElementById('connectMainModal').focus(); //This fixes an issue with keyboard arrow scrolling
 
     document.getElementById('connectModalFooter').innerHTML = translateHTML(`
         <div class="d-flex justify-content-between w-100">
