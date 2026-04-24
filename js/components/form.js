@@ -125,7 +125,7 @@ export const renderUserProfile = async () => {
             </div>        
             <div class="form-group row" style="margin-top: -20px">
                 <div class="col-md-3 col-lg-2">
-                    <label class="col-form-label" data-i18n="form.monthListLabelNotRequired">Month</label>
+                    <label class="col-form-label" data-i18n="form.monthListLabel">Month <span class="required">*</span></label>
                     <select style="margin-left:0px;" id="UPMonthConfirmation" class="form-control confirmation-field" target="UPMonth" data-i18n="form.monthFieldConfirmation" data-error-confirmation="Both the Month of Birth's do not match">
                         <option class="option-dark-mode" value="" data-i18n="form.selectOptionConfirmation">-- Select --</option>
                         <option class="option-dark-mode" value="01" data-i18n="form.monthJanuary">January</option>
@@ -143,11 +143,11 @@ export const renderUserProfile = async () => {
                     </select>
                 </div>
                 <div class="col-md-3 col-lg-2">
-                    <label class="col-form-label" data-i18n="form.dayListLabelNotRequired">Day</label>
+                    <label class="col-form-label" data-i18n="form.dayListLabel">Day <span class="required">*</span></label>
                     <select style="margin-left:0px;" class="form-control confirmation-field" id="UPDayConfirmation" target="UPDay" data-i18n="form.dayFieldConfirmation" data-error-confirmation="Both the Day of Birth's do not match"></select>
                 </div>
                     <div class="col-md-3 col-lg-2">
-                     <label class="col-form-label" data-i18n="form.yearListLabelNotRequired">Year</label>
+                     <label class="col-form-label" data-i18n="form.yearListLabel">Year <span class="required">*</span></label>
                     <input data-i18n="form.yearListFieldConfirmation" style="margin-left:0px;" type="text" class="form-control confirmation-field" id="UPYearConfirmation" Placeholder="Re-enter birth year" target="UPYear" data-error-confirmation="Both the Year of Birth's do not match">
                     <!--<datalist id="yearsOptionConfirmation"></datalist>-->
                 </div>
@@ -232,7 +232,7 @@ export const renderUserProfile = async () => {
             <div class="form-group row">
                 <div class="col">
                     <label class="col-form-label" data-i18n="form.mobilePhone">
-                        Mobile phone <span class="required"></span>
+                        Mobile phone</span>
                     </label>
                     <br>
                     <div class="btn-group col-md-4" id="mainMobilePhone" style="margin-left:0px;">
@@ -410,6 +410,14 @@ export const renderUserProfile = async () => {
     addEventAddressAutoComplete(2);
     addEventAddressAutoComplete(3);
     addEventCheckCanText();
+
+    //Disable Enter for form submit - When using keyboard navigation if you hit enter to select an address suggestion it causes the form to submit
+    //Generally this for is just too long for enter to submit it just causes the form to validate too soon
+    document.getElementById('userProfileForm').addEventListener('keydown', (event) => {
+        if (event.key === "Enter" && event.target.id !== "userProfileSubmitButton") {
+            event.preventDefault();
+        }
+    });
 
     // Either query.allPhoneNo or query.allEmails will already have an entry from consenting. These are used for participant search.
     // We add to them as the participant submits the profile form.
