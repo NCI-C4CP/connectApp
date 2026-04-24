@@ -774,8 +774,8 @@ export const consentFinishedPage = async () => {
                 <h2 data-i18n="consent.finishedPageHeader">You have completed the consent process</h2>
             </div>
             <div style="margin-left:20px">
-                <div class="row"><div style="margin-left:20px"><i class="fas fa-file-download"></i> <a data-i18n="consent.finishedPageDownloadConsentForm" style="margin-left:10px" title="Download consent form" data-bs-toggle="tooltip" id="consentDownload" download="signed_consent.pdf" data-file="signed-consent" >Download a copy of your signed consent form&nbsp</a></div></div>
-                <div class="row"><div style="margin-left:20px"><i class="fas fa-file-download"></i> <a data-i18n="consent.finishedPageDownloadReleaseForm" style="margin-left:10px" title="Download health records release form" data-bs-toggle="tooltip" id="healthRecordsDownload" download="signed_hipaa.pdf" data-file="signed-HIPAA" >Download a copy of your signed health records release form&nbsp</a></div></div>
+                <div class="row"><div style="margin-left:20px"><i class="fas fa-file-download"></i> <a data-i18n="consent.finishedPageDownloadConsentForm" tabindex="0" style="margin-left:10px" title="Download consent form" data-bs-toggle="tooltip" id="consentDownload" download="signed_consent.pdf" data-file="signed-consent" >Download a copy of your signed consent form&nbsp</a></div></div>
+                <div class="row"><div style="margin-left:20px"><i class="fas fa-file-download"></i> <a data-i18n="consent.finishedPageDownloadReleaseForm" tabindex="0" style="margin-left:10px" title="Download health records release form" data-bs-toggle="tooltip" id="healthRecordsDownload" download="signed_hipaa.pdf" data-file="signed-HIPAA" >Download a copy of your signed health records release form&nbsp</a></div></div>
             </div>
             <div class="row">
             <div class="col-md-2">  
