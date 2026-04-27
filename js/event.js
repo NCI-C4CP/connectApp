@@ -1,4 +1,4 @@
-import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, sitesNotEnrolling, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, escapeHTML, updateStartDHQParticipantData, mergeAndDeduplicateArrays, analyzeUSPSAddressSuggestion, mapUSPSErrorsToFieldTargets, applyUSPSFieldErrors, getUSPSUnvalidatedValue } from "./shared.js";
+import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, sitesNotEnrolling, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, escapeHTML, updateStartDHQParticipantData, mergeAndDeduplicateArrays, analyzeUSPSAddressSuggestion, mapUSPSErrorsToFieldTargets, applyUSPSFieldErrors, getUSPSUnvalidatedValue, validPhoneNumberFormat } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
 import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, noLongerEnrollingRender,  requestPINTemplate } from "./pages/healthCareProvider.js";
 import { renderDashboard } from "./pages/dashboard.js";
@@ -208,71 +208,71 @@ export const addYearsOptions = () => {
 
 export const addEventChangeFocus = () => {
     const element11 = document.getElementById('UPPhoneNumber11');
-    element11.addEventListener('keyup', () => {
-        if(element11.value.trim().length === 3){
+    element11.addEventListener('keyup', (event) => {
+        if(event.key !== 'Shift' && event.key !== 'Tab' && element11.value.trim().length === 3){
             element11.nextElementSibling.nextElementSibling.focus()
         }
     });
 
     const element12 = document.getElementById('UPPhoneNumber12');
-    element12.addEventListener('keyup', () => {
-        if(element12.value.trim().length === 3){
+    element12.addEventListener('keyup', (event) => {
+        if(event.key !== 'Shift' && event.key !== 'Tab' && element12.value.trim().length === 3){
             element12.nextElementSibling.nextElementSibling.focus()
         }
     });
 
     const element21 = document.getElementById('UPPhoneNumber21');
-    element21.addEventListener('keyup', () => {
-        if(element21.value.trim().length === 3){
+    element21.addEventListener('keyup', (event) => {
+        if(event.key !== 'Shift' && event.key !== 'Tab' && element21.value.trim().length === 3){
             element21.nextElementSibling.nextElementSibling.focus()
         }
     });
 
     const element22 = document.getElementById('UPPhoneNumber22');
-    element22.addEventListener('keyup', () => {
-        if(element22.value.trim().length === 3){
+    element22.addEventListener('keyup', (event) => {
+        if(event.key !== 'Shift' && event.key !== 'Tab' && element22.value.trim().length === 3){
             element22.nextElementSibling.nextElementSibling.focus()
         }
     });
 
     const element31 = document.getElementById('UPPhoneNumber31');
-    element31.addEventListener('keyup', () => {
-        if(element31.value.trim().length === 3){
+    element31.addEventListener('keyup', (event) => {
+        if(event.key !== 'Shift' && event.key !== 'Tab' && element31.value.trim().length === 3){
             element31.nextElementSibling.nextElementSibling.focus()
         }
     });
     
     const element32 = document.getElementById('UPPhoneNumber32');
-    element32.addEventListener('keyup', () => {
-        if(element32.value.trim().length === 3){
+    element32.addEventListener('keyup', (event) => {
+        if(event.key !== 'Shift' && event.key !== 'Tab' && element32.value.trim().length === 3){
             element32.nextElementSibling.nextElementSibling.focus()
         }
     });
 
     const altMobile1 = document.getElementById('altContactMobilePhone1');
-    altMobile1.addEventListener('keyup', () => {
-        if (altMobile1.value.trim().length === 3) {
+    altMobile1.addEventListener('keyup', (event) => {
+        if (event.key !== 'Shift' && event.key !== 'Tab' && altMobile1.value.trim().length === 3) {
             altMobile1.nextElementSibling.nextElementSibling.focus()
         }
     });
 
     const altMobile2 = document.getElementById('altContactMobilePhone2');
-    altMobile2.addEventListener('keyup', () => {
-        if (altMobile2.value.trim().length === 3) {
+    altMobile2.addEventListener('keyup', (event) => {
+        if (event.key !== 'Shift' && event.key !== 'Tab' && altMobile2.value.trim().length === 3) {
             altMobile2.nextElementSibling.nextElementSibling.focus()
         }
     });
 
     const altHome1 = document.getElementById('altContactHomePhone1');
-    altHome1.addEventListener('keyup', () => {
-        if (altHome1.value.trim().length === 3) {
+    altHome1.addEventListener('keyup', (event) => {
+        if (event.key !== 'Shift' && event.key !== 'Tab' && altHome1.value.trim().length === 3) {
             altHome1.nextElementSibling.nextElementSibling.focus()
         }
     });
 
     const altHome2 = document.getElementById('altContactHomePhone2');
-    altHome2.addEventListener('keyup', () => {
-        if (altHome2.value.trim().length === 3) {
+    altHome2.addEventListener('keyup', (event) => {
+        if (event.key !== 'Shift' && event.key !== 'Tab' && altHome2.value.trim().length === 3) {
             altHome2.nextElementSibling.nextElementSibling.focus()
         }
     });
@@ -849,7 +849,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             hasError = true;
             console.error('User Profile - Invalid Phone Length', 'altContactHomePhone');
         }
-        if(phoneNo && !/[1-9]{1}[0-9]{9}/.test(phoneNo) ){
+        if(phoneNo && !validPhoneNumberFormat.test(phoneNo) ){
             errorMessage('UPPhoneNumber11');
             errorMessage('UPPhoneNumber12');
             errorMessage('UPPhoneNumber13');
@@ -859,7 +859,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             hasError = true;
             console.error('User Profile - Invalid Phone Number', 'UPPhoneNumber1');
         }
-        if(phoneNo2 && !/[1-9]{1}[0-9]{9}/.test(phoneNo2) ){
+        if(phoneNo2 && !validPhoneNumberFormat.test(phoneNo2) ){
             errorMessage('UPPhoneNumber21');
             errorMessage('UPPhoneNumber22');
             errorMessage('UPPhoneNumber23');
@@ -869,7 +869,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             hasError = true;
             console.error('User Profile - Invalid Phone Number', 'UPPhoneNumber2');
         }
-        if(phoneNo3 && !/[1-9]{1}[0-9]{9}/.test(phoneNo3) ){
+        if(phoneNo3 && !validPhoneNumberFormat.test(phoneNo3) ){
             errorMessage('UPPhoneNumber31');
             errorMessage('UPPhoneNumber32');
             errorMessage('UPPhoneNumber33');
@@ -879,7 +879,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             hasError = true;
             console.error('User Profile - Invalid Phone Number', 'UPPhoneNumber3');
         }
-        if (altContactMobilePhone && !/[1-9]{1}[0-9]{9}/.test(altContactMobilePhone)) {
+        if (altContactMobilePhone && !validPhoneNumberFormat.test(altContactMobilePhone)) {
             errorMessage('altContactMobilePhone1');
             errorMessage('altContactMobilePhone2');
             errorMessage('altContactMobilePhone3');
@@ -889,7 +889,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             hasError = true;
             console.error('User Profile - Invalid Phone Number', 'altContactMobilePhone');
         }
-        if (altContactHomePhone && !/[1-9]{1}[0-9]{9}/.test(altContactHomePhone)) {
+        if (altContactHomePhone && !validPhoneNumberFormat.test(altContactHomePhone)) {
             errorMessage('altContactHomePhone1');
             errorMessage('altContactHomePhone2');
             errorMessage('altContactHomePhone3');
@@ -2162,6 +2162,7 @@ const verifyUserDetails = (formData) => {
         `:``}
     `
     document.getElementById('connectModalBody').innerHTML = translateHTML(bodyHtml);
+    document.getElementById('connectMainModal').focus(); //This fixes an issue with keyboard arrow scrolling
 
     document.getElementById('connectModalFooter').innerHTML = translateHTML(`
         <div class="d-flex justify-content-between w-100">

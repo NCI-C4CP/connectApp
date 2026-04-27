@@ -184,9 +184,9 @@ export const renderSettingsPage = async () => {
                 ${translateText('settings.pageNav')}
             </p>
             <ul class="onThisPage">
-            ${!isParticipantDataDestroyed ? "<li><a href=\"javascript:document.getElementById('contactInformation').scrollIntoView(true)\" data-i18n=\"settings.contactInfo\">"+translateText('settings.contactInfo')+"</a></li>" : ''}
-            <li><a href="javascript:document.getElementById('signInInformationDiv').scrollIntoView(true);" data-i18n="settings.signInInfo">${translateText('settings.signInInfo')}</a></li>
-            ${hasAgreements ? "<li><a href=\"javascript:document.getElementById('agreementsDiv').scrollIntoView(true)\" data-i18n=\"settings.agreements\">"+translateText('settings.agreements')+"</a></li>" : ''}
+            ${!isParticipantDataDestroyed ? "<li><a href=\"javascript:document.getElementById('contactInformation').scrollIntoView(true); document.getElementById('contactInformation').focus();\" data-i18n=\"settings.contactInfo\">"+translateText('settings.contactInfo')+"</a></li>" : ''}
+            <li><a href="javascript:document.getElementById('signInInformationDiv').scrollIntoView(true); document.getElementById('signInInformationDiv').focus();" data-i18n="settings.signInInfo">${translateText('settings.signInInfo')}</a></li>
+            ${hasAgreements ? "<li><a href=\"javascript:document.getElementById('agreementsDiv').scrollIntoView(true); document.getElementById('agreementsDiv').focus()\" data-i18n=\"settings.agreements\">"+translateText('settings.agreements')+"</a></li>" : ''}
             </ul>
         </div>
         <div class="col-lg-2 col-xl-3">
@@ -199,7 +199,7 @@ export const renderSettingsPage = async () => {
                <div class="col-lg-8 col-xl-6">`;
     if (!isParticipantDataDestroyed) {
         template += `
-                        <div class="userProfileBox" id="contactInformation">
+                        <div class="userProfileBox" id="contactInformation" tabindex="-1">
                              <div class="row">
                                 <div class="col-12 col-sm-6">
                                     <span class="userProfileLabels" data-i18n="settings.contactInfo">
@@ -257,7 +257,7 @@ export const renderSettingsPage = async () => {
         template += '</div>';
     }
     template += `
-                    <div class="userProfileBox" id="signInInformationDiv">
+                    <div class="userProfileBox" id="signInInformationDiv" tabindex="-1">
                         ${renderSignInInformationHeadingAndButton()}
                         ${renderSignInInformationData()}
                         ${renderChangeSignInInformationGroup()}
@@ -266,7 +266,7 @@ export const renderSettingsPage = async () => {
 
     if (hasAgreements) {
         template += `
-                    <div class="userProfileBox" id="agreementsDiv">
+                    <div class="userProfileBox" id="agreementsDiv" tabindex="-1">
                         ${renderAgreementsHeading()}
                         ${renderUnsignedAgreements()}
                         ${renderSignedAgreements()}
@@ -2913,7 +2913,7 @@ const renderSignedAgreements = () => {
                                         <span data-i18n="agreements.signed">Signed: </span>${new Date(userData[cId.consentDate]).toDateString()}
                                     </div>
                                     <div class="col-12 col-md-4">
-                                        <a data-i18n="agreements.downloadSigned" class="btn btn-outline-primary btn-agreement" id="downloadConsent" download="signed_consent.pdf" data-file="signed-consent"><i class="fas fa-file-download" ></i> Download Signed Form</a>
+                                        <button data-i18n="agreements.downloadSigned" class="btn btn-outline-primary btn-agreement" id="downloadConsent" download="signed_consent.pdf" data-file="signed-consent"><i class="fas fa-file-download" ></i> Download Signed Form</button>
                                     </div> 
                                 </div>
                             </div>
@@ -2936,7 +2936,7 @@ const renderSignedAgreements = () => {
                                         <span data-i18n="agreements.signed">Signed: </span>${new Date(userData[cId.hipaaTimestamp]).toDateString()}
                                     </div>
                                     <div class="col-12 col-md-4">
-                                        <a data-i18n="agreements.downloadSigned" class="btn btn-outline-primary btn-agreement" id="downloadHIPAA" download="signed_hipaa.pdf" data-file="signed-HIPAA"><i class="fas fa-file-download" ></i> Download Signed Form</a>
+                                        <button data-i18n="agreements.downloadSigned" class="btn btn-outline-primary btn-agreement" id="downloadHIPAA" download="signed_hipaa.pdf" data-file="signed-HIPAA"><i class="fas fa-file-download" ></i> Download Signed Form</button>
                                     </div>
                                 </div>
                             </div>
