@@ -198,7 +198,7 @@ const en = {
             "innerHTML": "Add more <i class=\"fas fa-plus\"></i>"
         },
         "phoneRequired": "<b>One phone number is required.<span class=\"required\">*</span></b>",
-        "mobilePhone": "Mobile phone <span class=\"required\">*</span>",
+        "mobilePhone": "Mobile phone",
         "onlyNumbers": {
             "title": "Only numbers are allowed."
         },

@@ -220,8 +220,8 @@ export const updatePhoneNumberInputFocus = (formType) => {
 
   const initFocusHandler = elementId => {
     const element = document.getElementById(elementId);
-    element.addEventListener('keyup', () => {
-      if (element.value.trim().length === 3) {
+    element.addEventListener('keyup', (event) => {
+      if (event.key !== 'Shift' && event.key !== 'Tab' && element.value.trim().length === 3) {
         element.nextElementSibling.nextElementSibling.focus();
       }
     });

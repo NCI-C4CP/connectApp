@@ -1776,3 +1776,13 @@ span.my-samples-indent-text {
     background-color: transparent;
     background-image: url('../images/earth-globe-global.svg');
 }
+
+#donatingInformation:focus-visible,
+#requestAKitRow:focus-visible,
+#kitRequestHistoryRow:focus-visible,
+#sampleInventory:focus-visible,
+#signInInformationDiv:focus-visible,
+#agreementsDiv:focus-visible,
+#contactInformation:focus-visible {
+    outline: none;
+}
