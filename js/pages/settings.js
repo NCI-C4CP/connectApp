@@ -646,6 +646,7 @@ const handleEditMailingAddressSection = () => {
             const submitNewAddress = async (addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isValidatedByUSPS = isValidatedByUSPSApi) => {
                 formVisBools.isMailingAddressFormDisplayed = toggleElementVisibility(mailingAddressElementArray, formVisBools.isMailingAddressFormDisplayed);
                 toggleButtonText();
+                btnObj.changeMailingAddressButton.focus();
 
                 if (isInternational === cId.yes) {
                     await submitNewMailingAddress(1, addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isPOBox, false, isValidatedByUSPS);
@@ -695,7 +696,8 @@ const handleEditMailingAddressSection = () => {
                     'event.addressConfirmationDescription',
                     (streetAddress, secondaryAddress, city, state, zipCode) => {
                         submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, false);
-                    }
+                    },
+                    'UPAddress1Line1'
                 );
             } else if (!hasError) {
                 if (uspsSuggestion.suggestion) {
@@ -704,7 +706,8 @@ const handleEditMailingAddressSection = () => {
                         'event.addressSuggestionDescription',
                         (streetAddress, secondaryAddress, city, state, zipCode, isValidatedByUSPSSelectionModal) => {
                             submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, isValidatedByUSPSSelectionModal);
-                        }
+                        },
+                        'UPAddress1Line1'
                     );
                 } else {
                     submitNewAddress(addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isValidatedByUSPSApi);
@@ -794,6 +797,7 @@ const handleEditPhysicalMailingAddressSection = () => {
             const submitNewAddress = async (addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isValidatedByUSPS = isValidatedByUSPSApi) => {
                 formVisBools.isPhysicalMailingAddressFormDisplayed = toggleElementVisibility(physicalMailingAddressElementArray, formVisBools.isPhysicalMailingAddressFormDisplayed);
                 toggleButtonText();
+                btnObj.changePhysicalMailingAddressButton.focus();
 
                 if (isInternational === cId.yes) {
                     await submitNewMailingAddress(2, addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, false, false, isValidatedByUSPS);
@@ -843,7 +847,8 @@ const handleEditPhysicalMailingAddressSection = () => {
                     'event.addressConfirmationDescriptionPhysical',
                     (streetAddress, secondaryAddress, city, state, zipCode) => {
                         submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, false);
-                    }
+                    },
+                    'UPAddress2Line1'
                 );
             } else if (!hasError) {
                 if (uspsSuggestion.suggestion) {
@@ -852,7 +857,8 @@ const handleEditPhysicalMailingAddressSection = () => {
                         'event.addressSuggestionDescriptionPhysical',
                         (streetAddress, secondaryAddress, city, state, zipCode, isValidatedByUSPSSelectionModal) => {
                             submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, isValidatedByUSPSSelectionModal);
-                        }
+                        },
+                        'UPAddress2Line1'
                     );
                 } else {
                     submitNewAddress(addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isValidatedByUSPSApi);
@@ -919,6 +925,7 @@ const handleEditAltAddressSection = () => {
             const submitNewAddress = async (addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, isValidatedByUSPS = isValidatedByUSPSApi) => {
                 formVisBools.isAltAddressFormDisplayed = toggleElementVisibility(altAddressElementArray, formVisBools.isAltAddressFormDisplayed);
                 toggleButtonText();
+                 btnObj.changeAltAddressButton.focus();
 
                 if (isInternational === cId.yes) {
                      await submitNewMailingAddress(3, addressLine1, addressLine2, city, state, zip, isInternational, addressLine3, country, altAddressIsPOBox, false, isValidatedByUSPS);
@@ -968,7 +975,8 @@ const handleEditAltAddressSection = () => {
                     'event.addressConfirmationDescriptionAlternate',
                     (streetAddress, secondaryAddress, city, state, zipCode) => {
                         submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, false);
-                    }
+                    },
+                    'UPAddress3Line1'
                 );
             } else if (!hasError) {
                 if (uspsSuggestion.suggestion) {
@@ -977,7 +985,8 @@ const handleEditAltAddressSection = () => {
                         'event.addressSuggestionDescriptionAlternate',
                         (streetAddress, secondaryAddress, city, state, zipCode, isValidatedByUSPSSelectionModal) => {
                             submitNewAddress(streetAddress, secondaryAddress, city, state, zipCode, isInternational, undefined, undefined, isValidatedByUSPSSelectionModal);
-                        }
+                        },
+                        'UPAddress3Line1'
                     );
                 } else {
                     await submitNewAddress(altAddressLine1, altAddressLine2, altCity, altState, altZip, isInternational, altAddressLine3, country, isValidatedByUSPSApi);

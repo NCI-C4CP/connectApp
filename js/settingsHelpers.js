@@ -713,7 +713,7 @@ export const showClearAddressConfirmation = (onSubmit) => {
     });
 }
 
-export const showMailAddressConfirmationMyProfile = (address, i18nTranslation, submit) => {
+export const showMailAddressConfirmationMyProfile = (address, i18nTranslation, submit, focusElement) => {
   const modalElement = document.getElementById("connectMainModal");
   let modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
 
@@ -749,11 +749,13 @@ export const showMailAddressConfirmationMyProfile = (address, i18nTranslation, s
     `);
 
   modalInstance.show();
+  modalElement.focus(); //This fixes an issue with keyboard arrow scrolling
 
   document.getElementById("addressKeepButton").addEventListener("click", async () => {
     const { streetAddress, secondaryAddress, city, state, zipCode } = address;
-    await submit(streetAddress, secondaryAddress, city, state, zipCode);
+    document.getElementById("addressKeepButton").blur();
     closeModal();
+    await submit(streetAddress, secondaryAddress, city, state, zipCode);
   });
 
   // Delay the 'goBackButton' since it's rendered dynamically
@@ -762,12 +764,15 @@ export const showMailAddressConfirmationMyProfile = (address, i18nTranslation, s
     if (goBackButton) {
       goBackButton.addEventListener("click", () => {
         closeModal();
+        if (focusElement) {
+          document.getElementById(focusElement).focus();
+        }
       });
     }
   }, 100);
 };
 
-export const showMailAddressSuggestionMyProfile = (uspsSuggestion, i18nTranslation, submit) => {
+export const showMailAddressSuggestionMyProfile = (uspsSuggestion, i18nTranslation, submit, focusElement) => {
   const modalElement = document.getElementById("connectMainModal");
   let modalInstance = bootstrap.Modal.getInstance(modalElement) || new bootstrap.Modal(modalElement);
 
@@ -813,15 +818,15 @@ export const showMailAddressSuggestionMyProfile = (uspsSuggestion, i18nTranslati
 
   document.getElementById("addressSuggestionKeepButton").addEventListener("click", async () => {
     const { streetAddress, secondaryAddress, city, state, zipCode } = uspsSuggestion.original;
-    await submit(streetAddress, secondaryAddress, city, state, zipCode, false);
     closeModal();
+    await submit(streetAddress, secondaryAddress, city, state, zipCode, false);
   });
 
   document.getElementById("addressSuggestionUseButton").addEventListener("click", async () => {
     const isValidatedByUSPSSelectionModal = !(uspsSuggestion?.warnings?.length);
     const { streetAddress, secondaryAddress, city, state, zipCode } = uspsSuggestion.suggestion;
-    await submit(streetAddress, secondaryAddress, city, state, zipCode, isValidatedByUSPSSelectionModal);
     closeModal();
+    await submit(streetAddress, secondaryAddress, city, state, zipCode, isValidatedByUSPSSelectionModal);
   });
 
   // Delay the 'goBackButton' since it's rendered dynamically
@@ -830,6 +835,9 @@ export const showMailAddressSuggestionMyProfile = (uspsSuggestion, i18nTranslati
     if (goBackButton) {
       goBackButton.addEventListener("click", () => {
         closeModal();
+         if (focusElement) {
+          document.getElementById(focusElement).focus();
+        }
       });
     }
   }, 100);
