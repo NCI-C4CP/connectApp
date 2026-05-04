@@ -854,7 +854,7 @@ export const validateAltContactInformation = async (altContactMobilePhoneComplet
     hasError = true;
   }
 
-  if (!altContactEmail || !validEmailFormat.test(altContactEmail)) {
+  if (altContactEmail && !validEmailFormat.test(altContactEmail)) {
     errorMessage('newAltContactEmail', '<span data-i18n="settingsHelpers.emailFormat">'+translateText('settingsHelpers.emailFormat')+'</span>', focus);
     focus = false;
     hasError = true;
@@ -871,7 +871,7 @@ export const validateAltContactInformation = async (altContactMobilePhoneComplet
       }
   }
 
-  if (!hasError) {
+  if (!hasError && altContactEmail) {
     const emailValidation = await emailAddressValidation({
       emails: {
         altContactEmail: altContactEmail,
