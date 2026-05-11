@@ -1338,7 +1338,7 @@ const en = {
         "noNotifications": "No notifications found!",
         "invalidAddressDescription": "The address you entered may not be valid. Please check your entry below. If the address is not correct, please click ‘Go Back’ and correct the address. If the address is correct, please click ‘Continue with Address’. We are only able to send Connect communications and packages to valid addresses.",
         "continueWithAddress": "Continue with Address",
-        "invalidAddressFooter": "If you are having problems fixing these errors and can’t submit your profile, please reach out to the <a href=\"https://myconnect.cancer.gov/support\" target=\"_blank\">Connect Support Center</a>  for help.",
+        "invalidAddressFooter": "If you are having problems fixing these errors and can’t submit your profile, please reach out to the <a href=\"https://myconnect.cancer.gov/support\" target=\"_blank\">Connect Support Center</a> for help.",
     },
     "settingsHelpers": {
         "suffixJr": "Jr.",
