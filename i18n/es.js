@@ -1340,7 +1340,7 @@
         "old": "Anteriores",
         "noNotifications": "¡No se encontró ninguna notificación!",
         "invalidAddressDescription": "La dirección que ingresó quizá no sea válida. Por favor compruebe lo que ingresó abajo. Si la dirección no es correcta, haga clic en 'Regresar' y corrija la dirección. Si la dirección es correcta, haga clic en 'Continuar con la dirección'. Solo podemos enviar comunicaciones y paquetes de Connect a direcciones validas.",
-        "continueWithAddress": "Continuar con la Dirección",
+        "continueWithAddress": "Continuar con la dirección",
         "invalidAddressFooter": "Si está teniendo problemas arreglando estos errores y no puede entregar su perfil, por favor póngase en contacto en el <a href=\"https://myconnect.cancer.gov/support\" target=\"_blank\">Centro de Asistencia de Connect</a> para ayuda." 
     },
     "settingsHelpers": {
