@@ -1449,7 +1449,7 @@ const showInvalidAddressWarning = (uspsSuggestion, formData, type) => {
     document.getElementById('connectModalFooter').innerHTML = translateHTML(`
         <div class="d-flex justify-content-between w-100">
             <button data-i18n="event.navButtonsClose" type="button" title="Go Back" class="btn btn-dark" data-bs-dismiss="modal">Go Back</button>
-            <button  data-i18n="event.continueWithAddress"  id="continueBtn" class="btn btn-dark" >Continue with Address</a>
+            <button  data-i18n="event.continueWithAddress"  id="continueBtn" class="btn btn-primary" >Continue with Address</a>
         </div>
         <p style="margin-top: 20px; font-size: 12px" data-i18n="event.invalidAddressFooter">
             If you are having problems fixing these errors and can’t submit your profile, please reach out to the <a href="https://myconnect.cancer.gov/support" target="_blank">Connect Support Center</a> for help.

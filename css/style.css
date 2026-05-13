@@ -972,6 +972,17 @@ input:checked + .slider:before {
 consentNextButton:hover{
     background-color: #f9a921 !important;
 }
+#continueBtn.btn-primary{
+    background-color:#FFBF17 !important;
+    border-color:#FFBF17 !important;
+    font-weight:bold !important;
+    color: #2E2E2E !important;
+    padding: 6px 12px !important;
+}
+#continueBtn.btn-primary:hover{
+    background-color: #f9a921 !important;
+}
+
 .userProfileHeader{
     font-size:28px;
     font-family: 'Montserrat', sans-serif;
