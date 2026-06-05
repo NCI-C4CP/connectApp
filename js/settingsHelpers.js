@@ -1101,7 +1101,7 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.isPOBox]: isPOBox ? cId.yes : cId.no,
       [cId.isIntlAddr]: isInternational ?? cId.no,
       [cId.address3]: addressLine3 && isInternational === cId.yes ? addressLine3 : '', 
-      [cId.country]: country && isInternational === cId.yes ? country : '',
+      [cId.country]: country && isInternational === cId.yes ? parseInt(country, 10) : '',
       [cId.isMailingAddressUSPSUnvalidated]: getUSPSUnvalidatedValue(isValidatedByUSPS, cId.yes, cId.no),
     };
   } else if (id === 2) {
@@ -1114,7 +1114,7 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.physicalZip]: isClearing ? null : (zip ? zip.toString() : ""),
       [cId.physicalAddrIntl]: isClearing ? null : isInternational,
       [cId.physicalAddress3]: isClearing ? null : (addressLine3 && isInternational === cId.yes ? addressLine3 : ''), 
-      [cId.physicalCountry]: isClearing ? null : (country && isInternational === cId.yes ? country : ''), 
+      [cId.physicalCountry]: isClearing ? null : (country && isInternational === cId.yes ? parseInt(country, 10) : ''), 
       [cId.isPhysicalAddressUSPSUnvalidated]: isClearing ? null : getUSPSUnvalidatedValue(isValidatedByUSPS, cId.yes, cId.no),
     };
   } else if (id === 3) {
@@ -1133,7 +1133,7 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.isPOBoxAltAddress]: isAltClearing ? null : (isPOBox ? cId.yes : cId.no),
       [cId.isIntlAltAddress]: isAltClearing ? null : isInternational,
       [cId.altAddress3]: isAltClearing ? null : (addressLine3 && isInternational === cId.yes ? addressLine3 : ''), 
-      [cId.altCountry]: isAltClearing ? null : (country && isInternational === cId.yes ? country : ''), 
+      [cId.altCountry]: isAltClearing ? null : (country && isInternational === cId.yes ? parseInt(country, 10) : ''), 
       [cId.isAltAddressUSPSUnvalidated]: isAltClearing ? null : getUSPSUnvalidatedValue(isValidatedByUSPS, cId.yes, cId.no),
      };
   }
@@ -1764,7 +1764,7 @@ export const renderCountries = (excludeCountries) => {
     for(const index in countries) {
         let country = countries[index];
         if (!excludeCountries || !excludeCountries.includes(country.code)) {
-            options += `<option class="option-dark-mode" value="${country.code}" data-i18n="countries.${country.code}">${country.title}</option>`;
+            options += `<option class="option-dark-mode" value="${cId.countries[country.code]}" data-i18n="countries.${country.code}">${country.title}</option>`;
         } 
     }
     return options;

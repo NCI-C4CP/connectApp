@@ -743,7 +743,7 @@ const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, sta
     } 
     addressString += `${escapeHTML(state)} ${escapeHTML(zip)}`;
     if (country && country !== '') {
-        addressString += translateHTML(`<br><span data-i18n="countries.${escapeHTML(country)}"></span>`);
+        addressString += translateHTML(`<br><span data-i18n="countries.${Object.keys(cId.countries).find(threeCode => cId.countries[threeCode] === parseInt(country, 10))}"></span>`);
     }
     
     addressString += poBoxText;
@@ -2116,7 +2116,7 @@ export const renderMailingAddressData = (id) => {
                             ${userData[cId.address2] ? `${escapeHTML(userData[cId.address2])}</br>` : ''}
                             ${userData[cId.address3] ? `${escapeHTML(userData[cId.address3])}</br>` : ''}
                             ${escapeHTML(userData[cId.city])}${userData[cId.city] && userData[cId.state] ? ', ' : ''}${escapeHTML(userData[cId.state])} ${escapeHTML(userData[cId.zip])}</br>
-                            ${userData[cId.country] ? `<span data-i18n="countries.${userData[cId.country]}"></span></br>` : ''}
+                            ${userData[cId.country] ? `<span data-i18n="countries.${Object.keys(cId.countries).find(threeCode => cId.countries[threeCode] === parseInt(userData[cId.country], 10))}"></span></br>` : ''}
                             <br>
                             <span data-i18n="event.poBox">Mailing address is PO Box</span>:
                             <span data-i18n="settings.${userData[cId.isPOBox] === cId.yes ? 'optYes': 'optNo'}">${userData[cId.isPOBox] === cId.yes ? "Yes" : "No"}</span> 
@@ -2144,7 +2144,7 @@ export const renderPhysicalMailingAddressData = (id) => {
                                     ${userData[cId.physicalAddress2] ? `${escapeHTML(userData[cId.physicalAddress2])}</br>` : ''}
                                     ${userData[cId.physicalAddress3] ? `${escapeHTML(userData[cId.physicalAddress3])}</br>` : ''}
                                     ${escapeHTML(userData[cId.physicalCity] || '')}${userData[cId.physicalCity] && userData[cId.physicalState] ? ', ':''}${escapeHTML(userData[cId.physicalState] || '')} ${escapeHTML(userData[cId.physicalZip] || '')}   
-                                    ${userData[cId.physicalCountry] ? `<br><span data-i18n="countries.${userData[cId.physicalCountry]}"></span>` : ''} 
+                                    ${userData[cId.physicalCountry] ? `<br><span data-i18n="countries.${Object.keys(cId.countries).find(threeCode => cId.countries[threeCode] === parseInt(userData[cId.physicalCountry], 10))}"></span>` : ''} 
                                 ` 
                                 : translateText('settings.dataDeleted')
                             }
@@ -2180,7 +2180,7 @@ export const renderAlternateAddressData = (id) => {
             ${userData[cId.altAddress2] ? `${escapeHTML(userData[cId.altAddress2])}</br>` : ''}
             ${userData[cId.altAddress3] ? `${escapeHTML(userData[cId.altAddress3])}</br>` : ''}
             ${escapeHTML(userData[cId.altCity] || '')}${userData[cId.altCity] && userData[cId.altState] ? ', ' : ''}${escapeHTML(userData[cId.altState] || '')} ${escapeHTML(userData[cId.altZip] || '')}<br>
-            ${userData[cId.altCountry] ? `<span data-i18n="countries.${userData[cId.altCountry]}"></span><br>` : ''} 
+            ${userData[cId.altCountry] ? `<span data-i18n="countries.${Object.keys(cId.countries).find(threeCode => cId.countries[threeCode] === parseInt(userData[cId.altCountry], 10))}"></span><br>` : ''} 
             <br>
             <span data-i18n="event.poBoxAltAddress">Alternate address is PO Box</span>:
             <span data-i18n="settings.${userData[cId.isPOBoxAltAddress] === cId.yes ? 'optYes' : 'optNo'}">${userData[cId.isPOBoxAltAddress] === cId.yes ? "Yes" : "No"}</span>
