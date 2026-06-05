@@ -1834,6 +1834,7 @@
         "openAgainButton": "Haga clic aquí para abrir la encuesta nuevamente y continuar desde donde la dejó",
     },
     "countries": {
+        "none": "",
         "usa": "ESTADOS UNIDOS DE AMÉRICA",
         "ala": "ALAND ISLANDS",
         "afg": "AFGHANISTAN",
