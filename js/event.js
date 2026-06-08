@@ -1235,7 +1235,7 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
             formData[fieldMapping.stateOfBirth] = escapeHTML(document.getElementById('stateOfBirth').value.trim());
         }
         if (document.getElementById('countryOfOrigin').value && document.getElementById('countryOfOrigin').value !== '') {
-            formData[fieldMapping.countryOfOrigin] = fieldMapping.countries[document.getElementById('countryOfOrigin').value];
+            formData[fieldMapping.countryOfOrigin] = parseInt(escapeHTML(document.getElementById('countryOfOrigin').value.trim()), 10);
         }
 
         const gender = document.getElementsByName('UPRadio');
