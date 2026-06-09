@@ -18,7 +18,8 @@ const renderProgress = (progress) => {
     let lineColor = [];
     let weight = [];
     let prog = progress - 1;
-    for(let i = 0; i < 9; i++){
+    const progressLength = 10;
+    for(let i = 0; i < progressLength; i++){
         if(i < prog){
             progressBar[i] = '#112f4e';
             textColor[i] = 'white';
@@ -38,7 +39,7 @@ const renderProgress = (progress) => {
             weight[i]=''
         }
     }
-    let list = ['Welcome','About','Activities','Privacy','Leaving','Results','Benefits', 'Indigenous Peoples', 'Consent', '']
+    let list = ['Welcome','About','Activities','Privacy','Results','Leaving','Cancer Diagnosis','Risks','Indigenous Peoples', 'Consent', '']
     let toReturn = translateHTML(`
     <br>
     <div class="row d-none d-md-flex" style="margin-bottom:30px">
@@ -47,22 +48,24 @@ const renderProgress = (progress) => {
         <div class="col-lg-10">
             <div class="row">
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[0]};border-radius:50%;border:5px solid ${lineColor[0]};line-height:19px;color:${textColor[0]}">1</div><div style="${weight[0]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list0">${list[0]}</div></div>
-            <div class="col" style="margin:0;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[0]};"></div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[0]};"></div></div>
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[1]};border-radius:50%;border:5px solid ${lineColor[1]};line-height:19px;color:${textColor[1]}">2</div><div style="${weight[1]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list1">${list[1]}</div></div>
-            <div class="col" style="margin:0;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[1]};"></div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[1]};"></div></div>
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[2]};border-radius:50%;border:5px solid ${lineColor[2]};line-height:19px;color:${textColor[2]}">3</div><div style="${weight[2]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list2">${list[2]}</div></div>
-            <div class="col" style="margin:0;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[2]};"></div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[2]};"></div></div>
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[3]};border-radius:50%;border:5px solid ${lineColor[3]};line-height:19px;color:${textColor[3]}">4</div><div style="${weight[3]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list3">${list[3]}</div></div>
-            <div class="col" style="margin:0;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[3]};"></div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[3]};"></div></div>
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[4]};border-radius:50%;border:5px solid ${lineColor[4]};line-height:19px;color:${textColor[4]}">5</div><div style="${weight[4]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list4">${list[4]}</div></div>
-            <div class="col" style="margin:0;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[4]};"></div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[4]};"></div></div>
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[5]};border-radius:50%;border:5px solid ${lineColor[5]};line-height:19px;color:${textColor[5]}">6</div><div style="${weight[5]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list5">${list[5]}</div></div>
-            <div class="col" style="margin:0;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[5]};"></div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[5]};"></div></div>
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[6]};border-radius:50%;border:5px solid ${lineColor[6]};line-height:19px;color:${textColor[6]}">7</div><div style="${weight[6]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list6">${list[6]}</div></div>
-            <div class="col" style="margin:0;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[6]};"></div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[6]};"></div></div>
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[7]};border-radius:50%;border:5px solid ${lineColor[7]};line-height:19px;color:${textColor[7]}">8</div><div style="${weight[7]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list7">${list[7]}</div></div>
-            <div class="col" style="margin:0;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[7]};"></div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[7]};"></div></div>
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[8]};border-radius:50%;border:5px solid ${lineColor[8]};line-height:19px;color:${textColor[8]}">9</div><div style="${weight[8]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list8">${list[8]}</div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[8]};"></div></div>
+            <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[9]};border-radius:50%;border:5px solid ${lineColor[9]};line-height:19px;color:${textColor[9]}">10</div><div style="${weight[9]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list9">${list[9]}</div></div>
             </div>
         </div>
         <div class="col-lg-1">
@@ -73,14 +76,16 @@ const renderProgress = (progress) => {
         </div>
         <div class="col-lg-10">
             <div class="row">
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[0]};"></div></div>
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[1]};"></div></div>
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[2]};"></div></div>
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[3]};"></div></div>
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[4]};"></div></div>
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[5]};"></div></div>
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[6]};"></div></div>
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[7]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[0]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[1]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[2]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[3]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[4]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[5]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[6]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[7]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[8]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[9]};"></div></div>
             </div>
         </div>
         <div class="col-lg-1">
@@ -90,9 +95,9 @@ const renderProgress = (progress) => {
         <div class="col-lg-1">
         </div>
         <div class="col-lg-10">
-            <div class="row" style"padding-bottom:0px;padding-top:0px;">
-                <div class="consentBodyFont2" style="text-align:center;width:30px;height:30px;background:#2A72A5;border-radius:50%;border:5px solid #2A72A5;line-height:19px;color:white; display:inline;">${progress > 9?9:progress}</div>
-                <p class="consentBodyFont2" style="margin-left:4px; color:#2A72A5;"><span data-i18n="consent.progressText"> of 9 </span><b style="color:#2E2E2E; font-family: 'Noto Sans', sans-serif; font-weight:bold;">${progress > 9?'':'<span data-i18n="consent.list'+(progress-1)+'">'+list[progress-1]+'</span>'}</b></p> 
+            <div style="padding: 15px; margin-left:4px; color:#2A72A5;">
+                <div class="consentBodyFont2" style="text-align:center;width:30px;height:30px;background:#2A72A5;border-radius:50%;border:5px solid #2A72A5;line-height:19px;color:white; display:inline-block;">${progress > progressLength ? progressLength : progress}</div><span data-i18n="consent.progressText"> of 10 </span>
+                <b style="color:#2E2E2E; font-family: 'Noto Sans', sans-serif; font-weight:bold;">${progress > progressLength ? '' :'<span data-i18n="consent.list'+(progress-1)+'">'+list[progress-1]+'</span>'}</b>
             </div>
         </div>
         <div class="col-lg-1">
@@ -112,7 +117,6 @@ const consentWelcomePage = () => {
             <div class="col-lg-8">
                 <p class="consentHeadersFont" data-i18n="consent.welcomePageHeader"><b>Welcome</b></p>
                 <p class="consentBodyFont1" data-i18n="consent.welcomePageBody1">Thank you for your interest in the <b>Connect for Cancer Prevention Study!</b> In the following screens, we will tell you about Connect and what it means to take part in this research study.</p>
-                <p class="consentBodyFont1" data-i18n="consent.welcomePageBody2">Then, you will view the full informed consent form and electronic health records release form. These forms provide more details about the study. After you view these forms, you can decide if you want to join Connect.</p>
                 <div class="row" style="padding:0;">
                     <div class="col-md-2">
                         <button class="btn btn-primary consentPrevButton" type="button" id="backToHeardAboutStudyForm" style="min-width:100%; margin-top:10px;margin-bottom:10px;" data-i18n="consent.prevButtonText">Previous</button>
@@ -190,7 +194,6 @@ const consentActivitiesPage = () => {
             </div>
             <div class="col-lg-8">
                 <p class="consentHeadersFont" data-i18n="consent.activitiesPageHeader">What Will I Do If I Join?</p>
-                <p class="consentBodyFont1" data-i18n="consent.activitiesPageBody1">Cancer can be caused by many things, so we will collect different kinds of information to give us a better picture of your overall health.</p>
                 <p class="consentBodyFont1" data-i18n="consent.activitiesPageBody2">If you join this study, we will ask you to:</p>
                 <p class="consentBodyFont1" data-i18n="consent.activitiesPageBody3">1. Share some information about yourself</p>
                 <p class="consentBodyFont2" style="margin-left:32px" data-i18n="consent.activitiesPageBody4">To keep in touch, we ask for your contact information. We also ask for personal information such as your name, birth date, and address, to identify you. These details help us gather information about you—like whether you live close to a park, or how much pollution is in your neighborhood. We also ask you to share your social security number. This is optional. Sharing your social security number will help us collect information from other sources, such as state and national public health databases.</p>
@@ -265,7 +268,7 @@ const consentPrivacyPage = () => {
                     <div class="col-md-8">
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-primary consentNextButton" type="button" id="toBenefits" style="width:100%; margin-top:10px;margin-bottom:10px" data-i18n="consent.nextButtonText">Next</button>
+                        <button class="btn btn-primary consentNextButton" type="button" id="toResults" style="width:100%; margin-top:10px;margin-bottom:10px" data-i18n="consent.nextButtonText">Next</button>
                     </div>
                 </div>
 
@@ -278,32 +281,34 @@ const consentPrivacyPage = () => {
     document.getElementById('backToActivities').addEventListener('click', () => {
         consentActivitiesPage();
     })
-    document.getElementById('toBenefits').addEventListener('click', () => {
-        consentBenefitsPage();
+    document.getElementById('toResults').addEventListener('click', () => {
+        consentResultsPage();
     })
 }
 
-const consentBenefitsPage = () => {
+const consentLeavingPage = () => {
     window.scrollTo(0, 0);
     const mainContent = document.getElementById('root');
-    let template = renderProgress(5);
+    let template = renderProgress(6);
     template += translateHTML(`
         <div class="row">
             <div class="col-lg-2">
             </div>
             <div class="col-lg-8">
-                <p class="consentHeadersFont" data-i18n="consent.benefitsPageHeader">If You Leave the Study or Change Health Systems</p>
-                <p class="consentBodyFont1" data-i18n="consent.benefitsPageBody1">We hope that you will take part in Connect throughout your life. While we hope you stay involved in the study for years to come, you may choose to leave at any time. Choosing to leave the study will not change your health care or health benefits. If you shared any information or samples before you leave, we may still use them for research.</p>
-                <p class="consentBodyFont1" data-i18n="consent.benefitsPageBody2">If you leave your health care system, you are allowed to continue your study participation and we hope you will stay in Connect. If you leave your current health care system and join a different system (even one that is not taking part in Connect), we will continue to work with you and value your study participation.</p>
+                <p class="consentHeadersFont" data-i18n="consent.leavingPageHeader">If You Leave the Study or Change Health Systems</p>
+                <p class="consentBodyFont1" data-i18n="consent.leavingPageBody1">We hope that you will take part in Connect throughout your life. While we hope you stay involved in the study for years to come, you may choose to leave at any time. Choosing to leave the study will not change your health care or health benefits. If you shared any information or samples before you leave, we may still use them for research.</p>
+                <p class="consentBodyFont1" data-i18n="consent.leavingPageBody2">If you leave your health care system, you are allowed to continue your study participation and we hope you will stay in Connect. If you leave your current health care system and join a different system (even one that is not taking part in Connect), we will continue to work with you and value your study participation.</p>
+                <p class="consentBodyFont1" data-i18n="consent.leavingPageBody3">If you leave Connect, we will continue to use your study data, including samples that you already donated, for research. You can ask us to return your samples to you or to destroy your samples by submitting a separate request. However, we will not destroy any research that we have already conducted using your information or samples. </p>
+                <p class="consentBodyFont1" data-i18n="consent.leavingPageBody4">If a participant dies, family and/or community members can ask for samples to be returned or destroyed. Again, we will not be able to return or destroy samples that have already been used for research.</p>
 
                 <div class="row" style="padding:0;">
                     <div class="col-md-2">
-                        <button class="btn btn-primary consentPrevButton" type="button" id="backToPrivacy" style="min-width:100%; margin-top:10px;margin-bottom:10px" data-i18n="consent.prevButtonText">Previous</button>
+                        <button class="btn btn-primary consentPrevButton" type="button" id="backToResults" style="min-width:100%; margin-top:10px;margin-bottom:10px" data-i18n="consent.prevButtonText">Previous</button>
                     </div>
                     <div class="col-md-8">
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-primary consentNextButton" type="button" id="toResults" style="min-width:100%; margin-top:10px;margin-bottom:10px" data-i18n="consent.nextButtonText">Next</button>
+                        <button class="btn btn-primary consentNextButton" type="button" id="toDiagnosis" style="min-width:100%; margin-top:10px;margin-bottom:10px" data-i18n="consent.nextButtonText">Next</button>
                     </div>
                 </div>
 
@@ -313,18 +318,55 @@ const consentBenefitsPage = () => {
         </div>
     `);
     mainContent.innerHTML =  template;
-    document.getElementById('backToPrivacy').addEventListener('click', () => {
-        consentPrivacyPage();
-    })
-    document.getElementById('toResults').addEventListener('click', () => {
+    document.getElementById('backToResults').addEventListener('click', () => {
         consentResultsPage();
+    })
+    document.getElementById('toDiagnosis').addEventListener('click', () => {
+        consentDiagnosisPage();
+    })
+}
+
+const consentDiagnosisPage = () => {
+    window.scrollTo(0, 0);
+    const mainContent = document.getElementById('root');
+    let template = renderProgress(7);
+    template += translateHTML(`
+        <div class="row">
+            <div class="col-lg-2">
+            </div>
+            <div class="col-lg-8">
+                <p class="consentHeadersFont" data-i18n="consent.diagnosisPageHeader">What happens if I'm diagnosed with cancer?</p>
+                <p class="consentBodyFont1" data-i18n="consent.diagnosisPageBody1">If you are diagnosed with cancer during your time in the study, your Connect participation continues. You may receive tailored surveys and activities. The information you continue to share may help us learn more about long-term health and quality of life after a cancer diagnosis.</p>
+
+                <div class="row" style="padding:0;">
+                    <div class="col-md-2">
+                        <button class="btn btn-primary consentPrevButton" type="button" id="backToLeaving" style="min-width:100%; margin-top:10px;margin-bottom:10px" data-i18n="consent.prevButtonText">Previous</button>
+                    </div>
+                    <div class="col-md-8">
+                    </div>
+                    <div class="col-md-2">
+                        <button class="btn btn-primary consentNextButton" type="button" id="toRisks" style="min-width:100%; margin-top:10px;margin-bottom:10px" data-i18n="consent.nextButtonText">Next</button>
+                    </div>
+                </div>
+
+            </div>
+            <div class="col-lg-2">
+            </div>
+        </div>
+    `);
+    mainContent.innerHTML =  template;
+    document.getElementById('backToLeaving').addEventListener('click', () => {
+        consentLeavingPage();
+    })
+    document.getElementById('toRisks').addEventListener('click', () => {
+        consentRisksPage();
     })
 }
 
 const consentResultsPage = () => {
     window.scrollTo(0, 0);
     const mainContent = document.getElementById('root');
-    let template = renderProgress(6);
+    let template = renderProgress(5);
     template += translateHTML(`
         <div class="row">
             <div class="col-lg-2">
@@ -335,10 +377,11 @@ const consentResultsPage = () => {
                 <p class="consentBodyFont1" data-i18n="consent.resultsPageBody2">We will also offer to share with you some of the things that we learn specifically about you. The information we share may include results from your surveys or from tests of your samples. These tests may be run at different time points. Because of the types of research questions we will be asking through Connect, and since we are always going to be looking for new ideas to explore, it may be years before we run some tests and get information to share back with you. Other tests may be run sooner. We carefully save samples at the Connect lab for future studies to be sure we will be able to make the most out of every sample you donate as part of Connect.</p>
                 <p class="consentBodyFont1" data-i18n="consent.resultsPageBody3">When we have information or results about you to share, we will let you know. At that time, we will share background information on the results and how they could be used. You may then decide if you want to receive them. If you choose to receive results, we will share them securely on MyConnect.</p>
                 <p class="consentBodyFont1" data-i18n="consent.resultsPageBody4">We will never add results or information from Connect to your health record or share your information with your health care providers. You may choose to share any results or information you receive with your health care providers or others.</p>
+                <p class="consentBodyFont1" data-i18n="consent.resultsPageBody5">The results are unlikely to have any immediate benefit on your health or health care. Research tests in Connect do not replace tests ordered by your doctor.</p>
                 
                 <div class="row" style="padding:0; margin-top:40px;margin-bottom:40px">
                     <div class="col-md-2">
-                        <button class="btn btn-primary consentPrevButton" type="button" id="backToBenefits" style="min-width:100%; margin-top:10px;margin-bottom:10px;" data-i18n="consent.prevButtonText">Previous</button>
+                        <button class="btn btn-primary consentPrevButton" type="button" id="backToPrivacy" style="min-width:100%; margin-top:10px;margin-bottom:10px;" data-i18n="consent.prevButtonText">Previous</button>
                     </div>
                     <div class="col-md-8">
                     </div>
@@ -353,35 +396,37 @@ const consentResultsPage = () => {
         </div>
     `);
     mainContent.innerHTML =  template;
-    document.getElementById('backToBenefits').addEventListener('click', () => {
-        consentBenefitsPage();
+    document.getElementById('backToPrivacy').addEventListener('click', () => {
+        consentPrivacyPage();
     })
     document.getElementById('toLeaving').addEventListener('click', () => {
         consentLeavingPage();
     })
 }
 
-const consentLeavingPage = () => {
+const consentRisksPage = () => {
     window.scrollTo(0, 0);
     const mainContent = document.getElementById('root');
-    let template = renderProgress(7);
+    let template = renderProgress(8);
     template += translateHTML(`
         <div class="row">
             <div class="col-lg-2">
             </div>
             <div class="col-lg-8">
-                <p class="consentHeadersFont" data-i18n="consent.leavingPageHeader">Benefits and Payment</p>
-                <p class="consentBodyFont1" data-i18n="consent.leavingPageBody1">Connect is a low-risk study. The main risk of joining is to your privacy. To minimize this risk, we follow federal privacy rules to protect your identity and the information you share. There is no health benefit to you for taking part in the study.</p>
-                <p class="consentBodyFont1" data-i18n="consent.leavingPageBody2">You will receive $25 in cash or as a gift card after you complete all sections of the first online survey and donate your first blood sample.</p>
+                <p class="consentHeadersFont" data-i18n="consent.risksPageHeader">What are the risks of taking part in Connect?</p>
+                <p class="consentBodyFont1" data-i18n="consent.risksPageBody1">Possible risks to you<br>Connect is a low-risk study. The main risk of joining is to your privacy. To minimize this risk, we follow federal privacy rules to protect your identity and the personal information and study data you share. There is no direct health benefit to you for taking part in the study.    </p>
+                <p class="consentBodyFont1" data-i18n="consent.risksPageBody2">Possible risks to groups<br>Connect will collect and store large amounts of health data. Researchers will use these data to learn more about health and disease. While this kind of research can be very helpful, it can also cause harm to groups of people. Group harm happens when research methods or results negatively affect a group of people because they share something in common, such as their race, culture, health condition, or community. This harm can happen even if the research does not intend to hurt anyone. </p>
+                <p class="consentBodyFont1" data-i18n="consent.risksPageBody3">Another possible risk to groups is that when members of small populations take part in research, it may be easier to identify them from the data they share. This also means it may be easier to trace someone back to their community. Connect prohibits researchers from attempting to re-identify individual participants or link them to their communities.</p>
+                <p class="consentBodyFont1" data-i18n="consent.risksPageBody4">Connect has processes in place to review the research that is being done with Connect data to reduce the risks of individual and group harm.</p>
                 
                 <div class="row" style="padding:0; margin-top:40px;margin-bottom:40px">
                     <div class="col-md-2">
-                        <button class="btn btn-primary consentPrevButton" type="button" id="backToResults" style="min-width:100%; margin-top:10px;margin-bottom:10px;" data-i18n="consent.prevButtonText">Previous</button>
+                        <button class="btn btn-primary consentPrevButton" type="button" id="backToDiagnosis" style="min-width:100%; margin-top:10px;margin-bottom:10px;" data-i18n="consent.prevButtonText">Previous</button>
                     </div>
                     <div class="col-md-8">
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-primary consentNextButton" type="button" id="toConsent" style="width:100%; margin-top:10px;margin-bottom:10px" data-i18n="consent.nextButtonText">Next</button>
+                        <button class="btn btn-primary consentNextButton" type="button" id="toIndigenous" style="width:100%; margin-top:10px;margin-bottom:10px" data-i18n="consent.nextButtonText">Next</button>
                     </div>
                 </div>
                 
@@ -392,10 +437,10 @@ const consentLeavingPage = () => {
         </div>
     `);
     mainContent.innerHTML =  template;
-    document.getElementById('backToResults').addEventListener('click', () => {
-        consentResultsPage();
+    document.getElementById('backToDiagnosis').addEventListener('click', () => {
+        consentDiagnosisPage();
     })
-    document.getElementById('toConsent').addEventListener('click', () => {
+    document.getElementById('toIndigenous').addEventListener('click', () => {
         consentIndigenousPage();
     })
 }
@@ -403,7 +448,7 @@ const consentLeavingPage = () => {
 const consentIndigenousPage = () => {
     window.scrollTo(0, 0);
     const mainContent = document.getElementById('root');
-    let template = renderProgress(8);
+    let template = renderProgress(9);
     template += translateHTML(`
         <div class="row">
             <div class="col-lg-2">
@@ -420,7 +465,7 @@ const consentIndigenousPage = () => {
                     
                     <div class="row" style="padding:0; margin-top:40px;margin-bottom:40px">
                         <div class="col-md-2">
-                            <button class="btn btn-primary consentPrevButton" type="button" id="backToResults" style="min-width:100%; margin-top:10px;margin-bottom:10px;" data-i18n="consent.prevButtonText">Previous</button>
+                            <button class="btn btn-primary consentPrevButton" type="button" id="backToRisks" style="min-width:100%; margin-top:10px;margin-bottom:10px;" data-i18n="consent.prevButtonText">Previous</button>
                         </div>
                         <div class="col-md-8">
                         </div>
@@ -436,8 +481,8 @@ const consentIndigenousPage = () => {
         </div>
     `);
     mainContent.innerHTML =  template;
-    document.getElementById('backToResults').addEventListener('click', () => {
-        consentLeavingPage();
+    document.getElementById('backToRisks').addEventListener('click', () => {
+        consentRisksPage();
     })
     
     document.getElementById('consentIndigenousInfo').addEventListener('submit', (e) => {
@@ -454,16 +499,19 @@ const consentIndigenousPage = () => {
 const consentIndigenousAffectPage = () => {
     window.scrollTo(0, 0);
     const mainContent = document.getElementById('root');
-    let template = renderProgress(8);
+    let template = renderProgress(9);
     template += translateHTML(`
         <div class="row">
             <div class="col-lg-2">
             </div>
             <div class="col-lg-8">
-                <p class="consentHeadersFont" data-i18n="consent.indigenousAffectPageHeader">How might my participation in Connect affect Indigenous communities?</p>
-                <p class="consentBodyFont1" data-i18n="consent.indigenousAffectPageBody1">Some Indigenous Peoples and their communities have emphasized the need to learn more about certain risks and benefits to participating in research studies. Community members may be concerned that research practices will not follow traditional customs, or that conclusions made about Indigenous participants might harm Indigenous communities. However, learning about the health of Indigenous participants may help us make medical discoveries that benefit other people from these communities. Including all communities in research is an important part of advancing medicine and extending benefits to all people.</p>
-                <p class="consentBodyFont1" data-i18n="consent.indigenousAffectPageBody2">We acknowledge past transgressions and abuses of Indigenous Peoples in research studies, and the harms these have caused Indigenous communities. We oppose any research that harms Indigenous Peoples and we do not support any research or researcher that has harmed any community. We respect and appreciate your willingness to work with us and know your trust must be earned. We are committed to protecting your privacy, keeping your information safe, and maintaining the integrity of our research. We want our research to respect the cultures and practices of all Indigenous Peoples.</p>
-                <p class="consentBodyFont1" data-i18n="consent.indigenousAffectPageBody3">We may not understand the barriers that Indigenous Peoples face when it comes to participating in research studies. However, we hope to work with you to learn more about the considerations and concerns of your communities and advance our understanding of health and disease together. As a Connect team, we hope to make medical discoveries that will benefit all people.</p>
+                <p class="consentHeadersFont" data-i18n="consent.indigenousAffectDefinitionPageHeader">Indigenous American populations</p>
+                <p class="consentBodyFont1" data-i18n="consent.indigenousAffectDefinitionPageBody1">Indigenous American populations may include people who identify as American Indian, Alaska Native, Native Hawaiian, and/or Pacific Islander and their communities. Including people of all backgrounds, such as Indigenous Peoples, in research helps ensure we can learn if research  findings apply to them, their communities, or their future generations.</p>
+                <p class="consentHeadersFont" data-i18n="consent.indigenousAffectPageHeader">How might my participation as an Indigenous Person affect Indigenous communities?</p>
+                <p class="consentBodyFont1" data-i18n="consent.indigenousAffectPageBody1">Some Indigenous Peoples and their communities have emphasized the importance of understanding a research study, its goals, and the research team before deciding whether to participate. Indigenous Peoples, like all people, have the inherent right to self-determination over their bodies, identities, and genetic material. Individuals may choose to take part in research, but they may also be accountable to their Tribe, Nation, or community’s research oversight, cultural protocols, or data governance rules. Being informed about these community-based responsibilities helps ensure that participation does not unintentionally conflict with Tribal or community laws and values. Community members may also have concerns that research practices will not follow cultural traditions, or that conclusions drawn about Indigenous participants could harm their people. At the same time, many Indigenous Peoples approach research as a way of caring for future generations—seeking knowledge that may protect the health, well-being, and continuity of their families and communities. When conducted ethically and in partnership with communities, research can contribute to medical discoveries that benefit Indigenous Peoples and others.</p>
+                <p class="consentBodyFont1" data-i18n="consent.indigenousAffectPageBody2">We acknowledge the history of research abuses and harms experienced by Indigenous Peoples and other communities and how this history shapes how research is viewed today. We do not support any research that has harmed communities in the past, and we oppose any research that could cause harm in the future. Trust must be earned.</p>
+                <p class="consentBodyFont1" data-i18n="consent.indigenousAffectPageBody3">We respect and appreciate your willingness to engage with us. We are committed to protecting your privacy, safeguarding your data, and honoring the integrity of your participation. We seek to conduct Connect research in ways that respect Indigenous cultures and knowledge traditions.</p>
+                <p class="consentBodyFont1" data-i18n="consent.indigenousAffectPageBody4">We also recognize that we may not fully understand the barriers and considerations Indigenous Peoples face when deciding whether to participate in research. We are committed to listening, learning, and working with you and your communities so that research advances health and knowledge in ways that are respectful, responsible, and beneficial for both current and future generations.</p>
 
                 <div class="row" style="padding:0; margin-top:40px;margin-bottom:40px">
                     <div class="col-md-2">
@@ -487,27 +535,27 @@ const consentIndigenousAffectPage = () => {
         consentIndigenousPage();
     })
     document.getElementById('toConsent').addEventListener('click', () => {
-        consentIndigenousProtectPage();
+        consentIndigenousOtherPage();
     })
 }
 
-const consentIndigenousProtectPage = () => {
+const consentIndigenousOtherPage = () => {
     window.scrollTo(0, 0);
     const mainContent = document.getElementById('root');
-    let template = renderProgress(8);
+    let template = renderProgress(9);
     template += translateHTML(`
         <div class="row">
             <div class="col-lg-2">
             </div>
             <div class="col-lg-8">
-                <p class="consentHeadersFont" data-i18n="consent.indigenousProtectPageHeader">How is my information protected?</p>
-                <p class="consentBodyFont2" data-i18n="consent.indigenousProtectPageBody1">If you join the study, we will remove your personal information, like your name, date of birth, and health information, from your survey answers and samples before we share them with researchers. Only researchers who agree to our privacy rules may use your survey answers and samples for their research. These researchers will not have access to information that identifies you.</p>
-                <p class="consentBodyFont2" data-i18n="consent.indigenousProtectPageBody2">As part of our research, we look for patterns to learn more about health and disease. Your self-identified race will be linked to your information and samples and can help us study these patterns.</p>
-                <p class="consentBodyFont2" data-i18n="consent.indigenousProtectPageBody3">It is possible that when members of small populations (such as some Indigenous populations) take part in research, it may be easier to identify them from other information they share. This also means it may be easier to connect someone back to their community. Connect prohibits researchers from attempting to re-identify individual participants or link them to their communities.</p>
-                <p class="consentBodyFont2" data-i18n="consent.indigenousProtectPageBody4">It is possible that research findings could be associated with people who share your race identity. Connect opposes publishing research findings that stigmatize Indigenous communities or any racial or ethnic group.</p>
-                <p class="consentBodyFont1" data-i18n="consent.indigenousProtectPageBody5">Samples</p>
-                <p class="consentBodyFont2" data-i18n="consent.indigenousProtectPageBody6">If you decide to leave the study, we will work with you to determine a plan for the return or destruction of your samples, if requested. We may not be able to return or destroy samples that have already been used for research.</p>
-                <p class="consentBodyFont2" data-i18n="consent.indigenousProtectPageBody7">If a participant passes away during their time in the study, we will work with the participant’s family or other community members to determine a plan for return or destruction of their samples, if requested.</p>
+                <p class="consentHeadersFont" data-i18n="consent.indigenousOtherPageHeader">What else should I know?</p>
+                <p class="consentBodyFont2" data-i18n="consent.indigenousOtherPageBody1">If you identify as an Indigenous Person and want to join Connect, please consider:</p>
+                <ul class="consentBodyFont2" style="margin-left:32px" data-i18n="consent.indigenousOtherPageBody1List">
+                    <li>Reading more about participation and the details of what it means to take part in Connect <a target="__blank" href="https://www.cancer.gov/connect-prevention-study/what-to-expect">here</a>.</li>
+                    <li>Speaking with your community members, leaders, and family about participating in Connect.</li>
+                    <li>Contacting the Connect Support Center with any questions you have. Our team is happy to speak with you and discuss any concerns you may have about taking part in the study. (<a target="__blank" href="https://norcfedramp.servicenowservices.com/recruit">Cancer.gov/connectstudy/support</a>, or call 1-877-505-0253 8:00 a.m.-10:00 p.m. CT on weekdays, and 9:00 a.m.-6:00 p.m. CT on weekends).</li>
+                </ul>
+                <p class="consentBodyFont2" data-i18n="consent.indigenousOtherPageBody2">If you join now and later decide to leave the study, you can do so at any time, for any reason.</p>
 
                 <div class="row" style="padding:0; margin-top:40px;margin-bottom:40px">
                     <div class="col-md-2">
@@ -531,52 +579,6 @@ const consentIndigenousProtectPage = () => {
         consentIndigenousAffectPage();
     })
     document.getElementById('toConsent').addEventListener('click', () => {
-        consentIndigenousOtherPage();
-    })
-}
-
-const consentIndigenousOtherPage = () => {
-    window.scrollTo(0, 0);
-    const mainContent = document.getElementById('root');
-    let template = renderProgress(8);
-    template += translateHTML(`
-        <div class="row">
-            <div class="col-lg-2">
-            </div>
-            <div class="col-lg-8">
-                <p class="consentHeadersFont" data-i18n="consent.indigenousOtherPageHeader">What else should I know?</p>
-                <p class="consentBodyFont2" data-i18n="consent.indigenousOtherPageBody1">If you identify as an Indigenous Person and want to join Connect, please consider:</p>
-                <ul class="consentBodyFont2" style="margin-left:32px" data-i18n="consent.indigenousOtherPageBody1List">
-                    <li>Reading more about participation and the details of what it means to take part in Connect <a target="__blank" href="https://www.cancer.gov/connect-prevention-study/what-to-expect">here</a>.</li>
-                    <li>Speaking with your community members, leaders, and family about participating in Connect.</li>
-                    <li>Contacting the Connect Support Center with any questions you have. Our team is happy to speak with you and discuss any concerns you may have about taking part in the study. (<a target="__blank" href="https://norcfedramp.servicenowservices.com/recruit">Cancer.gov/connectstudy/support</a>, or call 1-877-505-0253 8:00 a.m.-10:00 p.m. CT on weekdays, and 9:00 a.m.-6:00 p.m. CT on weekends).</li>
-                </ul>
-                <p class="consentBodyFont2" data-i18n="consent.indigenousOtherPageBody2">If you join now and later decide to leave the study, you can do so at any time, for any reason.</p>
-                <p class="consentBodyFont2" data-i18n="consent.indigenousOtherPageBody3">The decision to join Connect is yours to make. Please choose what you are most comfortable with. We respect your decision and your privacy, and welcome any feedback that you would like to share with us. Please call us at 1-877-505-0253 8:00 a.m.-10:00 p.m. CT on weekdays, and 9:00 a.m.-6:00 p.m. CT on weekends, or write to us at ConnectStudy@norc.org.</p>
-                <p class="consentBodyFont2" data-i18n="consent.indigenousOtherPageBody4">Thank you for learning about how Connect will engage with Indigenous Peoples. On the next screen, you can view the full consent form and electronic health records release form to continue the consent process.</p>
-
-                <div class="row" style="padding:0; margin-top:40px;margin-bottom:40px">
-                    <div class="col-md-2">
-                        <button class="btn btn-primary consentPrevButton" type="button" id="backToResults" style="min-width:100%; margin-top:10px;margin-bottom:10px;" data-i18n="consent.prevButtonText">Previous</button>
-                    </div>
-                    <div class="col-md-8">
-                    </div>
-                    <div class="col-md-2">
-                        <button class="btn btn-primary consentNextButton" type="button" id="toConsent" style="width:100%; margin-top:10px;margin-bottom:10px" data-i18n="consent.nextButtonText">Next</button>
-                    </div>
-                </div>
-                
-
-            </div>
-            <div class="col-lg-2">
-            </div>
-        </div>
-    `);
-    mainContent.innerHTML =  template;
-    document.getElementById('backToResults').addEventListener('click', () => {
-        consentIndigenousProtectPage();
-    })
-    document.getElementById('toConsent').addEventListener('click', () => {
         consentConsentPage();
     })
 }
@@ -584,7 +586,7 @@ const consentIndigenousOtherPage = () => {
 const consentConsentPage = async () => {
     window.scrollTo(0, 0);
     const mainContent = document.getElementById('root');
-    let template = renderProgress(9);
+    let template = renderProgress(10);
     
     const myData = await getMyData();
     if(!hasUserData(myData)) return;
@@ -605,28 +607,32 @@ const consentConsentPage = async () => {
             
                 <div style="width:80%; margin:auto">
                     <h4 class="consentSubheader" style="margin-top:50px" data-i18n="consent.consentPageSubheader1">Informed Consent Form</h4>
-                    <p class="consentBodyFont2" style="text-indent:40px" data-i18n="consent.consentPageBody2">This form explains in detail what it means to take part in Connect. To join the study, please scroll down to the bottom of this screen to electronically consent. You do not need to download and sign the form the join the study.</p>
-                    <p class="consentBodyFont2" style="text-indent:40px" data-i18n="consent.consentPageBody3">If you have trouble viewing the consent form in the window at the bottom of this screen, you can download an unsigned copy by scrolling down and selecting that option below.</p>
+                    <p class="consentBodyFont2" data-i18n="consent.consentPageBody2">To join Connect, we need you to review the full informed consent form and electronic health records release (HIPAA Authorization) form below. If you have any questions, contact the Connect Support Center at <a href="https://cancer.gov/connectstudy/support" target="_blank">cancer.gov/connectstudy/support</a>.</p>
+                    <p class="consentBodyFont2" data-i18n="consent.consentPageBody3">The informed consent form explains in detail what it means to take part in Connect. Please review it carefully. Once you have read this form and all of your questions have been answered, please sign the form electronically by scrolling to the bottom of this screen and clicking, “Yes, I agree to join Connect.” Then, please type your name into the fields that appear and click “Next” to view and download copies of your signed forms. You do not need to download the consent form to join the study.</p>
+                    <p class="consentBodyFont2" data-i18n="consent.consentPageBody4">If you have trouble viewing the forms in the windows at the bottom of this screen, you can download unsigned copies to review by scrolling down and clicking the “Download” button.</p>
+                    <p class="consentBodyFont2" data-i18n="consent.consentPageBody5">Key points in the consent form that you are agreeing to are:</p>
+                    <ul class="consentBodyFont2" data-i18n="consent.consentPageBody5List">
+                    </ul>
 
                     <iframe id="pdfIframeContainer" class="border border-secondary rounded" data-i18n="consent.consentIframe${participantSite}" src="${'./forms/consent/' + participantSite + '_Consent_' + formVersions[participantSite]['Consent'] + (langSuffix[selectedLanguage] ? '_' + langSuffix[selectedLanguage] : '') + '.html'}" style="width:100%; height:500px; overflow:scroll;"><span class="loader">Please wait...</span></iframe>
                     <div class="row"style="margin:auto"><div style="margin:auto"><a data-i18n="consent.consentUnsigned${participantSite}" href="${'./forms/consent/'  + participantSite + '_Consent_' + formVersions[participantSite]['Consent'] + (langSuffix[selectedLanguage] ? '_' + langSuffix[selectedLanguage] : '') + '.pdf'}" title="Download consent form" data-bs-toggle="tooltip" download="connect_consent.pdf" class="consentBodyFont2" data-file="unsigned-form"> Download an unsigned copy of the informed consent form&nbsp<i class="fas fa-file-download"></i></a></div></div>
                     
                     <h4 class="consentSubheader" style="margin-top:50px" data-i18n="consent.consentPageSubheader2">Electronic health records release (HIPAA Authorization) form</h4>
-                    <p class="consentBodyFont2" style="text-indent:40px" data-i18n="consent.consentPageBody4">This allows Connect to access your electronic health records. To join the study, please scroll down to the bottom of this screen to electronically consent. You do not need to download and sign the form to join the study.</p>
-                    <p class="consentBodyFont2" style="text-indent:40px" data-i18n="consent.consentPageBody5">If you have trouble viewing the electronic health records release form in the window at the bottom of this screen, you can download an unsigned copy by scrolling down and selecting that option below.</p>
+                    <p class="consentBodyFont2" data-i18n="consent.consentPageBody6">This allows Connect to access your electronic health records. To join the study, please scroll down to the bottom of this screen to electronically consent. You do not need to download and sign the form to join the study.</p>
+                    <p class="consentBodyFont2"  data-i18n="consent.consentPageBody7">If you have trouble viewing the electronic health records release form in the window at the bottom of this screen, you can download an unsigned copy by scrolling down and selecting that option below.</p>
+                    <ul class="consentBodyFont2"  data-i18n="consent.consentPageBody7List">
+                    </ul>
                     
+                    <p class="consentBodyFont2" style="margin-top:50px" data-i18n="consent.consentPageBody8">By clicking “Yes, I agree to join Connect” and typing your name, you confirm the following:</p>
+                    <p class="consentBodyFont2" data-i18n="consent.consentPageBody9">
+                        I have read the consent form and HIPAA Authorization and I understand the information in these forms. All of my questions have been answered. I freely and willingly choose to take part in the Connect for Cancer Prevention Study and I authorize my health care providers and other organizations to share my electronic health records with the Connect for Cancer Prevention Study.
+                    </p>
                     <iframe id="pdfIframeContainer1" class="border border-secondary rounded" data-i18n="consent.hipaaIframe${participantSite}" src="${'./forms/HIPAA/' + participantSite + '_HIPAA_' + formVersions[participantSite]['HIPAA'] + '.html'}" style="width:100%; height:500px; overflow:scroll;"><span class="loader" data-i18n="consent.consentPageWait">Please wait...</span></iframe>
                     <div class="row" style="margin:auto"><div style="margin:auto"><a data-i18n="consent.hipaaUnsigned${participantSite}" href="${'./forms/HIPAA/'  + participantSite + '_HIPAA_' + formVersions[participantSite]['HIPAA'] + '.pdf'}" title="Download health records release form" data-bs-toggle="tooltip" download="connect_hipaa.pdf" class="consentBodyFont2" data-file="unsigned-form">Download an unsigned copy of the release form&nbsp<i class="fas fa-file-download"></i></a></div></div>
                     
-                    <p class="consentBodyFont2" style="margin-top:50px" data-i18n="consent.consentPageBody6">By clicking “Yes, I agree to join Connect” and typing your name, you confirm the following:</p>
-                    <ol class="consentBodyFont2" data-i18n="consent.consentPageBody6List">
-                        <li>I have read these forms.</li>
-                        <li>As  stated  in  the  consent  and  HIPAA  Authorization,  I  will allow  the  use,  storage, and  disclosure  (release) of  my  survey  answers, samples,  and  health  information for the research as described above.</li>
-                        <li>If I have questions, I can contact the Connect Support Center at <a target="_blank" href="https://norcfedramp.servicenowservices.com/recruit">Cancer.gov/connectstudy/support</a> or by calling 1-877-505-0253</li>
-                        <li>If I decide to leave the study, I can contact the Connect Support Center at <a target="_blank" href="https://norcfedramp.servicenowservices.com/recruit">Cancer.gov/connectstudy/support</a></li>
-                    </ol>
+                    
                     <input type="checkbox" name="consentAnswer" value="consentYes" id="CSConsentYesCheck">
-                    <label for="consentYes" style=" font-size:20px" id="CSConsentYes" data-i18n="consent.consentPageAgree">Yes, I agree to join Connect</label><br>
+                    <label for="CSConsentYesCheck" style=" font-size:20px" id="CSConsentYes" data-i18n="consent.consentPageAgree">Yes, I agree to join Connect</label><br>
                 </div>
             
                 <form id="consentForm" class="mt-5" method="POST">
