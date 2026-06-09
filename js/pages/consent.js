@@ -48,23 +48,23 @@ const renderProgress = (progress) => {
         <div class="col-lg-10">
             <div class="row">
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[0]};border-radius:50%;border:5px solid ${lineColor[0]};line-height:19px;color:${textColor[0]}">1</div><div style="${weight[0]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list0">${list[0]}</div></div>
-            <div class="col" style="margin:0;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[0]};"></div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[0]};"></div></div>
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[1]};border-radius:50%;border:5px solid ${lineColor[1]};line-height:19px;color:${textColor[1]}">2</div><div style="${weight[1]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list1">${list[1]}</div></div>
-            <div class="col" style="margin:0;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[1]};"></div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[1]};"></div></div>
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[2]};border-radius:50%;border:5px solid ${lineColor[2]};line-height:19px;color:${textColor[2]}">3</div><div style="${weight[2]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list2">${list[2]}</div></div>
-            <div class="col" style="margin:0;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[2]};"></div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[2]};"></div></div>
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[3]};border-radius:50%;border:5px solid ${lineColor[3]};line-height:19px;color:${textColor[3]}">4</div><div style="${weight[3]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list3">${list[3]}</div></div>
-            <div class="col" style="margin:0;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[3]};"></div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[3]};"></div></div>
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[4]};border-radius:50%;border:5px solid ${lineColor[4]};line-height:19px;color:${textColor[4]}">5</div><div style="${weight[4]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list4">${list[4]}</div></div>
-            <div class="col" style="margin:0;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[4]};"></div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[4]};"></div></div>
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[5]};border-radius:50%;border:5px solid ${lineColor[5]};line-height:19px;color:${textColor[5]}">6</div><div style="${weight[5]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list5">${list[5]}</div></div>
-            <div class="col" style="margin:0;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[5]};"></div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[5]};"></div></div>
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[6]};border-radius:50%;border:5px solid ${lineColor[6]};line-height:19px;color:${textColor[6]}">7</div><div style="${weight[6]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list6">${list[6]}</div></div>
-            <div class="col" style="margin:0;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[6]};"></div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[6]};"></div></div>
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[7]};border-radius:50%;border:5px solid ${lineColor[7]};line-height:19px;color:${textColor[7]}">8</div><div style="${weight[7]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list7">${list[7]}</div></div>
-            <div class="col" style="margin:0;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[7]};"></div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[7]};"></div></div>
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[8]};border-radius:50%;border:5px solid ${lineColor[8]};line-height:19px;color:${textColor[8]}">9</div><div style="${weight[8]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list8">${list[8]}</div></div>
-            <div class="col" style="margin:0;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[8]};"></div></div>
+            <div class="col" style="margin:0;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[8]};"></div></div>
             <div class="col" style="margin:0;padding:0;width:40px;"><div style="margin:auto;text-align:center;width:30px;height:30px;background:${progressBar[9]};border-radius:50%;border:5px solid ${lineColor[9]};line-height:19px;color:${textColor[9]}">10</div><div style="${weight[9]}text-align:center;font-family: 'Noto Sans', sans-serif;" data-i18n="consent.list9">${list[9]}</div></div>
             </div>
         </div>
@@ -76,16 +76,16 @@ const renderProgress = (progress) => {
         </div>
         <div class="col-lg-10">
             <div class="row">
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[0]};"></div></div>
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[1]};"></div></div>
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[2]};"></div></div>
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[3]};"></div></div>
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[4]};"></div></div>
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[5]};"></div></div>
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[6]};"></div></div>
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[7]};"></div></div>
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[8]};"></div></div>
-            <div class="col" style="margin:2px;padding:0"><div style="width=100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[9]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[0]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[1]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[2]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[3]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[4]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[5]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[6]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[7]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[8]};"></div></div>
+            <div class="col" style="margin:2px;padding:0"><div style="width:100%;height:10px;margin-top:11px;margin-bottom:5px;background:${lineColor[9]};"></div></div>
             </div>
         </div>
         <div class="col-lg-1">
@@ -268,7 +268,7 @@ const consentPrivacyPage = () => {
                     <div class="col-md-8">
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-primary consentNextButton" type="button" id="toBenefits" style="width:100%; margin-top:10px;margin-bottom:10px" data-i18n="consent.nextButtonText">Next</button>
+                        <button class="btn btn-primary consentNextButton" type="button" id="toResults" style="width:100%; margin-top:10px;margin-bottom:10px" data-i18n="consent.nextButtonText">Next</button>
                     </div>
                 </div>
 
@@ -281,7 +281,7 @@ const consentPrivacyPage = () => {
     document.getElementById('backToActivities').addEventListener('click', () => {
         consentActivitiesPage();
     })
-    document.getElementById('toBenefits').addEventListener('click', () => {
+    document.getElementById('toResults').addEventListener('click', () => {
         consentResultsPage();
     })
 }
@@ -356,7 +356,7 @@ const consentDiagnosisPage = () => {
     `);
     mainContent.innerHTML =  template;
     document.getElementById('backToLeaving').addEventListener('click', () => {
-        consentResultsPage();
+        consentLeavingPage();
     })
     document.getElementById('toRisks').addEventListener('click', () => {
         consentRisksPage();
@@ -413,7 +413,7 @@ const consentRisksPage = () => {
             <div class="col-lg-2">
             </div>
             <div class="col-lg-8">
-                <p class="consentHeadersFont" data-i18n="consent.risksPageHeader">Benefits and Payment</p>
+                <p class="consentHeadersFont" data-i18n="consent.risksPageHeader">What are the risks of taking part in Connect?</p>
                 <p class="consentBodyFont1" data-i18n="consent.risksPageBody1">Possible risks to you<br>Connect is a low-risk study. The main risk of joining is to your privacy. To minimize this risk, we follow federal privacy rules to protect your identity and the personal information and study data you share. There is no direct health benefit to you for taking part in the study.    </p>
                 <p class="consentBodyFont1" data-i18n="consent.risksPageBody2">Possible risks to groups<br>Connect will collect and store large amounts of health data. Researchers will use these data to learn more about health and disease. While this kind of research can be very helpful, it can also cause harm to groups of people. Group harm happens when research methods or results negatively affect a group of people because they share something in common, such as their race, culture, health condition, or community. This harm can happen even if the research does not intend to hurt anyone. </p>
                 <p class="consentBodyFont1" data-i18n="consent.risksPageBody3">Another possible risk to groups is that when members of small populations take part in research, it may be easier to identify them from the data they share. This also means it may be easier to trace someone back to their community. Connect prohibits researchers from attempting to re-identify individual participants or link them to their communities.</p>
@@ -607,9 +607,9 @@ const consentConsentPage = async () => {
             
                 <div style="width:80%; margin:auto">
                     <h4 class="consentSubheader" style="margin-top:50px" data-i18n="consent.consentPageSubheader1">Informed Consent Form</h4>
-                    <p class="consentBodyFont2" data-i18n="consent.consentPageBody2">This form explains in detail what it means to take part in Connect. To join the study, please scroll down to the bottom of this screen to electronically consent. You do not need to download and sign the form the join the study.</p>
-                    <p class="consentBodyFont2" data-i18n="consent.consentPageBody3">If you have trouble viewing the consent form in the window at the bottom of this screen, you can download an unsigned copy by scrolling down and selecting that option below.</p>
-                    <p class="consentBodyFont2" data-i18n="consent.consentPageBody4">If you have trouble viewing the consent form in the window at the bottom of this screen, you can download an unsigned copy by scrolling down and selecting that option below.</p>
+                    <p class="consentBodyFont2" data-i18n="consent.consentPageBody2">To join Connect, we need you to review the full informed consent form and electronic health records release (HIPAA Authorization) form below. If you have any questions, contact the Connect Support Center at <a href="https://cancer.gov/connectstudy/support" target="_blank">cancer.gov/connectstudy/support</a>.</p>
+                    <p class="consentBodyFont2" data-i18n="consent.consentPageBody3">The informed consent form explains in detail what it means to take part in Connect. Please review it carefully. Once you have read this form and all of your questions have been answered, please sign the form electronically by scrolling to the bottom of this screen and clicking, “Yes, I agree to join Connect.” Then, please type your name into the fields that appear and click “Next” to view and download copies of your signed forms. You do not need to download the consent form to join the study.</p>
+                    <p class="consentBodyFont2" data-i18n="consent.consentPageBody4">If you have trouble viewing the forms in the windows at the bottom of this screen, you can download unsigned copies to review by scrolling down and clicking the “Download” button.</p>
                     <p class="consentBodyFont2" data-i18n="consent.consentPageBody5">Key points in the consent form that you are agreeing to are:</p>
                     <ul class="consentBodyFont2" data-i18n="consent.consentPageBody5List">
                     </ul>
@@ -632,7 +632,7 @@ const consentConsentPage = async () => {
                     
                     
                     <input type="checkbox" name="consentAnswer" value="consentYes" id="CSConsentYesCheck">
-                    <label for="consentYes" style=" font-size:20px" id="CSConsentYes" data-i18n="consent.consentPageAgree">Yes, I agree to join Connect</label><br>
+                    <label for="CSConsentYesCheck" style=" font-size:20px" id="CSConsentYes" data-i18n="consent.consentPageAgree">Yes, I agree to join Connect</label><br>
                 </div>
             
                 <form id="consentForm" class="mt-5" method="POST">
