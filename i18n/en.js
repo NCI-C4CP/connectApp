@@ -1834,6 +1834,7 @@ const en = {
         "openAgainButton": "Click here to open the survey again and pick up where you left off",
     },
     "countries": {
+        "none": "",
         "usa": "UNITED STATES OF AMERICA",
         "ala": "ALAND ISLANDS",
         "afg": "AFGHANISTAN",
