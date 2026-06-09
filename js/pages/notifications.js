@@ -62,22 +62,20 @@ export const renderNotificationsPage = async () => {
         </div>
     </div>
     `;
+
+    const normalizeNotificationLinks = () => {
+         document.querySelectorAll('#notificationList a').forEach((elm) => {
+             elm.setAttribute('target', '_blank');
+             elm.relList.add('noopener', 'noreferrer');
+         });
+     };
     
     document.getElementById('root').innerHTML = translateHTML(template);
-    const notificationList = document.getElementById('notificationList');
-    notificationList.querySelectorAll('a').forEach(elm => {
-        elm.setAttribute('target', '_blank');
-        //Adding the noopener and noreferrer to the rel attribute to protect against reverse-tabnabbing https://owasp.org/www-community/attacks/Reverse_Tabnabbing
-        elm.relList.add('noopener', 'noreferrer');
-    });
+    normalizeNotificationLinks();
     if (unread.length > 0) {
         document.getElementById('readNotifs').addEventListener('click', () => {
             document.getElementById('notificationMainBody').innerHTML = renderMainBody(notifs.data, 'read');
-            const notificationList = document.getElementById('notificationList');
-            notificationList.querySelectorAll('a').forEach(elm => {
-                elm.setAttribute('target', '_blank');
-                elm.relList.add('noopener', 'noreferrer');
-            });
+            normalizeNotificationLinks();
             if (!document.getElementById('readNotifs').classList.contains('messages-Active-Nav')) {
                 let toActive = document.getElementById('readNotifs');   
                 let toInactive = document.getElementById('unreadNotifs');
@@ -97,11 +95,7 @@ export const renderNotificationsPage = async () => {
                 toInactive.classList.remove('messages-Active-Nav');
             }
             document.getElementById('notificationMainBody').innerHTML = renderMainBody(notifs.data, 'unread');
-            const notificationList = document.getElementById('notificationList');
-            notificationList.querySelectorAll('a').forEach(elm => {
-                elm.setAttribute('target', '_blank');
-                elm.relList.add('noopener', 'noreferrer');
-            });
+            normalizeNotificationLinks();
         });
     }
     hideAnimation();
