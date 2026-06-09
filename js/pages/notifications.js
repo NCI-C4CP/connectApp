@@ -63,21 +63,20 @@ export const renderNotificationsPage = async () => {
     </div>
     `;
     
-    const mainContent = document.getElementById('root');
-    mainContent.innerHTML = translateHTML(template);
-    const mainBody = document.getElementById('notificationMainBody');
-    mainBody.querySelectorAll('a:not([target="_blank"])').forEach(elm => elm.setAttribute('target', '_blank'));
-    //Adding the noopener and noreferrer to the rel attribute to protect against reverse-tabnabbing https://owasp.org/www-community/attacks/Reverse_Tabnabbing
-    mainBody.querySelectorAll('a[target="_blank"]').forEach(elm => {
-        elm.setAttribute('rel', Array.from(new Set(((elm.getAttribute('rel') || '').split(/\s+/).filter(Boolean)).concat(['noopener', 'noreferrer']))).join(' '));
+    document.getElementById('root').innerHTML = translateHTML(template);
+    const notificationList = document.getElementById('notificationList');
+    notificationList.querySelectorAll('a').forEach(elm => {
+        elm.setAttribute('target', '_blank');
+        //Adding the noopener and noreferrer to the rel attribute to protect against reverse-tabnabbing https://owasp.org/www-community/attacks/Reverse_Tabnabbing
+        elm.relList.add('noopener', 'noreferrer');
     });
     if (unread.length > 0) {
         document.getElementById('readNotifs').addEventListener('click', () => {
-            const mainBody = document.getElementById('notificationMainBody');
-            mainBody.innerHTML = renderMainBody(notifs.data, 'read');
-            mainBody.querySelectorAll('a:not([target="_blank"])').forEach(elm => elm.setAttribute('target', '_blank'));
-            mainBody.querySelectorAll('a[target="_blank"]').forEach(elm => {
-                elm.setAttribute('rel', Array.from(new Set(((elm.getAttribute('rel') || '').split(/\s+/).filter(Boolean)).concat(['noopener', 'noreferrer']))).join(' '));
+            document.getElementById('notificationMainBody').innerHTML = renderMainBody(notifs.data, 'read');
+            const notificationList = document.getElementById('notificationList');
+            notificationList.querySelectorAll('a').forEach(elm => {
+                elm.setAttribute('target', '_blank');
+                elm.relList.add('noopener', 'noreferrer');
             });
             if (!document.getElementById('readNotifs').classList.contains('messages-Active-Nav')) {
                 let toActive = document.getElementById('readNotifs');   
@@ -97,11 +96,11 @@ export const renderNotificationsPage = async () => {
                 toInactive.classList.add('messages-Inactive-Nav');
                 toInactive.classList.remove('messages-Active-Nav');
             }
-            const mainBody = document.getElementById('notificationMainBody');
-            mainBody.innerHTML = renderMainBody(notifs.data, 'unread');
-            mainBody.querySelectorAll('a:not([target="_blank"])').forEach(elm => elm.setAttribute('target', '_blank'));
-            mainBody.querySelectorAll('a[target="_blank"]').forEach(elm => {
-                elm.setAttribute('rel', Array.from(new Set(((elm.getAttribute('rel') || '').split(/\s+/).filter(Boolean)).concat(['noopener', 'noreferrer']))).join(' '));
+            document.getElementById('notificationMainBody').innerHTML = renderMainBody(notifs.data, 'unread');
+            const notificationList = document.getElementById('notificationList');
+            notificationList.querySelectorAll('a').forEach(elm => {
+                elm.setAttribute('target', '_blank');
+                elm.relList.add('noopener', 'noreferrer');
             });
         });
     }
@@ -110,7 +109,7 @@ export const renderNotificationsPage = async () => {
 
 
 const renderMainBody = (data, tab) => {
-    let template = `<ul class="questionnaire-module-list">`;
+    let template = `<ul class="questionnaire-module-list" id="notificationList">`;
     let hasNotification = false;
     for (let i = 0; i < data.length; i++) {
         if ((tab === 'read' && data[i].read === true) || (tab === 'unread' && data[i].read === false)) {
