@@ -47,7 +47,7 @@ export const renderNotificationsPage = async () => {
 
     
     template += `
-        <div class="surveyMainBody" id="surveyMainBody">
+        <div class="surveyMainBody" id="notificationMainBody">
     `;
     if (unread.length === 0) {
         template += renderMainBody(notifs.data, 'read');
@@ -65,9 +65,12 @@ export const renderNotificationsPage = async () => {
     
     const mainContent = document.getElementById('root');
     mainContent.innerHTML = translateHTML(template);
+    document.getElementById('notificationMainBody').querySelectorAll('a:not([target]), a:not([target="_blank"])').forEach(elm => elm.setAttribute('target', '_blank'));
     if (unread.length > 0) {
         document.getElementById('readNotifs').addEventListener('click', () => {
-            document.getElementById('surveyMainBody').innerHTML = renderMainBody(notifs.data, 'read');
+            const mainBody = document.getElementById('notificationMainBody');
+            mainBody.innerHTML = renderMainBody(notifs.data, 'read');
+            mainBody.querySelectorAll('a:not([target]), a:not([target="_blank"])').forEach(elm => elm.setAttribute('target', '_blank'));
             if (!document.getElementById('readNotifs').classList.contains('messages-Active-Nav')) {
                 let toActive = document.getElementById('readNotifs');   
                 let toInactive = document.getElementById('unreadNotifs');
@@ -86,7 +89,9 @@ export const renderNotificationsPage = async () => {
                 toInactive.classList.add('messages-Inactive-Nav');
                 toInactive.classList.remove('messages-Active-Nav');
             }
-            document.getElementById('surveyMainBody').innerHTML = renderMainBody(notifs.data, 'unread');
+            const mainBody = document.getElementById('notificationMainBody');
+            mainBody.innerHTML = renderMainBody(notifs.data, 'unread');
+            mainBody.querySelectorAll('a:not([target]), a:not([target="_blank"])').forEach(elm => elm.setAttribute('target', '_blank'));
         });
     }
     hideAnimation();
