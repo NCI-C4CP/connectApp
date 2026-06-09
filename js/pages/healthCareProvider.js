@@ -145,61 +145,61 @@ export const heardAboutStudy = (formData = {}) => {
             <label data-i18n="provider.heardAboutStudy"><strong>How did you hear about this study? (Select all that apply)</strong></label>
             <div class="form-group">
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox8" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox8])}><label class="form-check-label" data-i18n="provider.anotherParticipant" for="checkbox8"> Another Connect participant</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox8" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox8])}><label class="form-check-label" data-i18n="provider.anotherParticipant" for="checkbox8">Another Connect participant</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox13" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox13])}><label class="form-check-label" data-i18n="provider.connectResearch" for="checkbox13"> Connect research staff at my health care system</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox13" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox13])}><label class="form-check-label" data-i18n="provider.connectResearch" for="checkbox13">Connect research staff at my health care system</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox10" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox10])}><label class="form-check-label" data-i18n="provider.connectTable" for="checkbox10"> Connect table at public event</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox10" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox10])}><label class="form-check-label" data-i18n="provider.connectTable" for="checkbox10">Connect table at public event</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox16" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox16])}><label class="form-check-label" data-i18n="provider.connectWebsite" for="checkbox16"> Connect website on Cancer.gov</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox16" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox16])}><label class="form-check-label" data-i18n="provider.connectWebsite" for="checkbox16">Connect website on Cancer.gov</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox2" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox2])}><label class="form-check-label" data-i18n="provider.emailInvitation" for="checkbox2"> Email or text invitation</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox2" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox2])}><label class="form-check-label" data-i18n="provider.emailInvitation" for="checkbox2">Email or text invitation</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox7" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox7])}><label class="form-check-label" data-i18n="provider.familyFriend" for="checkbox7"> Family or friend</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox7" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox7])}><label class="form-check-label" data-i18n="provider.familyFriend" for="checkbox7">Family or friend</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox14" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox14])}><label class="form-check-label" data-i18n="provider.newsletter" for="checkbox14"> Health care system newsletter</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox14" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox14])}><label class="form-check-label" data-i18n="provider.newsletter" for="checkbox14">Health care system newsletter</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox15" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox15])}><label class="form-check-label" data-i18n="provider.website" for="checkbox15"> Health care system website</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox15" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox15])}><label class="form-check-label" data-i18n="provider.website" for="checkbox15">Health care system website</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox6" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox6])}><label class="form-check-label" data-i18n="provider.invitationPortal" for="checkbox6"> Invitation through my patient portal (such as MyChart)</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox6" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox6])}><label class="form-check-label" data-i18n="provider.invitationPortal" for="checkbox6">Invitation through my patient portal (such as MyChart)</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox3" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox3])}><label class="form-check-label" data-i18n="provider.letterMail" for="checkbox3"> Letter or brochure in mail</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox3" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox3])}><label class="form-check-label" data-i18n="provider.letterMail" for="checkbox3">Letter or brochure in mail</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox17" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox17])}><label class="form-check-label" data-i18n="provider.newsTvRadio" for="checkbox17"> Local news, television, or radio station</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox17" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox17])}><label class="form-check-label" data-i18n="provider.newsTvRadio" for="checkbox17">Local news, television, or radio station</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox4" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox4])}><label class="form-check-label" data-i18n="provider.article" for="checkbox4"> News article or press release about Connect </label>
+                    <input type="checkbox" class="form-check-input" id="checkbox4" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox4])}><label class="form-check-label" data-i18n="provider.article" for="checkbox4">News article or press release about Connect </label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox12" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox12])}><label class="form-check-label" data-i18n="provider.phoneCall" for="checkbox12"> Phone call invitation</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox12" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox12])}><label class="form-check-label" data-i18n="provider.phoneCall" for="checkbox12">Phone call invitation</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox1" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox1])}><label class="form-check-label" data-i18n="provider.physician" for="checkbox1"> Physician or other health care staff</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox1" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox1])}><label class="form-check-label" data-i18n="provider.physician" for="checkbox1">Physician or other health care staff</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox9" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox9])}><label class="form-check-label" data-i18n="provider.poster" for="checkbox9"> Poster, flyer, or sign at my health care system</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox9" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox9])}><label class="form-check-label" data-i18n="provider.poster" for="checkbox9">Poster, flyer, or sign at my health care system</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox19" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox19])}><label class="form-check-label" data-i18n="provider.recordedMessage" for="checkbox19"> Recorded message</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox19" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox19])}><label class="form-check-label" data-i18n="provider.recordedMessage" for="checkbox19">Recorded message</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox5" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox5])}><label class="form-check-label" data-i18n="provider.socialMedia" for="checkbox5"> Social media post (on Facebook, Twitter, Instagram, or other channels)</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox5" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox5])}><label class="form-check-label" data-i18n="provider.socialMedia" for="checkbox5">Social media post (on Facebook, Twitter, Instagram, or other channels)</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox18" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox18])}><label class="form-check-label" data-i18n="provider.video" for="checkbox18"> Video</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox18" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox18])}><label class="form-check-label" data-i18n="provider.video" for="checkbox18">Video</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox11" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox11])}><label class="form-check-label" data-i18n="provider.other" for="checkbox11"> Other</label>
+                    <input type="checkbox" class="form-check-input" id="checkbox11" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox11])}><label class="form-check-label" data-i18n="provider.other" for="checkbox11">Other</label>
                 </div>
             </div>
             <div class="row" data-i18n="provider.consentProcess">
