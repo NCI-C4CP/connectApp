@@ -65,12 +65,19 @@ export const renderNotificationsPage = async () => {
     
     const mainContent = document.getElementById('root');
     mainContent.innerHTML = translateHTML(template);
-    document.getElementById('notificationMainBody').querySelectorAll('a:not([target]), a:not([target="_blank"])').forEach(elm => elm.setAttribute('target', '_blank'));
+    document.getElementById('notificationMainBody').querySelectorAll('a:not([target="_blank"])').forEach(elm => elm.setAttribute('target', '_blank'));
+    //Adding the noopener and noreferrer to the rel attribute to protect against reverse-tabnabbing https://owasp.org/www-community/attacks/Reverse_Tabnabbing
+    document.getElementById('notificationMainBody').querySelectorAll('a[target="_blank"]').forEach(elm => {
+        elm.setAttribute('rel', Array.from(new Set(((elm.getAttribute('rel') || '').split(/\s+/).filter(Boolean)).concat(['noopener', 'noreferrer']))).join(' '));
+    });
     if (unread.length > 0) {
         document.getElementById('readNotifs').addEventListener('click', () => {
             const mainBody = document.getElementById('notificationMainBody');
             mainBody.innerHTML = renderMainBody(notifs.data, 'read');
-            mainBody.querySelectorAll('a:not([target]), a:not([target="_blank"])').forEach(elm => elm.setAttribute('target', '_blank'));
+            mainBody.querySelectorAll('a:not([target="_blank"])').forEach(elm => elm.setAttribute('target', '_blank'));
+            mainBody.querySelectorAll('a[target="_blank"]').forEach(elm => {
+                elm.setAttribute('rel', Array.from(new Set(((elm.getAttribute('rel') || '').split(/\s+/).filter(Boolean)).concat(['noopener', 'noreferrer']))).join(' '));
+            });
             if (!document.getElementById('readNotifs').classList.contains('messages-Active-Nav')) {
                 let toActive = document.getElementById('readNotifs');   
                 let toInactive = document.getElementById('unreadNotifs');
@@ -91,7 +98,10 @@ export const renderNotificationsPage = async () => {
             }
             const mainBody = document.getElementById('notificationMainBody');
             mainBody.innerHTML = renderMainBody(notifs.data, 'unread');
-            mainBody.querySelectorAll('a:not([target]), a:not([target="_blank"])').forEach(elm => elm.setAttribute('target', '_blank'));
+            mainBody.querySelectorAll('a:not([target="_blank"])').forEach(elm => elm.setAttribute('target', '_blank'));
+            mainBody.querySelectorAll('a[target="_blank"]').forEach(elm => {
+                elm.setAttribute('rel', Array.from(new Set(((elm.getAttribute('rel') || '').split(/\s+/).filter(Boolean)).concat(['noopener', 'noreferrer']))).join(' '));
+            });
         });
     }
     hideAnimation();
