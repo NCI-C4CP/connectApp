@@ -18,7 +18,8 @@ const renderProgress = (progress) => {
     let lineColor = [];
     let weight = [];
     let prog = progress - 1;
-    for(let i = 0; i < 10; i++){
+    const progressLength = 10;
+    for(let i = 0; i < progressLength; i++){
         if(i < prog){
             progressBar[i] = '#112f4e';
             textColor[i] = 'white';
@@ -95,8 +96,8 @@ const renderProgress = (progress) => {
         </div>
         <div class="col-lg-10">
             <div style="padding: 15px; margin-left:4px; color:#2A72A5;">
-                <div class="consentBodyFont2" style="text-align:center;width:30px;height:30px;background:#2A72A5;border-radius:50%;border:5px solid #2A72A5;line-height:19px;color:white; display:inline-block;">${progress > 10 ? 10 : progress}</div><span data-i18n="consent.progressText"> of 10 </span>
-                <b style="color:#2E2E2E; font-family: 'Noto Sans', sans-serif; font-weight:bold;">${progress > 10 ? '' :'<span data-i18n="consent.list'+(progress-1)+'">'+list[progress-1]+'</span>'}</b>
+                <div class="consentBodyFont2" style="text-align:center;width:30px;height:30px;background:#2A72A5;border-radius:50%;border:5px solid #2A72A5;line-height:19px;color:white; display:inline-block;">${progress > progressLength ? progressLength : progress}</div><span data-i18n="consent.progressText"> of 10 </span>
+                <b style="color:#2E2E2E; font-family: 'Noto Sans', sans-serif; font-weight:bold;">${progress > progressLength ? '' :'<span data-i18n="consent.list'+(progress-1)+'">'+list[progress-1]+'</span>'}</b>
             </div>
         </div>
         <div class="col-lg-1">
