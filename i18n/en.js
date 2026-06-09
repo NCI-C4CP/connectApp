@@ -722,7 +722,7 @@ const en = {
         "invitationPortal": "Invitation through my patient portal (such as MyChart)",
         "letterMail": "Letter or brochure in mail",
         "newsTvRadio": "Local news, television, or radio station",
-        "article": "News article or press release about Connect ",
+        "article": "News article or press release about Connect",
         "phoneCall": "Phone call invitation",
         "physician": "Physician or other health care staff",
         "poster": "Poster, flyer, or sign at my health care system",

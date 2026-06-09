@@ -726,7 +726,7 @@
         "invitationPortal": "Invitación desde mi portal para pacientes (como MyChart)",
         "letterMail": "Carta o folleto por correo",
         "newsTvRadio": "Estación local de noticias, televisión o radio",
-        "article": "Artículo de noticias o comunicado de prensa sobre Connect ",
+        "article": "Artículo de noticias o comunicado de prensa sobre Connect",
         "phoneCall": "Invitación por llamada telefónica",
         "physician": "Médico u otro personal de atención médica",
         "poster": "Afiche, volante o letrero en mi sistema de atención médica",

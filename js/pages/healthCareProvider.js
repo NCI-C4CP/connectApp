@@ -178,7 +178,7 @@ export const heardAboutStudy = (formData = {}) => {
                     <input type="checkbox" class="form-check-input" id="checkbox17" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox17])}><label class="form-check-label" data-i18n="provider.newsTvRadio" for="checkbox17">Local news, television, or radio station</label>
                 </div>
                 <div class="form-check">
-                    <input type="checkbox" class="form-check-input" id="checkbox4" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox4])}><label class="form-check-label" data-i18n="provider.article" for="checkbox4">News article or press release about Connect </label>
+                    <input type="checkbox" class="form-check-input" id="checkbox4" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox4])}><label class="form-check-label" data-i18n="provider.article" for="checkbox4">News article or press release about Connect</label>
                 </div>
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" id="checkbox12" ${getChecked(formData[heardAboutStudyCheckBoxes.checkbox12])}><label class="form-check-label" data-i18n="provider.phoneCall" for="checkbox12">Phone call invitation</label>
