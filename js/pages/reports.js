@@ -87,7 +87,7 @@ export const renderReportsPage = async () => {
 
 
         template += `
-            <div class="surveyMainBody" id="surveyMainBody">
+            <div class="surveyMainBody" id="reportMainBody">
         `;
         if (unread.length > 0) {
             template += renderMainBody(unread, 'Unread');
@@ -109,7 +109,7 @@ export const renderReportsPage = async () => {
     if (unread.length > 0) {
         initializeUnreadButtons();
         document.getElementById('unreadReports').addEventListener('click', () => {
-            document.getElementById('surveyMainBody').innerHTML = renderMainBody(unread, 'Unread');
+            document.getElementById('reportMainBody').innerHTML = renderMainBody(unread, 'Unread');
             initializeUnreadButtons();
             if (!document.getElementById('unreadReports').classList.contains('messages-Active-Nav')) {
                 let toActive = document.getElementById('unreadReports');
@@ -131,7 +131,7 @@ export const renderReportsPage = async () => {
             initializeReadButtons();
         }
         document.getElementById('viewedReports').addEventListener('click', () => {
-            document.getElementById('surveyMainBody').innerHTML = renderMainBody(read, 'Read');
+            document.getElementById('reportMainBody').innerHTML = renderMainBody(read, 'Read');
             initializeReadButtons();
             if (!document.getElementById('viewedReports').classList.contains('messages-Active-Nav')) {
                 let toActive = document.getElementById('viewedReports');
@@ -151,7 +151,7 @@ export const renderReportsPage = async () => {
         });
 
         document.getElementById('declinedReports').addEventListener('click', () => {
-            document.getElementById('surveyMainBody').innerHTML = renderMainBody(declined, 'Declined');
+            document.getElementById('reportMainBody').innerHTML = renderMainBody(declined, 'Declined');
             initializeDeclinedButtons();
             if (!document.getElementById('declinedReports').classList.contains('messages-Active-Nav')) {
                 let toActive = document.getElementById('declinedReports');
