@@ -3629,10 +3629,11 @@ export const addressValidation = async (data) => {
  * @returns {Array<{code: string, text: string}>}
  */
 export const getUSPSDeliverabilityWarnings = (validationResult={}) => {
-    const {additionalInfo = {}, matches = []} = validationResult;
+    const { matches = [] } = validationResult;
     const warnings = [];
 
 /* USPS DPV/Vacant/Business address validation is currently ignored
+    const additionalInfo = validationResult.additionalInfo || {};
     const dpv = additionalInfo.DPVConfirmation;
     if (dpv && dpv.toUpperCase() !== 'Y') {
         warnings.push({ code: 'DPV', text: 'USPS could not confirm delivery' });
@@ -3936,7 +3937,7 @@ export const validateAddress = async ({
     const addressComparison = { warnings: [] };
 
     const streetAddress = document.getElementById(addr1Id).value.trim();
-    const secondaryAddress = document.getElementById(addr2Id)?.value.trim() || "";
+    const secondaryAddress = document.getElementById(addr2Id)?.value?.trim() || "";
     const city = document.getElementById(cityId).value.trim();
     const state = document.getElementById(stateId).value.trim();
     const zipCode = document.getElementById(zipId).value.trim();
