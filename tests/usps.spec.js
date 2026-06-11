@@ -1,4 +1,5 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { installDocumentByIdMap } from './helpers.js';
 import { registerSharedRuntimeModuleMocks } from './moduleMocks.js';
 
 registerSharedRuntimeModuleMocks();
@@ -170,6 +171,7 @@ let analyzeUSPSAddressSuggestion;
 let getUSPSDeliverabilityWarnings;
 let mapUSPSErrorsToFieldTargets;
 let addressValidation;
+let validateAddress;
 let appState;
 
 beforeAll(async () => {
@@ -180,6 +182,7 @@ beforeAll(async () => {
   getUSPSDeliverabilityWarnings = sharedModule.getUSPSDeliverabilityWarnings;
   mapUSPSErrorsToFieldTargets = sharedModule.mapUSPSErrorsToFieldTargets;
   addressValidation = sharedModule.addressValidation;
+  validateAddress = sharedModule.validateAddress;
   appState = sharedModule.appState;
 });
 
@@ -189,13 +192,10 @@ beforeEach(() => {
 });
 
 describe('USPS address validation behavior', () => {
-  it('returns no deliverability warnings while USPS warnings are intentionally bypassed', () => {
-    const warnings = getUSPSDeliverabilityWarnings(
-      USPS_TEST_CASES.multipleAddresses.additionalInfo,
-      USPS_TEST_CASES.multipleAddresses.matches,
-    );
+  it('derives deliverability warnings from USPS match metadata', () => {
+    const warnings = getUSPSDeliverabilityWarnings(USPS_TEST_CASES.multipleAddresses);
 
-    expect(warnings).toEqual([]);
+    expect(warnings).toEqual([{ code: 'MULTIPLE', text: 'Multiple responses found' }]);
   });
 
   it.each(['success', 'successWithCorrections', 'vacantAddress', 'businessAddress'])(
@@ -208,13 +208,11 @@ describe('USPS address validation behavior', () => {
         city: response.address.city.toLowerCase(),
         state: response.address.state,
         zipCode: response.address.ZIPCode,
-        uspsAddress: response.address,
-        matches: response.matches,
-        additionalInfo: response.additionalInfo,
+        uspsValidationResult: response,
       });
 
-      expect(result.suggestion).toBeUndefined();
-      expect(result.original).toBeUndefined();
+      expect(result.suggestion).toBeNull();
+      expect(result.original).toBeNull();
       expect(result.warnings).toEqual([]);
       expect(result.isValidatedByUSPS).toBe(true);
       expect(result.isExactMatch).toBe(true);
@@ -234,9 +232,7 @@ describe('USPS address validation behavior', () => {
       city: input.city,
       state: input.state,
       zipCode: input.zip,
-      uspsAddress: response.address,
-      matches: response.matches,
-      additionalInfo: response.additionalInfo,
+      uspsValidationResult: response,
     });
 
     expect(result.suggestion).toBeDefined();
@@ -289,6 +285,66 @@ describe('USPS address validation behavior', () => {
       { id: 'zip', i18nKey: 'event.invalidZip' },
       { id: 'city', i18nKey: 'event.invalidCity' },
     ]);
+  });
+
+  it('validateAddress reads DOM fields and returns the canonical exact-match result', async () => {
+    installDocumentByIdMap({
+      address1: { value: '123 fake street' },
+      address2: { value: '' },
+      city: { value: 'denver' },
+      state: { value: 'Colorado' },
+      zip: { value: '80112' },
+    });
+    globalThis.fetch = vi.fn(async (_url, options) => ({
+      ok: true,
+      status: 200,
+      json: async () => {
+        expect(JSON.parse(options.body)).toEqual({
+          streetAddress: '123 fake street',
+          secondaryAddress: '',
+          city: 'denver',
+          state: 'CO',
+          zipCode: '80112',
+        });
+        return USPS_TEST_CASES.success;
+      },
+    }));
+
+    const result = await validateAddress({
+      addr1Id: 'address1',
+      addr2Id: 'address2',
+      cityId: 'city',
+      stateId: 'state',
+      zipId: 'zip',
+    });
+
+    expect(result).toEqual({
+      hasError: false,
+      addressComparison: { warnings: [] },
+      addressNotFound: false,
+      isValidatedByUSPS: true,
+    });
+  });
+
+  it('validateAddress bypasses USPS for international addresses', async () => {
+    globalThis.fetch = vi.fn();
+
+    const result = await validateAddress({
+      isInternational: true,
+      addr1Id: 'address1',
+      addr2Id: 'address2',
+      cityId: 'city',
+      stateId: 'state',
+      zipId: 'zip',
+    });
+
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      hasError: false,
+      addressComparison: { warnings: [] },
+      addressNotFound: false,
+      isValidatedByUSPS: false,
+    });
   });
 
   it('addressValidation returns USPS server errors unchanged', async () => {
