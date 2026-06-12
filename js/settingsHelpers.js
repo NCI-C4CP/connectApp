@@ -472,7 +472,7 @@ export const validateMailingAddress = async (id, addressLine1, city, state, zip,
   }
 
   if (isInternational === cId.no) {
-    const { hasError, addressComparison, isValidatedByUSPS, addressNotFound } = await validateAddress({
+    const { hasError: hasValidationError, addressComparison, isValidatedByUSPS, addressNotFound } = await validateAddress({
         focus,
         addr1Id: `UPAddress${id}Line1`,
         addr2Id: `UPAddress${id}Line2`,
@@ -482,7 +482,7 @@ export const validateMailingAddress = async (id, addressLine1, city, state, zip,
     });
   
     return {
-        hasError,
+        hasError: hasValidationError,
         uspsSuggestion: addressComparison,
         isValidatedByUSPSApi: isValidatedByUSPS,
         addressNotFound,

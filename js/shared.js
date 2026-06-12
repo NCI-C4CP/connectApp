@@ -4020,8 +4020,10 @@ export const validateAddress = async ({
         const corrections = uspsValidationResult.corrections || [];
         for (const correction of corrections) {
             const code = correction?.code ?? '';
+            // May need to handle other correction codes in the future.
             if (code === '22') {
                 addressNotFound = true;
+                isValidatedByUSPS = false;
                 break;
             }
         }
