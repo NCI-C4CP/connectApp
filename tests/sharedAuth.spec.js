@@ -686,6 +686,14 @@ describe('isMagicLinkCallbackUrl', () => {
     expect(shared.isMagicLinkCallbackUrl()).toBe(true);
   });
 
+  it('returns true when magic-link query separators are HTML-escaped', () => {
+    setupTestEnvironment({
+      location: { search: '?apiKey=key456&amp;mode=signIn&amp;oobCode=abc123&amp;continueUrl=http://localhost:5000/' },
+    });
+
+    expect(shared.isMagicLinkCallbackUrl()).toBe(true);
+  });
+
   it('returns false when oobCode is missing', () => {
     setupTestEnvironment({
       location: { search: '?mode=signIn&apiKey=key456' },

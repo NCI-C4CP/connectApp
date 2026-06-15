@@ -103,7 +103,8 @@ export const homePage = async () => {
 
     if (isMagicLinkSignIn) {
       if ( location.search !== cleanSearchStr ) {
-        location.search = cleanSearchStr; // Page reload with clean url
+        const cleanUrl = `${location.origin}${location.pathname}${cleanSearchStr}${location.hash || ''}`;
+        window.history.replaceState({}, document.title || '', cleanUrl);
       }
         try {
             showAnimation();
