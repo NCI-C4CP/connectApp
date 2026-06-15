@@ -1,5 +1,5 @@
 import { allStates, allCountries, getMyData, hasUserData, translateHTML } from "../shared.js";
-import { addEventMonthSelection, addEventMonthConfirmationSelection, addEventUPSubmit, addEventCancerFollowUp, addEventChangeFocus, addEventAddressAutoComplete, addEventAdditionalEmail, addEventCheckCanText, addEventFormerName, addMoreFormerName } from "../event.js";
+import { addEventMonthSelection, addEventMonthConfirmationSelection, addEventUPSubmit, addEventCancerFollowUp, addEventChangeFocus, addEventAddressAutoComplete, addEventAdditionalEmail, addEventCheckCanText, addEventFormerName, addMoreFormerName, addEventBirthCountryToggle } from "../event.js";
 import cId from '../fieldToConceptIdMapping.js';
 import { addEventTogglePhysicalAddress, addEventToggleAltAddress } from "../pages/userProfile.js";
 import { suffixList, suffixToTextMapDropdown, suffixToTextMap, numberOfDefaultFormerNames, renderCountries } from "../settingsHelpers.js";
@@ -156,24 +156,6 @@ export const renderUserProfile = async () => {
             <p class="userProfileSubHeaders" data-i18n="form.birthPlaceSubHeader">Place of birth</p>
             <span data-i18n="form.birthPlaceIntroduction">We collect this information so that we can match any information we collect from other sources, like state health registries, to you. </span>
             <div class="form-group row">
-                <div class="col">
-                    <label class="col-form-label" data-i18n="form.cityOfBirth.title">
-                        City 
-                    </label>
-                    <br>
-                    <input data-i18n="form.cityOfBirth" style="margin-left:0px; max-width:301px;" type=text id="cityOfBirth" class="form-control" placeholder="Enter City">
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col">
-                    <label class="col-form-label" data-i18n="form.stateOfBirth.title">
-                        State 
-                    </label>
-                    <br>
-                    <input data-i18n="form.stateOfBirth" style="margin-left:0px; max-width:301px;" type=text id="stateOfBirth" class="form-control" placeholder="Enter State">
-                </div>
-            </div>
-            <div class="form-group row">
                 <div class="col  col-md-7">
                     <label class="col-form-label" data-i18n="form.countryOfBirth.title">
                         Country 
@@ -183,6 +165,27 @@ export const renderUserProfile = async () => {
                          <option class="option-dark-mode" value="" data-i18n="form.selectOption">-- Select --</option>
                         ${renderCountries()}
                     </select>
+                </div>
+            </div>
+            <div class="form-group row" id="stateOfBirthGroup">
+                <div class="col">
+                    <label class="col-form-label" data-i18n="form.stateOfBirth.title">
+                        State 
+                    </label>
+                    <br>
+                    <select class="form-control" style="margin-left:0px; max-width:301px;" id="stateOfBirth" disabled>
+                        <option class="option-dark-mode" value="" data-i18n="form.selectOption">-- Select --</option>
+                        ${renderBirthStates()}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group row">
+                <div class="col">
+                    <label class="col-form-label" data-i18n="form.cityOfBirth.title">
+                        City 
+                    </label>
+                    <br>
+                    <input data-i18n="form.cityOfBirth" style="margin-left:0px; max-width:301px;" type=text id="cityOfBirth" class="form-control" placeholder="Enter City" maxlength="48" disabled>
                 </div>
             </div>
 
@@ -406,6 +409,7 @@ export const renderUserProfile = async () => {
     addEventMonthConfirmationSelection();
     addEventFormerName();
     addEventAdditionalEmail();
+    addEventBirthCountryToggle();
     addEventAddressAutoComplete(1);
     addEventAddressAutoComplete(2);
     addEventAddressAutoComplete(3);
@@ -632,6 +636,15 @@ const renderStates = () => {
     let options = '';
     for(const state in allStates){
         options += `<option class="option-dark-mode" value="${state}" data-i18n="shared.state${state.replace(/\s/g,'')}">${state}</option>`;
+    }
+    return options;
+}
+
+const renderBirthStates = () => {
+    let options = '';
+    for (const state in allStates) {
+        if (state === 'NA') continue;
+        options += `<option class="option-dark-mode" value="${state}" data-i18n="shared.state${state.replace(/\s/g, '')}">${state}</option>`;
     }
     return options;
 }

@@ -171,7 +171,8 @@ const en = {
         },
         "stateOfBirth": {
             "title": "State",
-            "placeholder": "Enter State"
+            "placeholder": "Enter State",
+            "data-error-validation": "Please enter a valid state or province name using only letters, spaces, and common punctuation."
         },
         "countryOfBirth": {
             "title": "Country",
