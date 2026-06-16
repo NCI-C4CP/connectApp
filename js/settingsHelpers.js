@@ -1,4 +1,4 @@
-import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, addressValidation, statesWithAbbreviations, translateHTML, closeModal, escapeHTML, country3Codes, analyzeUSPSAddressSuggestion, mapUSPSErrorsToFieldTargets, applyUSPSFieldErrors, getUSPSUnvalidatedValue, logDDRumAction, logAuthIssue, getAuthErrorMessageKey, createTelemetryId } from './shared.js';
+import { hideAnimation, errorMessage, processAuthWithFirebaseAdmin, showAnimation, storeResponse, validEmailFormat, validNameFormat, validPhoneNumberFormat, translateText, languageTranslations , emailAddressValidation, emailValidationStatus , emailValidationAnalysis, translateHTML, closeModal, escapeHTML, country3Codes, getUSPSUnvalidatedValue, logDDRumAction, logAuthIssue, getAuthErrorMessageKey, createTelemetryId, validateAddress } from './shared.js';
 import { removeAllErrors } from './event.js';
 import cId from './fieldToConceptIdMapping.js';
 
@@ -397,131 +397,6 @@ export const validateContactInformation = async (mobilePhoneNumberComplete, home
   };
 };
 
-const uspsValidateAddress = async (
-    focus,
-    addr1Id,
-    addr2Id,
-    cityId,
-    stateId,
-    zipId
-) => {
-    let hasError = false;
-    let addressNotFound = false;
-    let isValidatedByUSPSApi = false;
-    const uspsSuggestion = { warnings: [] };
-    const streetAddress = document.getElementById(addr1Id).value;
-    const secondaryAddress = document.getElementById(addr2Id)?.value || "";
-    const ct = document.getElementById(cityId).value;
-    const state = document.getElementById(stateId).value;
-    const zipCode = document.getElementById(zipId).value;
-    const addrValidationPayload = {
-        streetAddress,
-        secondaryAddress,
-        city: ct,
-        state: statesWithAbbreviations[state],
-        zipCode,
-    };
-    const _addressValidation = await addressValidation(addrValidationPayload);
-    if (!_addressValidation) {
-        console.error('My Profile - USPS validation empty response:', addrValidationPayload, _addressValidation);
-        uspsSuggestion.warnings.push({
-            code: 'EMPTY_RESPONSE',
-            text: 'USPS validation unavailable; empty response'
-        });
-        addressNotFound = true;
-        isValidatedByUSPSApi = false;
-    } else if (_addressValidation.error || !_addressValidation.address || (_addressValidation.status && _addressValidation.status >= 500)) {
-        const statusVal = Number(_addressValidation.error?.status ?? _addressValidation.status ?? 0);
-        const isServiceUnavailable = statusVal === 0 || statusVal >= 500;
-
-        // Do not block submission on service unavailable errors
-        if (isServiceUnavailable && !_addressValidation.error?.errors?.length) {
-            console.error('My Profile - USPS validation unavailable (service):', addrValidationPayload, _addressValidation);
-            uspsSuggestion.warnings.push({
-                code: 'SERVICE_UNAVAILABLE',
-                text: 'USPS validation unavailable; address not verified'
-            });
-            addressNotFound = true;
-            isValidatedByUSPSApi = false;
-            
-        } else {
-            console.error('My Profile - Invalid Address:', addrValidationPayload, _addressValidation);
-            hasError = true;
-            let handledError = false;
-            const errorItems = _addressValidation.error?.errors || [];
-            if (errorItems.length) {
-                const mapped = mapUSPSErrorsToFieldTargets(errorItems, {
-                    addr1Id,
-                    cityId,
-                    stateId,
-                    zipId,
-                });
-                handledError = mapped.handled;
-                focus = applyUSPSFieldErrors(mapped.targets, focus);
-                if (errorItems.length === 1) {
-                    const code = errorItems[0]?.code;
-                    if (code === "010001" || code === "010005") {
-                        addressNotFound = true;
-                    }
-                }
-            } else if (!_addressValidation.address) {
-                addressNotFound = true;
-            }
-            if (!handledError) {
-                errorMessage(
-                    addr1Id,
-                    '<span data-i18n="event.invalidAddress">' + translateText("event.invalidAddress") + '</span>',
-                    focus
-                );
-                if (focus) document.getElementById(addr1Id).focus();
-                focus = false;
-            }
-        }
-    } else {
-        const { address } = _addressValidation;
-        if (!address) {
-            hasError = true;
-            errorMessage(
-                addr1Id,
-                '<span data-i18n="event.invalidAddress">' + translateText("event.invalidAddress") + '</span>',
-                focus
-            );
-            if (focus) document.getElementById(addr1Id).focus();
-            focus = false;
-            addressNotFound = true;
-        } else {
-            const additionalInfo = _addressValidation.additionalInfo || {};
-            const matches = _addressValidation.matches || [];
-
-            const analysis = analyzeUSPSAddressSuggestion({
-                streetAddress,
-                secondaryAddress,
-                city: ct,
-                state,
-                zipCode,
-                uspsAddress: address,
-                matches,
-                additionalInfo,
-            });
-
-            if (analysis.warnings?.length) {
-                uspsSuggestion.warnings = analysis.warnings;
-            }
-
-            if (analysis.original) uspsSuggestion.original = analysis.original;
-            if (analysis.suggestion) uspsSuggestion.suggestion = analysis.suggestion;
-
-            isValidatedByUSPSApi = analysis.isValidatedByUSPS;
-        }
-    }
-    return {
-        hasError,
-        uspsSuggestion,
-        addressNotFound,
-        isValidatedByUSPSApi
-    };
-};
-
 export const validateMailingAddress = async (id, addressLine1, city, state, zip, isInternational, country) => {
   removeAllErrors();
   let hasError = false;
@@ -597,20 +472,20 @@ export const validateMailingAddress = async (id, addressLine1, city, state, zip,
   }
 
   if (isInternational === cId.no) {
-    const {hasError: isInvalid, uspsSuggestion, isValidatedByUSPSApi, addressNotFound: isAddressNotFound} = await uspsValidateAddress(
+    const { hasError: hasValidationError, addressComparison, isValidatedByUSPS, addressNotFound } = await validateAddress({
         focus,
-        `UPAddress${id}Line1`,
-        `UPAddress${id}Line2`,
-        `UPAddress${id}City`,
-        `UPAddress${id}State`,
-        `UPAddress${id}Zip`
-    );
+        addr1Id: `UPAddress${id}Line1`,
+        addr2Id: `UPAddress${id}Line2`,
+        cityId: `UPAddress${id}City`,
+        stateId: `UPAddress${id}State`,
+        zipId: `UPAddress${id}Zip`,
+    });
   
     return {
-        hasError: isInvalid,
-        uspsSuggestion,
-        isValidatedByUSPSApi,
-        addressNotFound: isAddressNotFound
+        hasError: hasValidationError,
+        uspsSuggestion: addressComparison,
+        isValidatedByUSPSApi: isValidatedByUSPS,
+        addressNotFound,
     };
   } else {
     return {
