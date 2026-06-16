@@ -2567,6 +2567,12 @@ export const addEventBirthCountryToggle = () => {
                 currentStateEl.replaceWith(input);
             }
         }
+
+        // Re-fetch in case the element was replaced above, and enable it.
+        // The initial render is a disabled <select>; selecting USA reuses that
+        // element (no replaceWith), so the disabled attribute must be cleared here.
+        const stateEl = document.getElementById('stateOfBirth');
+        if (stateEl) stateEl.disabled = false;
     });
 }
 
