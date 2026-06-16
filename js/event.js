@@ -1909,7 +1909,7 @@ const verifyUserDetails = (formData) => {
             <div class="col"><strong data-i18n="form.birthPlaceSubHeader">Place of birth</strong></div>
         </div>
          <div class="row">
-            <div class="col" data-i18n="form.countryOfOrigin.title">Country</div>
+            <div class="col" data-i18n="form.countryOfBirth.title">Country</div>
             <div class="col" ${formData[fieldMapping.countryOfOrigin] ? `data-i18n="countries.${Object.keys(fieldMapping.countries).find(key => fieldMapping.countries[key] === formData[fieldMapping.countryOfOrigin])}"` : ''}>${formData[fieldMapping.countryOfOrigin] ? translateText(`countries.${Object.keys(fieldMapping.countries).find(key => fieldMapping.countries[key] === formData[fieldMapping.countryOfOrigin])}`) : ''}</div>
         </div>
          <div class="row">
