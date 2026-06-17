@@ -171,7 +171,8 @@
         },
         "stateOfBirth":{
             "title": "Estado",
-            "placeholder": "Ingrese la estado"
+            "placeholder": "Ingrese la estado",
+            "data-error-validation": "Ingrese un nombre de estado o provincia válido usando solo letras, espacios y puntuación común."
         },
         "countryOfBirth":{
             "title": "País",

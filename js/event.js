@@ -1,4 +1,4 @@
-import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, sitesNotEnrolling, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, escapeHTML, updateStartDHQParticipantData, mergeAndDeduplicateArrays, getUSPSUnvalidatedValue, validPhoneNumberFormat, validateAddress } from "./shared.js";
+import { allCountries, allStates, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, sitesNotEnrolling, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, escapeHTML, updateStartDHQParticipantData, mergeAndDeduplicateArrays, getUSPSUnvalidatedValue, validPhoneNumberFormat, validateAddress } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
 import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, noLongerEnrollingRender,  requestPINTemplate } from "./pages/healthCareProvider.js";
 import { renderDashboard } from "./pages/dashboard.js";
@@ -583,6 +583,18 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
                         console.error('User Profile - Invalid Pattern', element.id);
                     }
                 }
+                if(validationPattern && validationPattern === 'birthState') {
+                    if(!validBirthStateRegex.test(element.value)) {
+                        errorMessage(
+                            element.id,
+                            `<span data-i18n="${dataI18n}">${translateText(dataI18n)}</span>`,
+                            focus
+                        );
+                        focus = false;
+                        hasError = true;
+                        console.error('User Profile - Invalid Birth State', element.id);
+                    }
+                }
             }
         });
         Array.from(requiredFields).forEach(element => {
@@ -1125,14 +1137,15 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
                 formerNameData;
 
         // User Profile Place of Birth
-        if (document.getElementById('cityOfBirth').value && document.getElementById('cityOfBirth').value.trim() !== '') {
-            formData[fieldMapping.cityOfBirth] = escapeHTML(document.getElementById('cityOfBirth').value.trim());
-        }
-        if (document.getElementById('stateOfBirth').value && document.getElementById('stateOfBirth').value.trim() !== '') {
-            formData[fieldMapping.stateOfBirth] = escapeHTML(document.getElementById('stateOfBirth').value.trim());
-        }
         if (document.getElementById('countryOfOrigin').value && document.getElementById('countryOfOrigin').value !== '') {
             formData[fieldMapping.countryOfOrigin] = parseInt(escapeHTML(document.getElementById('countryOfOrigin').value.trim()), 10);
+        }
+        if (document.getElementById('stateOfBirth').value && document.getElementById('stateOfBirth').value.trim() !== '') {
+            const stateVal = document.getElementById('stateOfBirth').value.trim().slice(0, 48);
+            formData[fieldMapping.stateOfBirth] = escapeHTML(stateVal);
+        }
+        if (document.getElementById('cityOfBirth').value && document.getElementById('cityOfBirth').value.trim() !== '') {
+            formData[fieldMapping.cityOfBirth] = escapeHTML(document.getElementById('cityOfBirth').value.trim());
         }
 
         const gender = document.getElementsByName('UPRadio');
@@ -1793,16 +1806,16 @@ const verifyUserDetails = (formData) => {
             <div class="col"><strong data-i18n="form.birthPlaceSubHeader">Place of birth</strong></div>
         </div>
          <div class="row">
-            <div class="col" data-i18n="form.cityOfBirth.title">City</div>
-            <div class="col">${formData[fieldMapping.cityOfBirth] || ''}</div>
+            <div class="col" data-i18n="form.countryOfBirth.title">Country</div>
+            <div class="col" ${formData[fieldMapping.countryOfOrigin] ? `data-i18n="countries.${Object.keys(fieldMapping.countries).find(key => fieldMapping.countries[key] === formData[fieldMapping.countryOfOrigin])}"` : ''}>${formData[fieldMapping.countryOfOrigin] ? translateText(`countries.${Object.keys(fieldMapping.countries).find(key => fieldMapping.countries[key] === formData[fieldMapping.countryOfOrigin])}`) : ''}</div>
         </div>
          <div class="row">
             <div class="col" data-i18n="form.stateOfBirth.title">State</div>
             <div class="col">${formData[fieldMapping.stateOfBirth] || ''}</div>
         </div>
          <div class="row">
-            <div class="col" data-i18n="form.countryOfOrigin.title">Country</div>
-            <div class="col" ${formData[fieldMapping.countryOfOrigin] ? `data-i18n="countries.${Object.keys(fieldMapping.countries).find(key => fieldMapping.countries[key] === formData[fieldMapping.countryOfOrigin])}"` : ''}>${formData[fieldMapping.countryOfOrigin] ? translateText(`countries.${Object.keys(fieldMapping.countries).find(key => fieldMapping.countries[key] === formData[fieldMapping.countryOfOrigin])}`) : ''}</div>
+            <div class="col" data-i18n="form.cityOfBirth.title">City</div>
+            <div class="col">${formData[fieldMapping.cityOfBirth] || ''}</div>
         </div>
         <div class="row">
             <div class="col"><strong data-i18n="event.contactInfo">Contact Information</strong></div>
@@ -2488,6 +2501,80 @@ export const updateActiveNavItem = (clonedElement) => {
 
 export const addEventCheckCanText = () => {
 } 
+
+const validBirthStateRegex = /^[\p{L}\p{M}\s'.\-()]+$/u;
+
+export const addEventBirthCountryToggle = () => {
+    const countrySelect = document.getElementById('countryOfOrigin');
+    if (!countrySelect) return;
+
+    countrySelect.addEventListener('change', () => {
+        const selectedValue = countrySelect.value;
+        const cityInput = document.getElementById('cityOfBirth');
+        const currentStateEl = document.getElementById('stateOfBirth');
+
+        if (!selectedValue) {
+            // No country selected — disable city and state
+            cityInput.disabled = true;
+            cityInput.value = '';
+            if (currentStateEl) {
+                currentStateEl.disabled = true;
+                currentStateEl.value = '';
+            }
+            return;
+        }
+
+        cityInput.disabled = false;
+
+        const isUSA = selectedValue === String(fieldMapping.countries.usa);
+
+        if (isUSA) {
+            // Switch to dropdown if not already
+            if (currentStateEl.tagName !== 'SELECT') {
+                const select = document.createElement('select');
+                select.className = 'form-control';
+                select.style.cssText = 'margin-left:0px; max-width:301px;';
+                select.id = 'stateOfBirth';
+                const defaultOpt = document.createElement('option');
+                defaultOpt.className = 'option-dark-mode';
+                defaultOpt.value = '';
+                defaultOpt.setAttribute('data-i18n', 'form.selectOption');
+                defaultOpt.textContent = translateText('form.selectOption');
+                select.appendChild(defaultOpt);
+                for (const state in allStates) {
+                    if (state === 'NA') continue;
+                    const opt = document.createElement('option');
+                    opt.className = 'option-dark-mode';
+                    opt.value = state;
+                    opt.setAttribute('data-i18n', `shared.state${state.replace(/\s/g, '')}`);
+                    opt.textContent = translateText(`shared.state${state.replace(/\s/g, '')}`);
+                    select.appendChild(opt);
+                }
+                currentStateEl.replaceWith(select);
+            }
+        } else {
+            // Switch to text input if not already
+            if (currentStateEl.tagName !== 'INPUT') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'form-control input-validation';
+                input.style.cssText = 'margin-left:0px; max-width:301px;';
+                input.id = 'stateOfBirth';
+                input.maxLength = 48;
+                input.setAttribute('data-i18n', 'form.stateOfBirth');
+                input.setAttribute('data-validation-pattern', 'birthState');
+                input.placeholder = translateText('form.stateOfBirth.placeholder');
+                currentStateEl.replaceWith(input);
+            }
+        }
+
+        // Re-fetch in case the element was replaced above, and enable it.
+        // The initial render is a disabled <select>; selecting USA reuses that
+        // element (no replaceWith), so the disabled attribute must be cleared here.
+        const stateEl = document.getElementById('stateOfBirth');
+        if (stateEl) stateEl.disabled = false;
+    });
+}
 
 export const addEventLanguageSelection = () => {
     const selector = document.getElementById('languageSelector');
