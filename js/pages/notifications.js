@@ -47,7 +47,7 @@ export const renderNotificationsPage = async () => {
 
     
     template += `
-        <div class="surveyMainBody" id="surveyMainBody">
+        <div class="surveyMainBody" id="notificationMainBody">
     `;
     if (unread.length === 0) {
         template += renderMainBody(notifs.data, 'read');
@@ -62,12 +62,20 @@ export const renderNotificationsPage = async () => {
         </div>
     </div>
     `;
+
+    const normalizeNotificationLinks = () => {
+         document.querySelectorAll('#notificationList a').forEach((elm) => {
+             elm.setAttribute('target', '_blank');
+             elm.relList.add('noopener', 'noreferrer');
+         });
+     };
     
-    const mainContent = document.getElementById('root');
-    mainContent.innerHTML = translateHTML(template);
+    document.getElementById('root').innerHTML = translateHTML(template);
+    normalizeNotificationLinks();
     if (unread.length > 0) {
         document.getElementById('readNotifs').addEventListener('click', () => {
-            document.getElementById('surveyMainBody').innerHTML = renderMainBody(notifs.data, 'read');
+            document.getElementById('notificationMainBody').innerHTML = renderMainBody(notifs.data, 'read');
+            normalizeNotificationLinks();
             if (!document.getElementById('readNotifs').classList.contains('messages-Active-Nav')) {
                 let toActive = document.getElementById('readNotifs');   
                 let toInactive = document.getElementById('unreadNotifs');
@@ -86,7 +94,8 @@ export const renderNotificationsPage = async () => {
                 toInactive.classList.add('messages-Inactive-Nav');
                 toInactive.classList.remove('messages-Active-Nav');
             }
-            document.getElementById('surveyMainBody').innerHTML = renderMainBody(notifs.data, 'unread');
+            document.getElementById('notificationMainBody').innerHTML = renderMainBody(notifs.data, 'unread');
+            normalizeNotificationLinks();
         });
     }
     hideAnimation();
@@ -94,7 +103,7 @@ export const renderNotificationsPage = async () => {
 
 
 const renderMainBody = (data, tab) => {
-    let template = `<ul class="questionnaire-module-list">`;
+    let template = `<ul class="questionnaire-module-list" id="notificationList">`;
     let hasNotification = false;
     for (let i = 0; i < data.length; i++) {
         if ((tab === 'read' && data[i].read === true) || (tab === 'unread' && data[i].read === false)) {
