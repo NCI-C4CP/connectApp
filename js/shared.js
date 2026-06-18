@@ -107,6 +107,8 @@ if (location.host === urls.prod) api = 'https://api-myconnect.cancer.gov/app';
 else if (location.host === urls.stage) api = 'https://api-myconnect-stage.cancer.gov/app';
 else api = 'https://us-central1-nih-nci-dceg-connect-dev.cloudfunctions.net/app';
 
+export const getApiBaseUrl = () => api;
+
 const afterEmailLinkRender = (email, type) => {
     const df = fragment`
     <div class="mx-4">

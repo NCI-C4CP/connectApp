@@ -1,0 +1,57 @@
+// E2E stub for the feature's dataAccess.js — served via page.route. Emulates the server-backed
+// persistence with sessionStorage so page.reload() resume flows keep working, logs every save
+// for write-semantics assertions, and captures the submitted snapshot.
+
+const KEY = 'srcdx_inprogress_e2e';
+
+// Ordered event log (each save completion vs the submit start) for the submit/save race test.
+// Default-off instrumentation: window.__SRCDX_SAVE_DELAY_MS__ holds a save "in flight" so a test
+// can prove submit quiesces it (no save commits after the row is finalized).
+const order = (e) => { window.__SRCDX_ORDER__ = (window.__SRCDX_ORDER__ || []).concat([e]); };
+
+const parseStateBlob = (stateBlob) => {
+    if (!stateBlob || typeof stateBlob !== 'object' || Array.isArray(stateBlob)) return null;
+    const savedState = stateBlob.state;
+    return savedState && typeof savedState === 'object' && !Array.isArray(savedState) ? savedState : null;
+};
+
+export const saveCancerDxProgress = async (snapshot) => {
+    window.__SRCDX_SAVES__ = (window.__SRCDX_SAVES__ || []).concat([snapshot]);
+    const delay = window.__SRCDX_SAVE_DELAY_MS__ || 0;
+    if (delay) await new Promise((r) => setTimeout(r, delay));
+    if (window.__SRCDX_SAVE_FAIL__) { order('saveEnd'); return { code: 500 }; }
+    sessionStorage.setItem(KEY, JSON.stringify(snapshot));
+    order('saveEnd');
+    return { code: 200 };
+};
+
+export const loadCancerDxProgress = async () => {
+    const raw = sessionStorage.getItem(KEY);
+    if (!raw) return null;
+    try {
+        const snapshot = JSON.parse(raw);
+        const state = parseStateBlob(JSON.parse(snapshot.stateJSON));
+        const position = JSON.parse(snapshot.positionJSON);
+        if (!state || !position || typeof position !== 'object' || Array.isArray(position)) return null;
+        return { state, position };
+    } catch (e) {
+        return null;
+    }
+};
+
+export const submitSelfReportCancerDx = async (snapshot) => {
+    order('submitStart');
+    window.__SRCDX_LAST_PAYLOAD__ = snapshot;
+    sessionStorage.removeItem(KEY); // submit finalizes the row server-side
+    return { code: 200, stubbed: true };
+};
+
+export const getPreviouslyReportedDx = async () => (window.__SRCDX_PRIOR__ || []);
+
+export const loadShareHealthInfoSettings = async () => ({
+    enableNPIRegistry: window.__SRCDX_ENABLE_NPI_REGISTRY__ === true,
+});
+
+// NPI typeahead transport: default = no matches. Specs that exercise the typeahead pass a
+// custom dataAccessBody with a provider fixture instead.
+export const searchNPIProviders = async () => [];

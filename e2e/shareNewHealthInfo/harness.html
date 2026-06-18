@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Self-Report Cancer Diagnosis — E2E harness</title>
+    <!-- Match the app's stylesheet set + order (index.html): the house theme first, then
+         Bootstrap. Local-only (no CDN font/icon deps) so the E2E suite stays hermetic. Gives faithful
+         palette, button styles, red validation errors, and required-field markers for the visual pass. -->
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/lib/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/shareNewHealthInfo.css">
+</head>
+<body>
+    <!-- The feature builds its own container inside #root, exactly like the app. -->
+    <div id="root"></div>
+    <script type="module">
+        import { renderShareNewHealthInfo } from '/js/pages/shareNewHealthInfo/index.js';
+        (async () => {
+            try {
+                await renderShareNewHealthInfo(window.__SRCDX_FIXTURE__);
+                window.__SRCDX_RENDERED__ = true;
+            } catch (err) {
+                window.__SRCDX_ERROR__ = String((err && err.stack) || err);
+                console.error('[harness] render error', err);
+            }
+        })();
+    </script>
+</body>
+</html>
