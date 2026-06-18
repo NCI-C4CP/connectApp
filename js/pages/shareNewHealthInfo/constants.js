@@ -50,9 +50,13 @@ export const SCREENING_OPTIONS = Object.freeze(
 );
 
 export const MONTHS = Object.freeze(
-    ['january', 'february', 'march', 'april', 'may', 'june',
-        'july', 'august', 'september', 'october', 'november', 'december']
-        .map((m, i) => Object.freeze({ value: i, i18nKey: `shareHealthInfo.month_${m}` }))
+    ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December']
+        .map((label, i) => Object.freeze({
+        value: i,
+        label,
+        i18nKey: `shareHealthInfo.month_${label.toLowerCase()}`,
+    }))
 );
 
 // Process screen ids (navigation).

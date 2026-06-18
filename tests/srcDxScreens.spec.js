@@ -85,6 +85,15 @@ describe('primarySite (Q1)', () => {
 });
 
 describe('diagnosisDate (Q2)', () => {
+    it('uses English month names as option fallback text while preserving 0-11 values', () => {
+        renderDiagnosisDate(content, ctx);
+        const options = [...content.querySelectorAll('#srcdxDxMonth option')];
+        expect(options[1].value).toBe('0');
+        expect(options[1].textContent).toBe('January');
+        expect(options[12].value).toBe('11');
+        expect(options[12].textContent).toBe('December');
+    });
+
     it('requires a valid (non-future) year', () => {
         renderDiagnosisDate(content, ctx);
         content.querySelector('#srcdxDxYear').value = '99';

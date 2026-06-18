@@ -142,7 +142,7 @@ window.onload = async () => {
             console.error('Local development requires a firebaseConfig variable defined in ./local-dev/config.js.');
             return;
         }
-        // Local Maps/Places is opt-in. See docs/local-development.md.
+        // Local Maps/Places is opt-in via `local-dev/config.js` (set `mapsApiKey` to enable Places autocomplete).
         if (localMapsApiKey) script.src = `https://maps.googleapis.com/maps/api/js?key=${localMapsApiKey}&libraries=places&callback=Function.prototype`
         !firebase.apps.length ? firebase.initializeApp(localDevFirebaseConfig) : firebase.app();
     } else {

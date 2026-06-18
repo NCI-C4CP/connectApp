@@ -2,6 +2,7 @@
 
 import { appState, getIdToken, getApiBaseUrl, getAppSettings, translateText } from '../../shared.js';
 import fieldMapping from '../../fieldToConceptIdMapping.js';
+import { getLocalApiBaseOverride } from './localDevConfig.js';
 
 const m = fieldMapping.selfReportCancerDx;
 
@@ -15,9 +16,9 @@ const resolveApiBase = () => {
                 && (location.hostname === 'localhost' || location.hostname === '127.0.0.1');
             if (isLocalDev) {
                 try {
-                    const cfg = await import('../../../local-dev/config.js');
-                    if (typeof cfg.apiBaseOverride === 'string' && cfg.apiBaseOverride) return cfg.apiBaseOverride;
-                } catch (e) { /* file or field absent — fall through to the deployed base */ }
+                    const apiBaseOverride = await getLocalApiBaseOverride();
+                    if (apiBaseOverride) return apiBaseOverride;
+                } catch (e) { /* ignore optional local config failures */ }
             }
             return getApiBaseUrl();
         })();

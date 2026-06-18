@@ -106,7 +106,7 @@ export const renderProgressLoadError = (content, onRetry) => {
 export const monthSelect = (id) => `
     <select class="form-control" id="${id}">
         <option value="" data-i18n="shareHealthInfo.selectOption">-- Select --</option>
-        ${MONTHS.map((m) => `<option value="${m.value}" data-i18n="${m.i18nKey}">${m.value}</option>`).join('')}
+        ${MONTHS.map((m) => `<option value="${m.value}" data-i18n="${m.i18nKey}">${m.label}</option>`).join('')}
     </select>`;
 
 export const fieldError = (content, fieldId, i18nKey, fallback) => {

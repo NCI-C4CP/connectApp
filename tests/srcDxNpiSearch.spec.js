@@ -2,8 +2,8 @@
 // contract is absolute: never rejects, resolves [] on any failure. Module state (the cached
 // api base) means every test re-imports a fresh module via vi.resetModules() + dynamic import.
 // location.hostname is pinned per test (vi.stubGlobal): the suite must not depend on the
-// machine. local-dev/config.js exists (with real overrides) on dev machines but not in CI,
-// so every localhost-path test also mocks that module.
+// machine. The local-dev config file is gitignored and absent in CI, so localhost-path tests mock
+// the tracked local config wrapper instead of the optional file itself.
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
@@ -20,6 +20,7 @@ vi.mock('../js/shared.js', () => ({
     getAppSettings: vi.fn(async () => ({ enableNPIRegistry: false })),
 }));
 
+const localConfigModulePath = '../js/pages/shareNewHealthInfo/localDevConfig.js';
 const okResponse = (data) => ({ ok: true, status: 200, json: async () => data });
 const providers = [{ npi: '1234567890', firstName: 'MAYA', lastName: 'SANTOS', credential: 'M.D.', specialty: 'Medical Oncology', city: 'BETHESDA', state: 'MD' }];
 
@@ -41,7 +42,7 @@ beforeEach(() => {
 
 afterEach(() => {
     vi.unstubAllGlobals();
-    vi.doUnmock('../local-dev/config.js');
+    vi.doUnmock(localConfigModulePath);
 });
 
 describe('searchNPIProviders', () => {
@@ -132,14 +133,14 @@ describe('searchNPIProviders', () => {
 });
 
 describe('searchNPIProviders — localhost api base override', () => {
-    const EMULATOR = 'http://localhost:5001/nih-nci-dceg-connect-dev/us-central1/app';
+    const EMULATOR = 'http://localhost:5999/test-connect-faas-emulator/app';
 
     beforeEach(() => {
         vi.stubGlobal('location', { hostname: 'localhost' });
     });
 
     it('uses apiBaseOverride from local-dev/config.js on localhost', async () => {
-        vi.doMock('../local-dev/config.js', () => ({ apiBaseOverride: EMULATOR }));
+        vi.doMock(localConfigModulePath, () => ({ getLocalApiBaseOverride: async () => EMULATOR }));
         const search = await importSearch();
         await search({ lastName: 'Santos' });
         expect(fetchStub.mock.calls[0][0].startsWith(`${EMULATOR}?`)).toBe(true);
@@ -147,14 +148,14 @@ describe('searchNPIProviders — localhost api base override', () => {
     });
 
     it('falls back to the deployed base when the config has no override', async () => {
-        vi.doMock('../local-dev/config.js', () => ({}));
+        vi.doMock(localConfigModulePath, () => ({ getLocalApiBaseOverride: async () => '' }));
         const search = await importSearch();
         await search({ lastName: 'Santos' });
         expect(fetchStub.mock.calls[0][0].startsWith('https://cf.test/app?')).toBe(true);
     });
 
-    it('falls back to the deployed base when the config module is absent (CI)', async () => {
-        vi.doMock('../local-dev/config.js', () => { throw new Error('not found'); });
+    it('falls back to the deployed base when the local config loader fails', async () => {
+        vi.doMock(localConfigModulePath, () => ({ getLocalApiBaseOverride: async () => { throw new Error('not found'); } }));
         const search = await importSearch();
         await search({ lastName: 'Santos' });
         expect(fetchStub.mock.calls[0][0].startsWith('https://cf.test/app?')).toBe(true);
@@ -162,7 +163,7 @@ describe('searchNPIProviders — localhost api base override', () => {
 
     it('never reads the override off localhost', async () => {
         vi.stubGlobal('location', { hostname: 'myconnect.cancer.gov' });
-        vi.doMock('../local-dev/config.js', () => ({ apiBaseOverride: EMULATOR }));
+        vi.doMock(localConfigModulePath, () => ({ getLocalApiBaseOverride: async () => EMULATOR }));
         const search = await importSearch();
         await search({ lastName: 'Santos' });
         expect(fetchStub.mock.calls[0][0].startsWith('https://cf.test/app?')).toBe(true);
