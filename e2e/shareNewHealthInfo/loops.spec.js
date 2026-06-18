@@ -4,6 +4,53 @@ import { setup, m, dk, Y, N, getPayload, toTreatmentDetail } from './support.js'
 // Drive to the treatment-detail screen for a single Chemotherapy treatment (prostate = non-screening).
 const toChemoDetail = (page) => toTreatmentDetail(page, { site: 'prostate' }); // shared walk in support.js
 
+const installMockPlacesAutocomplete = async (page) => {
+    await page.addInitScript(() => {
+        const defaultPlace = {
+            name: 'Johns Hopkins Hospital',
+            address_components: [
+                { long_name: '1800', types: ['street_number'] },
+                { long_name: 'Orleans Street', types: ['route'] },
+                { long_name: 'Baltimore', types: ['locality'] },
+                { long_name: 'MD', types: ['administrative_area_level_1'] },
+                { long_name: '21287', types: ['postal_code'] },
+            ],
+        };
+
+        class FakeAutocomplete {
+            constructor(input, options) {
+                this.input = input;
+                this.options = options;
+                this.place = defaultPlace;
+                window.__SRCDX_LAST_PLACES_AUTOCOMPLETE__ = this;
+            }
+            setFields(fields) {
+                this.fields = fields;
+            }
+            addListener(event, callback) {
+                if (event === 'place_changed') this.callback = callback;
+                return { remove() {} };
+            }
+            getPlace() {
+                return this.place;
+            }
+        }
+
+        window.__SRCDX_SELECT_MOCK_PLACE__ = (place = defaultPlace) => {
+            const autocomplete = window.__SRCDX_LAST_PLACES_AUTOCOMPLETE__;
+            if (!autocomplete) throw new Error('Focus a facility Line 1 field before selecting a mock place.');
+            autocomplete.place = place;
+            autocomplete.callback?.();
+        };
+        window.google = {
+            maps: {
+                places: { Autocomplete: FakeAutocomplete },
+                event: { clearInstanceListeners() {} },
+            },
+        };
+    });
+};
+
 test.describe('Loops & repeatable inputs', () => {
     test('physicians: add up to the cap of 10, then the Add button disables', async ({ page }) => {
         await setup(page);
@@ -59,6 +106,34 @@ test.describe('Loops & repeatable inputs', () => {
         expect(payload[dk(fac.zip, 1, 1)]).toBe('SW3 6JJ');          // merged zip/postal <- postal
         expect(payload[dk(fac.country, 1, 1)]).toBe('156628245');    // select value '2' (UK) -> country response cid
         expect(payload[dk(fac.line4, 1, 1)]).toBe('Building B, Chelsea');
+    });
+
+    test('mocked Google Places autocomplete fills a domestic facility and is captured', async ({ page }) => {
+        await installMockPlacesAutocomplete(page);
+        await setup(page);
+        await toChemoDetail(page);
+        await page.fill('#srcdxTxStartYr', '2021');
+
+        await page.focus('#UPAddressTx_0_0Line1');
+        await page.evaluate(() => window.__SRCDX_SELECT_MOCK_PLACE__());
+
+        await expect(page.locator('#UPAddressTx_0_0Line1')).toHaveValue('Johns Hopkins Hospital');
+        await expect(page.locator('#UPAddressTx_0_0Line2')).toHaveValue('1800 Orleans Street');
+        await expect(page.locator('#UPAddressTx_0_0City')).toHaveValue('Baltimore');
+        await expect(page.locator('#UPAddressTx_0_0State')).toHaveValue('MD');
+        await expect(page.locator('#UPAddressTx_0_0Zip')).toHaveValue('21287');
+
+        await page.click('#srcdxNext');
+        await page.click('#srcdxNext');
+        await page.click('#srcdxNext');
+        const payload = await getPayload(page);
+        const fac = m.treatment.facility;
+        expect(payload[dk(fac.intlFlag, 1, 1)]).toBe(N);
+        expect(payload[dk(fac.line1, 1, 1)]).toBe('Johns Hopkins Hospital');
+        expect(payload[dk(fac.line2, 1, 1)]).toBe('1800 Orleans Street');
+        expect(payload[dk(fac.city, 1, 1)]).toBe('Baltimore');
+        expect(payload[dk(fac.state, 1, 1)]).toBe('MD');
+        expect(payload[dk(fac.zip, 1, 1)]).toBe('21287');
     });
 
     test('multiple treatment types: details auto-sequence and both are captured', async ({ page }) => {
