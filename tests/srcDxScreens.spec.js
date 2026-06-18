@@ -167,6 +167,22 @@ describe('treatmentReceived (Q3)', () => {
         expect(ctx.next).toHaveBeenCalledTimes(1);
     });
 
+    it('re-enters detail at the first incomplete treatment after adding another type', () => {
+        state.getState().txReceived = true;
+        state.addTreatment('chemo');
+        state.getState().treatments[0].startYear = '2021';
+        state.getPosition().returnTo = 'treatmentSummary';
+
+        renderTreatmentReceived(content, ctx);
+        content.querySelector('#tx_radiation').checked = true;
+        content.querySelector('#srcdxNext').click();
+
+        expect(state.getState().treatments.map((t) => t.type)).toEqual(['chemo', 'radiation']);
+        expect(state.getPosition().editingTreatmentIndex).toBe(1);
+        expect(ctx.recollectSection).toHaveBeenCalledWith('treatmentDetail');
+        expect(ctx.next).not.toHaveBeenCalled();
+    });
+
     it('No clears treatments and advances', () => {
         renderTreatmentReceived(content, ctx);
         content.querySelector('#txReceivedNo').checked = true;

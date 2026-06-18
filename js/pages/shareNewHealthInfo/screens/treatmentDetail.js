@@ -1,7 +1,8 @@
 import { renderQuestion, navButtons, monthSelect, fieldError, clearFieldErrors } from '../ui.js';
 import { SCREENS } from '../constants.js';
 import { isValidYearWithAllowance } from '../validation.js';
-import { applyOngoingExclusivity, canAddPhysician } from '../conditionalLogic.js';
+import { applyOngoingExclusivity, canAddPhysician, isTreatmentComplete } from '../conditionalLogic.js';
+import { treatmentTypeLabelHtml } from '../labels.js';
 import {
     renderFacilityAddress, attachFacilityAddressEvents, harvestFacility, fillFacility,
 } from '../../../components/facilityAddress.js';
@@ -9,6 +10,11 @@ import { renderNpiSlots, attachNpiTypeahead, harvestNpi, fillNpi } from '../npiT
 
 const facilityId = (txIndex, facIndex) => `Tx_${txIndex}_${facIndex}`;
 const npiIds = (j) => ({ key: `Tx_${j}`, firstId: `srcdxPhysFirst_${j}`, lastId: `srcdxPhysLast_${j}`, npiId: `srcdxPhysNpi_${j}` });
+const nextIncompleteTreatmentIndex = (treatments, currentIndex) => {
+    const afterCurrent = treatments.findIndex((t, i) => i > currentIndex && !isTreatmentComplete(t));
+    if (afterCurrent >= 0) return afterCurrent;
+    return treatments.findIndex((t, i) => i !== currentIndex && !isTreatmentComplete(t));
+};
 
 export const renderTreatmentDetail = (content, ctx) => {
     const d = ctx.state.getState();
@@ -51,7 +57,7 @@ export const renderTreatmentDetail = (content, ctx) => {
         </div>
 
         <p class="srcdx-subheading mb-1" data-i18n="shareHealthInfo.txType">Type of treatment:</p>
-        <p class="mb-0" data-i18n="shareHealthInfo.tx_${tx.type}">${tx.type}</p>
+        <p class="mb-0">${treatmentTypeLabelHtml(tx)}</p>
 
         <h3 class="srcdx-subheading" data-i18n="shareHealthInfo.txDates">Dates of treatment:</h3>
         <div class="row">
@@ -167,8 +173,9 @@ export const renderTreatmentDetail = (content, ctx) => {
             fieldError(content, 'srcdxTxEndYr', 'shareHealthInfo.txEndYearError', 'Please enter a valid end year on or after the start year.');
             return;
         }
-        if (pos.editMode !== 'item' && idx < d.treatments.length - 1) {
-            pos.editingTreatmentIndex = idx + 1;
+        const nextIncomplete = nextIncompleteTreatmentIndex(d.treatments, idx);
+        if (pos.editMode !== 'item' && nextIncomplete >= 0) {
+            pos.editingTreatmentIndex = nextIncomplete;
             ctx.rerender();
         } else {
             ctx.next();

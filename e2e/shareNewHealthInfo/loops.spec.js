@@ -21,11 +21,18 @@ const installMockPlacesAutocomplete = async (page) => {
             constructor(input, options) {
                 this.input = input;
                 this.options = options;
+                this.componentRestrictionCalls = [];
                 this.place = defaultPlace;
+                window.__SRCDX_PLACES_AUTOCOMPLETE_INSTANCES__ = window.__SRCDX_PLACES_AUTOCOMPLETE_INSTANCES__ || [];
+                window.__SRCDX_PLACES_AUTOCOMPLETE_INSTANCES__.push(this);
                 window.__SRCDX_LAST_PLACES_AUTOCOMPLETE__ = this;
             }
             setFields(fields) {
                 this.fields = fields;
+            }
+            setComponentRestrictions(restrictions) {
+                this.componentRestrictionCalls.push(restrictions);
+                this.options.componentRestrictions = restrictions;
             }
             addListener(event, callback) {
                 if (event === 'place_changed') this.callback = callback;
@@ -115,6 +122,11 @@ test.describe('Loops & repeatable inputs', () => {
         await page.fill('#srcdxTxStartYr', '2021');
 
         await page.focus('#UPAddressTx_0_0Line1');
+        const options = await page.evaluate(() => window.__SRCDX_LAST_PLACES_AUTOCOMPLETE__.options);
+        expect(options).toMatchObject({
+            types: ['establishment'],
+            componentRestrictions: { country: 'us' },
+        });
         await page.evaluate(() => window.__SRCDX_SELECT_MOCK_PLACE__());
 
         await expect(page.locator('#UPAddressTx_0_0Line1')).toHaveValue('Johns Hopkins Hospital');
@@ -134,6 +146,25 @@ test.describe('Loops & repeatable inputs', () => {
         expect(payload[dk(fac.city, 1, 1)]).toBe('Baltimore');
         expect(payload[dk(fac.state, 1, 1)]).toBe('MD');
         expect(payload[dk(fac.zip, 1, 1)]).toBe('21287');
+    });
+
+    test('mocked Google Places autocomplete stays disabled for an added international facility', async ({ page }) => {
+        await installMockPlacesAutocomplete(page);
+        await setup(page);
+        await toChemoDetail(page);
+        await page.fill('#srcdxTxStartYr', '2021');
+
+        await page.focus('#UPAddressTx_0_0Line1');
+        await page.evaluate(() => window.__SRCDX_SELECT_MOCK_PLACE__());
+        await expect(page.locator('#UPAddressTx_0_0Line1')).toHaveValue('Johns Hopkins Hospital');
+        await expect(page.locator('[data-fac-wrap]')).toHaveCount(1);
+        expect(await page.evaluate(() => window.__SRCDX_PLACES_AUTOCOMPLETE_INSTANCES__.length)).toBe(1);
+
+        await page.click('#srcdxAddFac');
+        await expect(page.locator('[data-fac-wrap]')).toHaveCount(2);
+        await page.check('#UPAddressTx_0_1International');
+        await page.focus('#UPAddressTx_0_1Line1');
+        expect(await page.evaluate(() => window.__SRCDX_PLACES_AUTOCOMPLETE_INSTANCES__.length)).toBe(1);
     });
 
     test('multiple treatment types: details auto-sequence and both are captured', async ({ page }) => {

@@ -1,5 +1,6 @@
 import { renderQuestion, navButtons } from '../ui.js';
 import { SCREENS } from '../constants.js';
+import { treatmentTypeLabelHtml } from '../labels.js';
 
 let confirmingIndex = null;
 
@@ -12,7 +13,7 @@ export const renderTreatmentSummary = (content, ctx) => {
                 <button type="button" class="srcdx-tx-remove" data-remove-tx="${i}">
                     <span class="visually-hidden" data-i18n="shareHealthInfo.remove">Remove</span>
                 </button>
-                <span class="srcdx-tx-name" data-i18n="shareHealthInfo.tx_${t.type}">${t.type}</span>
+                <span class="srcdx-tx-name">${treatmentTypeLabelHtml(t)}</span>
             </span>
             <button type="button" class="btn btn-link btn-sm ms-2" data-edit-tx="${i}" data-i18n="shareHealthInfo.edit">Edit</button>
         </div>`).join('');

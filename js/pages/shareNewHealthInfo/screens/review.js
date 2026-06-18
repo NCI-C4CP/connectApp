@@ -2,6 +2,7 @@ import { renderQuestion, navButtons } from '../ui.js';
 import { escapeHTML, translateHTML, allCountries } from '../../../shared.js';
 import { SCREENS, PRIMARY_SITES, SCREENING_OPTIONS, MONTHS } from '../constants.js';
 import { isScreeningEligible, isDiagnosisSubmittable, getScreeningOptionsForSite } from '../conditionalLogic.js';
+import { treatmentTypeLabelHtml } from '../labels.js';
 
 const siteI18n = (key) => PRIMARY_SITES.find((s) => s.key === key)?.i18nKey || '';
 const scrnI18n = (key) => SCREENING_OPTIONS.find((o) => o.key === key)?.i18nKey || '';
@@ -70,7 +71,7 @@ const treatmentRow = (t, i) => {
         ${labeled('shareHealthInfo.txDates', 'Dates of treatment:', dates)}
         ${labeled('shareHealthInfo.physSectionHeader', 'Name of your physician or oncologist:', phys)}
         ${labeled('shareHealthInfo.reviewTxFacility', 'Facility or hospital address where you received, are currently receiving, or are scheduled to receive treatment:', facs)}`;
-    return expandableRow(`tx_${i}`, `<span data-i18n="shareHealthInfo.tx_${t.type}">${t.type}</span>`, body);
+    return expandableRow(`tx_${i}`, treatmentTypeLabelHtml(t), body);
 };
 
 const screeningRow = (s, i) => {

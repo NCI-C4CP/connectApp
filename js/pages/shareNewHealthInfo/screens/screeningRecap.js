@@ -1,5 +1,6 @@
 import { renderQuestion, navButtons, fieldError, clearFieldErrors } from '../ui.js';
 import { SCREENING_OPTIONS, PRIMARY_SITES } from '../constants.js';
+import { isScreeningComplete } from '../conditionalLogic.js';
 
 const optionMeta = (key) => SCREENING_OPTIONS.find((o) => o.key === key) || {};
 
@@ -48,7 +49,8 @@ export const renderScreeningRecap = (content, ctx) => {
             fieldError(content, 'srcdxRecapList', 'shareHealthInfo.q4TypeRequired', 'Please select at least one screening.');
             return;
         }
-        ctx.state.getPosition().editingScreeningIndex = 0;
+        const firstIncompleteIndex = d.screenings.findIndex((s) => !isScreeningComplete(s));
+        ctx.state.getPosition().editingScreeningIndex = firstIncompleteIndex >= 0 ? firstIncompleteIndex : 0;
         ctx.next();
     });
 };

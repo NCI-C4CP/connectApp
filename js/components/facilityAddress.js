@@ -1,6 +1,6 @@
 // Facility-address block for the Self-Report Cancer Diagnosis flow
 // (treatment + screening facilities). Self-contained. Own markup + a small local domestic/
-// international toggle + an establishment-type Google Places autocomplete on the name line.
+// international toggle + domestic-only Google Places autocomplete on the name line.
 import { allStates, allCountries, translateHTML } from '../shared.js';
 
 const stateOptions = () =>
@@ -80,6 +80,40 @@ export const renderFacilityAddress = (idPrefix, { showName = true } = {}) => `
 
 const q = (content, idPrefix, suffix) => content.querySelector(`#UPAddress${idPrefix}${suffix}`);
 
+const domesticAutocompleteOptions = () => ({
+    types: ['establishment'],
+    componentRestrictions: { country: 'us' },
+});
+
+// Live Autocomplete instance per idPrefix, cleared on rerender or teardown.
+const autocompleteRegistry = new Map();
+const focusRegistry = new Map();
+
+const clearGoogleAutocomplete = (idPrefix) => {
+    const active = autocompleteRegistry.get(idPrefix);
+    if (!active) return;
+    if (typeof google !== 'undefined' && google.maps?.event?.clearInstanceListeners) {
+        google.maps.event.clearInstanceListeners(active.instance);
+        google.maps.event.clearInstanceListeners(active.input);
+    }
+    autocompleteRegistry.delete(idPrefix);
+};
+
+const disableNameAutocomplete = (content, idPrefix) => {
+    const priorFocus = focusRegistry.get(idPrefix);
+    if (priorFocus) {
+        priorFocus.input.removeEventListener('focus', priorFocus.handler);
+        focusRegistry.delete(idPrefix);
+    }
+    const active = autocompleteRegistry.get(idPrefix);
+    clearGoogleAutocomplete(idPrefix);
+    if (active?.input?.isConnected) {
+        const clone = active.input.cloneNode(true);
+        clone.value = active.input.value;
+        active.input.replaceWith(clone);
+    }
+};
+
 /** Apply domestic/international display: swap State/Zip ↔ Region/Postal, reveal Country + Line 4. */
 const applyInternational = (content, idPrefix, intl) => {
     q(content, idPrefix, 'State').classList.toggle('d-none', intl);
@@ -104,47 +138,39 @@ const applyInternational = (content, idPrefix, intl) => {
         zipLabel.setAttribute('for', `UPAddress${idPrefix}${intl ? 'Postal' : 'Zip'}`);
         translateHTML(zipLabel);
     }
+    if (intl) disableNameAutocomplete(content, idPrefix);
+    else attachNameAutocomplete(content, idPrefix);
 };
-
-// Live Autocomplete instance per idPrefix. Every screen re-render replaces the inputs, so without
-// teardown each post-render focus would stack a new Autocomplete on top of the old one — whose
-// place_changed listener closure pins the entire detached render tree in memory for the session.
-// On re-init we clear the previous instance's + input's listeners so the old subtree can be GC'd.
-// (Google appends a .pac-container <div> to <body> per instance with no public removal API. After
-// clearInstanceListeners those are inert, empty, display:none residue is acceptable.)
-const autocompleteRegistry = new Map();
-const focusRegistry = new Map();
 
 export const teardownFacilityAddressEvents = () => {
     focusRegistry.forEach(({ input, handler }) => input.removeEventListener('focus', handler));
     focusRegistry.clear();
-    autocompleteRegistry.forEach(({ instance, input }) => {
-        if (typeof google !== 'undefined' && google.maps?.event?.clearInstanceListeners) {
-            google.maps.event.clearInstanceListeners(instance);
-            google.maps.event.clearInstanceListeners(input);
-        }
-    });
-    autocompleteRegistry.clear();
+    [...autocompleteRegistry.keys()].forEach(clearGoogleAutocomplete);
 };
 
-/** Establishment-type autocomplete on the name line: fills Line1 = name, Line2 = street, City/State/Zip. */
+/** Domestic establishment autocomplete on the name line: fills Line1 = name, Line2 = street, City/State/Zip. */
 const attachNameAutocomplete = (content, idPrefix) => {
     const line1 = q(content, idPrefix, 'Line1');
     if (!line1) return;
+    if (q(content, idPrefix, 'International')?.checked) return;
+    const active = autocompleteRegistry.get(idPrefix);
+    if (active?.input === line1) return;
     const priorFocus = focusRegistry.get(idPrefix);
     if (priorFocus?.input === line1) return;
     if (priorFocus) priorFocus.input.removeEventListener('focus', priorFocus.handler);
     const init = () => {
+        if (q(content, idPrefix, 'International')?.checked) return;
         if (typeof google === 'undefined' || !google.maps?.places?.Autocomplete) return; // graceful degradation
         const prev = autocompleteRegistry.get(idPrefix);
         if (prev && google.maps.event?.clearInstanceListeners) {
             google.maps.event.clearInstanceListeners(prev.instance);
             google.maps.event.clearInstanceListeners(prev.input);
         }
-        const ac = new google.maps.places.Autocomplete(line1, { types: ['establishment'] });
+        const ac = new google.maps.places.Autocomplete(line1, domesticAutocompleteOptions());
         autocompleteRegistry.set(idPrefix, { instance: ac, input: line1 });
-        ac.setFields(['name', 'address_component']);
+        ac.setFields(['name', 'address_components']);
         ac.addListener('place_changed', () => {
+            if (q(content, idPrefix, 'International')?.checked) return;
             const place = ac.getPlace();
             if (place?.name) line1.value = place.name;
             const comps = place?.address_components;

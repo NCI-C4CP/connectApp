@@ -83,9 +83,10 @@ export const renderTreatmentReceived = (content, ctx) => {
             return;
         }
         const pos = ctx.state.getPosition();
-        pos.editingTreatmentIndex = 0;
+        const firstIncompleteIndex = d.treatments.findIndex((t) => !isTreatmentComplete(t));
+        pos.editingTreatmentIndex = firstIncompleteIndex >= 0 ? firstIncompleteIndex : 0;
         // Review edits must collect detail before returning.
-        if (pos.returnTo && d.txReceived && d.treatments.some((t) => !isTreatmentComplete(t))) {
+        if (pos.returnTo && d.txReceived && firstIncompleteIndex >= 0) {
             ctx.recollectSection(SCREENS.TREATMENT_DETAIL);
             return;
         }

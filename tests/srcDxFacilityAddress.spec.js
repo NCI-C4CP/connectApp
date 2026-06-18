@@ -158,8 +158,16 @@ describe('name autocomplete (Google Places)', () => {
     // Fake enough of the Places API to capture the instance + its place_changed callback.
     const instances = [];
     class FakeAutocomplete {
-        constructor(input) { this.input = input; instances.push(this); }
-        setFields() {}
+        constructor(input, options) {
+            this.input = input;
+            this.options = options;
+            this.componentRestrictionCalls = [];
+            instances.push(this);
+        }
+        setFields(fields) { this.fields = fields; }
+        setComponentRestrictions(restrictions) {
+            this.componentRestrictionCalls.push(restrictions);
+        }
         addListener(evt, cb) { if (evt === 'place_changed') this.cb = cb; }
         getPlace() { return this.place; }
     }
@@ -178,6 +186,45 @@ describe('name autocomplete (Google Places)', () => {
     });
 
     const focusLine1 = () => el('Line1').dispatchEvent(new win.Event('focus'));
+
+    it('restricts domestic Places predictions to U.S. establishments', () => {
+        focusLine1();
+        expect(instances[0].options).toMatchObject({
+            types: ['establishment'],
+            componentRestrictions: { country: 'us' },
+        });
+        expect(instances[0].fields).toEqual(['name', 'address_components']);
+    });
+
+    it('does not create Places autocomplete when already international', () => {
+        el('International').checked = true;
+        el('International').dispatchEvent(new win.Event('change'));
+        focusLine1();
+        expect(instances).toHaveLength(0);
+    });
+
+    it('tears down active Places autocomplete while international, then restores it for domestic', () => {
+        focusLine1();
+        const ac = instances[0];
+        const input = ac.input;
+        el('International').checked = true;
+        el('International').dispatchEvent(new win.Event('change'));
+        let clearedArgs = clearInstanceListeners.mock.calls.map((c) => c[0]);
+        expect(clearedArgs.includes(ac)).toBe(true);
+        expect(clearedArgs.includes(input)).toBe(true);
+
+        focusLine1();
+        expect(instances).toHaveLength(1);
+
+        el('International').checked = false;
+        el('International').dispatchEvent(new win.Event('change'));
+        focusLine1();
+        expect(instances).toHaveLength(2);
+        expect(instances[1].options).toMatchObject({
+            types: ['establishment'],
+            componentRestrictions: { country: 'us' },
+        });
+    });
 
     it('fills State from the LONG name (matches the full-name select options), not the 2-letter code', () => {
         focusLine1();
@@ -199,6 +246,29 @@ describe('name autocomplete (Google Places)', () => {
         expect(el('City').value).toBe('Baltimore');
         expect(el('State').value).toBe('MD'); // long_name selected; short_name ('XX') would no-op to ''
         expect(el('Zip').value).toBe('21287');
+    });
+
+    it('ignores a stale Places callback after switching to international', () => {
+        focusLine1();
+        const ac = instances[instances.length - 1];
+        ac.place = {
+            name: 'Johns Hopkins Hospital',
+            address_components: [
+                { types: ['street_number'], long_name: '1800' },
+                { types: ['route'], long_name: 'Orleans St' },
+                { types: ['locality'], long_name: 'Baltimore' },
+                { types: ['administrative_area_level_1'], long_name: 'MD' },
+                { types: ['postal_code'], long_name: '21287' },
+            ],
+        };
+        el('International').checked = true;
+        el('International').dispatchEvent(new win.Event('change'));
+        ac.cb();
+        expect(el('Line1').value).toBe('');
+        expect(el('Line2').value).toBe('');
+        expect(el('City').value).toBe('');
+        expect(el('State').value).toBe('');
+        expect(el('Zip').value).toBe('');
     });
 
     it('tears down the previous instance on re-attach (rerender), so listeners/closures are released', () => {

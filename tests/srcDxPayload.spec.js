@@ -197,6 +197,37 @@ describe('buildDiagnosisPayload — sections & gating', () => {
         expect(p.D_281136649_2_2).toBe('2022'); // radiation second
     });
 
+    it('compacts physician and facility loop indexes after a middle entry is removed', () => {
+        const remainingPhysicians = [
+            { firstName: 'Ada', lastName: 'Lovelace', npi: '' },
+            { firstName: 'Grace', lastName: 'Hopper', npi: '' },
+            { firstName: 'Katherine', lastName: 'Johnson', npi: '' },
+        ];
+        const remainingFacilities = [
+            { ...emptyFacility, line1: 'Facility A' },
+            { ...emptyFacility, line1: 'Facility B' },
+            { ...emptyFacility, line1: 'Facility C' },
+        ];
+        remainingPhysicians.splice(1, 1);
+        remainingFacilities.splice(1, 1);
+
+        const p = buildDiagnosisPayload({
+            primarySite: 'prostate', dxYear: '2020', txReceived: true,
+            treatments: [{
+                type: 'chemo', startYear: '2021', ongoing: true,
+                physicians: remainingPhysicians,
+                facilities: remainingFacilities,
+            }],
+        });
+
+        expect(p[dKey(m.treatment.physFirstName, 1, 1)]).toBe('Ada');
+        expect(p[dKey(m.treatment.physFirstName, 1, 2)]).toBe('Katherine');
+        expect(p[dKey(m.treatment.physFirstName, 1, 3)]).toBeUndefined();
+        expect(p[dKey(m.treatment.facility.line1, 1, 1)]).toBe('Facility A');
+        expect(p[dKey(m.treatment.facility.line1, 1, 2)]).toBe('Facility C');
+        expect(p[dKey(m.treatment.facility.line1, 1, 3)]).toBeUndefined();
+    });
+
     it('omits screening entirely for non-eligible sites, even with stale screening state', () => {
         const p = buildDiagnosisPayload({
             primarySite: 'prostate', dxYear: '2020', screeningDetected: true,

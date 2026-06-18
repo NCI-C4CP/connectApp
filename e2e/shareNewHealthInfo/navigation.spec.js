@@ -262,10 +262,7 @@ test.describe('Navigation, changing answers, data flow, and resume', () => {
     });
 
     // Treatment-type loop re-entry (editingTreatmentIndex must not go stale).
-    // After walking a multi-type detail loop the cursor sits at the last index.
-    // Re-entering the loop from Q3 (via "Add Another Treatment", or after changing the type
-    // selection) must restart at the first treatment. Not a stale index, which previously showed
-    // the wrong treatment or (when out of range) skipped the detail screen entirely.
+    // Re-entering the loop from Q3 starts at the first incomplete treatment, not completed rows.
     // Each treatment is identified by its previously-entered start year (translation-independent).
     const walkTwoTypes = async (page) => {
         // non-screening site: detail -> summary -> review (shared walk in support.js)
@@ -273,7 +270,7 @@ test.describe('Navigation, changing answers, data flow, and resume', () => {
         await expect(page.locator('[data-tx-chip]')).toHaveCount(2);
     };
 
-    test('Add Another + add a type: loop restarts at the first treatment and walks all in order', async ({ page }) => {
+    test('Add Another + add a type: loop starts at the first incomplete treatment', async ({ page }) => {
         await setup(page);
         await walkTwoTypes(page);
 
@@ -281,10 +278,6 @@ test.describe('Navigation, changing answers, data flow, and resume', () => {
         await page.check('#tx_radiation');            // chemo + surgery + radiation
         await page.click('#srcdxNext');               // -> detail loop
 
-        await expect(page.locator('#srcdxTxStartYr')).toHaveValue('2021'); // FIRST = chemo, not stale surgery
-        await page.click('#srcdxNext');
-        await expect(page.locator('#srcdxTxStartYr')).toHaveValue('2022'); // surgery
-        await page.click('#srcdxNext');
         await expect(page.locator('#srcdxTxStartYr')).toHaveValue('');     // radiation (new)
         await page.fill('#srcdxTxStartYr', '2023');
         await page.click('#srcdxNext');               // summary
@@ -299,6 +292,40 @@ test.describe('Navigation, changing answers, data flow, and resume', () => {
         expect(payload[dk(m.treatment.startYear, 1, 1)]).toBe('2021'); // T1=chemo
         expect(payload[dk(m.treatment.startYear, 2, 2)]).toBe('2022'); // T2=surgery
         expect(payload[dk(m.treatment.startYear, 3, 3)]).toBe('2023'); // T3=radiation
+    });
+
+    test('Add Another after chemo: adding radiation and other skips completed chemo, then visits only incomplete details', async ({ page }) => {
+        await setup(page);
+        await toTreatmentSummary(page, { site: 'prostate', types: ['chemo'], years: ['2021'] });
+        await expect(page.locator('[data-tx-chip]')).toHaveCount(1);
+
+        await page.click('#srcdxAddTreatment');
+        await page.check('#tx_radiation');
+        await page.check('#tx_other');
+        await page.fill('#srcdxTxOtherDescribe', 'Immunotherapy');
+        await page.click('#srcdxNext');
+
+        await expect(page.locator('[data-i18n="shareHealthInfo.tx_radiation"]')).toBeVisible();
+        await expect(page.locator('#srcdxTxStartYr')).toHaveValue('');
+        await page.fill('#srcdxTxStartYr', '2022');
+        await page.click('#srcdxNext');
+
+        await expect(page.locator('[data-i18n="shareHealthInfo.tx_other"]')).toBeVisible();
+        await expect(page.locator('p').filter({ has: page.locator('[data-i18n="shareHealthInfo.tx_other"]') })).toContainText('Immunotherapy');
+        await expect(page.locator('#srcdxTxStartYr')).toHaveValue('');
+        await page.fill('#srcdxTxStartYr', '2023');
+        await page.click('#srcdxNext');
+
+        await expect(page.locator('[data-tx-chip]')).toHaveCount(3);
+        await expect(page.locator('[data-tx-chip]').filter({ has: page.locator('[data-i18n="shareHealthInfo.tx_other"]') })).toContainText('Immunotherapy');
+        await page.click('#srcdxNext');
+        await expect(page.locator('[data-review-row="tx_2"]')).toContainText('Immunotherapy');
+        await page.click('#srcdxNext');
+        const payload = await getPayload(page);
+        expect(payload[dk(m.treatment.startYear, 1, 1)]).toBe('2021');
+        expect(payload[dk(m.treatment.startYear, 2, 2)]).toBe('2022');
+        expect(payload[dk(m.treatment.startYear, 3, 3)]).toBe('2023');
+        expect(payload[dk(m.treatment.otherDescribe)]).toBe('Immunotherapy');
     });
 
     test('Add Another, then uncheck a type leaving a complete one: returns cleanly to the summary (no stale-index bounce)', async ({ page }) => {
@@ -320,7 +347,7 @@ test.describe('Navigation, changing answers, data flow, and resume', () => {
         expect(payload[dk(m.treatment.startYear, 1, 1)]).toBe('2021'); // chemo data intact
     });
 
-    test('Remove a treatment, then Add Another: loop still restarts at the first remaining treatment', async ({ page }) => {
+    test('Remove a treatment, then Add Another: loop starts at the first incomplete treatment', async ({ page }) => {
         await setup(page);
         await walkTwoTypes(page);
 
@@ -332,8 +359,6 @@ test.describe('Navigation, changing answers, data flow, and resume', () => {
         await page.check('#tx_radiation');            // surgery + radiation
         await page.click('#srcdxNext');               // -> detail loop
 
-        await expect(page.locator('#srcdxTxStartYr')).toHaveValue('2022'); // FIRST remaining = surgery
-        await page.click('#srcdxNext');
         await expect(page.locator('#srcdxTxStartYr')).toHaveValue('');     // radiation (new)
     });
 });
@@ -388,6 +413,32 @@ test.describe('Editing branching answers from Review', () => {
         const payload = await getPayload(page);
         expect(payload[dk(m.screening.optionValues.breast2D)]).toBe(Y);
         expect(payload[dk(m.screening.year, 1, 1)]).toBe('2018');
+    });
+
+    test('E2b: editing Q4 to add a screening opens the newly incomplete screening detail', async ({ page }) => {
+        await setup(page);
+        await toReviewNoTreatment(page, 'breast');
+        await page.check('#scrnDetectedYes');
+        await page.check('#scrn_breast2D');
+        await page.click('#srcdxNext');                  // recap
+        await page.click('#srcdxNext');                  // detail: breast2D
+        await page.fill('#srcdxScrnYr', '2018');
+        await page.click('#srcdxNext');                  // review
+
+        await page.click('[data-edit="screeningGate"]');
+        await page.check('#scrn_breastMRI');
+        await page.click('#srcdxNext');
+
+        await expect(page.locator('#srcdxScrnIntro [data-i18n="shareHealthInfo.scrn_breastMRI"]')).toBeVisible();
+        await expect(page.locator('#srcdxScrnYr')).toHaveValue('');
+        await page.fill('#srcdxScrnYr', '2019');
+        await page.click('#srcdxNext');                  // review
+        await page.click('#srcdxNext');                  // submit
+        const payload = await getPayload(page);
+        expect(payload[dk(m.screening.optionValues.breast2D)]).toBe(Y);
+        expect(payload[dk(m.screening.optionValues.breastMRI)]).toBe(Y);
+        expect(payload[dk(m.screening.year, 1, 1)]).toBe('2018');
+        expect(payload[dk(m.screening.year, 2, 2)]).toBe('2019');
     });
 
     test('E1b: editing Q3 with all detail already complete returns straight to review (no needless re-walk)', async ({ page }) => {

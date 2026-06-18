@@ -76,9 +76,10 @@ export const renderScreeningGate = (content, ctx) => {
             return;
         }
         const pos = ctx.state.getPosition();
-        pos.editingScreeningIndex = 0;
+        const firstIncompleteIndex = d.screenings.findIndex((s) => !isScreeningComplete(s));
+        pos.editingScreeningIndex = firstIncompleteIndex >= 0 ? firstIncompleteIndex : 0;
         // Review edits must collect detail before returning.
-        if (pos.returnTo && d.screeningDetected && d.screenings.some((s) => !isScreeningComplete(s))) {
+        if (pos.returnTo && d.screeningDetected && firstIncompleteIndex >= 0) {
             ctx.recollectSection(SCREENS.SCREENING_DETAIL);
             return;
         }

@@ -70,6 +70,17 @@ describe('review (edit-from-review)', () => {
         expect(content.querySelector('[data-i18n="shareHealthInfo.reviewSubmitHint"]')).not.toBeNull();
     });
 
+    it('renders the Other treatment write-in in the reported treatments row', () => {
+        seedBreastDiagnosis();
+        state.getState().treatments[0].type = 'other';
+        state.getState().treatments[0].otherDescribe = 'Immunotherapy';
+        const ctx = { state, goTo: vi.fn(), back: vi.fn(), submit: vi.fn() };
+        renderReview(content, ctx);
+
+        expect(content.querySelector('[data-review-row="tx_0"] [data-i18n="shareHealthInfo.tx_other"]')).not.toBeNull();
+        expect(content.querySelector('[data-review-row="tx_0"]').textContent).toContain('other (Immunotherapy)');
+    });
+
     it('omits the screening card for a non-screening site', () => {
         state.getState().primarySite = 'prostate';
         state.getState().dxYear = '2020';

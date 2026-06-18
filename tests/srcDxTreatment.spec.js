@@ -76,6 +76,18 @@ describe('treatmentDetail', () => {
         expect(content.querySelector('#srcdxPhysLast_0').getAttribute('role')).toBe('combobox');
     });
 
+    it('renders the Other write-in with the treatment type', () => {
+        state.getState().txReceived = true;
+        state.addTreatment('other');
+        state.getState().treatments[0].otherDescribe = 'Immunotherapy';
+        state.getPosition().editingTreatmentIndex = 0;
+        const ctx = makeCtx(renderTreatmentDetail);
+        renderTreatmentDetail(content, ctx);
+
+        expect(content.querySelector('[data-i18n="shareHealthInfo.tx_other"]')).not.toBeNull();
+        expect(content.textContent).toContain('other (Immunotherapy)');
+    });
+
     it('renders manual physician fields without NPI typeahead when the registry flag is off', () => {
         setupOneTreatment();
         const ctx = makeCtx(renderTreatmentDetail, { npiEnabled: false });
@@ -208,6 +220,26 @@ describe('treatmentDetail', () => {
         content.querySelector('#srcdxNext').click();
         expect(ctx.next).toHaveBeenCalledTimes(1);
     });
+
+    it('skips completed treatments after filling a middle incomplete treatment', () => {
+        state.getState().txReceived = true;
+        state.addTreatment('chemo');
+        state.addTreatment('radiation');
+        state.addTreatment('other');
+        state.getState().treatments[0].startYear = '2021';
+        state.getState().treatments[2].startYear = '2023';
+        state.getPosition().editingTreatmentIndex = 1;
+        const ctx = makeCtx(renderTreatmentDetail);
+        renderTreatmentDetail(content, ctx);
+
+        expect(content.querySelector('[data-i18n="shareHealthInfo.tx_radiation"]')).not.toBeNull();
+        content.querySelector('#srcdxTxStartYr').value = '2022';
+        content.querySelector('#srcdxNext').click();
+
+        expect(state.getState().treatments[1].startYear).toBe('2022');
+        expect(ctx.rerender).not.toHaveBeenCalled();
+        expect(ctx.next).toHaveBeenCalledTimes(1);
+    });
 });
 
 describe('treatmentSummary', () => {
@@ -221,6 +253,17 @@ describe('treatmentSummary', () => {
         const ctx = makeCtx(renderTreatmentSummary);
         renderTreatmentSummary(content, ctx);
         expect(content.querySelectorAll('[data-tx-chip]')).toHaveLength(2);
+    });
+
+    it('renders the Other write-in on the summary chip', () => {
+        state.getState().treatments = [];
+        state.addTreatment('other');
+        state.getState().treatments[0].otherDescribe = 'Immunotherapy';
+        const ctx = makeCtx(renderTreatmentSummary);
+        renderTreatmentSummary(content, ctx);
+
+        expect(content.querySelector('[data-tx-chip="0"] [data-i18n="shareHealthInfo.tx_other"]')).not.toBeNull();
+        expect(content.querySelector('[data-tx-chip="0"]').textContent).toContain('other (Immunotherapy)');
     });
 
     it('Remove shows a confirmation, Delete removes the treatment', () => {

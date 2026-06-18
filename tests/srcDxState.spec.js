@@ -55,6 +55,16 @@ describe('physician cap (max 10)', () => {
         state.removePhysician(0, 0); // cannot drop below 1
         expect(state.getState().treatments[0].physicians).toHaveLength(1);
     });
+    it('removePhysician splices middle entries so indexes compact', () => {
+        state.addTreatment('chemo');
+        state.getState().treatments[0].physicians = [
+            { firstName: 'Ada', lastName: 'Lovelace', npi: '' },
+            { firstName: 'Grace', lastName: 'Hopper', npi: '' },
+            { firstName: 'Katherine', lastName: 'Johnson', npi: '' },
+        ];
+        state.removePhysician(0, 1);
+        expect(state.getState().treatments[0].physicians.map((p) => p.firstName)).toEqual(['Ada', 'Katherine']);
+    });
 });
 
 describe('facility + screening mutators', () => {
@@ -66,6 +76,16 @@ describe('facility + screening mutators', () => {
         expect(state.getState().treatments[0].facilities).toHaveLength(1);
         state.removeFacility(0, 0);
         expect(state.getState().treatments[0].facilities).toHaveLength(1);
+    });
+    it('removeFacility splices middle entries so indexes compact', () => {
+        state.addTreatment('chemo');
+        state.getState().treatments[0].facilities = [
+            { ...state.makeFacility(), line1: 'Facility A' },
+            { ...state.makeFacility(), line1: 'Facility B' },
+            { ...state.makeFacility(), line1: 'Facility C' },
+        ];
+        state.removeFacility(0, 1);
+        expect(state.getState().treatments[0].facilities.map((f) => f.line1)).toEqual(['Facility A', 'Facility C']);
     });
     it('addScreening / removeScreening', () => {
         expect(state.addScreening('breast2D')).toBe(0);
