@@ -64,9 +64,11 @@ test.describe('Review-pass regressions', () => {
         await toSummary(page);                          // prostate, chemo 2021
         await page.click('#srcdxAddTreatment');         // -> Q3
         await page.check('#tx_surgery');                // new type
-        await page.click('#srcdxNext');                 // -> detail loop (section re-collect walks from item 0 = chemo)
+        await page.click('#srcdxNext');                 // -> first incomplete detail (surgery)
+        await expect(page.locator('#srcdxTxStartYr')).toHaveValue('');
+        await page.click('#srcdxBack');                 // -> previous completed detail (chemo)
         await expect(page.locator('#srcdxTxStartYr')).toHaveValue('2021');
-        await page.click('#srcdxBack');                 // -> gate (section Back at idx 0)
+        await page.click('#srcdxBack');                 // -> gate
         await page.click('#srcdxBack');                 // cancel -> summary, edit rolled back
         await expect(page.locator('[data-tx-chip]')).toHaveCount(1); // chemo only — no phantom surgery
         await page.click('#srcdxNext');                 // review
