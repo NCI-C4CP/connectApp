@@ -7,10 +7,16 @@ const m = fieldMapping.selfReportCancerDx;
 
 // Localhost can opt into a connectFaas emulator via local-dev/config.js.
 let apiBasePromise = null;
+let localConfigLoader = () => import('../../../local-dev/config.js');
+
+export const __setLocalConfigLoaderForTests = (loader) => {
+    localConfigLoader = typeof loader === 'function' ? loader : () => import('../../../local-dev/config.js');
+    apiBasePromise = null;
+};
 
 const getLocalApiBaseOverride = async () => {
     try {
-        const cfg = await import('../../../local-dev/config.js');
+        const cfg = await localConfigLoader();
         return typeof cfg.apiBaseOverride === 'string' && cfg.apiBaseOverride ? cfg.apiBaseOverride : '';
     } catch (e) {
         return '';
