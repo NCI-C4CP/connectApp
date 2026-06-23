@@ -111,6 +111,8 @@ export default
     "userProfileSubmittedAutogen": 699625233,
     "yes": 353358909,
     "no": 104430631,
+    // Track the Firestore document update time.
+    "docLastUpdatedTimestamp": 866146525,
     "consentVersion": 454205108,
     "consentSubmitted": 919254129,
     "hipaaVersion": 412000022,
@@ -125,6 +127,8 @@ export default
     "requestedDataDestroyNotSigned": 111959410,
     "requestedDataDestroySigned": 704529432,
     "noneOfTheseApply": 398561594,
+    "participantDeceased": 857217152,
+    "participantDeceasedNORC": 987563196,
 
     firstSignInFlag: 230663853,
     firstSignInTime: 335767902,
@@ -354,6 +358,95 @@ export default
         "statusFlag": "278023676",
         "standaloneSurvey": true,
         "version": "716532434",
+    },
+    // Self-Report Cancer Diagnosis ("Share New Health Information", issue #1295)
+    selfReportCancerDx: {
+        dxNumber: 480939157,      // Server-computed at submit
+        // Primary diagnosis
+        primarySite: 181737942,
+        primarySiteOther: 546976551,
+        dxMonth: 299768751,
+        dxYear: 908235757,
+        txReceived: 874288004,
+        // Month response cids (per constants.js MONTHS).
+        monthValues: {
+            0: 286592124, 1: 802747980, 2: 676299940, 3: 463502254, 4: 526483288, 5: 842005720,
+            6: 574954852, 7: 887495026, 8: 181090983, 9: 259643910, 10: 615680906, 11: 840678879,
+        },
+        // Primary-site response cids (names + values match connectFaas utils/fieldToConceptIdMapping.js `cancerSites`).
+        cancerSites: {
+            anal: 939782495,
+            bladder: 135725957,
+            brain: 518416174,
+            breast: 847945207,
+            cervical: 283025574,
+            colon: 942970912, // Colon/Rectal
+            esophageal: 596122041,
+            headAndNeck: 489400183, // Head and neck (incl. mouth, sinuses, nose, throat; not brain or skin)
+            kidney: 863246236,
+            leukemia: 607793249, // Leukemia (blood and bone marrow)
+            liver: 532172400,
+            lung: 754745617, // Lung or Bronchial
+            nonHodgkinsLymphoma: 665036297, // Non-Hodgkin's Lymphoma
+            lymphoma: 200837530, // Lymphoma
+            skinMelanoma: 990319383, // Melanoma (skin)
+            nonMelanomaSkin: 487917585,
+            ovarian: 603181162,
+            pancreatic: 482225200,
+            prostate: 295976386,
+            stomach: 764891959,
+            testicular: 248374037,
+            thyroid: 139822395,
+            uterine: 723614811,
+            other: 807835037,
+            unavailableUnknown: 178420302, // faas parity only — not a process option
+        },
+        // Treatment (looped per selected type, _T_T; physicians/facilities _T_P/_T_F)
+        treatment: {
+            chemo: 244216107, surgery: 293873603, radiation: 555019890, other: 459406752,
+            otherDescribe: 420392069, // flat. No loop suffix (only one 'other' treatment can exist)
+            startMonth: 742710886, startYear: 281136649,
+            endMonth: 625530863, endYear: 729162012, ongoing: 735592270,
+            physFirstName: 964819753, physLastName: 740626474,
+            physNpi: "TODO_TxPhysNPI",
+            facility: {
+                line1: 165350319, line2: 456014563, line3: 783145717, line4: 460490909,
+                city: 493041638,
+                state: 215797578,  // Merged state/region (for international addresses)
+                zip: 385095107,    // Merged zip/postal (for international addresses)
+                intlFlag: 539812906, country: 785016438,
+            },
+        },
+        // Screening (looped per chosen option, _S_S; breast/colon/lung only)
+        screening: {
+            detected: 944065539,
+            month: 853862770, year: 858052564,
+            phyFirstName: 239126548, phyLastName: 130343311,
+            phyNpi: "TODO_ScrnPhyNPI",
+            optionValues: {
+                breast2D: 425815239, breastCEM: 759642936, breastMRI: 528508094,
+                breastUS: 502929020, breastCBE: 412252588, lungCT: 633630015,
+                colonCol: 122234136, colonCT: 603167806, colonSig: 850849667, colonFecal: 644790673,
+            },
+            facility: {
+                line1: 977505777, line2: 632951008, line3: 693368144, line4: 939355635,
+                city: 591687168,
+                state: 513329248,  // Merged state/region (for international addresses)
+                zip: 404892571,    // Merged zip/postal (for international addresses)
+                intlFlag: 501859375, country: 874199876,
+            },
+        },
+        // Per-site submitted timestamps (ISO8601 strings)
+        // Server-stamped at submit. Client must never emit.
+        dxSubmittedTimestamps: {
+            anal: 143842026, bladder: 579509543, brain: 839528519, breast: 104045590,
+            cervical: 527292883, colon: 114795023, esophageal: 975331168, headAndNeck: 222780931,
+            kidney: 604888707, leukemia: 398142415, liver: 503350781, lung: 905053272,
+            nonHodgkinsLymphoma: 168528535, lymphoma: 473167851, skinMelanoma: 899795025,
+            nonMelanomaSkin: 500318854, ovarian: 390590842, pancreatic: 130360374,
+            prostate: 199928758, stomach: 602773386, testicular: 494409539, thyroid: 982594729,
+            uterine: 382789932, other: 252291829,
+        },
     },
 
     // @deprecated. Retain until migration to Quest2 is complete. External variables passed into Quest that require extra async/await handling.
