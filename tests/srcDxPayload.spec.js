@@ -7,7 +7,7 @@
 //     a treatment; screening physician/facility use the degenerate _S_S
 //   - months emitted as month response cids; countries as dictionary country cids
 //   - merged dictionary variables: facility state/region -> one cid, zip/postal -> one cid
-//   - server-owned fields (DxNumber, site DxDt, COMPLETED*) are never client-emitted
+//   - server-owned fields (DxNumber, site DxDt, identity) are never client-emitted
 
 import { describe, it, expect, vi } from 'vitest';
 
@@ -138,11 +138,11 @@ describe('buildDiagnosisPayload — golden contract', () => {
         }
     });
 
-    it('never emits server-owned keys (DxNumber, site DxDt, COMPLETED, identity)', () => {
+    it('never emits server-owned keys (DxNumber, site DxDt, identity)', () => {
         const p = buildDiagnosisPayload(goldenState);
         expect(dKey(m.dxNumber) in p).toBe(false);
         for (const cid of Object.values(m.dxSubmittedTimestamps)) expect(dKey(cid) in p).toBe(false);
-        for (const k of ['COMPLETED', 'COMPLETED_TS', 'STARTED_TS', 'uid', 'token', 'Connect_ID']) {
+        for (const k of ['uid', 'token', 'Connect_ID']) {
             expect(k in p).toBe(false);
         }
     });

@@ -73,7 +73,6 @@ describe('loadCancerDxProgress (server resume)', () => {
     const inProgressDoc = (over = {}) => ({
         stateJSON: JSON.stringify({ state: { primarySite: 'breast' } }),
         positionJSON: JSON.stringify({ screenId: 'diagnosisDate', history: ['landing'] }),
-        COMPLETED: false,
         ...over,
     });
 
