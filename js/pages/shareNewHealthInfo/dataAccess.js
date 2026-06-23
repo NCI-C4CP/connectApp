@@ -26,11 +26,12 @@ const resolveApiBase = () => {
     return apiBasePromise;
 };
 
-const authedFetch = async (api, { method = 'GET', body } = {}) => {
+const authedFetch = async (api, { method = 'GET', body, params = {} } = {}) => {
     const base = await resolveApiBase();
     const idToken = appState.getState().idToken || await getIdToken();
     if (!idToken) return null;
-    return fetch(`${base}?api=${api}`, {
+    const query = new URLSearchParams({ api, ...params });
+    return fetch(`${base}?${query.toString()}`, {
         method,
         headers: {
             Authorization: 'Bearer ' + idToken,
@@ -43,7 +44,7 @@ const authedFetch = async (api, { method = 'GET', body } = {}) => {
 // Never throws. The controller handles revert/retry.
 export const saveCancerDxProgress = async (snapshot) => {
     try {
-        const response = await authedFetch('saveSelfReportCancerDxProgress', { method: 'POST', body: snapshot });
+        const response = await authedFetch('storeSelfReportCancerDx', { method: 'POST', body: snapshot, params: { action: 'save' } });
         if (!response) return { code: 0 };
         return await response.json();
     } catch (e) {
@@ -53,7 +54,7 @@ export const saveCancerDxProgress = async (snapshot) => {
 
 export const submitSelfReportCancerDx = async (snapshot) => {
     try {
-        const response = await authedFetch('submitSelfReportCancerDx', { method: 'POST', body: snapshot });
+        const response = await authedFetch('storeSelfReportCancerDx', { method: 'POST', body: snapshot, params: { action: 'submit' } });
         if (!response) return { code: 0 };
         return await response.json();
     } catch (e) {

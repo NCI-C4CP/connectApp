@@ -35,12 +35,12 @@ afterEach(() => {
 });
 
 describe('saveCancerDxProgress', () => {
-    it('POSTs the snapshot to saveSelfReportCancerDxProgress with a Bearer token', async () => {
+    it('POSTs the snapshot to storeSelfReportCancerDx?action=save with a Bearer token', async () => {
         const { saveCancerDxProgress } = await importDataAccess();
         const res = await saveCancerDxProgress({ D_181737942: '847945207', stateJSON: '{}' });
         expect(res).toEqual({ code: 200 });
         const [url, options] = fetchStub.mock.calls[0];
-        expect(url).toBe('https://cf.test/app?api=saveSelfReportCancerDxProgress');
+        expect(url).toBe('https://cf.test/app?api=storeSelfReportCancerDx&action=save');
         expect(options.method).toBe('POST');
         expect(options.headers.Authorization).toBe('Bearer tok');
         expect(JSON.parse(options.body)).toEqual({ D_181737942: '847945207', stateJSON: '{}' });
@@ -61,10 +61,10 @@ describe('saveCancerDxProgress', () => {
 });
 
 describe('submitSelfReportCancerDx', () => {
-    it('POSTs the same snapshot shape to submitSelfReportCancerDx', async () => {
+    it('POSTs the same snapshot shape to storeSelfReportCancerDx?action=submit', async () => {
         const { submitSelfReportCancerDx } = await importDataAccess();
         await submitSelfReportCancerDx({ D_181737942: '847945207' });
-        expect(fetchStub.mock.calls[0][0]).toBe('https://cf.test/app?api=submitSelfReportCancerDx');
+        expect(fetchStub.mock.calls[0][0]).toBe('https://cf.test/app?api=storeSelfReportCancerDx&action=submit');
         expect(fetchStub.mock.calls[0][1].method).toBe('POST');
     });
 });
