@@ -1,6 +1,6 @@
 // Shared DOM render helpers for the Self-Report Cancer Diagnosis process.
 
-import { translateHTML, translateText, errorMessage } from '../../shared.js';
+import { translateHTML, translateText, errorMessage, escapeHTML } from '../../shared.js';
 import { MONTHS } from './constants.js';
 
 export const ROOT_ID = 'root';
@@ -92,6 +92,12 @@ export const renderScreen = (content, html) => {
 
 export const renderQuestion = (content, bodyHtml) =>
     renderScreen(content, pageShell(card('shareHealthInfo.reportCancerHeader', 'Report a Cancer Diagnosis', bodyHtml)));
+
+export const treatmentTypeLabelHtml = (treatment) => {
+    const type = String(treatment?.type ?? '');
+    const otherDescribe = type === 'other' ? String(treatment?.otherDescribe ?? '').trim() : '';
+    return `<span data-i18n="shareHealthInfo.tx_${escapeHTML(type)}">${escapeHTML(type)}</span>${otherDescribe ? ` (${escapeHTML(otherDescribe)})` : ''}`;
+};
 
 export const renderProgressLoadError = (content, onRetry) => {
     renderQuestion(content, `

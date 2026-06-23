@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { setup } from './support.js';
+import { setup, F } from './support.js';
 
 // Per-screen write: every Next/Back sends the full snapshot (logged by
 // the stub in window.__SRCDX_SAVES__). A terminal save failure reverts navigation to the last
@@ -7,6 +7,44 @@ import { setup } from './support.js';
 // opening the page never creates a server row.
 
 const saves = (page) => page.evaluate(() => window.__SRCDX_SAVES__ || []);
+
+const participantScopedDataAccessStub = `
+const connectId = () => window.__SRCDX_FIXTURE__?.data?.Connect_ID || 'unknown';
+const key = () => 'srcdx_inprogress_' + connectId();
+const parseStateBlob = (stateBlob) => {
+    if (!stateBlob || typeof stateBlob !== 'object' || Array.isArray(stateBlob)) return null;
+    const savedState = stateBlob.state;
+    return savedState && typeof savedState === 'object' && !Array.isArray(savedState) ? savedState : null;
+};
+export const saveCancerDxProgress = async (snapshot) => {
+    const id = connectId();
+    window.__SRCDX_SAVES_BY_CONNECT__ = window.__SRCDX_SAVES_BY_CONNECT__ || {};
+    window.__SRCDX_SAVES_BY_CONNECT__[id] = (window.__SRCDX_SAVES_BY_CONNECT__[id] || []).concat([snapshot]);
+    sessionStorage.setItem(key(), JSON.stringify(snapshot));
+    return { code: 200 };
+};
+export const loadCancerDxProgress = async () => {
+    const raw = sessionStorage.getItem(key());
+    if (!raw) return null;
+    try {
+        const snapshot = JSON.parse(raw);
+        const state = parseStateBlob(JSON.parse(snapshot.stateJSON));
+        const position = JSON.parse(snapshot.positionJSON);
+        if (!state || !position || typeof position !== 'object' || Array.isArray(position)) return null;
+        return { state, position };
+    } catch (e) {
+        return null;
+    }
+};
+export const submitSelfReportCancerDx = async (snapshot) => {
+    window.__SRCDX_LAST_PAYLOAD__ = snapshot;
+    sessionStorage.removeItem(key());
+    return { code: 200 };
+};
+export const getPreviouslyReportedDx = async () => [];
+export const loadShareHealthInfoSettings = async () => ({ enableNPIRegistry: false });
+export const searchNPIProviders = async () => [];
+`;
 
 test.describe('Server-backed per-screen writes', () => {
     test('a failed save reverts navigation to the last server-acked screen with an alert', async ({ page }) => {
@@ -94,5 +132,31 @@ test.describe('Server-backed per-screen writes', () => {
         expect(order.indexOf('submitStart')).toBe(order.length - 1);
         const stored = await page.evaluate(() => sessionStorage.getItem('srcdx_inprogress_e2e'));
         expect(stored).toBeNull();
+    });
+
+    test('same-runtime participant switch clears stale in-progress state before landing', async ({ page }) => {
+        const participantA = { code: 200, data: { [F.verification]: F.verified, [F.consentWithdrawn]: F.no, Connect_ID: 'A' } };
+        const participantB = { code: 200, data: { [F.verification]: F.verified, [F.consentWithdrawn]: F.no, Connect_ID: 'B' } };
+        await setup(page, { fixture: participantA, dataAccessBody: participantScopedDataAccessStub });
+
+        await page.click('#srcdxAddDiagnosis');
+        await page.check('#site_prostate');
+        await page.click('#srcdxNext');
+        await expect(page.locator('#srcdxDxYear')).toBeVisible();
+        await page.waitForFunction(() => (window.__SRCDX_SAVES_BY_CONNECT__?.A || []).length > 0);
+
+        await page.evaluate(async (nextFixture) => {
+            window.__SRCDX_FIXTURE__ = nextFixture;
+            await window.__renderShareNewHealthInfo(nextFixture);
+        }, participantB);
+        await expect(page.locator('#srcdxAddDiagnosis')).toBeVisible();
+        await page.waitForTimeout(50);
+
+        const savesByConnect = await page.evaluate(() => window.__SRCDX_SAVES_BY_CONNECT__ || {});
+        expect(savesByConnect.A.length).toBeGreaterThan(0);
+        expect(savesByConnect.B || []).toHaveLength(0);
+
+        await page.click('#srcdxAddDiagnosis');
+        await expect(page.locator('#site_prostate')).not.toBeChecked();
     });
 });

@@ -2,12 +2,20 @@
 
 import { appState, getIdToken, getApiBaseUrl, getAppSettings, translateText } from '../../shared.js';
 import fieldMapping from '../../fieldToConceptIdMapping.js';
-import { getLocalApiBaseOverride } from './localDevConfig.js';
 
 const m = fieldMapping.selfReportCancerDx;
 
 // Localhost can opt into a connectFaas emulator via local-dev/config.js.
 let apiBasePromise = null;
+
+const getLocalApiBaseOverride = async () => {
+    try {
+        const cfg = await import('../../../local-dev/config.js');
+        return typeof cfg.apiBaseOverride === 'string' && cfg.apiBaseOverride ? cfg.apiBaseOverride : '';
+    } catch (e) {
+        return '';
+    }
+};
 
 const resolveApiBase = () => {
     if (!apiBasePromise) {
@@ -27,9 +35,9 @@ const resolveApiBase = () => {
 };
 
 const authedFetch = async (api, { method = 'GET', body, params = {} } = {}) => {
-    const base = await resolveApiBase();
     const idToken = appState.getState().idToken || await getIdToken();
     if (!idToken) return null;
+    const base = await resolveApiBase();
     const query = new URLSearchParams({ api, ...params });
     return fetch(`${base}?${query.toString()}`, {
         method,
@@ -133,9 +141,9 @@ export const loadShareHealthInfoSettings = async () => {
 export const searchNPIProviders = async ({ firstName = '', lastName = '' } = {}, { signal } = {}) => {
     try {
         if (!lastName || lastName.trim().length < 2) return [];
-        const base = await resolveApiBase();
         const idToken = appState.getState().idToken || await getIdToken();
         if (!idToken) return [];
+        const base = await resolveApiBase();
         const params = new URLSearchParams({ api: 'searchNPIRegistry', lastName: lastName.trim() });
         if (firstName.trim()) params.set('firstName', firstName.trim());
         const response = await fetch(`${base}?${params.toString()}`, {

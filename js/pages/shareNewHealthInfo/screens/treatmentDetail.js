@@ -1,8 +1,7 @@
-import { renderQuestion, navButtons, monthSelect, fieldError, clearFieldErrors } from '../ui.js';
+import { renderQuestion, navButtons, monthSelect, fieldError, clearFieldErrors, treatmentTypeLabelHtml } from '../ui.js';
 import { SCREENS } from '../constants.js';
 import { isValidYearWithAllowance } from '../validation.js';
 import { applyOngoingExclusivity, canAddPhysician, isTreatmentComplete } from '../conditionalLogic.js';
-import { treatmentTypeLabelHtml } from '../labels.js';
 import {
     renderFacilityAddress, attachFacilityAddressEvents, harvestFacility, fillFacility,
 } from '../../../components/facilityAddress.js';

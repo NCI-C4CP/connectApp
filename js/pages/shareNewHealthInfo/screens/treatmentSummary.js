@@ -1,6 +1,5 @@
-import { renderQuestion, navButtons } from '../ui.js';
+import { renderQuestion, navButtons, treatmentTypeLabelHtml } from '../ui.js';
 import { SCREENS } from '../constants.js';
-import { treatmentTypeLabelHtml } from '../labels.js';
 
 let confirmingIndex = null;
 

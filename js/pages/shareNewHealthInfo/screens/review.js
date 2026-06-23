@@ -1,8 +1,7 @@
-import { renderQuestion, navButtons } from '../ui.js';
+import { renderQuestion, navButtons, treatmentTypeLabelHtml } from '../ui.js';
 import { escapeHTML, translateHTML, allCountries } from '../../../shared.js';
 import { SCREENS, PRIMARY_SITES, SCREENING_OPTIONS, MONTHS } from '../constants.js';
 import { isScreeningEligible, isDiagnosisSubmittable, getScreeningOptionsForSite } from '../conditionalLogic.js';
-import { treatmentTypeLabelHtml } from '../labels.js';
 
 const siteI18n = (key) => PRIMARY_SITES.find((s) => s.key === key)?.i18nKey || '';
 const scrnI18n = (key) => SCREENING_OPTIONS.find((o) => o.key === key)?.i18nKey || '';

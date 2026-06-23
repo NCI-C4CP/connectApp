@@ -15,6 +15,7 @@
     <div id="root"></div>
     <script type="module">
         import { renderShareNewHealthInfo } from '/js/pages/shareNewHealthInfo/index.js';
+        window.__renderShareNewHealthInfo = renderShareNewHealthInfo;
         (async () => {
             try {
                 await renderShareNewHealthInfo(window.__SRCDX_FIXTURE__);

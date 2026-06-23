@@ -28,6 +28,7 @@ import { renderConfirmation } from './screens/confirmation.js';
 
 let content;
 let participant = {};
+let currentParticipantKey = null;
 
 let editStateSnapshot = null;
 const takeEditSnapshot = () => { editStateSnapshot = JSON.parse(JSON.stringify(state.getState())); };
@@ -54,20 +55,47 @@ const renderers = {
 // Per-screen saves are serialized and coalesced. Latest full snapshot wins.
 let lastSavedProgress = null;
 let hasServerRow = false;
-let saveInFlight = false;
+let isSaveInFlight = false;
 let pendingSave = null;
 let reverting = false;
 let savesSuspended = false;
-let inFlightSave = null;
+let inFlightSavePromise = null;
 let featureFlags = { enableNPIRegistry: false };
+let saveGeneration = 0;
 
 const teardownScreenEventSources = () => {
     teardownNpiTypeaheads();
     teardownFacilityAddressEvents();
 };
 
-export const teardownShareNewHealthInfo = () => {
+const participantKeyFor = (data = {}) => {
+    if (data.Connect_ID != null && data.Connect_ID !== '') return `connect:${data.Connect_ID}`;
+    if (data.token != null && data.token !== '') return `token:${data.token}`;
+    return '';
+};
+
+const resetRuntime = ({ clearParticipant = false } = {}) => {
+    saveGeneration += 1;
+    pendingSave = null;
+    isSaveInFlight = false;
+    inFlightSavePromise = null;
+    lastSavedProgress = null;
+    hasServerRow = false;
+    reverting = false;
+    savesSuspended = false;
+    featureFlags = { enableNPIRegistry: false };
+    state.resetState();
+    discardEditSnapshot();
+    resetConfirmState();
     teardownScreenEventSources();
+    if (clearParticipant) {
+        participant = {};
+        currentParticipantKey = null;
+    }
+};
+
+export const teardownShareNewHealthInfo = () => {
+    resetRuntime({ clearParticipant: true });
 };
 
 const captureProgress = () => {
@@ -93,11 +121,12 @@ const revertToLastSaved = () => {
 };
 
 const pumpSaves = () => {
-    if (saveInFlight || !pendingSave || savesSuspended) return;
-    saveInFlight = true;
+    if (isSaveInFlight || !pendingSave || savesSuspended) return;
+    const generation = saveGeneration;
+    isSaveInFlight = true;
     const current = pendingSave;
     pendingSave = null;
-    inFlightSave = (async () => {
+    inFlightSavePromise = (async () => {
         let ok = false;
         try {
             const res = await saveCancerDxProgress(current.snapshot);
@@ -105,8 +134,9 @@ const pumpSaves = () => {
         } catch (e) {
             ok = false;
         }
-        saveInFlight = false;
-        inFlightSave = null;
+        if (generation !== saveGeneration) return;
+        isSaveInFlight = false;
+        inFlightSavePromise = null;
         if (ok) {
             lastSavedProgress = current.progressJson;
             hasServerRow = true;
@@ -126,7 +156,7 @@ const persist = () => {
 const quiesceSaves = async () => {
     savesSuspended = true;
     pendingSave = null;
-    const inflight = inFlightSave;
+    const inflight = inFlightSavePromise;
     if (inflight) { try { await inflight; } catch (e) { /* only need it settled */ } }
 };
 
@@ -318,9 +348,14 @@ const showProgressLoadError = () => {
 export const renderShareNewHealthInfo = async (dataResponse) => {
     const response = dataResponse && dataResponse.data ? dataResponse : await getMyData();
     participant = (response && response.data) || {};
+    const nextParticipantKey = participantKeyFor(participant);
+    if (currentParticipantKey !== null && nextParticipantKey !== currentParticipantKey) {
+        resetRuntime();
+    }
+    currentParticipantKey = nextParticipantKey;
 
     if (!isVerifiedNotWithdrawn(participant)) {
-        teardownScreenEventSources();
+        resetRuntime();
         window.location.hash = '#dashboard';
         return;
     }
@@ -342,6 +377,13 @@ export const renderShareNewHealthInfo = async (dataResponse) => {
     if (saved) {
         lastSavedProgress = JSON.stringify(saved);
         hasServerRow = true;
+    } else {
+        lastSavedProgress = null;
+        hasServerRow = false;
+        pendingSave = null;
+        state.resetState();
+        discardEditSnapshot();
+        resetConfirmState();
     }
     if (resumeId && renderers[resumeId] && resumeId !== SCREENS.CONFIRMATION && canRenderScreen(resumeId, saved.state)) {
         state.hydrate(saved);
