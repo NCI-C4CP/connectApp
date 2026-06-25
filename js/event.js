@@ -393,7 +393,7 @@ export const addMoreFormerName = () => {
     div1_1.classList.add('form-group', 'row')
 	
     const select = document.createElement('select');	
-    select.classList.add('form-control', 'col-md-3');
+    select.classList.add('form-select', 'col-md-3');
     select.setAttribute('data-i18n', "form.formerNameCategory");
     select.setAttribute('data-error-required', translateText('form.formerNameCategory'));
     select.style = "max-width:190px"
@@ -2532,7 +2532,7 @@ export const addEventBirthCountryToggle = () => {
             // Switch to dropdown if not already
             if (currentStateEl.tagName !== 'SELECT') {
                 const select = document.createElement('select');
-                select.className = 'form-control';
+                select.className = 'form-select';
                 select.style.cssText = 'margin-left:0px; max-width:301px;';
                 select.id = 'stateOfBirth';
                 const defaultOpt = document.createElement('option');

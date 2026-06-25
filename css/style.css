@@ -638,7 +638,7 @@ canvas {
     border-radius: 0.4rem;
 }
 
-.form-control, .close-modal, .card, .toast, .card-header, .faq-btn, .links-border-right {
+.close-modal, .card, .toast, .card-header, .faq-btn, .links-border-right {
     background-color: inherit !important;
     color: inherit !important;
     border-color: inherit !important;
