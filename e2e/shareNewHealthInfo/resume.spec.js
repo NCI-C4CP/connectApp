@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { setup, m, dk, N, getPayload } from './support.js';
+import { setup, m, dk, ndk, N, getPayload } from './support.js';
 
 // Restart (leave & return), reload-mid-flow, append-only re-start, and the "No" reroute. The harness
 // re-runs renderShareNewHealthInfo() on every load, so page.reload() models leaving and returning.
@@ -66,7 +66,7 @@ test.describe('Restart, resume & reroute', () => {
         expect(payload[dk(m.dxYear)]).toBe('2021');
         expect(payload[dk(m.txReceived)]).toBe(N);
         expect(dk(m.treatment.chemo) in payload).toBe(false);                // txReceived=No -> section omitted
-        expect(dk(m.treatment.startYear, 1, 1) in payload).toBe(false);
+        expect(ndk(m.treatment.chemo, m.treatment.startYear) in payload).toBe(false);
         expect(dk(m.screening.optionValues.breast2D) in payload).toBe(false); // no leftover screening
         expect(dk(m.primarySiteOther) in payload).toBe(false);
     });

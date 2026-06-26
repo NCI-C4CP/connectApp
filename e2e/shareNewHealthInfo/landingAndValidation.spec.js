@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { setup, m, dk, Y, N, getPayload } from './support.js';
+import { setup, m, dk, ndk, Y, N, getPayload } from './support.js';
 import en from '../../i18n/en.js';
 import es from '../../i18n/es.js';
 
@@ -185,7 +185,7 @@ test.describe('Validation & encoding edge cases', () => {
         const payload = await getPayload(page);
         expect(dk(m.txReceived) in payload).toBe(false);
         expect(dk(m.treatment.chemo) in payload).toBe(false);
-        expect(dk(m.treatment.startYear, 1, 1) in payload).toBe(false);
+        expect(ndk(m.treatment.chemo, m.treatment.startYear) in payload).toBe(false);
     });
 
     test('Q3 treatment type selection is optional when treatment was received', async ({ page }) => {
@@ -211,7 +211,7 @@ test.describe('Validation & encoding edge cases', () => {
         expect(payload[dk(m.treatment.surgery)]).toBe(N);
         expect(payload[dk(m.treatment.radiation)]).toBe(N);
         expect(payload[dk(m.treatment.other)]).toBe(N);
-        expect(dk(m.treatment.startYear, 1, 1) in payload).toBe(false);
+        expect(ndk(m.treatment.chemo, m.treatment.startYear) in payload).toBe(false);
     });
 
     test('treatment start year before diagnosis is rejected; a +5 future scheduled year is allowed', async ({ page }) => {

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { setup, m, dk, Y, N, getPayload, toTreatmentDetail } from './support.js';
+import { setup, m, dk, ndk, Y, N, getPayload, toTreatmentDetail } from './support.js';
 
 // Drive to the treatment-detail screen for a single Chemotherapy treatment (prostate = non-screening).
 const toChemoDetail = (page) => toTreatmentDetail(page, { site: 'prostate' }); // shared walk in support.js
@@ -113,12 +113,12 @@ test.describe('Loops & repeatable inputs', () => {
         await page.click('#srcdxNext'); // -> review
         await page.click('#srcdxNext'); // submit
         const payload = await getPayload(page);
-        const fac = m.treatment.facility; // chemo = T1; facility 1 -> _1_1
-        expect(payload[dk(fac.intlFlag, 1, 1)]).toBe(Y);
-        expect(payload[dk(fac.state, 1, 1)]).toBe('Greater London'); // merged state/region <- region
-        expect(payload[dk(fac.zip, 1, 1)]).toBe('SW3 6JJ');          // merged zip/postal <- postal
-        expect(payload[dk(fac.country, 1, 1)]).toBe('156628245');    // select value '2' (UK) -> country response cid
-        expect(payload[dk(fac.line4, 1, 1)]).toBe('Building B, Chelsea');
+        const fac = m.treatment.facility;
+        expect(payload[ndk(m.treatment.chemo, fac.intlFlag, 1)]).toBe(Y);
+        expect(payload[ndk(m.treatment.chemo, fac.state, 1)]).toBe('Greater London'); // merged state/region <- region
+        expect(payload[ndk(m.treatment.chemo, fac.zip, 1)]).toBe('SW3 6JJ');          // merged zip/postal <- postal
+        expect(payload[ndk(m.treatment.chemo, fac.country, 1)]).toBe('156628245');    // select value '2' (UK) -> country response cid
+        expect(payload[ndk(m.treatment.chemo, fac.line4, 1)]).toBe('Building B, Chelsea');
     });
 
     test('mocked Google Places autocomplete fills a domestic facility and is captured', async ({ page }) => {
@@ -146,12 +146,12 @@ test.describe('Loops & repeatable inputs', () => {
         await page.click('#srcdxNext');
         const payload = await getPayload(page);
         const fac = m.treatment.facility;
-        expect(payload[dk(fac.intlFlag, 1, 1)]).toBe(N);
-        expect(payload[dk(fac.line1, 1, 1)]).toBe('Johns Hopkins Hospital');
-        expect(payload[dk(fac.line2, 1, 1)]).toBe('1800 Orleans Street');
-        expect(payload[dk(fac.city, 1, 1)]).toBe('Baltimore');
-        expect(payload[dk(fac.state, 1, 1)]).toBe('MD');
-        expect(payload[dk(fac.zip, 1, 1)]).toBe('21287');
+        expect(payload[ndk(m.treatment.chemo, fac.intlFlag, 1)]).toBe(N);
+        expect(payload[ndk(m.treatment.chemo, fac.line1, 1)]).toBe('Johns Hopkins Hospital');
+        expect(payload[ndk(m.treatment.chemo, fac.line2, 1)]).toBe('1800 Orleans Street');
+        expect(payload[ndk(m.treatment.chemo, fac.city, 1)]).toBe('Baltimore');
+        expect(payload[ndk(m.treatment.chemo, fac.state, 1)]).toBe('MD');
+        expect(payload[ndk(m.treatment.chemo, fac.zip, 1)]).toBe('21287');
     });
 
     test('mocked Google Places autocomplete stays disabled for an added international facility', async ({ page }) => {
@@ -194,8 +194,8 @@ test.describe('Loops & repeatable inputs', () => {
         const payload = await getPayload(page);
         expect(payload[dk(m.treatment.chemo)]).toBe(Y);
         expect(payload[dk(m.treatment.surgery)]).toBe(Y);
-        expect(payload[dk(m.treatment.startYear, 1, 1)]).toBe('2021'); // T1 = chemo (canonical order)
-        expect(payload[dk(m.treatment.startYear, 2, 2)]).toBe('2022'); // T2 = surgery
+        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021');
+        expect(payload[ndk(m.treatment.surgery, m.treatment.startYear)]).toBe('2022');
     });
 
     test('remove a treatment via the confirmation dialog', async ({ page }) => {
@@ -225,8 +225,8 @@ test.describe('Loops & repeatable inputs', () => {
         const payload = await getPayload(page);
         expect(payload[dk(m.treatment.surgery)]).toBe(Y);
         expect(payload[dk(m.treatment.chemo)]).toBe(N);
-        expect(payload[dk(m.treatment.startYear, 1, 1)]).toBe('2022'); // surgery is now the only iteration
-        expect(payload[dk(m.treatment.startYear, 2, 2)]).toBeUndefined();
+        expect(payload[ndk(m.treatment.surgery, m.treatment.startYear)]).toBe('2022');
+        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBeUndefined();
     });
 
     test('remove-confirm modal traps Tab within the dialog and Escape cancels it', async ({ page }) => {
@@ -273,8 +273,8 @@ test.describe('Loops & repeatable inputs', () => {
         await page.click('#srcdxNext'); // submit
         const payload = await getPayload(page);
         const fac = m.treatment.facility;
-        expect(payload[dk(fac.line1, 1, 1)]).toBe('Hospital A');
-        expect(payload[dk(fac.line1, 1, 2)]).toBe('Hospital B'); // T1, facility 2 -> _1_2
+        expect(payload[ndk(m.treatment.chemo, fac.line1, 1)]).toBe('Hospital A');
+        expect(payload[ndk(m.treatment.chemo, fac.line1, 2)]).toBe('Hospital B');
     });
 
     test('screening recap: unchecking a chosen screening drops it from the loop and the payload', async ({ page }) => {
@@ -299,8 +299,8 @@ test.describe('Loops & repeatable inputs', () => {
         const payload = await getPayload(page);
         expect(payload[dk(m.screening.optionValues.breastMRI)]).toBe(Y);
         expect(payload[dk(m.screening.optionValues.breast2D)]).toBe(N);     // dropped on the recap -> explicit No
-        expect(payload[dk(m.screening.year, 1, 1)]).toBe('2019');           // breastMRI is S1 (only chosen)
-        expect(dk(m.screening.year, 2, 2) in payload).toBe(false);
+        expect(payload[ndk(m.screening.optionValues.breastMRI, m.screening.year)]).toBe('2019');
+        expect(ndk(m.screening.optionValues.breast2D, m.screening.year) in payload).toBe(false);
     });
 
     test('screening recap: "No" takes the no-screening path; Back from the recap returns to the gate with selections intact', async ({ page }) => {
@@ -348,7 +348,7 @@ test.describe('Loops & repeatable inputs', () => {
         const payload = await getPayload(page);
         expect(payload[dk(m.screening.detected)]).toBe(N);
         expect(dk(m.screening.optionValues.breast2D) in payload).toBe(false); // detected=No -> section omitted
-        expect(dk(m.screening.year, 1, 1) in payload).toBe(false);
+        expect(ndk(m.screening.optionValues.breast2D, m.screening.year) in payload).toBe(false);
     });
 
     test('screening status: "Almost done!" names the next incomplete; Back revisits the completed entry', async ({ page }) => {
@@ -377,8 +377,8 @@ test.describe('Loops & repeatable inputs', () => {
         await expect(page.locator('[data-edit="primarySite"]')).toBeVisible();
         await page.click('#srcdxNext');          // submit
         const payload = await getPayload(page);
-        expect(payload[dk(m.screening.year, 1, 1)]).toBe('2019'); // S1 = breastMRI (canonical option order)
-        expect(payload[dk(m.screening.year, 2, 2)]).toBe('2020'); // S2 = breastUS
+        expect(payload[ndk(m.screening.optionValues.breastMRI, m.screening.year)]).toBe('2019');
+        expect(payload[ndk(m.screening.optionValues.breastUS, m.screening.year)]).toBe('2020');
     });
 
     test('multiple screenings auto-sequence and are captured', async ({ page }) => {
@@ -406,8 +406,8 @@ test.describe('Loops & repeatable inputs', () => {
         const payload = await getPayload(page);
         expect(payload[dk(m.screening.optionValues.breast2D)]).toBe(Y);
         expect(payload[dk(m.screening.optionValues.breastMRI)]).toBe(Y);
-        expect(payload[dk(m.screening.year, 1, 1)]).toBe('2018'); // S1 = breast2D
-        expect(payload[dk(m.screening.year, 2, 2)]).toBe('2019'); // S2 = breastMRI
+        expect(payload[ndk(m.screening.optionValues.breast2D, m.screening.year)]).toBe('2018');
+        expect(payload[ndk(m.screening.optionValues.breastMRI, m.screening.year)]).toBe('2019');
     });
 
     test('submit failure shows an error and stays on review (button re-enabled)', async ({ page }) => {

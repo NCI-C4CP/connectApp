@@ -1,4 +1,4 @@
-// Quest-flat payload builder: string D_ values, positional loops, no server-owned fields.
+// Quest-flat payload builder: string D_ values, dictionary-nested keys, no server-owned fields.
 
 import fieldMapping from '../../fieldToConceptIdMapping.js';
 import { SCREENING_ELIGIBLE_SITES, SCREENING_OPTIONS_BY_SITE } from './constants.js';
@@ -10,6 +10,7 @@ const YES = String(fieldMapping.yes);
 const NO = String(fieldMapping.no);
 
 export const dKey = (cid, ...idx) => ['D_' + cid, ...idx].join('_');
+export const nestedDKey = (parentCid, childCid, ...idx) => ['D_' + parentCid, 'D_' + childCid, ...idx].join('_');
 
 export const TREATMENT_TYPE_ORDER = Object.freeze(['chemo', 'surgery', 'radiation', 'other']);
 
@@ -23,24 +24,25 @@ const monthCid = (code) => (isPresent(code) && m.monthValues[code] !== undefined
 
 const FACILITY_CONTENT_FIELDS = ['line1', 'line2', 'line3', 'line4', 'city', 'state', 'region', 'zip', 'postal', 'country'];
 const hasFacilityContent = (f) => !!f && FACILITY_CONTENT_FIELDS.some((k) => isPresent(f[k]));
+const hasPhysicianContent = (p) => !!p && ['firstName', 'lastName', 'npi'].some((k) => isPresent(p[k]));
 
-const buildFacility = (facCids, facility, t, p) => {
+const buildFacility = (facCids, facility, keyFor) => {
     const out = {};
     if (!hasFacilityContent(facility)) return out;
     const intl = !!facility.isInternational;
-    out[dKey(facCids.intlFlag, t, p)] = intl ? YES : NO;
-    setIf(out, dKey(facCids.line1, t, p), facility.line1);
-    setIf(out, dKey(facCids.line2, t, p), facility.line2);
-    setIf(out, dKey(facCids.line3, t, p), facility.line3);
-    setIf(out, dKey(facCids.city, t, p), facility.city);
+    out[keyFor(facCids.intlFlag)] = intl ? YES : NO;
+    setIf(out, keyFor(facCids.line1), facility.line1);
+    setIf(out, keyFor(facCids.line2), facility.line2);
+    setIf(out, keyFor(facCids.line3), facility.line3);
+    setIf(out, keyFor(facCids.city), facility.city);
     if (intl) {
-        setIf(out, dKey(facCids.line4, t, p), facility.line4);
-        setIf(out, dKey(facCids.state, t, p), facility.region);
-        setIf(out, dKey(facCids.zip, t, p), facility.postal);
-        setIf(out, dKey(facCids.country, t, p), countryCidFromSelectValue(facility.country));
+        setIf(out, keyFor(facCids.line4), facility.line4);
+        setIf(out, keyFor(facCids.state), facility.region);
+        setIf(out, keyFor(facCids.zip), facility.postal);
+        setIf(out, keyFor(facCids.country), countryCidFromSelectValue(facility.country));
     } else {
-        setIf(out, dKey(facCids.state, t, p), facility.state);
-        setIf(out, dKey(facCids.zip, t, p), facility.zip);
+        setIf(out, keyFor(facCids.state), facility.state);
+        setIf(out, keyFor(facCids.zip), facility.zip);
     }
     return out;
 };
@@ -69,25 +71,25 @@ export const buildDiagnosisPayload = (state = {}) => {
         const other = orderedTx.find((t) => t.type === 'other');
         if (other) setIf(payload, dKey(m.treatment.otherDescribe), other.otherDescribe);
     }
-    orderedTx.forEach((tx, i) => {
-        const T = i + 1;
-        setIf(payload, dKey(m.treatment.startMonth, T, T), monthCid(tx.startMonth));
-        setIf(payload, dKey(m.treatment.startYear, T, T), tx.startYear);
+    orderedTx.forEach((tx) => {
+        const parentCid = m.treatment[tx.type];
+        setIf(payload, nestedDKey(parentCid, m.treatment.startMonth), monthCid(tx.startMonth));
+        setIf(payload, nestedDKey(parentCid, m.treatment.startYear), tx.startYear);
         if (tx.ongoing) {
-            payload[dKey(m.treatment.ongoing, T, T)] = YES;
+            payload[nestedDKey(parentCid, m.treatment.ongoing)] = YES;
         } else {
-            payload[dKey(m.treatment.ongoing, T, T)] = NO;
-            setIf(payload, dKey(m.treatment.endMonth, T, T), monthCid(tx.endMonth));
-            setIf(payload, dKey(m.treatment.endYear, T, T), tx.endYear);
+            payload[nestedDKey(parentCid, m.treatment.ongoing)] = NO;
+            setIf(payload, nestedDKey(parentCid, m.treatment.endMonth), monthCid(tx.endMonth));
+            setIf(payload, nestedDKey(parentCid, m.treatment.endYear), tx.endYear);
         }
-        (Array.isArray(tx.physicians) ? tx.physicians : []).forEach((phys, j) => {
+        (Array.isArray(tx.physicians) ? tx.physicians : []).filter(hasPhysicianContent).forEach((phys, j) => {
             const P = j + 1;
-            setIf(payload, dKey(m.treatment.physFirstName, T, P), phys.firstName);
-            setIf(payload, dKey(m.treatment.physLastName, T, P), phys.lastName);
-            if (!isTodoCid(m.treatment.physNpi)) setIf(payload, dKey(m.treatment.physNpi, T, P), phys.npi);
+            setIf(payload, nestedDKey(parentCid, m.treatment.physFirstName, P), phys.firstName);
+            setIf(payload, nestedDKey(parentCid, m.treatment.physLastName, P), phys.lastName);
+            if (!isTodoCid(m.treatment.physNpi)) setIf(payload, nestedDKey(parentCid, m.treatment.physNpi, P), phys.npi);
         });
-        (Array.isArray(tx.facilities) ? tx.facilities : []).forEach((f, j) => {
-            Object.assign(payload, buildFacility(m.treatment.facility, f, T, j + 1));
+        (Array.isArray(tx.facilities) ? tx.facilities : []).filter(hasFacilityContent).forEach((f, j) => {
+            Object.assign(payload, buildFacility(m.treatment.facility, f, (cid) => nestedDKey(parentCid, cid, j + 1)));
         });
     });
 
@@ -103,16 +105,16 @@ export const buildDiagnosisPayload = (state = {}) => {
                 payload[dKey(m.screening.optionValues[k])] = chosen.some((s) => s.type === k) ? YES : NO;
             }
         }
-        chosen.forEach((scr, i) => {
-            const S = i + 1;
-            setIf(payload, dKey(m.screening.month, S, S), monthCid(scr.month));
-            setIf(payload, dKey(m.screening.year, S, S), scr.year);
+        chosen.forEach((scr) => {
+            const parentCid = m.screening.optionValues[scr.type];
+            setIf(payload, nestedDKey(parentCid, m.screening.month), monthCid(scr.month));
+            setIf(payload, nestedDKey(parentCid, m.screening.year), scr.year);
             if (scr.physician) {
-                setIf(payload, dKey(m.screening.phyFirstName, S, S), scr.physician.firstName);
-                setIf(payload, dKey(m.screening.phyLastName, S, S), scr.physician.lastName);
-                if (!isTodoCid(m.screening.phyNpi)) setIf(payload, dKey(m.screening.phyNpi, S, S), scr.physician.npi);
+                setIf(payload, nestedDKey(parentCid, m.screening.phyFirstName), scr.physician.firstName);
+                setIf(payload, nestedDKey(parentCid, m.screening.phyLastName), scr.physician.lastName);
+                if (!isTodoCid(m.screening.phyNpi)) setIf(payload, nestedDKey(parentCid, m.screening.phyNpi), scr.physician.npi);
             }
-            Object.assign(payload, buildFacility(m.screening.facility, scr.facility, S, S));
+            Object.assign(payload, buildFacility(m.screening.facility, scr.facility, (cid) => nestedDKey(parentCid, cid)));
         });
     }
 
