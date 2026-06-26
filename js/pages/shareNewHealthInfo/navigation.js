@@ -16,7 +16,8 @@ export const getNextScreen = (currentScreen, state = {}) => {
         case SCREENS.TREATMENT_DETAIL: return SCREENS.TREATMENT_SUMMARY;
         case SCREENS.TREATMENT_SUMMARY: return nextAfterTreatment(state);
         case SCREENS.SCREENING_GATE:
-            return state.screeningDetected ? SCREENS.SCREENING_RECAP : SCREENS.REVIEW;
+            if (!state.screeningDetected) return SCREENS.REVIEW;
+            return state.primarySite === 'lung' ? SCREENS.SCREENING_DETAIL : SCREENS.SCREENING_RECAP;
         case SCREENS.SCREENING_RECAP: return SCREENS.SCREENING_DETAIL;
         case SCREENS.SCREENING_DETAIL: return SCREENS.REVIEW;
         case SCREENS.SCREENING_STATUS: return SCREENS.REVIEW;

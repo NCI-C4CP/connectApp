@@ -31,7 +31,7 @@ export const renderFacilityAddress = (idPrefix, { showName = true } = {}) => `
         ${showName ? `
         <div class="form-group mb-2">
             <label for="UPAddress${idPrefix}Line1" data-i18n="shareHealthInfo.facName">Line 1 (name of facility)</label>
-            <input type="text" class="form-control" id="UPAddress${idPrefix}Line1" autocomplete="off" maxlength="70" placeholder="Enter name of facility">
+            <input type="text" class="form-control" id="UPAddress${idPrefix}Line1" autocomplete="off" maxlength="70" data-i18n="shareHealthInfo.facNameInput" placeholder="Enter name of facility">
         </div>` : ''}
         <div class="form-check mb-2">
             <input class="form-check-input" type="checkbox" id="UPAddress${idPrefix}International">
@@ -39,20 +39,20 @@ export const renderFacilityAddress = (idPrefix, { showName = true } = {}) => `
         </div>
         <div class="form-group mb-2">
             <label for="UPAddress${idPrefix}Line2" data-i18n="shareHealthInfo.facLine2">Line 2 (street, rural route)</label>
-            <input type="text" class="form-control" id="UPAddress${idPrefix}Line2" autocomplete="address-line1" maxlength="70" placeholder="Enter street, rural route">
+            <input type="text" class="form-control" id="UPAddress${idPrefix}Line2" autocomplete="address-line1" maxlength="70" data-i18n="shareHealthInfo.facLine2Input" placeholder="Enter street, rural route">
         </div>
         <div class="form-group mb-2">
             <label for="UPAddress${idPrefix}Line3" data-i18n="shareHealthInfo.facLine3">Line 3 (apartment, suite, unit, building)</label>
-            <input type="text" class="form-control" id="UPAddress${idPrefix}Line3" autocomplete="address-line2" maxlength="70" placeholder="Enter apartment, suite, unit, building">
+            <input type="text" class="form-control" id="UPAddress${idPrefix}Line3" autocomplete="address-line2" maxlength="70" data-i18n="shareHealthInfo.facLine3Input" placeholder="Enter apartment, suite, unit, building">
         </div>
         <!-- Line 4: international addresses only — shown/hidden + cleared by the International toggle. -->
         <div class="form-group mb-2 d-none" id="UPAddress${idPrefix}Line4Row">
             <label for="UPAddress${idPrefix}Line4" data-i18n="shareHealthInfo.facLine4">Line 4</label>
-            <input type="text" class="form-control" id="UPAddress${idPrefix}Line4" autocomplete="address-line3" maxlength="70" placeholder="Enter address line 4">
+            <input type="text" class="form-control" id="UPAddress${idPrefix}Line4" autocomplete="address-line3" maxlength="70" data-i18n="shareHealthInfo.facLine4Input" placeholder="Enter address line 4">
         </div>
         <div class="form-group mb-2">
             <label for="UPAddress${idPrefix}City" data-i18n="shareHealthInfo.facCity">City</label>
-            <input type="text" class="form-control" id="UPAddress${idPrefix}City" autocomplete="address-level2" maxlength="45" placeholder="Enter City">
+            <input type="text" class="form-control" id="UPAddress${idPrefix}City" autocomplete="address-level2" maxlength="45" data-i18n="shareHealthInfo.facCityInput" placeholder="Enter City">
         </div>
         <div class="row">
             <div class="col-6 mb-2">
@@ -65,8 +65,8 @@ export const renderFacilityAddress = (idPrefix, { showName = true } = {}) => `
             </div>
             <div class="col-6 mb-2">
                 <label id="UPAddress${idPrefix}ZipLabel" for="UPAddress${idPrefix}Zip" data-i18n="shareHealthInfo.facZip">Zip</label>
-                <input type="text" inputmode="numeric" class="form-control" id="UPAddress${idPrefix}Zip" autocomplete="postal-code" maxlength="5" placeholder="Enter Zip">
-                <input type="text" class="form-control d-none" id="UPAddress${idPrefix}Postal" autocomplete="postal-code" maxlength="45" placeholder="Enter postal code">
+                <input type="text" inputmode="numeric" class="form-control" id="UPAddress${idPrefix}Zip" autocomplete="postal-code" maxlength="5" data-i18n="shareHealthInfo.facZipInput" placeholder="Enter Zip">
+                <input type="text" class="form-control d-none" id="UPAddress${idPrefix}Postal" autocomplete="postal-code" maxlength="45" data-i18n="shareHealthInfo.facPostalInput" placeholder="Enter postal code">
             </div>
         </div>
         <div class="form-group mb-2 d-none" id="UPAddress${idPrefix}CountryRow">

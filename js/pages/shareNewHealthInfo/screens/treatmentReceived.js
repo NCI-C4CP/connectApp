@@ -1,4 +1,4 @@
-import { renderQuestion, navButtons, fieldError, clearFieldErrors } from '../ui.js';
+import { renderQuestion, navButtons, clearFieldErrors } from '../ui.js';
 import { TREATMENT_TYPES, SCREENS } from '../constants.js';
 import { isTreatmentComplete } from '../conditionalLogic.js';
 import { makeTreatment } from '../state.js';
@@ -74,16 +74,8 @@ export const renderTreatmentReceived = (content, ctx) => {
     content.querySelector('#srcdxNext').addEventListener('click', () => {
         clearFieldErrors(content);
         harvest();
-        if (d.txReceived === null) {
-            fieldError(content, 'txReceivedYes', 'shareHealthInfo.q3Required', 'Please select Yes or No.');
-            return;
-        }
-        if (d.txReceived && d.treatments.length === 0) {
-            fieldError(content, 'srcdxTxTypes', 'shareHealthInfo.q3TypeRequired', 'Please select at least one treatment.');
-            return;
-        }
         const pos = ctx.state.getPosition();
-        const firstIncompleteIndex = d.treatments.findIndex((t) => !isTreatmentComplete(t));
+        const firstIncompleteIndex = d.treatments.findIndex((t) => !isTreatmentComplete(t, { dxYear: d.dxYear }));
         pos.editingTreatmentIndex = firstIncompleteIndex >= 0 ? firstIncompleteIndex : 0;
         // Review edits must collect detail before returning.
         if (pos.returnTo && d.txReceived && firstIncompleteIndex >= 0) {

@@ -259,6 +259,21 @@
 #shareHealthInfoRoot .srcdx-info:focus .srcdx-tooltip,
 #shareHealthInfoRoot .srcdx-info:focus-within .srcdx-tooltip { display: block; }
 
+@media (max-width: 767.98px) {
+    #shareHealthInfoRoot .srcdx-tooltip {
+        position: fixed;
+        left: 1rem;
+        right: 1rem;
+        top: 50%;
+        bottom: auto;
+        transform: translateY(-50%);
+        width: auto;
+        max-width: none;
+        max-height: calc(100vh - 2rem);
+        overflow-y: auto;
+    }
+}
+
 /* Treatment-summary card: a bordered box holding a dark circular X-remove control and the
    bold treatment name. (The comp shows only the X; an Edit link is kept alongside the box by request.) */
 #shareHealthInfoRoot .srcdx-tx-card {

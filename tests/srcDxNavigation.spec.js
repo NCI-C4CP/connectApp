@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getNextScreen, pushHistory, popHistory } from '../js/pages/shareNewHealthInfo/navigation.js';
+import { getNextScreen, nextRenderableScreen, pushHistory, popHistory } from '../js/pages/shareNewHealthInfo/navigation.js';
 import { SCREENS } from '../js/pages/shareNewHealthInfo/constants.js';
 
 describe('getNextScreen — linear spine', () => {
@@ -23,6 +23,10 @@ describe('getNextScreen — treatment branch', () => {
         expect(getNextScreen(SCREENS.TREATMENT_RECEIVED, { txReceived: false, primarySite: 'prostate' }))
             .toBe(SCREENS.REVIEW);
     });
+    it('unanswered + non-eligible site → review', () => {
+        expect(getNextScreen(SCREENS.TREATMENT_RECEIVED, { txReceived: null, primarySite: 'prostate' }))
+            .toBe(SCREENS.REVIEW);
+    });
     it('detail → summary; summary → gate/review by site eligibility', () => {
         expect(getNextScreen(SCREENS.TREATMENT_DETAIL, {})).toBe(SCREENS.TREATMENT_SUMMARY);
         expect(getNextScreen(SCREENS.TREATMENT_SUMMARY, { primarySite: 'lung' })).toBe(SCREENS.SCREENING_GATE);
@@ -31,8 +35,9 @@ describe('getNextScreen — treatment branch', () => {
 });
 
 describe('getNextScreen — screening branch', () => {
-    it('detected Yes → detail; No → review; detail → review; review → confirmation', () => {
-        expect(getNextScreen(SCREENS.SCREENING_GATE, { screeningDetected: true })).toBe(SCREENS.SCREENING_RECAP);
+    it('detected Yes → recap for multi-option sites. Lung Yes → detail; No → review. Detail → review. Review → confirmation', () => {
+        expect(getNextScreen(SCREENS.SCREENING_GATE, { primarySite: 'breast', screeningDetected: true })).toBe(SCREENS.SCREENING_RECAP);
+        expect(getNextScreen(SCREENS.SCREENING_GATE, { primarySite: 'lung', screeningDetected: true })).toBe(SCREENS.SCREENING_DETAIL);
         expect(getNextScreen(SCREENS.SCREENING_RECAP, {})).toBe(SCREENS.SCREENING_DETAIL);
         expect(getNextScreen(SCREENS.SCREENING_GATE, { screeningDetected: false })).toBe(SCREENS.REVIEW);
         expect(getNextScreen(SCREENS.SCREENING_DETAIL, {})).toBe(SCREENS.REVIEW);
@@ -62,12 +67,17 @@ describe('history stack', () => {
 // no-treatment path instead of rendering a dead summary (review-pass finding).
 describe('nextRenderableScreen', () => {
     it('matches getNextScreen when every downstream screen has its data', async () => {
-        const { nextRenderableScreen } = await import('../js/pages/shareNewHealthInfo/navigation.js');
         const state = { txReceived: true, primarySite: 'prostate', treatments: [{ type: 'chemo' }], screenings: [] };
         expect(nextRenderableScreen(SCREENS.TREATMENT_DETAIL, state)).toBe(SCREENS.TREATMENT_SUMMARY);
     });
+    it('skips treatment detail/summary when Q3 is Yes but no optional treatment type is selected', () => {
+        const noType = { txReceived: true, treatments: [], screenings: [] };
+        expect(nextRenderableScreen(SCREENS.TREATMENT_RECEIVED, { ...noType, primarySite: 'prostate' }))
+            .toBe(SCREENS.REVIEW);
+        expect(nextRenderableScreen(SCREENS.TREATMENT_RECEIVED, { ...noType, primarySite: 'breast' }))
+            .toBe(SCREENS.SCREENING_GATE);
+    });
     it('skips the empty treatment summary and lands on the no-treatment path', async () => {
-        const { nextRenderableScreen } = await import('../js/pages/shareNewHealthInfo/navigation.js');
         const noTx = { txReceived: false, treatments: [], screenings: [] };
         expect(nextRenderableScreen(SCREENS.TREATMENT_DETAIL, { ...noTx, primarySite: 'prostate' }))
             .toBe(SCREENS.REVIEW); // summary skipped (no treatments), prostate skips screening

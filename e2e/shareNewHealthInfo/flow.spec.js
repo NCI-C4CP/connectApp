@@ -25,6 +25,29 @@ test.describe('Share New Health Information — E2E', () => {
         await expect(tip).toBeVisible();
     });
 
+    test('phone-width info tooltip stays inside the viewport', async ({ page }, testInfo) => {
+        test.skip(testInfo.project.name !== 'chromium-desktop', 'This test owns its viewport.');
+        await page.setViewportSize({ width: 390, height: 844 });
+        await setup(page, { i18n: en });
+        await page.click('#srcdxAddDiagnosis');
+        await page.check('#site_breast');
+        await page.click('#srcdxNext');
+        await page.fill('#srcdxDxYear', '2020');
+        await page.click('#srcdxNext');
+        await page.check('#txReceivedYes');
+
+        const icon = page.locator('[data-tooltip-key="shareHealthInfo.q3TxInfo"]');
+        const tip = icon.locator('.srcdx-tooltip');
+        await icon.focus();
+        await expect(tip).toBeVisible();
+        const box = await tip.boundingBox();
+        const viewport = page.viewportSize();
+
+        if (!box || !viewport) throw new Error('Tooltip bounds or viewport were not available.');
+        expect(box.x).toBeGreaterThanOrEqual(14);
+        expect(box.x + box.width).toBeLessThanOrEqual(viewport.width - 14);
+    });
+
     test('happy path (non-screening site, no treatment) → captured submit payload', async ({ page }) => {
         await setup(page);
         await expect(page.locator('#srcdxAddDiagnosis')).toBeVisible();
@@ -122,10 +145,9 @@ test.describe('Share New Health Information — E2E', () => {
         await expect(page.locator('#shareHealthInfoRoot')).toHaveCount(0);
     });
 
-    test('ineligible (deceased) participant: route guard renders nothing', async ({ page }) => {
+    test('deceased verified participant can access the self-report flow', async ({ page }) => {
         await setup(page, { fixture: deceased });
-        await page.waitForFunction(() => window.__SRCDX_RENDERED__ === true || window.__SRCDX_ERROR__);
-        await expect(page.locator('#srcdxAddDiagnosis')).toHaveCount(0);
-        await expect(page.locator('#shareHealthInfoRoot')).toHaveCount(0);
+        await expect(page.locator('#srcdxAddDiagnosis')).toBeVisible();
+        await expect(page.locator('#shareHealthInfoRoot')).toBeVisible();
     });
 });

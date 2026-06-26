@@ -13,7 +13,7 @@ export const renderDiagnosisDate = (content, ctx) => {
             </div>
             <div class="col-6 col-sm-4">
                 <label for="srcdxDxYear" data-i18n="shareHealthInfo.yearLabelRequired">Year <span class="required">*</span></label>
-                <input type="text" inputmode="numeric" maxlength="4" class="form-control" id="srcdxDxYear" placeholder="Enter year of diagnosis">
+                <input type="text" inputmode="numeric" maxlength="4" class="form-control" id="srcdxDxYear" data-i18n="shareHealthInfo.dxYearInput" placeholder="Enter year of diagnosis">
             </div>
         </div>
         ${navButtons({ showBack: true })}

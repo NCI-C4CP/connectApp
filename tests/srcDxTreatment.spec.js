@@ -63,8 +63,12 @@ describe('treatmentDetail', () => {
         const ctx = makeCtx(renderTreatmentDetail);
         renderTreatmentDetail(content, ctx);
         expect(content.querySelector('#srcdxTxStartYr')).not.toBeNull();
+        expect(content.querySelector('#srcdxTxStartYr').dataset.i18n).toBe('shareHealthInfo.txYearInput');
+        expect(content.querySelector('#srcdxTxEndYr').dataset.i18n).toBe('shareHealthInfo.txYearInput');
         // Physician names are the physician's, never the participant's saved contact — and they must
         // not be co-filled when the participant autofills the facility address below them.
+        expect(content.querySelector('#srcdxPhysFirst_0').dataset.i18n).toBe('shareHealthInfo.physFirstInput');
+        expect(content.querySelector('#srcdxPhysLast_0').dataset.i18n).toBe('shareHealthInfo.physLastInput');
         expect(content.querySelector('#srcdxPhysFirst_0').getAttribute('autocomplete')).toBe('off');
         expect(content.querySelector('#srcdxPhysLast_0').getAttribute('autocomplete')).toBe('off');
         expect(content.querySelectorAll('[data-phys]')).toHaveLength(1);
@@ -136,6 +140,17 @@ describe('treatmentDetail', () => {
         renderTreatmentDetail(content, ctx);
         content.querySelector('#srcdxNext').click();
         expect(shared.errorMessage).toHaveBeenCalled();
+        expect(ctx.next).not.toHaveBeenCalled();
+    });
+
+    it('rejects a treatment start year before the diagnosis year', () => {
+        setupOneTreatment();
+        state.getState().dxYear = '2020';
+        const ctx = makeCtx(renderTreatmentDetail);
+        renderTreatmentDetail(content, ctx);
+        content.querySelector('#srcdxTxStartYr').value = '2019';
+        content.querySelector('#srcdxNext').click();
+        expect(shared.errorMessage.mock.calls[0][1]).toContain('shareHealthInfo.txYearBeforeDxError');
         expect(ctx.next).not.toHaveBeenCalled();
     });
 

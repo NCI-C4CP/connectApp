@@ -82,4 +82,5 @@ export const MAX_PHYSICIANS = 10;
 export const CONFIRMATION_LINKS = Object.freeze({
     treatment: 'https://www.cancer.gov/about-cancer/treatment',
     managingCare: 'https://www.cancer.gov/about-cancer/managing-care',
+    supportCenter: 'https://norcfedramp.servicenowservices.com/participant',
 });

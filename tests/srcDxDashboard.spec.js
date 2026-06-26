@@ -73,7 +73,7 @@ beforeEach(() => {
 });
 
 describe('dashboard Share New Health Information card', () => {
-    it('renders for a verified, active, living participant', async () => {
+    it('renders for a verified, active participant', async () => {
         const root = await render(baseData());
         const card = root.querySelector('#shareHealthInfoCard');
         expect(card).not.toBeNull();
@@ -81,13 +81,21 @@ describe('dashboard Share New Health Information card', () => {
         expect(card.querySelector('[data-i18n="dashboard.shareHealthInfoTitle"]')).not.toBeNull();
     });
 
+    it('renders for verified participants with non-eligibility-blocking status flags', async () => {
+        for (const data of [
+            baseData({ [fieldMapping.participantDeceased]: fieldMapping.yes }),
+            baseData({ [fieldMapping.participantDeceasedNORC]: fieldMapping.yes }),
+        ]) {
+            document.getElementById('root').innerHTML = '';
+            const root = await render(data);
+            expect(root.querySelector('#shareHealthInfoCard')).not.toBeNull();
+        }
+    });
+
     it('does not render for ineligible participant states', async () => {
         const ineligibleCases = [
             baseData({ [fieldMapping.verification]: fieldMapping.notYetVerified }),
             baseData({ [fieldMapping.consentWithdrawn]: fieldMapping.yes }),
-            baseData({ [fieldMapping.destroyData]: fieldMapping.yes }),
-            baseData({ [fieldMapping.participantDeceased]: fieldMapping.yes }),
-            baseData({ [fieldMapping.participantDeceasedNORC]: fieldMapping.yes }),
         ];
 
         for (const data of ineligibleCases) {

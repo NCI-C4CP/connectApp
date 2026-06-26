@@ -1,12 +1,25 @@
 import { renderScreen, pageShell, card } from '../ui.js';
 import { escapeHTML } from '../../../shared.js';
 
+const locationHtml = (location) => {
+    if (!location || typeof location !== 'object' || Array.isArray(location)) {
+        return escapeHTML(String(location ?? ''));
+    }
+    const i18nKey = String(location.i18nKey ?? '');
+    const fallback = String(location.fallback ?? '');
+    const otherText = String(location.otherText ?? '').trim();
+    const label = i18nKey
+        ? `<span data-i18n="${escapeHTML(i18nKey)}">${escapeHTML(fallback)}</span>`
+        : escapeHTML(fallback);
+    return `${label}${otherText ? ` (${escapeHTML(otherText)})` : ''}`;
+};
+
 export const renderLanding = (content, { onStart, prior = [] } = {}) => {
     const middle = prior.length
         ? card('shareHealthInfo.previouslyReportedHeader', 'Previously Reported Cancer Diagnoses', `
             ${prior.map((d) => `
             <div class="border-bottom py-2">
-                <div><strong data-i18n="shareHealthInfo.previouslyReportedLocation">Location</strong>: ${escapeHTML(String(d.location ?? ''))}</div>
+                <div><strong data-i18n="shareHealthInfo.previouslyReportedLocation">Location</strong>: ${locationHtml(d.location)}</div>
                 <div><strong data-i18n="shareHealthInfo.previouslyReportedDate">Diagnosis date</strong>: ${escapeHTML(String(d.dxDate ?? ''))}</div>
             </div>`).join('')}
             <div class="srcdx-nav">

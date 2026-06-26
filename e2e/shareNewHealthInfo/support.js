@@ -13,9 +13,10 @@ const dataAccessStub = readFileSync(join(here, 'stubs/dataAccess.stub.js'), 'utf
 export const F = fieldMapping;
 export const m = fieldMapping.selfReportCancerDx;
 
-// Quest-flat payload helpers (mirror payload.js#dKey — payload.js itself cannot be imported
+// Quest-flat payload helpers (mirror payload.js key helpers — payload.js itself cannot be imported
 // here: it transitively pulls js/shared.js, whose module scope needs browser globals).
 export const dk = (cid, ...idx) => ['D_' + cid, ...idx].join('_');
+export const ndk = (parentCid, childCid, ...idx) => ['D_' + parentCid, 'D_' + childCid, ...idx].join('_');
 export const Y = String(fieldMapping.yes);
 export const N = String(fieldMapping.no);
 

@@ -134,4 +134,19 @@ describe('landing — previously reported (returning user)', () => {
         expect(content.textContent).toContain('09/2025');
         expect(content.querySelector('#srcdxAddDiagnosis')).not.toBeNull();
     });
+
+    it('returning: keeps coded prior site labels translatable while preserving Other write-in text', () => {
+        renderLanding(content, {
+            onStart: vi.fn(),
+            prior: [{
+                location: { i18nKey: 'shareHealthInfo.site_other', fallback: 'Other', otherText: 'test' },
+                dxDate: '2015',
+            }],
+        });
+
+        const site = content.querySelector('[data-i18n="shareHealthInfo.site_other"]');
+        expect(site).not.toBeNull();
+        expect(site.textContent).toBe('Other');
+        expect(content.textContent).toContain('Other (test)');
+    });
 });

@@ -26,14 +26,14 @@ export const participantWithdrawn = Object.freeze({
     [consentWithdrawn]: yes,
 });
 
-// Verified, not withdrawn, but data-destruction requested → not eligible (defensive).
+// Verified and not withdrawn; data-destruction status does not block self-report cancer dx.
 export const participantDataDestroyRequested = Object.freeze({
     [verification]: verified,
     [consentWithdrawn]: no,
     [destroyData]: yes,
 });
 
-// Verified/not withdrawn, but deceased by either source → not eligible.
+// Verified/not withdrawn and deceased by either source → still eligible for self-report cancer dx.
 export const participantDeceasedEmr = Object.freeze({
     [verification]: verified,
     [consentWithdrawn]: no,
