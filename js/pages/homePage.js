@@ -29,7 +29,7 @@ export const homePage = async () => {
                   </p>
               </div>
               <div class="col-lg-4 d-sm-none text-lg-start text-center" style="text-align:center;">
-                  <p class = "homeTitleTextMobile" style="text-align:center; font-family: 'Montserrat', sans-serif;" data-i18n="home.titleText">
+                  <p class = "homeTitleTextMobile" style="text-align:center;" data-i18n="home.titleText">
                   
                       Connect <em>today.</em>
                       <br>Prevent cancer
@@ -103,7 +103,8 @@ export const homePage = async () => {
 
     if (isMagicLinkSignIn) {
       if ( location.search !== cleanSearchStr ) {
-        location.search = cleanSearchStr; // Page reload with clean url
+        const cleanUrl = `${location.origin}${location.pathname}${cleanSearchStr}${location.hash || ''}`;
+        window.history.replaceState({}, document.title || '', cleanUrl);
       }
         try {
             showAnimation();

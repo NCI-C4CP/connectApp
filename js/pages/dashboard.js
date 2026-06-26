@@ -5,6 +5,7 @@ import { consentTemplate } from "./consent.js";
 import { addEventHeardAboutStudy, addEventRequestPINForm, addEventHealthCareProviderSubmit, addEventPinAutoUpperCase, addEventHealthProviderModalSubmit, addEventToggleSubmit, storeParameters } from "../event.js";
 import { heardAboutStudy, requestPINTemplate, healthCareProvider, noLongerEnrollingRender } from "./healthCareProvider.js";
 import fieldMapping from '../fieldToConceptIdMapping.js';
+import { isVerifiedNotWithdrawn } from "./shareNewHealthInfo/conditionalLogic.js";
 
 export const renderDashboard = async (data, fromUserProfile, collections) => {
     const mainContent = document.getElementById('root');
@@ -411,6 +412,7 @@ const renderMainBody = async (data, collections) => {
             ${renderSamplesCard(data)}
             ${await renderReportsCard(data)}
             ${renderPaymentCard(data)}
+            ${renderShareHealthInfoCard(data)}
         </div>
     </div>`;
 
@@ -471,6 +473,12 @@ const renderPaymentCard = (data) => {
     let href = "#payment";
     let type = "payment";
     return renderCard(icon, type, href, false);
+}
+
+// "Share New Health Information" card. Shown only to verified, active, living participants (issue #1295).
+const renderShareHealthInfoCard = (data) => {
+    if (!isVerifiedNotWithdrawn(data)) return '';
+    return renderCard('./images/share-health-info-icon.svg', 'shareHealthInfo', '#share-health-info', false);
 }
 
 const renderCard = (icon, type, href, newFlag) => {

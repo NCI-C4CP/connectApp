@@ -1,0 +1,457 @@
+/*
+ * Self-Report Cancer Diagnosis ("Share New Health Information") styles.
+ * Scoped under #shareHealthInfoRoot so nothing leaks to the rest of the app.
+ * Matches the OCPL comps: persistent page shell, "Report a Cancer Diagnosis" card,
+ * collapsible "Health Care System Update" card, and gold/amber action buttons.
+ */
+
+/* Shared design tokens:
+   --srcdx-ink   = heading/body charcoal per comps (a soft dark gray, not near-black).
+   --srcdx-radius = box corner rounding per comps (squared / very lightly rounded). */
+#shareHealthInfoRoot {
+    --srcdx-ink: #3d3d3d;
+    --srcdx-radius: 2px;
+    --srcdx-blue: #2A72A5;      /* brand blue: links, radio rings, outline-button borders/text */
+    --srcdx-blue-dark: #1c5d86; /* hover/focus shade of the brand blue */
+    --srcdx-blue-tint: #eef5fb; /* pale blue fill: hovers, callout/tooltip backgrounds */
+}
+/* Squared corners on all boxy controls (overrides Bootstrap's ~6px default within the feature). */
+#shareHealthInfoRoot .btn,
+#shareHealthInfoRoot .form-control { border-radius: var(--srcdx-radius); }
+
+#shareHealthInfoRoot .srcdx-page-header {
+    color: var(--srcdx-ink); /* charcoal per comps (titles, card headers, questions all share this) */
+    font-weight: 700;
+    margin-bottom: .5rem;
+}
+
+/* Headings receive programmatic focus on each screen render (for screen-reader announcement) but
+   are not keyboard-tabbable, so suppress the visible focus ring on them (it isn't in the comps). */
+#shareHealthInfoRoot .srcdx-page-header:focus,
+#shareHealthInfoRoot .srcdx-question:focus { outline: none; }
+
+#shareHealthInfoRoot .srcdx-page-intro {
+    color: #555;
+    margin-bottom: 1.5rem;
+    max-width: 62rem;
+}
+
+/* Cards (Report a Cancer Diagnosis / Previously Reported / HCS Update) */
+#shareHealthInfoRoot .srcdx-card {
+    border: 1px solid #d4d7da;
+    border-radius: var(--srcdx-radius);
+    background: #fff;
+    padding: 0;                 /* override the dashboard .card 2rem padding */
+    margin-top: 0;
+    cursor: default;
+    color: var(--srcdx-ink);
+    box-shadow: none;
+}
+
+#shareHealthInfoRoot .srcdx-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+}
+
+#shareHealthInfoRoot .srcdx-card.srcdx-collapsible .srcdx-card-header {
+    cursor: pointer;
+}
+
+#shareHealthInfoRoot .srcdx-card-title {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: var(--srcdx-ink); /* charcoal per comps */
+}
+
+#shareHealthInfoRoot .srcdx-card-body {
+    padding: 0 1.25rem 1.25rem;
+}
+
+/* Collapse chevron: en-dash when expanded, plus when collapsed. */
+#shareHealthInfoRoot .srcdx-card-chevron {
+    color: #6c757d;
+    font-size: 1.35rem;
+    line-height: 1;
+}
+#shareHealthInfoRoot .srcdx-card-chevron::before { content: "\2013"; }      /* – */
+#shareHealthInfoRoot .srcdx-collapsed .srcdx-card-chevron::before { content: "+"; }
+#shareHealthInfoRoot .srcdx-collapsed .srcdx-card-body { display: none; }
+
+/* The numbered question heading inside the card. */
+#shareHealthInfoRoot .srcdx-question {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--srcdx-ink);
+    margin-bottom: 1rem;
+}
+
+/* Q3 (treatment) question */
+#shareHealthInfoRoot .srcdx-question.srcdx-question--tight { margin-bottom: 0.75rem; }
+
+/* Section sub-headings within a question (dates, physician, facility, screening groups).
+   Generous top margin gives each major section breathing room (per comp). */
+#shareHealthInfoRoot .srcdx-subheading {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--srcdx-ink);
+    margin: 3rem 0 .75rem;
+}
+
+/* Separate repeated facility blocks (when the participant adds more than one). Space + a light
+   divider, since the facilities have no bounding box. */
+#shareHealthInfoRoot [data-fac-wrap] + [data-fac-wrap] {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid #d4d7da;
+}
+
+/* The app's global `.row { padding: 15px }` indents (and pads) every grid row. Neutralize it inside
+   the card so the dates/physician/facility columns sit flush-left like the rest of the form. */
+#shareHealthInfoRoot .srcdx-card-body .row { padding: 0; }
+
+/* Bold inline text (e.g. the Q3 "Select each treatment…" instruction). Feature-owned rather than
+   Bootstrap's .fw-bold, which an app-only CDN stylesheet clobbers (the harness doesn't load it). */
+#shareHealthInfoRoot .srcdx-strong { font-weight: 700; }
+
+/* Nav row (Back / Next) */
+#shareHealthInfoRoot .srcdx-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 1.5rem;
+}
+
+/* Buttons: gold/amber primary, white outline-blue secondary (per comps) */
+#shareHealthInfoRoot .btn-primary {
+    background-color: #f5c518;
+    border-color: #f5c518;
+    color: #1c3c5a;
+    font-weight: 600;
+}
+#shareHealthInfoRoot .btn-primary:hover,
+#shareHealthInfoRoot .btn-primary:focus {
+    background-color: #e3b30f;
+    border-color: #e3b30f;
+    color: #1c3c5a;
+}
+
+/* White (clear) background to match the comp — overrides the app's `.btn-light { ...#c5c6c8 !important }`. */
+#shareHealthInfoRoot .btn-light {
+    background-color: #fff !important;
+    border: 1px solid var(--srcdx-blue);
+    color: var(--srcdx-blue);
+    font-weight: 600;
+}
+#shareHealthInfoRoot .btn-light:hover,
+#shareHealthInfoRoot .btn-light:focus {
+    background-color: var(--srcdx-blue-tint) !important;
+    border-color: var(--srcdx-blue-dark);
+    color: var(--srcdx-blue-dark);
+}
+
+/* "+ Add another ..." buttons (physician, facility) — white outline-blue, per comp. */
+#shareHealthInfoRoot .srcdx-add-link {
+    background: #fff;
+    border: 1px solid var(--srcdx-blue);
+    border-radius: var(--srcdx-radius);
+    color: var(--srcdx-blue);
+    font-weight: 600;
+    padding: .375rem .75rem;
+    text-decoration: none;
+}
+#shareHealthInfoRoot .srcdx-add-link:hover,
+#shareHealthInfoRoot .srcdx-add-link:focus {
+    background: var(--srcdx-blue-tint);
+    border-color: var(--srcdx-blue-dark);
+    color: var(--srcdx-blue-dark);
+    text-decoration: none;
+}
+#shareHealthInfoRoot .srcdx-add-link:disabled { opacity: .55; cursor: not-allowed; }
+
+/* Form spacing inside cards. */
+#shareHealthInfoRoot .srcdx-card-body label { font-weight: 600; color: var(--srcdx-ink); }
+/* Neutralize the app's global `.form-control { margin-left: 5px }`, which pushes every input/select/
+   textarea 5px right of its label — so fields sit flush-left with their labels across the feature. */
+#shareHealthInfoRoot .srcdx-card-body .form-control { max-width: 100%; margin-left: 0; }
+
+/* Option lists (Q1 site list, treatment types, screening options), per comps: regular-weight
+   labels and a neutral ring that fills with brand blue when selected — not Bootstrap's default
+   bold-via-card-rule + vivid #0d6efd. */
+#shareHealthInfoRoot .srcdx-card-body .form-check-label { font-weight: 400; }
+
+/* Blue ring on every option control, in both states (matches the comp). */
+#shareHealthInfoRoot .srcdx-card-body .form-check-input {
+    border-color: var(--srcdx-blue);
+    border-width: 1.5px;
+}
+/* Selected radio = white interior with a filled blue center dot and a white gap inside the blue
+   ring ("donut" radio), NOT Bootstrap's solid-blue fill + tiny white center. */
+#shareHealthInfoRoot .srcdx-card-body .form-check-input[type="radio"]:checked {
+    background-color: #fff;
+    border-color: var(--srcdx-blue);
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='2.4' fill='%232A72A5'/></svg>");
+}
+/* Selected checkbox: brand blue fill (keeps Bootstrap's white check), not the default vivid blue. */
+#shareHealthInfoRoot .srcdx-card-body .form-check-input[type="checkbox"]:checked {
+    background-color: var(--srcdx-blue);
+    border-color: var(--srcdx-blue);
+}
+/* "My treatment is ongoing": a checkbox styled as a radio (circle + donut) to match the comp/doc,
+   while staying a checkbox so it remains deselectable for the optional end-date XOR. */
+#shareHealthInfoRoot .srcdx-card-body input.srcdx-radio-checkbox[type="checkbox"] { border-radius: 50%; }
+#shareHealthInfoRoot .srcdx-card-body input.srcdx-radio-checkbox[type="checkbox"]:checked {
+    background-color: #fff;
+    border-color: var(--srcdx-blue);
+    background-image: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'><circle r='2.4' fill='%232A72A5'/></svg>");
+}
+/* Focus ring only for keyboard users (mouse selection stays clean like the comp; WCAG 2.4.7). */
+#shareHealthInfoRoot .srcdx-card-body .form-check-input:focus { box-shadow: none; }
+#shareHealthInfoRoot .srcdx-card-body .form-check-input:focus-visible {
+    border-color: var(--srcdx-blue);
+    box-shadow: 0 0 0 .25rem rgba(42, 114, 165, .25);
+}
+
+/* (i) info icon + hover/focus tooltip (Q3 treatment, Q4 screening definitions).
+   Filled badge per the comp: dark blue circle with a light 'i'. */
+#shareHealthInfoRoot .srcdx-info {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    background: var(--srcdx-blue);
+    color: #fff;
+    font-size: .75rem;
+    font-weight: 700;
+    line-height: 1;
+    cursor: help;
+    vertical-align: middle;
+    user-select: none;
+}
+#shareHealthInfoRoot .srcdx-tooltip {
+    display: none;
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 8px);
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: 300px;
+    background: var(--srcdx-blue-tint);
+    color: var(--srcdx-ink);
+    border: 1px solid #bcd3e6;
+    border-radius: var(--srcdx-radius);
+    padding: .6rem .75rem;
+    font-size: .85rem;
+    font-weight: 400;
+    line-height: 1.35;
+    text-align: left;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .18);
+    z-index: 1090;
+    white-space: normal;
+}
+#shareHealthInfoRoot .srcdx-info:hover .srcdx-tooltip,
+#shareHealthInfoRoot .srcdx-info:focus .srcdx-tooltip,
+#shareHealthInfoRoot .srcdx-info:focus-within .srcdx-tooltip { display: block; }
+
+/* Treatment-summary card: a bordered box holding a dark circular X-remove control and the
+   bold treatment name. (The comp shows only the X; an Edit link is kept alongside the box by request.) */
+#shareHealthInfoRoot .srcdx-tx-card {
+    display: inline-flex;
+    align-items: center;
+    gap: .625rem;
+    border: 1px solid var(--srcdx-blue);
+    border-radius: var(--srcdx-radius);
+    background: #fff;
+    padding: .45rem .85rem;
+}
+#shareHealthInfoRoot .srcdx-tx-name {
+    font-weight: 700;
+    color: var(--srcdx-ink);
+}
+#shareHealthInfoRoot .srcdx-tx-remove {
+    position: relative;
+    flex: 0 0 auto;
+    width: 1.15rem;
+    height: 1.15rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #212529;
+    cursor: pointer;
+}
+#shareHealthInfoRoot .srcdx-tx-remove::before,
+#shareHealthInfoRoot .srcdx-tx-remove::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: .58rem;
+    height: 2px;
+    background: #fff;
+    border-radius: 1px;
+}
+#shareHealthInfoRoot .srcdx-tx-remove::before { transform: translate(-50%, -50%) rotate(45deg); }
+#shareHealthInfoRoot .srcdx-tx-remove::after { transform: translate(-50%, -50%) rotate(-45deg); }
+#shareHealthInfoRoot .srcdx-tx-remove:hover,
+#shareHealthInfoRoot .srcdx-tx-remove:focus-visible {
+    background: #000;
+}
+
+/* Review rows: divider-separated. No divider after the last one. */
+#shareHealthInfoRoot .srcdx-review-item:last-of-type { border-bottom: 0 !important; padding-bottom: .25rem; }
+
+/* Confirmation thank-you callout. */
+#shareHealthInfoRoot .srcdx-callout {
+    background: var(--srcdx-blue-tint);
+    border-left: 4px solid var(--srcdx-blue);
+    padding: 1rem 1.25rem;
+    border-radius: var(--srcdx-radius);
+}
+
+/* Remove-confirmation modal (treatment summary), per Comp 9 */
+#shareHealthInfoRoot .srcdx-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1080;
+}
+#shareHealthInfoRoot .srcdx-modal {
+    background: #fff;
+    border-radius: var(--srcdx-radius);
+    padding: 1.75rem 1.5rem 1.25rem;
+    max-width: 440px;
+    width: 90%;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, .25);
+}
+#shareHealthInfoRoot .srcdx-modal-close {
+    position: absolute;
+    top: .4rem;
+    right: .65rem;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    line-height: 1;
+    color: #6c757d;
+}
+#shareHealthInfoRoot .srcdx-modal-actions {
+    display: flex;
+    justify-content: space-between; /* Go Back to the left edge, Delete to the right edge */
+    gap: .75rem;
+    margin-top: 1.25rem;
+}
+
+/* Between-items screening status badges: uppercase square chips. Complete in the pale
+   brand tint, pending in neutral gray. */
+#shareHealthInfoRoot .srcdx-status-badge {
+    display: inline-block;
+    margin-left: .5rem;
+    padding: .2rem .55rem;
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .02em;
+    text-transform: uppercase;
+    border-radius: var(--srcdx-radius);
+}
+#shareHealthInfoRoot .srcdx-status-badge.complete {
+    background: var(--srcdx-blue-tint);
+    color: var(--srcdx-blue-dark);
+    border: 1px solid #bcd3e6;
+}
+#shareHealthInfoRoot .srcdx-status-badge.pending {
+    background: #e9ecef;
+    color: var(--srcdx-ink);
+    border: 1px solid #d4d7da;
+}
+
+/* Review (Comp 15): expandable treatment/screening rows. Divider-separated, with a borderless
+   +/− toggle on the right. Expanded bodies indent slightly under the row label. */
+#shareHealthInfoRoot .srcdx-review-row {
+    border-top: 1px solid #d4d7da;
+    padding: .65rem 0;
+}
+#shareHealthInfoRoot .srcdx-review-row:last-of-type { border-bottom: 1px solid #d4d7da; }
+#shareHealthInfoRoot .srcdx-review-row-body { padding: 0 0 .5rem .75rem; }
+#shareHealthInfoRoot .srcdx-expander {
+    border: 0;
+    background: none;
+    color: var(--srcdx-ink);
+    font-size: 1.25rem;
+    line-height: 1;
+    padding: 0 .25rem;
+    cursor: pointer;
+}
+
+/* NPI provider typeahead: the col-12 slot is the last child of the physician row, so the
+   absolutely-positioned popup anchors directly under the inputs and spans the full row on
+   every viewport (incl. 360px). Gutter offsets align the popup edges with the inputs' visible
+   edges. The z-index sits above static card content, below the modal (1080) and tooltips (1090). */
+#shareHealthInfoRoot .srcdx-suggest { position: relative; }
+#shareHealthInfoRoot .srcdx-suggest-pop {
+    position: absolute;
+    top: 0;
+    left: calc(var(--bs-gutter-x, 1.5rem) * .5);
+    right: calc(var(--bs-gutter-x, 1.5rem) * .5);
+    z-index: 1060;
+    background: #fff;
+    border: 1px solid #bcd3e6;
+    border-radius: var(--srcdx-radius);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, .18);
+}
+#shareHealthInfoRoot .srcdx-suggest-pop--status { pointer-events: none; }
+#shareHealthInfoRoot .srcdx-suggest-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 18rem;
+    overflow-y: auto;
+}
+#shareHealthInfoRoot .srcdx-suggest-item {
+    padding: .5rem .75rem;
+    cursor: pointer;
+    font-size: .9rem;
+    color: var(--srcdx-ink);
+}
+#shareHealthInfoRoot .srcdx-suggest-item + .srcdx-suggest-item { border-top: 1px solid #e9ecef; }
+#shareHealthInfoRoot .srcdx-suggest-item:hover,
+#shareHealthInfoRoot .srcdx-suggest-item[aria-selected="true"] { background: var(--srcdx-blue-tint); }
+#shareHealthInfoRoot .srcdx-suggest-sub { color: #555; }
+#shareHealthInfoRoot .srcdx-suggest-status {
+    padding: .5rem .75rem;
+    color: #555;
+    font-size: .85rem;
+}
+#shareHealthInfoRoot .srcdx-suggest-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    margin-top: .35rem;
+    padding: .2rem .6rem;
+    font-size: .8rem;
+    color: var(--srcdx-ink);
+    background: var(--srcdx-blue-tint);
+    border: 1px solid #bcd3e6;
+    border-radius: var(--srcdx-radius);
+}
+#shareHealthInfoRoot .srcdx-suggest-chip-clear {
+    border: 0;
+    background: none;
+    color: var(--srcdx-blue-dark);
+    font-size: 1rem;
+    line-height: 1;
+    padding: .25rem .4rem; /* >=24px hit target */
+    cursor: pointer;
+}
+#shareHealthInfoRoot .srcdx-suggest-chip-clear:focus-visible {
+    outline: 2px solid var(--srcdx-blue);
+    outline-offset: 1px;
+}
