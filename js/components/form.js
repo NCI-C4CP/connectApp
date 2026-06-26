@@ -23,25 +23,25 @@ export const renderUserProfile = async () => {
             <div class="row">
                 <div class="col-md-4">
                     <label style="margin-left:-15px" data-i18n="form.firstName">First Name <span class="required">*</span></label>
-                    <input data-i18n="form.firstNameField" type="text" value="${myData.data['471168198']}" class="form-control input-validation row" id="UPFirstName" placeholder="Enter first name" disabled style="max-width:215px; background-color:#e6e6e6 !important;">
+                    <input data-i18n="form.firstNameField" type="text" value="${myData.data['471168198']}" class="form-control input-validation row" id="UPFirstName" placeholder="Enter first name" disabled style="max-width:215px;">
                 </div>
                 <div class="col-md-4">
                     <label style="margin-left:-15px" data-i18n="form.middleName">Middle Name</label>
                     <input type="text"  data-i18n="form.middleNameField" value="${
                         myData.data["436680969"] ? myData.data["436680969"] : ""
-                    }" class="form-control input-validation row" data-validation-pattern="alphabets" data-error-validation="Your middle name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters." id="UPMiddleInitial" style="max-width:215px; background-color:#e6e6e6 !important;" disabled>
+                    }" class="form-control input-validation row" data-validation-pattern="alphabets" data-error-validation="Your middle name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters." id="UPMiddleInitial" style="max-width:215px;" disabled>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <label data-i18n="form.lastName" style="margin-left:-15px">Last Name <span class="required">*</span></label>
-                    <input data-i18n="form.lastNameField" type="text" value="${myData.data['736251808']}" class="form-control input-validation row" id="UPLastName" placeholder="Enter last name" disabled style="max-width:304px; background-color:#e6e6e6 !important;">
+                    <input data-i18n="form.lastNameField" type="text" value="${myData.data['736251808']}" class="form-control input-validation row" id="UPLastName" placeholder="Enter last name" disabled style="max-width:304px;">
                 </div>
             </div>
             <div class="form-group row">
                 <div class="col-md-4">
                     <label class="col-form-label" data-i18n="form.suffixList">Suffix</label>
-                    <select class="form-control" style="max-width:152px; background-color:#e6e6e6 !important; margin-left:0px;" id="UPSuffix" disabled>
+                    <select class="form-select" style="max-width:152px; margin-left:0px;" id="UPSuffix" disabled>
                         <option value="" data-i18n="form.selectOption">-- Select --</option>
                         <option value="${cId.suffixValue.jr}" ${myData.data[consentSuffixKey] ? (suffixList[myData.data[consentSuffixKey]] == 0 ? 'selected':'') : ''}  data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(cId.suffixValue.jr).replace('.', '')}">${suffixToTextMapDropdown.get(cId.suffixValue.jr)}</option>
                         <option value="${cId.suffixValue.sr}" ${myData.data[consentSuffixKey] ? (suffixList[myData.data[consentSuffixKey]] == 1 ? 'selected':'') : ''}  data-i18n="${'settingsHelpers.suffix'+suffixToTextMap.get(cId.suffixValue.sr).replace('.', '')}">${suffixToTextMapDropdown.get(cId.suffixValue.sr)}</option>
@@ -90,7 +90,7 @@ export const renderUserProfile = async () => {
             <div class="form-group row">
                 <div class="col-md-3 col-lg-2">
                     <label class="col-form-label" data-i18n="form.monthListLabel">Month <span class="required">*</span></label>
-                    <select style="margin-left:0px;" id="UPMonth" class="form-control required-field" data-i18n="form.monthListRequired" data-error-required='Please select your birth month.'>
+                    <select style="margin-left:0px;" id="UPMonth" class="form-select required-field" data-i18n="form.monthListRequired" data-error-required='Please select your birth month.'>
                         <option class="option-dark-mode" value="" data-i18n="form.selectOption">-- Select --</option>
                         <option class="option-dark-mode" value="01" data-i18n="form.monthJanuary">January</option>
                         <option class="option-dark-mode" value="02" data-i18n="form.monthFebruary">February</option>
@@ -108,7 +108,7 @@ export const renderUserProfile = async () => {
                 </div>
                 <div class="col-md-3 col-lg-2">
                     <label class="col-form-label" data-i18n="form.dayListLabel">Day <span class="required">*</span></label>
-                    <select style="margin-left:0px;"class="form-control required-field" data-i18n="form.dayListRequired" id="UPDay"></select>
+                    <select style="margin-left:0px;"class="form-select required-field" data-i18n="form.dayListRequired" id="UPDay"></select>
                 </div>
                 <div class="col-md-3 col-lg-2">
                     <label class="col-form-label" data-i18n="form.yearListLabel">Year <span class="required">*</span></label>
@@ -126,7 +126,7 @@ export const renderUserProfile = async () => {
             <div class="form-group row" style="margin-top: -20px">
                 <div class="col-md-3 col-lg-2">
                     <label class="col-form-label" data-i18n="form.monthListLabel">Month <span class="required">*</span></label>
-                    <select style="margin-left:0px;" id="UPMonthConfirmation" class="form-control confirmation-field" target="UPMonth" data-i18n="form.monthFieldConfirmation" data-error-confirmation="Both the Month of Birth's do not match">
+                    <select style="margin-left:0px;" id="UPMonthConfirmation" class="form-select confirmation-field" target="UPMonth" data-i18n="form.monthFieldConfirmation" data-error-confirmation="Both the Month of Birth's do not match">
                         <option class="option-dark-mode" value="" data-i18n="form.selectOptionConfirmation">-- Select --</option>
                         <option class="option-dark-mode" value="01" data-i18n="form.monthJanuary">January</option>
                         <option class="option-dark-mode" value="02" data-i18n="form.monthFebruary">February</option>
@@ -144,7 +144,7 @@ export const renderUserProfile = async () => {
                 </div>
                 <div class="col-md-3 col-lg-2">
                     <label class="col-form-label" data-i18n="form.dayListLabel">Day <span class="required">*</span></label>
-                    <select style="margin-left:0px;" class="form-control confirmation-field" id="UPDayConfirmation" target="UPDay" data-i18n="form.dayFieldConfirmation" data-error-confirmation="Both the Day of Birth's do not match"></select>
+                    <select style="margin-left:0px;" class="form-select confirmation-field" id="UPDayConfirmation" target="UPDay" data-i18n="form.dayFieldConfirmation" data-error-confirmation="Both the Day of Birth's do not match"></select>
                 </div>
                     <div class="col-md-3 col-lg-2">
                      <label class="col-form-label" data-i18n="form.yearListLabel">Year <span class="required">*</span></label>
@@ -161,7 +161,7 @@ export const renderUserProfile = async () => {
                         Country 
                     </label>
                     <br>
-                    <select class="form-control"  id="countryOfOrigin" data-live-search="true">
+                    <select class="form-select"  id="countryOfOrigin" data-live-search="true">
                          <option class="option-dark-mode" value="" data-i18n="form.selectOption">-- Select --</option>
                         ${renderCountries()}
                     </select>
@@ -173,7 +173,7 @@ export const renderUserProfile = async () => {
                         State 
                     </label>
                     <br>
-                    <select class="form-control" style="margin-left:0px; max-width:301px;" id="stateOfBirth" disabled>
+                    <select class="form-select" style="margin-left:0px; max-width:301px;" id="stateOfBirth" disabled>
                         <option class="option-dark-mode" value="" data-i18n="form.selectOption">-- Select --</option>
                         ${renderBirthStates()}
                     </select>
@@ -185,7 +185,7 @@ export const renderUserProfile = async () => {
                         City 
                     </label>
                     <br>
-                    <input data-i18n="form.cityOfBirth" style="margin-left:0px; max-width:301px;" type=text id="cityOfBirth" class="form-control" placeholder="Enter City" maxlength="48" disabled>
+                    <input data-i18n="form.cityOfBirth" style="margin-left:0px; max-width:301px;" type=text id="cityOfBirth" class="form-control input-validation" placeholder="Enter City" data-validation-pattern="birthState" maxlength="48" disabled>
                 </div>
             </div>
 
@@ -603,7 +603,7 @@ export const renderMailingAddress = (type, id, required, showCountry) => {
                     State ${required ? '<span class="required">*</span>': ''}
                 </label>
                 <br>
-                <select style="margin-left:0px; max-width:301px;" class="form-control ${required ? 'required-field': ''}" data-error-required='Please select the state field of your mailing address.' id="UPAddress${id}State" data-i18n="form.mailAddressState">
+                <select style="margin-left:0px; max-width:301px;" class="form-select ${required ? 'required-field': ''}" data-error-required='Please select the state field of your mailing address.' id="UPAddress${id}State" data-i18n="form.mailAddressState">
                     <option class="option-dark-mode" value="" data-i18n="form.selectOption">-- Select --</option>
                     ${renderStates()}
                 </select><br>
@@ -623,7 +623,7 @@ export const renderMailingAddress = (type, id, required, showCountry) => {
             <label class="col-md-4 col-form-label" data-i18n="form.mailAddressCountry${required ? 'Required': ''}">
                 Country ${required ? '<span class="required">*</span>': ''}
             </label>
-            <select class="form-control col-md-4" ${required ? 'required' : ''} id="UPAddress${id}Country">
+            <select class="form-select col-md-4" ${required ? 'required' : ''} id="UPAddress${id}Country">
                 <option class="option-dark-mode" value="">-- Select Country --</option>
                 ${renderMailingCountries()}
             </select>

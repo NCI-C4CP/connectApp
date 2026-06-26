@@ -167,7 +167,8 @@
         "dobConfirmation": "Por favor, confirme su fecha de nacimiento volviendo a ingresar su información.",
         "cityOfBirth":{
             "title": "Ciudad",
-            "placeholder": "Ingrese la ciudad"
+            "placeholder": "Ingrese la ciudad",
+            "data-error-validation": "Ingrese un nombre de ciudad válido usando solo letras, espacios y puntuación común."
         },
         "stateOfBirth":{
             "title": "Estado",

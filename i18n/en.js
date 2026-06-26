@@ -167,7 +167,8 @@ const en = {
         "dobConfirmation": "Please confirm your date of birth by re-entering your information.",
         "cityOfBirth": {
             "title": "City",
-            "placeholder": "Enter City"
+            "placeholder": "Enter City",
+            "data-error-validation": "Please enter a valid city name using only letters, spaces, and common punctuation.",
         },
         "stateOfBirth": {
             "title": "State",
