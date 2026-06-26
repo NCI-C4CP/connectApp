@@ -18,6 +18,8 @@ import * as state from '../js/pages/shareNewHealthInfo/state.js';
 import { renderPrimarySite } from '../js/pages/shareNewHealthInfo/screens/primarySite.js';
 import { renderDiagnosisDate } from '../js/pages/shareNewHealthInfo/screens/diagnosisDate.js';
 import { renderTreatmentReceived } from '../js/pages/shareNewHealthInfo/screens/treatmentReceived.js';
+import en from '../i18n/en.js';
+import es from '../i18n/es.js';
 
 let win, content, ctx;
 
@@ -102,6 +104,11 @@ describe('diagnosisDate (Q2)', () => {
         expect(ctx.next).not.toHaveBeenCalled();
     });
 
+    it('marks the diagnosis year placeholder as translatable', () => {
+        renderDiagnosisDate(content, ctx);
+        expect(content.querySelector('#srcdxDxYear').dataset.i18n).toBe('shareHealthInfo.dxYearInput');
+    });
+
     it('harvests month code + year and advances', () => {
         renderDiagnosisDate(content, ctx);
         content.querySelector('#srcdxDxMonth').value = '5';
@@ -132,6 +139,26 @@ describe('diagnosisDate (Q2)', () => {
     });
 });
 
+describe('Spanish copy updates', () => {
+    it('contains the requested MRI, recap, status, placeholder, and confirmation strings', () => {
+        expect(es.shareHealthInfo.scrn_breastMRI).toBe('IRM de mama');
+        expect(es.shareHealthInfo.recapHelp).toBe('Ahora le pediremos más información sobre cada una.');
+        expect(es.shareHealthInfo.statusAlmostDone).toBe('¡Ya casi ha terminado! Complete la información sobre su prueba de detección');
+        expect(es.shareHealthInfo.q4Header_lung).toContain('tomografía computarizada de dosis baja');
+        expect(es.shareHealthInfo.dxYearInput.placeholder).toBe('Ingresa el año de diagnóstico');
+        expect(es.shareHealthInfo.confirmBody).toContain('https://www.cancer.gov/espanol/cancer/tratamiento');
+        expect(es.shareHealthInfo.confirmBody).toContain('https://www.cancer.gov/espanol/cancer/manejo-del-cancer');
+        expect(es.shareHealthInfo.confirmBody).toContain('Centro de Asistencia de Connect');
+        expect(es.shareHealthInfo.confirmBody).toContain('https://norcfedramp.servicenowservices.com/participant');
+        expect(es.shareHealthInfo.txYearBeforeDxError).toBe('El año del tratamiento no puede ser anterior al año de diagnóstico.');
+    });
+
+    it('links the English support-center label in confirmation copy', () => {
+        expect(en.shareHealthInfo.confirmBody).toContain('>Connect Support Center</a>');
+        expect(en.shareHealthInfo.confirmBody).toContain('https://norcfedramp.servicenowservices.com/participant');
+    });
+});
+
 describe('treatmentReceived (Q3)', () => {
     it('hides treatment types until Yes is selected', () => {
         renderTreatmentReceived(content, ctx);
@@ -142,19 +169,23 @@ describe('treatmentReceived (Q3)', () => {
         expect(content.querySelector('#srcdxTxTypes').classList.contains('d-none')).toBe(false);
     });
 
-    it('requires a Yes/No selection', () => {
+    it('allows Next without a Yes/No selection', () => {
         renderTreatmentReceived(content, ctx);
         content.querySelector('#srcdxNext').click();
-        expect(shared.errorMessage).toHaveBeenCalled();
-        expect(ctx.next).not.toHaveBeenCalled();
+        expect(shared.errorMessage).not.toHaveBeenCalled();
+        expect(state.getState().txReceived).toBeNull();
+        expect(state.getState().treatments).toEqual([]);
+        expect(ctx.next).toHaveBeenCalledTimes(1);
     });
 
-    it('Yes requires at least one treatment type', () => {
+    it('Yes without a treatment type preserves the answer and advances', () => {
         renderTreatmentReceived(content, ctx);
         content.querySelector('#txReceivedYes').checked = true;
         content.querySelector('#srcdxNext').click();
-        expect(shared.errorMessage).toHaveBeenCalled();
-        expect(ctx.next).not.toHaveBeenCalled();
+        expect(shared.errorMessage).not.toHaveBeenCalled();
+        expect(state.getState().txReceived).toBe(true);
+        expect(state.getState().treatments).toEqual([]);
+        expect(ctx.next).toHaveBeenCalledTimes(1);
     });
 
     it('Yes + a type creates one treatment per type and advances', () => {

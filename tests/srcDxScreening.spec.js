@@ -142,11 +142,28 @@ describe('screeningGate (Q4)', () => {
         expect(content.querySelector('#scrn_colonCol')).not.toBeNull();
         expect(content.querySelector('#scrn_breast2D')).toBeNull();
     });
+
+    it('lung Yes auto-selects lung CT and skips the single-option checkbox list', () => {
+        state.getState().primarySite = 'lung';
+        const ctx = makeCtx(renderScreeningGate);
+        renderScreeningGate(content, ctx);
+        expect(content.querySelector('[data-i18n="shareHealthInfo.q4Header_lung"]')).not.toBeNull();
+        expect(content.querySelector('#srcdxScrnOptions')).toBeNull();
+        expect(content.querySelector('#scrn_lungCT')).toBeNull();
+
+        content.querySelector('#scrnDetectedYes').checked = true;
+        content.querySelector('#srcdxNext').click();
+
+        expect(state.getState().screenings.map((s) => s.type)).toEqual(['lungCT']);
+        expect(state.getPosition().editingScreeningIndex).toBe(0);
+        expect(ctx.next).toHaveBeenCalledTimes(1);
+    });
 });
 
 describe('screeningDetail', () => {
     const setup = (types = ['breast2D']) => {
         state.getState().primarySite = 'breast';
+        state.getState().dxYear = '2025';
         state.getState().screeningDetected = true;
         types.forEach((t) => state.addScreening(t));
         state.getPosition().editingScreeningIndex = 0;
@@ -157,7 +174,10 @@ describe('screeningDetail', () => {
         const ctx = makeCtx(renderScreeningDetail);
         renderScreeningDetail(content, ctx);
         expect(content.querySelector('#srcdxScrnYr')).not.toBeNull();
+        expect(content.querySelector('#srcdxScrnYr').dataset.i18n).toBe('shareHealthInfo.scrnYearInput');
         expect(content.querySelector('#srcdxScrnPhysFirst')).not.toBeNull();
+        expect(content.querySelector('#srcdxScrnPhysFirst').dataset.i18n).toBe('shareHealthInfo.physFirstInput');
+        expect(content.querySelector('#srcdxScrnPhysLast').dataset.i18n).toBe('shareHealthInfo.physLastInput');
         expect(content.querySelector('#srcdxScrnPhysFirst').getAttribute('autocomplete')).toBe('off');
         expect(content.querySelector('#srcdxScrnPhysLast').getAttribute('autocomplete')).toBe('off');
         expect(content.querySelector('#UPAddressScrn_0Line1')).not.toBeNull();
@@ -192,6 +212,17 @@ describe('screeningDetail', () => {
         content.querySelector('#srcdxScrnYr').value = '99';
         content.querySelector('#srcdxNext').click();
         expect(shared.errorMessage).toHaveBeenCalled();
+        expect(ctx.next).not.toHaveBeenCalled();
+    });
+
+    it('rejects a screening year after the diagnosis year', () => {
+        setup();
+        state.getState().dxYear = '2020';
+        const ctx = makeCtx(renderScreeningDetail);
+        renderScreeningDetail(content, ctx);
+        content.querySelector('#srcdxScrnYr').value = '2021';
+        content.querySelector('#srcdxNext').click();
+        expect(shared.errorMessage.mock.calls[0][1]).toContain('shareHealthInfo.scrnYearAfterDxError');
         expect(ctx.next).not.toHaveBeenCalled();
     });
 
@@ -244,7 +275,7 @@ describe('screeningDetail', () => {
         expect(ctx.next).toHaveBeenCalledTimes(1);
     });
 
-    it('renders the mirrored Q4 (Yes selected) and the dynamic "{Site} Cancer > {Screening}" intro (per comp)', () => {
+    it('renders the mirrored Q4 (Yes selected) and the dynamic selected-screening intro', () => {
         setup(['breastMRI']);
         const ctx = makeCtx(renderScreeningDetail);
         renderScreeningDetail(content, ctx);
@@ -252,7 +283,7 @@ describe('screeningDetail', () => {
         const intro = content.querySelector('#srcdxScrnIntro');
         expect(intro.classList.contains('srcdx-strong')).toBe(true); // bold sentence
         const dynamic = intro.querySelector('u');
-        expect(dynamic.querySelector('[data-i18n="shareHealthInfo.scrnDetailSite_breast"]')).not.toBeNull();
+        expect(dynamic.querySelector('[data-i18n^="shareHealthInfo.scrnDetailSite_"]')).toBeNull();
         expect(dynamic.querySelector('[data-i18n="shareHealthInfo.scrn_breastMRI"]')).not.toBeNull();
         expect(content.querySelector('#srcdxScrnProgress')).toBeNull(); // comp shows no progress list
     });
@@ -272,6 +303,7 @@ describe('screeningDetail', () => {
 describe('screeningRecap', () => {
     const setupTwoScreenings = () => {
         state.getState().primarySite = 'breast';
+        state.getState().dxYear = '2025';
         state.getState().screeningDetected = true;
         state.addScreening('breastMRI');
         state.addScreening('breastUS');
@@ -341,6 +373,7 @@ describe('screeningRecap', () => {
 describe('screeningStatus (Comp 14)', () => {
     const setupOneDone = () => {
         state.getState().primarySite = 'breast';
+        state.getState().dxYear = '2025';
         state.getState().screeningDetected = true;
         state.addScreening('breastMRI');
         state.addScreening('breastUS');

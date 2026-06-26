@@ -115,6 +115,14 @@ export const monthSelect = (id) => `
         ${MONTHS.map((m) => `<option value="${m.value}" data-i18n="${m.i18nKey}">${m.label}</option>`).join('')}
     </select>`;
 
+export const q4HeaderI18nKey = (primarySite) =>
+    primarySite === 'lung' ? 'shareHealthInfo.q4Header_lung' : 'shareHealthInfo.q4Header';
+
+export const q4HeaderFallback = (primarySite) =>
+    primarySite === 'lung'
+        ? '4. Was this cancer detected through routine screening? I.e., CT scan (also called a low-dose computed tomography (CT) scan)'
+        : '4. Was this cancer detected through routine screening?';
+
 export const fieldError = (content, fieldId, i18nKey, fallback) => {
     errorMessage(fieldId, `<span data-i18n="${i18nKey}">${fallback}</span>`, false);
     const field = content.querySelector(`#${fieldId}`);

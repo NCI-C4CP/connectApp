@@ -23,16 +23,17 @@ test.describe('Ops testing-plan coverage', () => {
         await startNoTreatmentDiagnosis(page, 'lung');
 
         await expect(page.locator('#scrnDetectedYes')).toBeVisible();
+        await expect(page.locator('[data-i18n="shareHealthInfo.q4Header_lung"]')).toBeVisible();
         await page.check('#scrnDetectedYes');
-        await expect(page.locator('#scrn_lungCT')).toBeVisible();
+        await expect(page.locator('#scrn_lungCT')).toHaveCount(0);
+        await expect(page.locator('#srcdxScrnOptions')).toHaveCount(0);
         await expect(page.locator('#scrn_breast2D')).toHaveCount(0);
         await expect(page.locator('#scrn_colonCol')).toHaveCount(0);
-        await page.check('#scrn_lungCT');
         await page.click('#srcdxNext');
-        await page.click('#srcdxNext');
+        await expect(page.locator('#srcdxScrnYr')).toBeVisible();
 
         await page.selectOption('#srcdxScrnMo', '0');
-        await page.fill('#srcdxScrnYr', '2021');
+        await page.fill('#srcdxScrnYr', '2020');
         await page.fill('#srcdxScrnPhysFirst', 'Jane');
         await page.fill('#srcdxScrnPhysLast', 'Doe');
         await page.fill('#UPAddressScrn_0Line1', 'Lung Imaging Center');
@@ -46,7 +47,7 @@ test.describe('Ops testing-plan coverage', () => {
         expect(payload[dk(m.screening.detected)]).toBe(Y);
         expect(payload[dk(m.screening.optionValues.lungCT)]).toBe(Y);
         expect(payload[dk(m.screening.month, 1, 1)]).toBe('286592124');
-        expect(payload[dk(m.screening.year, 1, 1)]).toBe('2021');
+        expect(payload[dk(m.screening.year, 1, 1)]).toBe('2020');
         expect(payload[dk(m.screening.phyFirstName, 1, 1)]).toBe('Jane');
         expect(payload[dk(m.screening.phyLastName, 1, 1)]).toBe('Doe');
         expect(payload[dk(m.screening.facility.line1, 1, 1)]).toBe('Lung Imaging Center');
@@ -139,7 +140,7 @@ test.describe('Ops testing-plan coverage', () => {
         await page.check('#site_breast');
         await page.click('#srcdxNext');
         await page.selectOption('#srcdxDxMonth', '10');
-        await page.fill('#srcdxDxYear', '2024');
+        await page.fill('#srcdxDxYear', '2021');
         await page.click('#srcdxNext');
 
         await page.check('#txReceivedYes');
@@ -189,7 +190,7 @@ test.describe('Ops testing-plan coverage', () => {
         const payload = await submitFromReview(page);
         expect(payload[dk(m.primarySite)]).toBe(String(m.cancerSites.breast));
         expect(payload[dk(m.dxMonth)]).toBe('615680906');
-        expect(payload[dk(m.dxYear)]).toBe('2024');
+        expect(payload[dk(m.dxYear)]).toBe('2021');
         expect(payload[dk(m.treatment.chemo)]).toBe(Y);
         expect(payload[dk(m.treatment.surgery)]).toBe(Y);
         expect(payload[dk(m.treatment.radiation)]).toBe(N);

@@ -2144,13 +2144,14 @@ const en = {
         "monthLabel": "Month",
         "yearLabelRequired": "Year <span class=\"required\">*</span>",
         "yearRequired": "Please enter a valid year (YYYY) that is not in the future.",
+        "dxYearInput": {
+            "placeholder": "Enter year of diagnosis"
+        },
         // Q3 treatment
         "q3Header": "3. Have you received, are you currently receiving, or are you scheduled to receive treatment for this cancer?",
         "q3SelectTypes": "Select each treatment you have received, are currently receiving, or are scheduled to receive.",
         "q3TxInfo": "We're interested in finding treatment records if you got your treatment outside of your health care system. Sharing this information will help us locate these records and be useful for Connect research.",
         "q3OtherDescribe": "Other – describe",
-        "q3Required": "Please select Yes or No.",
-        "q3TypeRequired": "Please select at least one treatment.",
         "q3NextHint": "Please fill out information related to this treatment on the next screen. You can add more treatments after this one.",
         // Treatment detail
         "txType": "Type of treatment:",
@@ -2159,11 +2160,20 @@ const en = {
         "startYearRequired": "Start year <span class=\"required\">*</span>",
         "endMonth": "End month",
         "endYear": "End year",
+        "txYearInput": {
+            "placeholder": "Enter year"
+        },
         "txOngoing": "My treatment is ongoing",
         "physHeader": "Physician or oncologist",
         "physSectionHeader": "Name of your physician or oncologist:",
         "physFirst": "First name",
         "physLast": "Last name",
+        "physFirstInput": {
+            "placeholder": "Enter first name"
+        },
+        "physLastInput": {
+            "placeholder": "Enter last name"
+        },
         "addPhysician": "+ Add another physician or oncologist",
         // NPI provider typeahead (treatment + screening physician fields)
         "npiListLabel": {
@@ -2181,6 +2191,7 @@ const en = {
         "addFacility": "+ Add another facility or hospital",
         "removeFacility": "Remove facility",
         "startYearError": "Please enter a valid start year.",
+        "txYearBeforeDxError": "The year of treatment cannot be before the year of diagnosis.",
         // Treatment summary
         "reportedTreatments": "Reported Treatments:",
         "reportedScreenings": "Reported Screenings:",
@@ -2192,11 +2203,12 @@ const en = {
         "goBack": "Go Back",
         // Q4 screening
         "q4Header": "4. Was this cancer detected through routine screening?",
+        "q4Header_lung": "4. Was this cancer detected through routine screening? I.e., CT scan (also called a low-dose computed tomography (CT) scan)",
         "q4Choose": "Choose the screenings that detected your cancer:",
         "q4ChooseHelp": "You can choose as many screenings as you need. You will be asked for more information about each screening you choose.",
         "q4Required": "Please select Yes or No.",
         "q4TypeRequired": "Please select at least one screening.",
-        "q4NotAnswered": "Not answered yet — click Edit to answer.",
+        "q4NotAnswered": "",
         // Screening recap (between Q4 and the detail loop)
         "recapChosen": "You've chosen the following screenings.",
         "recapHelp": "We will now ask you for more information about each screening.",
@@ -2226,6 +2238,10 @@ const en = {
         "scrnPhysSectionHeader": "Name of your referring physician (e.g., primary care provider, OB/GYN):",
         "scrnFacilityHeader": "Enter the facility or hospital address where you were screened:",
         "scrnYearError": "Please enter a valid year.",
+        "scrnYearAfterDxError": "The year of screening cannot be after the year of diagnosis.",
+        "scrnYearInput": {
+            "placeholder": "Enter year"
+        },
         // Review
         "reviewHeader": "Please review the information below.",
         "reviewIntro": "If anything looks incorrect, click the \"Edit\" button to go back to that section.",
@@ -2234,20 +2250,41 @@ const en = {
         "scrnYearShort": "Year",
         // Confirmation
         "confirmHeader": "Thank you for sharing this information with us.",
-        "confirmBody": "We are sorry to hear of your diagnosis. If you're interested in additional resources, you may find it useful to review some information about <a href=\"https://www.cancer.gov/about-cancer/treatment\" target=\"_blank\" rel=\"noopener\">treatment</a> and <a href=\"https://www.cancer.gov/about-cancer/managing-care\" target=\"_blank\" rel=\"noopener\">managing care</a> from the National Cancer Institute. If you have any questions, please reach out to the Connect Support Center.",
+        "confirmBody": "We are sorry to hear of your diagnosis. If you're interested in additional resources, you may find it useful to review some information about <a href=\"https://www.cancer.gov/about-cancer/treatment\" target=\"_blank\" rel=\"noopener\">treatment</a> and <a href=\"https://www.cancer.gov/about-cancer/managing-care\" target=\"_blank\" rel=\"noopener\">managing care</a> from the National Cancer Institute. If you have any questions, please reach out to the <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\" rel=\"noopener\">Connect Support Center</a>.",
         "confirmThanks": "Thank you for being an important part of Connect! Your continued participation will help us learn more about the causes of cancer and find new ways to prevent it.",
         "confirmAnother": "Have you received another cancer diagnosis recently? Please add information about your new diagnosis by clicking the button below.",
         // Facility fields
         "facName": "Line 1 (name of facility)",
+        "facNameInput": {
+            "placeholder": "Enter name of facility"
+        },
         "facIntl": "This facility is located outside the United States",
         "facLine2": "Line 2 (street, rural route)",
+        "facLine2Input": {
+            "placeholder": "Enter street, rural route"
+        },
         "facLine3": "Line 3 (apartment, suite, unit, building)",
+        "facLine3Input": {
+            "placeholder": "Enter apartment, suite, unit, building"
+        },
         "facLine4": "Line 4",
+        "facLine4Input": {
+            "placeholder": "Enter address line 4"
+        },
         "facCity": "City",
+        "facCityInput": {
+            "placeholder": "Enter City"
+        },
         "facState": "State",
         "facZip": "Zip",
+        "facZipInput": {
+            "placeholder": "Enter Zip"
+        },
         "facRegion": "Region",
         "facPostal": "Postal code",
+        "facPostalInput": {
+            "placeholder": "Enter postal code"
+        },
         "facCountry": "Country",
         // Primary cancer sites
         "site_anal": "Anal",

@@ -1,6 +1,6 @@
 import { renderQuestion, navButtons, monthSelect, fieldError, clearFieldErrors, treatmentTypeLabelHtml } from '../ui.js';
 import { SCREENS } from '../constants.js';
-import { isValidYearWithAllowance } from '../validation.js';
+import { isTreatmentYearOnOrAfterDiagnosis, isValidYearWithAllowance } from '../validation.js';
 import { applyOngoingExclusivity, canAddPhysician, isTreatmentComplete } from '../conditionalLogic.js';
 import {
     renderFacilityAddress, attachFacilityAddressEvents, harvestFacility, fillFacility,
@@ -9,10 +9,11 @@ import { renderNpiSlots, attachNpiTypeahead, harvestNpi, fillNpi } from '../npiT
 
 const facilityId = (txIndex, facIndex) => `Tx_${txIndex}_${facIndex}`;
 const npiIds = (j) => ({ key: `Tx_${j}`, firstId: `srcdxPhysFirst_${j}`, lastId: `srcdxPhysLast_${j}`, npiId: `srcdxPhysNpi_${j}` });
-const nextIncompleteTreatmentIndex = (treatments, currentIndex) => {
-    const afterCurrent = treatments.findIndex((t, i) => i > currentIndex && !isTreatmentComplete(t));
+const nextIncompleteTreatmentIndex = (treatments, currentIndex, dxYear) => {
+    const opts = { dxYear };
+    const afterCurrent = treatments.findIndex((t, i) => i > currentIndex && !isTreatmentComplete(t, opts));
     if (afterCurrent >= 0) return afterCurrent;
-    return treatments.findIndex((t, i) => i !== currentIndex && !isTreatmentComplete(t));
+    return treatments.findIndex((t, i) => i !== currentIndex && !isTreatmentComplete(t, opts));
 };
 
 export const renderTreatmentDetail = (content, ctx) => {
@@ -26,11 +27,11 @@ export const renderTreatmentDetail = (content, ctx) => {
         <div class="row align-items-end mb-2" data-phys="${j}">
             <div class="col-6 col-md-5">
                 <label for="srcdxPhysFirst_${j}" data-i18n="shareHealthInfo.physFirst">First name</label>
-                <input type="text" class="form-control" id="srcdxPhysFirst_${j}" autocomplete="off" maxlength="100" placeholder="Enter first name">
+                <input type="text" class="form-control" id="srcdxPhysFirst_${j}" autocomplete="off" maxlength="100" data-i18n="shareHealthInfo.physFirstInput" placeholder="Enter first name">
             </div>
             <div class="col-6 col-md-5">
                 <label for="srcdxPhysLast_${j}" data-i18n="shareHealthInfo.physLast">Last name</label>
-                <input type="text" class="form-control" id="srcdxPhysLast_${j}" autocomplete="off" maxlength="100" placeholder="Enter last name">
+                <input type="text" class="form-control" id="srcdxPhysLast_${j}" autocomplete="off" maxlength="100" data-i18n="shareHealthInfo.physLastInput" placeholder="Enter last name">
             </div>
             <div class="col-12 col-md-2">
                 ${tx.physicians.length > 1 ? `<button type="button" class="btn btn-light btn-sm" data-remove-phys="${j}" data-i18n="shareHealthInfo.remove">Remove</button>` : ''}
@@ -62,10 +63,10 @@ export const renderTreatmentDetail = (content, ctx) => {
         <div class="row">
             <div class="col-6 col-sm-3"><label for="srcdxTxStartMo" data-i18n="shareHealthInfo.startMonth">Start month</label>${monthSelect('srcdxTxStartMo')}</div>
             <div class="col-6 col-sm-3"><label for="srcdxTxStartYr" data-i18n="shareHealthInfo.startYearRequired">Start year <span class="required">*</span></label>
-                <input type="text" inputmode="numeric" maxlength="4" class="form-control" id="srcdxTxStartYr" placeholder="Enter year"></div>
+                <input type="text" inputmode="numeric" maxlength="4" class="form-control" id="srcdxTxStartYr" data-i18n="shareHealthInfo.txYearInput" placeholder="Enter year"></div>
             <div class="col-6 col-sm-3"><label for="srcdxTxEndMo" data-i18n="shareHealthInfo.endMonth">End month</label>${monthSelect('srcdxTxEndMo')}</div>
             <div class="col-6 col-sm-3"><label for="srcdxTxEndYr" data-i18n="shareHealthInfo.endYear">End year</label>
-                <input type="text" inputmode="numeric" maxlength="4" class="form-control" id="srcdxTxEndYr" placeholder="Enter year"></div>
+                <input type="text" inputmode="numeric" maxlength="4" class="form-control" id="srcdxTxEndYr" data-i18n="shareHealthInfo.txYearInput" placeholder="Enter year"></div>
         </div>
         <div class="row">
             <div class="col-sm-6 offset-sm-6">
@@ -168,11 +169,15 @@ export const renderTreatmentDetail = (content, ctx) => {
             fieldError(content, 'srcdxTxStartYr', 'shareHealthInfo.startYearError', 'Please enter a valid start year.');
             return;
         }
+        if (d.dxYear && !isTreatmentYearOnOrAfterDiagnosis(tx.startYear, d.dxYear)) {
+            fieldError(content, 'srcdxTxStartYr', 'shareHealthInfo.txYearBeforeDxError', 'The year of treatment cannot be before the year of diagnosis.');
+            return;
+        }
         if (!tx.ongoing && tx.endYear && (!isValidYearWithAllowance(tx.endYear) || Number(tx.endYear) < Number(tx.startYear))) {
             fieldError(content, 'srcdxTxEndYr', 'shareHealthInfo.txEndYearError', 'Please enter a valid end year on or after the start year.');
             return;
         }
-        const nextIncomplete = nextIncompleteTreatmentIndex(d.treatments, idx);
+        const nextIncomplete = nextIncompleteTreatmentIndex(d.treatments, idx, d.dxYear);
         if (pos.editMode !== 'item' && nextIncomplete >= 0) {
             pos.editingTreatmentIndex = nextIncomplete;
             ctx.rerender();

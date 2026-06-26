@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
+    isScreeningYearOnOrBeforeDiagnosis,
+    isTreatmentYearOnOrAfterDiagnosis,
     isValidYearFormat,
     isValidPastYear,
     isValidScreeningYear,
@@ -50,6 +52,30 @@ describe('isValidScreeningYear', () => {
     it('rejects beyond the allowance and malformed', () => {
         expect(isValidScreeningYear('2032', { now: NOW })).toBe(false);
         expect(isValidScreeningYear('nope', { now: NOW })).toBe(false);
+    });
+});
+
+describe('isScreeningYearOnOrBeforeDiagnosis', () => {
+    it('accepts screening years in or before the diagnosis year', () => {
+        expect(isScreeningYearOnOrBeforeDiagnosis('2020', '2020')).toBe(true);
+        expect(isScreeningYearOnOrBeforeDiagnosis('2019', '2020')).toBe(true);
+    });
+    it('rejects screening years after diagnosis and malformed years', () => {
+        expect(isScreeningYearOnOrBeforeDiagnosis('2021', '2020')).toBe(false);
+        expect(isScreeningYearOnOrBeforeDiagnosis('nope', '2020')).toBe(false);
+        expect(isScreeningYearOnOrBeforeDiagnosis('2019', '')).toBe(false);
+    });
+});
+
+describe('isTreatmentYearOnOrAfterDiagnosis', () => {
+    it('accepts treatment years in or after the diagnosis year', () => {
+        expect(isTreatmentYearOnOrAfterDiagnosis('2020', '2020')).toBe(true);
+        expect(isTreatmentYearOnOrAfterDiagnosis('2021', '2020')).toBe(true);
+    });
+    it('rejects treatment years before diagnosis and malformed years', () => {
+        expect(isTreatmentYearOnOrAfterDiagnosis('2019', '2020')).toBe(false);
+        expect(isTreatmentYearOnOrAfterDiagnosis('nope', '2020')).toBe(false);
+        expect(isTreatmentYearOnOrAfterDiagnosis('2020', '')).toBe(false);
     });
 });
 

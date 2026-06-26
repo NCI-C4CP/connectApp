@@ -42,7 +42,7 @@ test.describe('Restart, resume & reroute', () => {
         await page.check('#txReceivedYes');
         await page.check('#tx_chemo');
         await page.click('#srcdxNext');
-        await page.fill('#srcdxTxStartYr', '2019');
+        await page.fill('#srcdxTxStartYr', '2020');
         await page.click('#srcdxNext');                 // summary
         await page.click('#srcdxNext');                 // Q4
         await page.check('#scrnDetectedYes');
@@ -82,13 +82,13 @@ test.describe('Restart, resume & reroute', () => {
         await page.check('#tx_chemo');
         await page.check('#tx_surgery');
         await page.click('#srcdxNext');                 // detail chemo (idx0)
-        await page.fill('#srcdxTxStartYr', '2019');
+        await page.fill('#srcdxTxStartYr', '2020');
         await page.click('#srcdxNext');                 // -> detail surgery (idx1); chemo now persisted
 
         await page.reload();                            // leave & return mid-loop on surgery
         await expect(page.locator('#srcdxTxStartYr')).toBeVisible();         // resumed onto a detail screen
         await page.click('#srcdxBack');                 // within-loop Back -> chemo (idx0)
-        await expect(page.locator('#srcdxTxStartYr')).toHaveValue('2019');   // prior item's saved value intact
+        await expect(page.locator('#srcdxTxStartYr')).toHaveValue('2020');   // prior item's saved value intact
     });
 
     test('reloading mid single-item edit (summary chip) resumes the edit and returns to the summary', async ({ page }) => {
@@ -101,13 +101,13 @@ test.describe('Restart, resume & reroute', () => {
         await page.check('#txReceivedYes');
         await page.check('#tx_chemo');
         await page.click('#srcdxNext');
-        await page.fill('#srcdxTxStartYr', '2019');
+        await page.fill('#srcdxTxStartYr', '2020');
         await page.click('#srcdxNext');                 // summary
         await page.click('[data-edit-tx="0"]');         // edit chemo (single-item edit)
-        await expect(page.locator('#srcdxTxStartYr')).toHaveValue('2019');
+        await expect(page.locator('#srcdxTxStartYr')).toHaveValue('2020');
 
         await page.reload();                            // leave & return mid-edit
-        await expect(page.locator('#srcdxTxStartYr')).toHaveValue('2019');  // resumed the edit, value intact
+        await expect(page.locator('#srcdxTxStartYr')).toHaveValue('2020');  // resumed the edit, value intact
         await page.click('#srcdxNext');                 // single-item edit returns to the summary (no auto-walk)
         await expect(page.locator('[data-tx-chip]')).toHaveCount(1);
     });

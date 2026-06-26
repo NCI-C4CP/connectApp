@@ -3,6 +3,12 @@ import { setup, m, dk, Y, N, getPayload, toTreatmentDetail } from './support.js'
 
 // Drive to the treatment-detail screen for a single Chemotherapy treatment (prostate = non-screening).
 const toChemoDetail = (page) => toTreatmentDetail(page, { site: 'prostate' }); // shared walk in support.js
+const toChemoSummary = async (page) => {
+    await toChemoDetail(page);
+    await page.fill('#srcdxTxStartYr', '2021');
+    await page.click('#srcdxNext');
+    await expect(page.locator('[data-tx-chip]')).toHaveCount(1);
+};
 
 const installMockPlacesAutocomplete = async (page) => {
     await page.addInitScript(() => {
@@ -223,6 +229,23 @@ test.describe('Loops & repeatable inputs', () => {
         expect(payload[dk(m.treatment.startYear, 2, 2)]).toBeUndefined();
     });
 
+    test('remove-confirm modal traps Tab within the dialog and Escape cancels it', async ({ page }) => {
+        await setup(page);
+        await toChemoSummary(page);
+        await page.click('[data-remove-tx="0"]');       // open the modal
+        await expect(page.locator('.srcdx-modal')).toBeVisible();
+        await expect(page.locator('.srcdx-modal .btn[data-cancel-remove]')).toBeFocused();
+
+        for (let i = 0; i < 5; i++) {
+            await page.keyboard.press('Tab');
+            const inModal = await page.evaluate(() => !!document.activeElement.closest('.srcdx-modal'));
+            expect(inModal).toBe(true);
+        }
+        await page.keyboard.press('Escape');            // cancel
+        await expect(page.locator('.srcdx-modal')).toHaveCount(0);
+        await expect(page.locator('[data-tx-chip]')).toHaveCount(1); // nothing deleted
+    });
+
     test('removing the LAST treatment bounces back to Q3 to re-answer', async ({ page }) => {
         await setup(page);
         await toChemoDetail(page);
@@ -342,20 +365,20 @@ test.describe('Loops & repeatable inputs', () => {
         await page.check('#scrn_breastUS');
         await page.click('#srcdxNext');          // recap
         await page.click('#srcdxNext');          // detail (breastMRI)
-        await page.fill('#srcdxScrnYr', '2021');
+        await page.fill('#srcdxScrnYr', '2019');
         await page.click('#srcdxNext');          // status: MRI complete, Ultrasound pending
         await expect(page.locator('#srcdxStatusNext u')).toContainText('breastUS'); // next incomplete named
         await page.click('#srcdxBack');          // back to the JUST-COMPLETED entry
-        await expect(page.locator('#srcdxScrnYr')).toHaveValue('2021');             // breastMRI, data intact
+        await expect(page.locator('#srcdxScrnYr')).toHaveValue('2019');             // breastMRI, data intact
         await page.click('#srcdxNext');          // -> status again
         await page.click('#srcdxNext');          // -> detail (breastUS)
-        await page.fill('#srcdxScrnYr', '2022');
+        await page.fill('#srcdxScrnYr', '2020');
         await page.click('#srcdxNext');          // all complete -> review (no trailing status)
         await expect(page.locator('[data-edit="primarySite"]')).toBeVisible();
         await page.click('#srcdxNext');          // submit
         const payload = await getPayload(page);
-        expect(payload[dk(m.screening.year, 1, 1)]).toBe('2021'); // S1 = breastMRI (canonical option order)
-        expect(payload[dk(m.screening.year, 2, 2)]).toBe('2022'); // S2 = breastUS
+        expect(payload[dk(m.screening.year, 1, 1)]).toBe('2019'); // S1 = breastMRI (canonical option order)
+        expect(payload[dk(m.screening.year, 2, 2)]).toBe('2020'); // S2 = breastUS
     });
 
     test('multiple screenings auto-sequence and are captured', async ({ page }) => {

@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
-import { setup, m, dk, getPayload } from './support.js';
+import { setup, m, dk, Y, N, getPayload } from './support.js';
 import en from '../../i18n/en.js';
+import es from '../../i18n/es.js';
 
 test.describe('Returning-user landing (previously reported)', () => {
     test('lists each prior diagnosis; "Add a Diagnosis" starts a fresh flow', async ({ page }) => {
@@ -26,6 +27,19 @@ test.describe('Returning-user landing (previously reported)', () => {
         await page.waitForSelector('#srcdxAddDiagnosis');
         expect(await page.evaluate(() => window.__XSS__)).toBeUndefined(); // did not execute
         expect(await page.locator('#root img').count()).toBe(0);           // no injected element
+    });
+
+    test('keeps coded prior site labels translatable while preserving Other write-in text', async ({ page }) => {
+        await setup(page, {
+            i18n: en,
+            prior: [{
+                location: { i18nKey: 'shareHealthInfo.site_other', fallback: 'Other', otherText: 'test' },
+                dxDate: '2015',
+            }],
+        });
+        const site = page.locator('[data-i18n="shareHealthInfo.site_other"]');
+        await expect(site).toHaveText('Other');
+        await expect(page.locator('body')).toContainText('Other (test)');
     });
 
     test('still renders if the previously-reported fetch rejects (backend error)', async ({ page }) => {
@@ -75,6 +89,24 @@ test.describe('Validation & encoding edge cases', () => {
         await page.check(`#site_${site}`);
         await page.click('#srcdxNext'); // -> Q2 date
     };
+
+    test('Spanish session shows the translated Q1 error, placed before nav, with focus moved', async ({ page }) => {
+        await setup(page, { i18n: es });
+        await page.click('#srcdxAddDiagnosis');
+        await page.click('#srcdxNext');                 // no site selected -> error
+        const err = page.locator('.form-error');
+        await expect(err).toHaveText('Seleccione un lugar de cáncer.');
+        const placement = await page.evaluate(() => {
+            const errEl = document.querySelector('.error-text');
+            const nav = document.querySelector('.srcdx-nav');
+            return {
+                beforeNav: !!(errEl.compareDocumentPosition(nav) & Node.DOCUMENT_POSITION_FOLLOWING),
+                focusedId: document.activeElement && document.activeElement.id,
+            };
+        });
+        expect(placement.beforeNav).toBe(true);
+        expect(placement.focusedId).toMatch(/^site_/);
+    });
 
     test('January (month code 0) survives diagnosis-date -> review -> payload (not dropped as empty)', async ({ page }) => {
         await setup(page, { i18n: en });
@@ -133,7 +165,56 @@ test.describe('Validation & encoding edge cases', () => {
         await expect(page.locator('#txReceivedNo')).toBeVisible(); // advanced
     });
 
-    test('treatment end year before start is rejected; a +5 future scheduled year is allowed', async ({ page }) => {
+    test('Q3 treatment received answer is optional', async ({ page }) => {
+        await setup(page);
+        await page.click('#srcdxAddDiagnosis');
+        await page.check('#site_prostate');
+        await page.click('#srcdxNext');
+        await page.fill('#srcdxDxYear', '2020');
+        await page.click('#srcdxNext');                // Q3
+        await expect(page.locator('#txReceivedYes')).not.toBeChecked();
+        await expect(page.locator('#txReceivedNo')).not.toBeChecked();
+        await page.click('#srcdxNext');
+        await expect(page.locator('.form-error')).toHaveCount(0);
+        await expect(page.locator('[data-edit="primarySite"]')).toBeVisible(); // review; prostate skips screening
+
+        const q3Row = page.locator('[data-edit="treatmentReceived"]').locator('xpath=ancestor::div[contains(@class,"srcdx-review-item")]');
+        await expect(q3Row.locator('[data-i18n="shareHealthInfo.q4NotAnswered"]')).toHaveText('');
+
+        await page.click('#srcdxNext');                // submit
+        const payload = await getPayload(page);
+        expect(dk(m.txReceived) in payload).toBe(false);
+        expect(dk(m.treatment.chemo) in payload).toBe(false);
+        expect(dk(m.treatment.startYear, 1, 1) in payload).toBe(false);
+    });
+
+    test('Q3 treatment type selection is optional when treatment was received', async ({ page }) => {
+        await setup(page);
+        await page.click('#srcdxAddDiagnosis');
+        await page.check('#site_prostate');
+        await page.click('#srcdxNext');
+        await page.fill('#srcdxDxYear', '2020');
+        await page.click('#srcdxNext');
+        await page.check('#txReceivedYes');            // Yes but no type selected
+        await page.click('#srcdxNext');
+        await expect(page.locator('.form-error')).toHaveCount(0);
+        await expect(page.locator('[data-edit="primarySite"]')).toBeVisible(); // review; prostate skips screening
+
+        const q3Row = page.locator('[data-edit="treatmentReceived"]').locator('xpath=ancestor::div[contains(@class,"srcdx-review-item")]');
+        await expect(q3Row).toContainText('Yes');
+        await expect(q3Row).not.toContainText('Reported Treatments');
+
+        await page.click('#srcdxNext');                // submit
+        const payload = await getPayload(page);
+        expect(payload[dk(m.txReceived)]).toBe(Y);
+        expect(payload[dk(m.treatment.chemo)]).toBe(N);
+        expect(payload[dk(m.treatment.surgery)]).toBe(N);
+        expect(payload[dk(m.treatment.radiation)]).toBe(N);
+        expect(payload[dk(m.treatment.other)]).toBe(N);
+        expect(dk(m.treatment.startYear, 1, 1) in payload).toBe(false);
+    });
+
+    test('treatment start year before diagnosis is rejected; a +5 future scheduled year is allowed', async ({ page }) => {
         await setup(page, { i18n: en });
         await toDate(page);
         await page.fill('#srcdxDxYear', '2020');
@@ -141,6 +222,9 @@ test.describe('Validation & encoding edge cases', () => {
         await page.check('#txReceivedYes');
         await page.check('#tx_chemo');
         await page.click('#srcdxNext');                // detail
+        await page.fill('#srcdxTxStartYr', '2019');    // before diagnosis -> rejected
+        await page.click('#srcdxNext');
+        await expect(page.locator('.form-error')).toHaveCount(1);
         await page.fill('#srcdxTxStartYr', '2031');    // now 2026 -> +5 = 2031 (scheduled) allowed
         await page.fill('#srcdxTxEndYr', '2030');      // end before start -> rejected
         await page.click('#srcdxNext');
@@ -150,7 +234,7 @@ test.describe('Validation & encoding edge cases', () => {
         await expect(page.locator('[data-tx-chip]')).toHaveCount(1); // advanced to summary
     });
 
-    test('screening year allows up to +5 but rejects beyond it', async ({ page }) => {
+    test('screening year after diagnosis is rejected; same diagnosis year is accepted', async ({ page }) => {
         await setup(page, { i18n: en });
         await toDate(page, 'breast');
         await page.fill('#srcdxDxYear', '2020');
@@ -161,10 +245,10 @@ test.describe('Validation & encoding edge cases', () => {
         await page.check('#scrn_breast2D');
         await page.click('#srcdxNext');                // recap (chosen screenings)
         await page.click('#srcdxNext');                // screening detail
-        await page.fill('#srcdxScrnYr', '2032');       // > +5 -> rejected
+        await page.fill('#srcdxScrnYr', '2021');       // after diagnosis -> rejected
         await page.click('#srcdxNext');
         await expect(page.locator('.form-error')).toHaveCount(1);
-        await page.fill('#srcdxScrnYr', '2031');       // == +5 -> ok
+        await page.fill('#srcdxScrnYr', '2020');       // same as diagnosis -> ok
         await page.click('#srcdxNext');
         await expect(page.locator('[data-edit="primarySite"]')).toBeVisible(); // advanced to review
     });

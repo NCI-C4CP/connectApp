@@ -39,6 +39,15 @@ describe('renderFacilityAddress', () => {
         ['Line1', 'Line2', 'Line3', 'Line4', 'City', 'State', 'Region', 'Zip', 'Postal', 'Country', 'International']
             .forEach((suffix) => expect(el(suffix), suffix).not.toBeNull());
     });
+    it('marks text inputs with translatable placeholder keys', () => {
+        expect(el('Line1').dataset.i18n).toBe('shareHealthInfo.facNameInput');
+        expect(el('Line2').dataset.i18n).toBe('shareHealthInfo.facLine2Input');
+        expect(el('Line3').dataset.i18n).toBe('shareHealthInfo.facLine3Input');
+        expect(el('Line4').dataset.i18n).toBe('shareHealthInfo.facLine4Input');
+        expect(el('City').dataset.i18n).toBe('shareHealthInfo.facCityInput');
+        expect(el('Zip').dataset.i18n).toBe('shareHealthInfo.facZipInput');
+        expect(el('Postal').dataset.i18n).toBe('shareHealthInfo.facPostalInput');
+    });
     it('defaults to domestic: State/Zip visible, Region/Postal/Country/Line4 hidden', () => {
         expect(hidden('State')).toBe(false);
         expect(hidden('Zip')).toBe(false);

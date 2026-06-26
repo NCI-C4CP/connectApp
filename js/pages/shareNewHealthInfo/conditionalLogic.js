@@ -9,24 +9,24 @@ import {
     PRIMARY_SITE_OTHER_KEY,
     MAX_PHYSICIANS,
 } from './constants.js';
-import { isValidPastYear, isValidScreeningYear, isValidYearWithAllowance } from './validation.js';
+import {
+    isScreeningYearOnOrBeforeDiagnosis,
+    isTreatmentYearOnOrAfterDiagnosis,
+    isValidPastYear,
+    isValidScreeningYear,
+    isValidYearWithAllowance,
+} from './validation.js';
 
 /**
- * Card / route eligibility: verified, consenting, living, and not data-destruction-requested.
+ * Card / route eligibility: verified and not withdrawn.
  * (Requirements: RcrtV_Verification_v1r0 = 1 AND HdWd_WdConsent_v1r0 = 0.)
- * The deceased checks mirror connectFaas write eligibility so an ineligible participant is not
- * walked through the process only to receive a submit-time 403.
  */
 export const isVerifiedNotWithdrawn = (data = {}) => {
     const {
-        verification, verified, consentWithdrawn, yes, destroyData,
-        participantDeceased, participantDeceasedNORC,
+        verification, verified, consentWithdrawn, yes,
     } = fieldMapping;
     return data[verification] === verified
-        && data[consentWithdrawn] !== yes
-        && data[destroyData] !== yes
-        && data[participantDeceased] !== yes
-        && data[participantDeceasedNORC] !== yes;
+        && data[consentWithdrawn] !== yes;
 };
 
 /** Q1: show the "Other — please describe" write-in only when site === other. */
@@ -52,25 +52,35 @@ export const canAddPhysician = (count) => count < MAX_PHYSICIANS;
 export const applyOngoingExclusivity = (tx = {}) =>
     tx.ongoing ? { ...tx, endMonth: '', endYear: '' } : { ...tx };
 
-/** A treatment is "complete" when it has a type and a valid start year (future allowed up to +5). */
-export const isTreatmentComplete = (tx = {}, opts) =>
-    !!tx.type && isValidYearWithAllowance(tx.startYear, opts);
+/** A treatment is "complete" when it has a type and a valid start year for the diagnosis. */
+export const isTreatmentComplete = (tx = {}, opts = {}) => {
+    if (!tx.type || !isValidYearWithAllowance(tx.startYear, opts)) return false;
+    if (opts.dxYear !== undefined && opts.dxYear !== null && String(opts.dxYear).trim() !== '') {
+        return isTreatmentYearOnOrAfterDiagnosis(tx.startYear, opts.dxYear);
+    }
+    return true;
+};
 
-/** A screening is "complete" when a type is chosen and the screening year is valid. */
-export const isScreeningComplete = (scr = {}, opts) =>
-    !!scr.type && isValidScreeningYear(scr.year, opts);
+/** A screening is "complete" when a type is chosen and the screening year is valid for the diagnosis. */
+export const isScreeningComplete = (scr = {}, opts = {}) => {
+    if (!scr.type || !isValidScreeningYear(scr.year, opts)) return false;
+    if (opts.dxYear !== undefined && opts.dxYear !== null && String(opts.dxYear).trim() !== '') {
+        return isScreeningYearOnOrBeforeDiagnosis(scr.year, opts.dxYear);
+    }
+    return true;
+};
 
 /**
  * Whether the whole diagnosis may be submitted: primary site set, diagnosis year valid,
- * every present treatment has a valid start year, every present screening has a valid year.
+ * every present treatment has a valid start year on/after diagnosis, every present screening has a valid year.
+ * Treatment received / treatment type are optional; selected treatments still need detail.
  */
 export const isDiagnosisSubmittable = (state = {}, opts) => {
     if (!state.primarySite) return false;
     if (!isValidPastYear(state.dxYear, opts)) return false;
-    if (typeof state.txReceived !== 'boolean') return false; // Q3 must be answered (Yes/No)
-    if (Array.isArray(state.treatments)) {
+    if (state.txReceived === true && Array.isArray(state.treatments)) {
         for (const tx of state.treatments) {
-            if (!isValidYearWithAllowance(tx.startYear, opts)) return false; // treatment may be scheduled (future +5 years)
+            if (!isTreatmentComplete(tx, { ...opts, dxYear: state.dxYear })) return false; // treatment may be scheduled (future +5 years)
         }
     }
     // Screening applies only to screening-eligible sites. For those, Q4 must be answered. When "Yes",
@@ -84,7 +94,7 @@ export const isDiagnosisSubmittable = (state = {}, opts) => {
             const relevant = (Array.isArray(state.screenings) ? state.screenings : [])
                 .filter((s) => siteOptions.includes(s.type));
             if (relevant.length === 0) return false;
-            for (const scr of relevant) if (!isValidScreeningYear(scr.year, opts)) return false;
+            for (const scr of relevant) if (!isScreeningComplete(scr, { ...opts, dxYear: state.dxYear })) return false;
         }
     }
     return true;

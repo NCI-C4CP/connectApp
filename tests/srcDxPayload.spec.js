@@ -163,6 +163,9 @@ describe('buildDiagnosisPayload — sections & gating', () => {
         const p = buildDiagnosisPayload({ primarySite: 'other', primarySiteOther: 'Gallbladder', dxYear: '2021' });
         expect(p.D_181737942).toBe('807835037');
         expect(p.D_546976551).toBe('Gallbladder');
+        const emptyOther = buildDiagnosisPayload({ primarySite: 'other', primarySiteOther: '', dxYear: '2021' });
+        expect(emptyOther.D_181737942).toBe('807835037');
+        expect(emptyOther.D_546976551).toBeUndefined();
         expect('D_546976551' in buildDiagnosisPayload({ primarySite: 'breast', primarySiteOther: 'ignored', dxYear: '2021' })).toBe(false);
     });
 
@@ -175,6 +178,16 @@ describe('buildDiagnosisPayload — sections & gating', () => {
         expect('D_874288004' in unanswered).toBe(false);
     });
 
+    it('emits explicit No treatment type flags but no loop rows when Q3 is Yes and no optional type is selected', () => {
+        const p = buildDiagnosisPayload({ primarySite: 'prostate', dxYear: '2020', txReceived: true, treatments: [] });
+        expect(p[dKey(m.txReceived)]).toBe(String(fieldMapping.yes));
+        expect(p[dKey(m.treatment.chemo)]).toBe(String(fieldMapping.no));
+        expect(p[dKey(m.treatment.surgery)]).toBe(String(fieldMapping.no));
+        expect(p[dKey(m.treatment.radiation)]).toBe(String(fieldMapping.no));
+        expect(p[dKey(m.treatment.other)]).toBe(String(fieldMapping.no));
+        expect(dKey(m.treatment.startYear, 1, 1) in p).toBe(false);
+    });
+
     it('emits the FLAT treatment other-describe only when the Other type is selected', () => {
         const p = buildDiagnosisPayload({
             primarySite: 'prostate', dxYear: '2020', txReceived: true,
@@ -183,6 +196,14 @@ describe('buildDiagnosisPayload — sections & gating', () => {
         expect(p.D_459406752).toBe('353358909');
         expect(p.D_420392069).toBe('Immunotherapy');      // flat — no loop suffix
         expect(p.D_281136649_1_1).toBe('2024');           // 'other' is T1 (only selected type)
+
+        const emptyOther = buildDiagnosisPayload({
+            primarySite: 'prostate', dxYear: '2020', txReceived: true,
+            treatments: [{ type: 'other', otherDescribe: '', startYear: '2024', ongoing: true }],
+        });
+        expect(emptyOther.D_459406752).toBe('353358909');
+        expect(emptyOther.D_420392069).toBeUndefined();
+        expect(emptyOther.D_281136649_1_1).toBe('2024');
     });
 
     it('orders treatment iterations canonically regardless of state array order', () => {

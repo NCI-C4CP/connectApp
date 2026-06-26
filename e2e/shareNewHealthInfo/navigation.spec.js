@@ -496,7 +496,7 @@ test.describe('Editing branching answers from Review', () => {
         expect(payload[dk(m.screening.year, 1, 1)]).toBe('2019');             // S1 = colonCol
     });
 
-    test('E4: editing primary site prostate->breast shows Q4 as unanswered (not a fabricated "No") and blocks submit', async ({ page }) => {
+    test('E4: editing primary site prostate->breast leaves Q4 blank and blocks submit', async ({ page }) => {
         await setup(page);
         await toReviewNoTreatment(page, 'prostate');     // review, no Q4 (prostate non-eligible)
         await expect(page.locator('[data-edit="screeningGate"]')).toHaveCount(0);
@@ -506,7 +506,7 @@ test.describe('Editing branching answers from Review', () => {
         await page.click('#srcdxNext');                  // -> review
 
         const q4Row = page.locator('[data-edit="screeningGate"]').locator('xpath=ancestor::div[contains(@class,"srcdx-review-item")]');
-        await expect(q4Row).toContainText('Not answered'); // not a fabricated "No"
+        await expect(q4Row.locator('[data-i18n="shareHealthInfo.q4NotAnswered"]')).toHaveText('');
         await page.click('#srcdxNext');
         await expect(page.locator('#srcdxReviewError .form-error')).toHaveCount(1); // submit blocked until answered
 
