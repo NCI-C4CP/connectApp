@@ -142,9 +142,10 @@ describe('diagnosisDate (Q2)', () => {
 describe('Spanish copy updates', () => {
     it('contains the requested MRI, recap, status, placeholder, and confirmation strings', () => {
         expect(es.shareHealthInfo.scrn_breastMRI).toBe('IRM de mama');
+        expect(es.shareHealthInfo.scrn_lungCT).toBe('Tomografía computarizada, también llamada tomografía computarizada (TC) de dosis baja');
         expect(es.shareHealthInfo.recapHelp).toBe('Ahora le pediremos más información sobre cada una.');
         expect(es.shareHealthInfo.statusAlmostDone).toBe('¡Ya casi ha terminado! Complete la información sobre su prueba de detección');
-        expect(es.shareHealthInfo.q4Header_lung).toContain('tomografía computarizada de dosis baja');
+        expect(es.shareHealthInfo.q4Header_lung).toContain('tomografía computarizada, también llamada tomografía computarizada (TC) de dosis baja');
         expect(es.shareHealthInfo.dxYearInput.placeholder).toBe('Ingresa el año de diagnóstico');
         expect(es.shareHealthInfo.confirmBody).toContain('https://www.cancer.gov/espanol/cancer/tratamiento');
         expect(es.shareHealthInfo.confirmBody).toContain('https://www.cancer.gov/espanol/cancer/manejo-del-cancer');

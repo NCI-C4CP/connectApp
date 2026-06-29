@@ -84,12 +84,13 @@ export const buildDiagnosisPayload = (state = {}) => {
         }
         (Array.isArray(tx.physicians) ? tx.physicians : []).filter(hasPhysicianContent).forEach((phys, j) => {
             const P = j + 1;
-            setIf(payload, nestedDKey(parentCid, m.treatment.physFirstName, P), phys.firstName);
-            setIf(payload, nestedDKey(parentCid, m.treatment.physLastName, P), phys.lastName);
-            if (!isTodoCid(m.treatment.physNpi)) setIf(payload, nestedDKey(parentCid, m.treatment.physNpi, P), phys.npi);
+            setIf(payload, nestedDKey(parentCid, m.treatment.physFirstName, P, P), phys.firstName);
+            setIf(payload, nestedDKey(parentCid, m.treatment.physLastName, P, P), phys.lastName);
+            if (!isTodoCid(m.treatment.physNpi)) setIf(payload, nestedDKey(parentCid, m.treatment.physNpi, P, P), phys.npi);
         });
         (Array.isArray(tx.facilities) ? tx.facilities : []).filter(hasFacilityContent).forEach((f, j) => {
-            Object.assign(payload, buildFacility(m.treatment.facility, f, (cid) => nestedDKey(parentCid, cid, j + 1)));
+            const F = j + 1;
+            Object.assign(payload, buildFacility(m.treatment.facility, f, (cid) => nestedDKey(parentCid, cid, F, F)));
         });
     });
 

@@ -17,6 +17,7 @@ export const m = fieldMapping.selfReportCancerDx;
 // here: it transitively pulls js/shared.js, whose module scope needs browser globals).
 export const dk = (cid, ...idx) => ['D_' + cid, ...idx].join('_');
 export const ndk = (parentCid, childCid, ...idx) => ['D_' + parentCid, 'D_' + childCid, ...idx].join('_');
+export const txdk = (parentCid, childCid, position) => ndk(parentCid, childCid, position, position);
 export const Y = String(fieldMapping.yes);
 export const N = String(fieldMapping.no);
 
