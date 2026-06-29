@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { setup, m, dk, getPayload, toTreatmentSummary } from './support.js';
+import { setup, m, dk, ndk, Y, N, getPayload, toTreatmentSummary } from './support.js';
 
 // Regression guards for the navigation audit. Each test
 // reproduces a confirmed bug's trigger and asserts the fixed behavior: Back never loops/dead-ends,
@@ -8,6 +8,11 @@ import { setup, m, dk, getPayload, toTreatmentSummary } from './support.js';
 const toChemoSummary = async (page, site = 'prostate') => {
     await toTreatmentSummary(page, { site });           // chemo 2021 (shared walk in support.js)
     await expect(page.locator('[data-tx-chip]')).toHaveCount(1);
+};
+
+const toSummary = async (page, types = ['chemo'], years = ['2021'], site = 'prostate') => {
+    await toTreatmentSummary(page, { site, types, years });
+    await expect(page.locator('[data-tx-chip]')).toHaveCount(types.length);
 };
 
 test.describe('Navigation audit regressions', () => {
@@ -38,7 +43,43 @@ test.describe('Navigation audit regressions', () => {
         await page.click('#srcdxNext');                  // review
         await page.click('#srcdxNext');                  // submit
         const payload = await getPayload(page);
-        expect(payload[dk(m.treatment.startYear, 1, 1)]).toBe('2021');
+        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021');
+    });
+
+    // 'No' via Add Another must leave a clean stack. Every Back changes screen.
+    test('Add Another then "No": each Back press changes screen', async ({ page }) => {
+        await setup(page);
+        await toChemoSummary(page);
+        await page.click('#srcdxAddTreatment');          // cancellable edit -> Q3
+        await page.click('#txReceivedNo');
+        await page.click('#srcdxNext');                  // -> review (treatments emptied; origin dead)
+        await expect(page.locator('[data-edit="primarySite"]')).toBeVisible();
+        await page.click('#srcdxBack');                  // -> Q3
+        await expect(page.locator('#txReceivedNo')).toBeVisible();
+        await page.click('#srcdxBack');                  // -> Q2 in one press (no duplicate-Q3 no-op)
+        await expect(page.locator('#srcdxDxYear')).toBeVisible();
+        await expect(page.locator('#srcdxDxYear')).toHaveValue('2020');
+    });
+
+    // Cancelling an Add Another after Q3 harvested a new type removes the detail-less treatment.
+    test('cancelling Add Another after picking a new type leaves no phantom treatment', async ({ page }) => {
+        await setup(page);
+        await toChemoSummary(page);
+        await page.click('#srcdxAddTreatment');          // -> Q3
+        await page.check('#tx_surgery');                 // new type
+        await page.click('#srcdxNext');                  // -> first incomplete detail (surgery)
+        await expect(page.locator('#srcdxTxStartYr')).toHaveValue('');
+        await page.click('#srcdxBack');                  // -> previous completed detail (chemo)
+        await expect(page.locator('#srcdxTxStartYr')).toHaveValue('2021');
+        await page.click('#srcdxBack');                  // -> gate
+        await page.click('#srcdxBack');                  // cancel -> summary, edit rolled back
+        await expect(page.locator('[data-tx-chip]')).toHaveCount(1);
+        await page.click('#srcdxNext');                  // review
+        await page.click('#srcdxNext');                  // submit succeeds (nothing incomplete)
+        const payload = await getPayload(page);
+        expect(payload[dk(m.treatment.chemo)]).toBe(Y);
+        expect(payload[dk(m.treatment.surgery)]).toBe(N);
+        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021');
     });
 
     // Removing one of several treatments leaves a valid loop cursor. Back from the summary
@@ -112,7 +153,7 @@ test.describe('Navigation audit regressions', () => {
         await page.click('#srcdxNext');                  // review
         await page.click('#srcdxNext');                  // submit
         const payload = await getPayload(page);
-        expect(payload[dk(m.treatment.startYear, 1, 1)]).toBe('2021');
+        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021');
     });
 
     // Editing one treatment from the summary chip, next, then back must not duplicate the
@@ -127,7 +168,51 @@ test.describe('Navigation audit regressions', () => {
         await page.click('#srcdxNext');                  // review
         await page.click('#srcdxNext');                  // submit
         const payload = await getPayload(page);
-        expect(payload[dk(m.treatment.startYear, 1, 1)]).toBe('2021'); // not wiped
+        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021'); // not wiped
+    });
+
+    // After a chip edit returns, Back from summary must re-enter at the last item.
+    test('chip edit, then Back from summary walks from the last treatment without wiping data', async ({ page }) => {
+        await setup(page);
+        await toSummary(page, ['chemo', 'surgery'], ['2021', '2022']);
+        await page.click('[data-edit-tx="0"]');          // edit chemo (idx 0)
+        await expect(page.locator('#srcdxTxStartYr')).toHaveValue('2021');
+        await page.click('#srcdxNext');                  // commit -> summary
+        await expect(page.locator('[data-tx-chip]')).toHaveCount(2);
+
+        await page.click('#srcdxBack');                  // -> detail at the last item (surgery)
+        await expect(page.locator('#srcdxTxStartYr')).toHaveValue('2022');
+        await page.click('#srcdxBack');                  // within-loop -> chemo, value intact
+        await expect(page.locator('#srcdxTxStartYr')).toHaveValue('2021');
+        await page.click('#srcdxBack');                  // -> Q3
+        await expect(page.locator('#txReceivedYes')).toBeChecked();
+    });
+
+    // 'No' on the detail during a chip edit must take the no-treatment path, never an empty summary.
+    test('answering "No" during a chip edit lands on review, not an empty summary', async ({ page }) => {
+        await setup(page);
+        await toChemoSummary(page);
+        await page.click('[data-edit-tx="0"]');
+        await page.click('#txDetailNo');                 // empties treatments mid-edit
+        await expect(page.locator('[data-edit="primarySite"]')).toBeVisible(); // review; prostate skips screening
+        await expect(page.locator('[data-tx-chip]')).toHaveCount(0);           // not the summary
+        await page.click('#srcdxBack');                  // -> Q3, No reflected
+        await expect(page.locator('#txReceivedNo')).toBeChecked();
+    });
+
+    // Add/remove clicks during item edit harvest values. Back must still roll them back.
+    test('cancelling a chip edit after an add-physician click rolls field changes back', async ({ page }) => {
+        await setup(page);
+        await toChemoSummary(page);
+        await page.click('[data-edit-tx="0"]');
+        await page.fill('#srcdxTxStartYr', '2030');      // change the year mid-edit
+        await page.click('#srcdxAddPhys');               // then an add click harvests it into state
+        await page.click('#srcdxBack');                  // cancel the edit
+        await expect(page.locator('[data-tx-chip]')).toHaveCount(1);
+        await page.click('#srcdxNext');                  // review
+        await page.click('#srcdxNext');                  // submit
+        const payload = await getPayload(page);
+        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021');
     });
 
     // Resume must refuse to restore a (pre-fix) persisted broken state: an empty-treatments
@@ -167,5 +252,28 @@ test.describe('Navigation audit regressions', () => {
         await page.click('#srcdxBack');                  // back at first item -> GATE (Q3), not Review
         await expect(page.locator('#txReceivedYes')).toBeVisible();
         await expect(page.locator('[data-edit="primarySite"]')).toHaveCount(0); // NOT review
+    });
+
+    // Cancelling a Q3 No->Yes edit from Review restores the original No answer.
+    test('cancelling a Q3 No-to-Yes review edit restores the original No answer', async ({ page }) => {
+        await setup(page);
+        await page.click('#srcdxAddDiagnosis');
+        await page.check('#site_prostate');
+        await page.click('#srcdxNext');
+        await page.fill('#srcdxDxYear', '2020');
+        await page.click('#srcdxNext');
+        await page.check('#txReceivedNo');
+        await page.click('#srcdxNext');                  // review (Q3 = No)
+        await page.click('[data-edit="treatmentReceived"]');
+        await page.check('#txReceivedYes');
+        await page.check('#tx_chemo');
+        await page.click('#srcdxNext');                  // -> detail (section re-collect)
+        await page.click('#srcdxBack');                  // -> gate
+        await page.click('#srcdxBack');                  // cancel -> review, snapshot restored
+        await expect(page.locator('[data-edit="primarySite"]')).toBeVisible();
+        await page.click('#srcdxNext');                  // submit succeeds with Q3 restored to No
+        const payload = await getPayload(page);
+        expect(payload[dk(m.txReceived)]).toBe(N);
+        expect(dk(m.treatment.chemo) in payload).toBe(false);
     });
 });

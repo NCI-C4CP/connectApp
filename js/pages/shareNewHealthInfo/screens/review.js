@@ -1,4 +1,4 @@
-import { renderQuestion, navButtons, treatmentTypeLabelHtml } from '../ui.js';
+import { renderQuestion, navButtons, q4HeaderFallback, q4HeaderI18nKey, treatmentTypeLabelHtml } from '../ui.js';
 import { escapeHTML, translateHTML, allCountries } from '../../../shared.js';
 import { SCREENS, PRIMARY_SITES, SCREENING_OPTIONS, MONTHS } from '../constants.js';
 import { isScreeningEligible, isDiagnosisSubmittable, getScreeningOptionsForSite } from '../conditionalLogic.js';
@@ -88,8 +88,9 @@ export const renderReview = (content, ctx) => {
     const showScreening = isScreeningEligible(d.primarySite);
 
     const siteAnswer = `<span data-i18n="${siteI18n(d.primarySite)}">${esc(d.primarySite) || '—'}</span>${d.primarySite === 'other' && d.primarySiteOther ? ` (${esc(d.primarySiteOther)})` : ''}`;
+    const unansweredAnswer = '<div class="text-muted" data-i18n="shareHealthInfo.q4NotAnswered"></div>';
     const txAnswer = (d.txReceived === null || d.txReceived === undefined)
-        ? '<div class="text-muted" data-i18n="shareHealthInfo.q4NotAnswered">Not answered yet — click Edit to answer.</div>'
+        ? unansweredAnswer
         : `${yesNo(d.txReceived)}${d.txReceived && d.treatments.length
             ? `<p class="srcdx-strong mt-3 mb-1" data-i18n="shareHealthInfo.reportedTreatments">Reported Treatments:</p>${d.treatments.map(treatmentRow).join('')}` : ''}`;
     // Ignore stale wrong-site screenings after a site edit.
@@ -97,7 +98,7 @@ export const renderReview = (content, ctx) => {
     const groupLabel = `<p class="srcdx-strong mt-3 mb-1"><span data-i18n="shareHealthInfo.scrnDetailSite_${d.primarySite}">${esc(d.primarySite)}</span>:</p>`;
     const scrnAnswer = (d.screeningDetected === null || d.screeningDetected === undefined
             || (d.screeningDetected === true && siteScreenings.length === 0))
-        ? '<div class="text-muted" data-i18n="shareHealthInfo.q4NotAnswered">Not answered yet — click Edit to answer.</div>'
+        ? unansweredAnswer
         : `${yesNo(d.screeningDetected)}${d.screeningDetected && siteScreenings.length
             ? `<p class="srcdx-strong mt-3 mb-1" data-i18n="shareHealthInfo.reportedScreenings">Reported Screenings:</p>${groupLabel}${siteScreenings.map(screeningRow).join('')}` : ''}`;
 
@@ -106,7 +107,7 @@ export const renderReview = (content, ctx) => {
         ${item('shareHealthInfo.q1Header', '1. What is the primary site of your cancer diagnosis?', SCREENS.PRIMARY_SITE, siteAnswer)}
         ${item('shareHealthInfo.q2Header', '2. What was the date of your diagnosis?', SCREENS.DIAGNOSIS_DATE, dateAnswer(d))}
         ${item('shareHealthInfo.q3Header', '3. Have you received, are you currently receiving, or are you scheduled to receive treatment for this cancer?', SCREENS.TREATMENT_RECEIVED, txAnswer)}
-        ${showScreening ? item('shareHealthInfo.q4Header', '4. Was this cancer detected through routine screening?', SCREENS.SCREENING_GATE, scrnAnswer) : ''}
+        ${showScreening ? item(q4HeaderI18nKey(d.primarySite), q4HeaderFallback(d.primarySite), SCREENS.SCREENING_GATE, scrnAnswer) : ''}
         <p class="srcdx-strong mt-4" data-i18n="shareHealthInfo.reviewSubmitHint">If all this information is correct, please click the Submit button.</p>
         <div id="srcdxReviewError" class="error-text" role="alert" aria-live="assertive" tabindex="-1"></div>
         ${navButtons({ showBack: true, nextKey: 'shareHealthInfo.submitButton', nextText: 'Submit' })}

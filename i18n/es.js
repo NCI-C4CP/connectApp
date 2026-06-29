@@ -2148,13 +2148,14 @@
         "monthLabel": "Mes",
         "yearLabelRequired": "Año <span class=\"required\">*</span>",
         "yearRequired": "Ingrese un año válido (AAAA) que no sea futuro.",
+        "dxYearInput": {
+            "placeholder": "Ingresa el año de diagnóstico"
+        },
         // Q3 treatment
         "q3Header": "3. ¿Ha recibido, está recibiendo o tiene programado recibir tratamiento contra este cáncer?",
         "q3SelectTypes": "Seleccione cada tratamiento que haya recibido, esté recibiendo o tenga programado recibir.",
         "q3TxInfo": "Nos interesa encontrar registros de tratamiento si recibió su tratamiento fuera de su sistema de atención médica. Compartir esta información nos ayudará a encontrar estos registros y será útil para la investigación de Connect.",
         "q3OtherDescribe": "Otro: describa",
-        "q3Required": "Seleccione Sí o No.",
-        "q3TypeRequired": "Seleccione al menos un tratamiento.",
         "q3NextHint": "Por favor, complete en la siguiente pantalla la información relacionada con este tratamiento. Puede agregar más tratamientos después de este.",
         // Treatment detail
         "txType": "Tipo de tratamiento:",
@@ -2163,11 +2164,20 @@
         "startYearRequired": "Año de inicio <span class=\"required\">*</span>",
         "endMonth": "Mes de finalización",
         "endYear": "Año de finalización",
+        "txYearInput": {
+            "placeholder": "Ingresa el año de diagnóstico"
+        },
         "txOngoing": "Mi tratamiento está en curso",
         "physHeader": "Médico u oncólogo",
         "physSectionHeader": "Nombre de su médico u oncólogo:",
         "physFirst": "Nombre de pila",
         "physLast": "Apellido",
+        "physFirstInput": {
+            "placeholder": "Ingrese su nombre de pila"
+        },
+        "physLastInput": {
+            "placeholder": "Ingrese su apellido"
+        },
         "addPhysician": "+ Agregar otro médico u oncólogo",
         // NPI provider typeahead (treatment + screening physician fields)
         "npiListLabel": {
@@ -2185,31 +2195,33 @@
         "addFacility": "+ Agregar otro centro u hospital",
         "removeFacility": "Eliminar centro u hospital",
         "startYearError": "Ingrese un año de inicio válido.",
+        "txYearBeforeDxError": "El año del tratamiento no puede ser anterior al año de diagnóstico.",
         // Treatment summary
         "reportedTreatments": "Tratamientos informados:",
         "reportedScreenings": "Pruebas de detección informadas:",
         "noTreatments": "No se informaron tratamientos.",
         "addTreatment": "Agregar otro tratamiento",
-        "txSummaryHint": "Si no tiene otros tratamientos para informar, presione el botón “Siguiente”.",
+        "txSummaryHint": "Si no tiene otros tratamientos para informar, presione el botón “Siguiente”",
         "removeConfirm": "¿Está seguro de que desea eliminar este tratamiento? La información que introdujo se eliminará.",
         "removeYes": "Eliminar este tratamiento",
         "goBack": "Volver atrás",
         // Q4 screening
         "q4Header": "4. ¿Este cáncer se detectó en una revisión de rutina?",
+        "q4Header_lung": "4. ¿Este cáncer se detectó en una revisión de rutina? Es decir, tomografía computarizada, también llamada tomografía computarizada (TC) de dosis baja",
         "q4Choose": "Elija las pruebas de detección que detectaron su cáncer:",
         "q4ChooseHelp": "Puede elegir tantas como necesite. Se le pedirá más información sobre cada una que elija.",
         "q4Required": "Seleccione Sí o No.",
         "q4TypeRequired": "Seleccione al menos una prueba de detección.",
-        "q4NotAnswered": "Aún no respondida: haga clic en Editar para responder.",
+        "q4NotAnswered": "",
         // Screening recap (between Q4 and the detail loop)
         "recapChosen": "Ha elegido las siguientes pruebas de detección.",
-        "recapHelp": "Ahora le pediremos más información sobre cada prueba de detección.",
+        "recapHelp": "Ahora le pediremos más información sobre cada una.",
         // Between-items screening status
-        "statusAlmostDone": "¡Casi listo! Complete la información sobre su prueba de detección de",
+        "statusAlmostDone": "¡Ya casi ha terminado! Complete la información sobre su prueba de detección",
         "statusComplete": "Completada",
         "statusPending": "Pendiente",
         // Review
-        "reviewSubmitHint": "Si toda esta información es correcta, haga clic en el botón Enviar.",
+        "reviewSubmitHint": "Si toda esta información es correcta, haga clic en el botón “Enviar”.",
         "reviewTxFacility": "Dirección del centro u hospital donde recibió, está recibiendo o está programado para recibir tratamiento:",
         "reviewScrnFacility": "Dirección del centro u hospital donde le hicieron la prueba de detección:",
         "toggleDetails": "Mostrar u ocultar detalles",
@@ -2219,8 +2231,8 @@
         "monthAbbr_july": "jul", "monthAbbr_august": "ago", "monthAbbr_september": "sep",
         "monthAbbr_october": "oct", "monthAbbr_november": "nov", "monthAbbr_december": "dic",
         // Screening detail
-        // Dynamic intro: "prueba de detección [selección]". App inserts "<u>{Site} Cancer > {Screening}</u>" between intro1 and intro2.
-        "scrnDetailIntro1": "Complete la siguiente información sobre su prueba de detección de",
+        // Dynamic intro: "prueba de detección [selección]". App inserts "<u>{Screening}</u>" between intro1 and intro2.
+        "scrnDetailIntro1": "Complete la siguiente información sobre su prueba de detección",
         "scrnDetailIntro2": ".",
         "scrnDetailSite_breast": "Cáncer de mama",
         "scrnDetailSite_lung": "Cáncer de pulmón o bronquial",
@@ -2228,8 +2240,12 @@
         "scrnPhysHeader": "Médico",
         "scrnDateOfScreening": "Fecha de la prueba:",
         "scrnPhysSectionHeader": "Nombre del médico que lo derivó (por ejemplo, proveedor de atención primaria, obstetra/ginecólogo):",
-        "scrnFacilityHeader": "Ingrese la dirección del centro u hospital donde le hicieron la prueba de detección:",
+        "scrnFacilityHeader": "Ingrese la dirección del centro u hospital donde se le hizo la prueba:",
         "scrnYearError": "Ingrese un año válido.",
+        "scrnYearAfterDxError": "El año de la prueba de detección no puede ser posterior al año de diagnóstico.",
+        "scrnYearInput": {
+            "placeholder": "Ingrese el año"
+        },
         // Review
         "reviewHeader": "Por favor, revise la siguiente información.",
         "reviewIntro": "Si algo contiene algún error, haga clic en el botón “Editar” para volver a esa sección.",
@@ -2238,20 +2254,41 @@
         "scrnYearShort": "Año",
         // Confirmation
         "confirmHeader": "Gracias por compartir esta información con nosotros.",
-        "confirmBody": "Lamentamos saber de su diagnóstico. Si le interesan recursos adicionales, puede resultarle útil revisar información sobre el <a href=\"https://www.cancer.gov/about-cancer/treatment\" target=\"_blank\" rel=\"noopener\">tratamiento</a> y el <a href=\"https://www.cancer.gov/about-cancer/managing-care\" target=\"_blank\" rel=\"noopener\">manejo de la atención</a> del Instituto Nacional del Cáncer. Si tiene alguna pregunta, comuníquese con el Centro de Apoyo de Connect.",
+        "confirmBody": "Lamentamos saber de su diagnóstico. Si le interesan recursos adicionales, puede resultarle útil revisar información sobre el <a href=\"https://www.cancer.gov/espanol/cancer/tratamiento\" target=\"_blank\" rel=\"noopener\">tratamiento</a> y el <a href=\"https://www.cancer.gov/espanol/cancer/manejo-del-cancer\" target=\"_blank\" rel=\"noopener\">manejo de la atención</a> del Instituto Nacional del Cáncer. Si tiene alguna pregunta, comuníquese con el <a href=\"https://norcfedramp.servicenowservices.com/participant\" target=\"_blank\" rel=\"noopener\">Centro de Asistencia de Connect</a>.",
         "confirmThanks": "¡Gracias por ser una parte importante de Connect! Su participación continua nos ayudará a conocer más sobre las causas del cáncer y a encontrar nuevas formas de prevenirlo.",
         "confirmAnother": "¿Ha recibido otro diagnóstico de cáncer recientemente? Agregue información sobre su nuevo diagnóstico haciendo clic en el botón de abajo.",
         // Facility fields
         "facName": "Línea 1 (nombre del centro u hospital)",
+        "facNameInput": {
+            "placeholder": "Ingrese el nombre del centro u hospital"
+        },
         "facIntl": "Este centro u hospital se encuentra fuera de los Estados Unidos",
         "facLine2": "Línea 2 (calle, ruta rural)",
+        "facLine2Input": {
+            "placeholder": "Ingrese la calle, la ruta rural"
+        },
         "facLine3": "Línea 3 (apartamento, suite, unidad, edificio)",
+        "facLine3Input": {
+            "placeholder": "Ingrese el apartamento, la suite, la unidad, el edificio"
+        },
         "facLine4": "Línea 4",
+        "facLine4Input": {
+            "placeholder": "Ingrese la línea 4 de la dirección"
+        },
         "facCity": "Ciudad",
+        "facCityInput": {
+            "placeholder": "Ingrese la ciudad"
+        },
         "facState": "Estado",
         "facZip": "Código postal",
+        "facZipInput": {
+            "placeholder": "Ingrese el código postal"
+        },
         "facRegion": "Región",
         "facPostal": "Código postal",
+        "facPostalInput": {
+            "placeholder": "Ingrese el código postal"
+        },
         "facCountry": "País",
         // Primary cancer sites
         "site_anal": "Ano",
@@ -2299,10 +2336,10 @@
         // Screening options
         "scrn_breast2D": "Mamografía 2D o 3D (tomosíntesis)",
         "scrn_breastCEM": "Mamografía con contraste",
-        "scrn_breastMRI": "Imagen de resonancia magnética de mama",
+        "scrn_breastMRI": "IRM de mama",
         "scrn_breastUS": "Ecografía",
         "scrn_breastCBE": "Examen clínico de mama",
-        "scrn_lungCT": "Tomografía computarizada (TC) de dosis baja",
+        "scrn_lungCT": "Tomografía computarizada, también llamada tomografía computarizada (TC) de dosis baja",
         "scrn_colonCol": "Colonoscopia",
         "scrn_colonCT": "Colonoscopia virtual por tomografía computarizada",
         "scrn_colonSig": "Sigmoidoscopia flexible",

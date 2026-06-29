@@ -2,9 +2,9 @@
 // maximal diagnosis with literal keys (never mapping-derived). A mapping typo cannot
 // self-confirm. Conventions under test (per the data dictionary + analytics decisions):
 //   - D_<questionCid> keys; every D_ value a string (response CIDs, years, text)
-//   - _T_T suffix for treatment/screening iteration scalars (1-indexed, positional over the
-//     canonical order filtered to selected); two-index _T_P for physicians/facilities within
-//     a treatment; screening physician/facility use the degenerate _S_S
+//   - nested detail keys are parented by the selected treatment/screening option CID:
+//     D_<parentCid>_D_<childCid>; repeatable treatment physician/facility rows add
+//     matching Quest-style row counters (_1_1, _2_2, ...)
 //   - months emitted as month response cids; countries as dictionary country cids
 //   - merged dictionary variables: facility state/region -> one cid, zip/postal -> one cid
 //   - server-owned fields (DxNumber, site DxDt, identity) are never client-emitted
@@ -17,7 +17,7 @@ vi.mock('../js/shared.js', () => ({
 
 import fieldMapping from '../js/fieldToConceptIdMapping.js';
 import {
-    buildDiagnosisPayload, buildProgressSnapshot, dKey, appendDiagnosis,
+    buildDiagnosisPayload, buildProgressSnapshot, dKey, nestedDKey, appendDiagnosis,
 } from '../js/pages/shareNewHealthInfo/payload.js';
 
 const m = fieldMapping.selfReportCancerDx;
@@ -68,9 +68,7 @@ const goldenState = {
     ],
 };
 
-// The contract, key by key. Treatment order: [chemo, surgery, radiation, other] filtered to
-// selected -> T1=chemo, T2=surgery. Screening order: breast options filtered to chosen ->
-// S1=breast2D, S2=breastMRI.
+// The contract, key by key. Detail keys are parented by the selected treatment/screening option CID.
 const goldenPayload = {
     D_181737942: '847945207',     // primary site = Breast
     D_299768751: '615680906',     // dx month = November (response cid)
@@ -80,32 +78,32 @@ const goldenPayload = {
     D_293873603: '353358909',     // surgery selected
     D_555019890: '104430631',     // radiation shown-unchecked -> explicit No
     D_459406752: '104430631',     // other shown-unchecked -> explicit No
-    // --- T1 = chemo ---
-    D_742710886_1_1: '526483288', // start month = May
-    D_281136649_1_1: '2023',
-    D_735592270_1_1: '353358909', // ongoing = Yes (XOR: no end keys)
-    D_964819753_1_1: 'Maya', D_740626474_1_1: 'Santos',
-    D_964819753_1_2: 'Jon', D_740626474_1_2: 'Santoso',
-    D_539812906_1_1: '104430631', // facility 1: domestic
-    D_165350319_1_1: 'Sibley Memorial Hospital',
-    D_456014563_1_1: '5255 Loughboro Rd NW',
-    D_493041638_1_1: 'Washington',
-    D_215797578_1_1: 'District of Columbia', // merged state/region <- state
-    D_385095107_1_1: '20016',                // merged zip/postal <- zip
-    D_539812906_1_2: '353358909', // facility 2: international
-    D_165350319_1_2: 'Royal Marsden',
-    D_456014563_1_2: '203 Fulham Rd',
-    D_460490909_1_2: 'Building B, Chelsea',  // line4 = international-only
-    D_493041638_1_2: 'London',
-    D_215797578_1_2: 'Greater London',       // merged state/region <- region
-    D_385095107_1_2: 'SW3 6JJ',              // merged zip/postal <- postal
-    D_785016438_1_2: '156628245',            // country: select value '2' -> UK response cid
-    // --- T2 = surgery ---
-    D_742710886_2_2: '286592124', // start month = January
-    D_281136649_2_2: '2024',
-    D_735592270_2_2: '104430631', // ongoing = No
-    D_625530863_2_2: '802747980', // end month = February
-    D_729162012_2_2: '2024',
+    // --- Treatment parent = chemo (244216107) ---
+    D_244216107_D_742710886: '526483288', // start month = May
+    D_244216107_D_281136649: '2023',
+    D_244216107_D_735592270: '353358909', // ongoing = Yes (XOR: no end keys)
+    D_244216107_D_964819753_1_1: 'Maya', D_244216107_D_740626474_1_1: 'Santos',
+    D_244216107_D_964819753_2_2: 'Jon', D_244216107_D_740626474_2_2: 'Santoso',
+    D_244216107_D_539812906_1_1: '104430631', // facility 1: domestic
+    D_244216107_D_165350319_1_1: 'Sibley Memorial Hospital',
+    D_244216107_D_456014563_1_1: '5255 Loughboro Rd NW',
+    D_244216107_D_493041638_1_1: 'Washington',
+    D_244216107_D_215797578_1_1: 'District of Columbia', // merged state/region <- state
+    D_244216107_D_385095107_1_1: '20016',                // merged zip/postal <- zip
+    D_244216107_D_539812906_2_2: '353358909', // facility 2: international
+    D_244216107_D_165350319_2_2: 'Royal Marsden',
+    D_244216107_D_456014563_2_2: '203 Fulham Rd',
+    D_244216107_D_460490909_2_2: 'Building B, Chelsea',  // line4 = international-only
+    D_244216107_D_493041638_2_2: 'London',
+    D_244216107_D_215797578_2_2: 'Greater London',       // merged state/region <- region
+    D_244216107_D_385095107_2_2: 'SW3 6JJ',              // merged zip/postal <- postal
+    D_244216107_D_785016438_2_2: '156628245',            // country: select value '2' -> UK response cid
+    // --- Treatment parent = surgery (293873603) ---
+    D_293873603_D_742710886: '286592124', // start month = January
+    D_293873603_D_281136649: '2024',
+    D_293873603_D_735592270: '104430631', // ongoing = No
+    D_293873603_D_625530863: '802747980', // end month = February
+    D_293873603_D_729162012: '2024',
     // --- screening (breast site) ---
     D_944065539: '353358909',     // detected = Yes
     D_425815239: '353358909',     // 2D/3D mammogram chosen
@@ -113,18 +111,18 @@ const goldenPayload = {
     D_528508094: '353358909',     // MRI chosen
     D_502929020: '104430631',     // US -> No
     D_412252588: '104430631',     // CBE -> No
-    // --- S1 = breast2D ---
-    D_853862770_1_1: '463502254', // screening month = April
-    D_858052564_1_1: '2017',
-    D_239126548_1_1: 'Grace', D_130343311_1_1: 'Hopper',
-    D_501859375_1_1: '104430631', // facility: domestic
-    D_977505777_1_1: 'Imaging Center',
-    D_632951008_1_1: '1 Scan Way',
-    D_591687168_1_1: 'Bethesda',
-    D_513329248_1_1: 'Maryland',
-    D_404892571_1_1: '20814',
-    // --- S2 = breastMRI (sparse: year only; empty physician/facility emit nothing) ---
-    D_858052564_2_2: '2018',
+    // --- Screening parent = breast2D (425815239) ---
+    D_425815239_D_853862770: '463502254', // screening month = April
+    D_425815239_D_858052564: '2017',
+    D_425815239_D_239126548: 'Grace', D_425815239_D_130343311: 'Hopper',
+    D_425815239_D_501859375: '104430631', // facility: domestic
+    D_425815239_D_977505777: 'Imaging Center',
+    D_425815239_D_632951008: '1 Scan Way',
+    D_425815239_D_591687168: 'Bethesda',
+    D_425815239_D_513329248: 'Maryland',
+    D_425815239_D_404892571: '20814',
+    // --- Screening parent = breastMRI (528508094), sparse: year only ---
+    D_528508094_D_858052564: '2018',
 };
 
 describe('buildDiagnosisPayload — golden contract', () => {
@@ -163,6 +161,9 @@ describe('buildDiagnosisPayload — sections & gating', () => {
         const p = buildDiagnosisPayload({ primarySite: 'other', primarySiteOther: 'Gallbladder', dxYear: '2021' });
         expect(p.D_181737942).toBe('807835037');
         expect(p.D_546976551).toBe('Gallbladder');
+        const emptyOther = buildDiagnosisPayload({ primarySite: 'other', primarySiteOther: '', dxYear: '2021' });
+        expect(emptyOther.D_181737942).toBe('807835037');
+        expect(emptyOther.D_546976551).toBeUndefined();
         expect('D_546976551' in buildDiagnosisPayload({ primarySite: 'breast', primarySiteOther: 'ignored', dxYear: '2021' })).toBe(false);
     });
 
@@ -170,9 +171,19 @@ describe('buildDiagnosisPayload — sections & gating', () => {
         const no = buildDiagnosisPayload({ primarySite: 'prostate', dxYear: '2020', txReceived: false, treatments: [{ type: 'chemo', startYear: '2021' }] });
         expect(no.D_874288004).toBe('104430631');
         expect('D_244216107' in no).toBe(false);          // no type flags
-        expect('D_281136649_1_1' in no).toBe(false);      // no loop keys (stale treatments ignored)
+        expect(nestedDKey(m.treatment.chemo, m.treatment.startYear) in no).toBe(false); // no nested keys
         const unanswered = buildDiagnosisPayload({ primarySite: 'prostate', dxYear: '2020' });
         expect('D_874288004' in unanswered).toBe(false);
+    });
+
+    it('emits explicit No treatment type flags but no loop rows when Q3 is Yes and no optional type is selected', () => {
+        const p = buildDiagnosisPayload({ primarySite: 'prostate', dxYear: '2020', txReceived: true, treatments: [] });
+        expect(p[dKey(m.txReceived)]).toBe(String(fieldMapping.yes));
+        expect(p[dKey(m.treatment.chemo)]).toBe(String(fieldMapping.no));
+        expect(p[dKey(m.treatment.surgery)]).toBe(String(fieldMapping.no));
+        expect(p[dKey(m.treatment.radiation)]).toBe(String(fieldMapping.no));
+        expect(p[dKey(m.treatment.other)]).toBe(String(fieldMapping.no));
+        expect(nestedDKey(m.treatment.chemo, m.treatment.startYear) in p).toBe(false);
     });
 
     it('emits the FLAT treatment other-describe only when the Other type is selected', () => {
@@ -182,10 +193,18 @@ describe('buildDiagnosisPayload — sections & gating', () => {
         });
         expect(p.D_459406752).toBe('353358909');
         expect(p.D_420392069).toBe('Immunotherapy');      // flat — no loop suffix
-        expect(p.D_281136649_1_1).toBe('2024');           // 'other' is T1 (only selected type)
+        expect(p.D_459406752_D_281136649).toBe('2024');
+
+        const emptyOther = buildDiagnosisPayload({
+            primarySite: 'prostate', dxYear: '2020', txReceived: true,
+            treatments: [{ type: 'other', otherDescribe: '', startYear: '2024', ongoing: true }],
+        });
+        expect(emptyOther.D_459406752).toBe('353358909');
+        expect(emptyOther.D_420392069).toBeUndefined();
+        expect(emptyOther.D_459406752_D_281136649).toBe('2024');
     });
 
-    it('orders treatment iterations canonically regardless of state array order', () => {
+    it('parents treatment details by treatment type regardless of state array order', () => {
         const p = buildDiagnosisPayload({
             primarySite: 'prostate', dxYear: '2020', txReceived: true,
             treatments: [
@@ -193,8 +212,8 @@ describe('buildDiagnosisPayload — sections & gating', () => {
                 { type: 'chemo', startYear: '2021', ongoing: true },
             ],
         });
-        expect(p.D_281136649_1_1).toBe('2021'); // chemo first (canonical order)
-        expect(p.D_281136649_2_2).toBe('2022'); // radiation second
+        expect(p.D_244216107_D_281136649).toBe('2021'); // chemo parent
+        expect(p.D_555019890_D_281136649).toBe('2022'); // radiation parent
     });
 
     it('compacts physician and facility loop indexes after a middle entry is removed', () => {
@@ -220,12 +239,35 @@ describe('buildDiagnosisPayload — sections & gating', () => {
             }],
         });
 
-        expect(p[dKey(m.treatment.physFirstName, 1, 1)]).toBe('Ada');
-        expect(p[dKey(m.treatment.physFirstName, 1, 2)]).toBe('Katherine');
-        expect(p[dKey(m.treatment.physFirstName, 1, 3)]).toBeUndefined();
-        expect(p[dKey(m.treatment.facility.line1, 1, 1)]).toBe('Facility A');
-        expect(p[dKey(m.treatment.facility.line1, 1, 2)]).toBe('Facility C');
-        expect(p[dKey(m.treatment.facility.line1, 1, 3)]).toBeUndefined();
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physFirstName, 1, 1)]).toBe('Ada');
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physFirstName, 2, 2)]).toBe('Katherine');
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physFirstName, 3, 3)]).toBeUndefined();
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.facility.line1, 1, 1)]).toBe('Facility A');
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.facility.line1, 2, 2)]).toBe('Facility C');
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.facility.line1, 3, 3)]).toBeUndefined();
+    });
+
+    it('compacts non-empty physician and facility rows before assigning counters', () => {
+        const p = buildDiagnosisPayload({
+            primarySite: 'prostate', dxYear: '2020', txReceived: true,
+            treatments: [{
+                type: 'chemo', startYear: '2021', ongoing: true,
+                physicians: [
+                    { firstName: '', lastName: '', npi: '' },
+                    { firstName: 'Maya', lastName: 'Santos', npi: '' },
+                ],
+                facilities: [
+                    { ...emptyFacility },
+                    { ...emptyFacility, line1: 'Hospital B' },
+                ],
+            }],
+        });
+
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physFirstName, 1, 1)]).toBe('Maya');
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physLastName, 1, 1)]).toBe('Santos');
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physFirstName, 2, 2)]).toBeUndefined();
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.facility.line1, 1, 1)]).toBe('Hospital B');
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.facility.line1, 2, 2)]).toBeUndefined();
     });
 
     it('omits screening entirely for non-eligible sites, even with stale screening state', () => {
@@ -235,7 +277,7 @@ describe('buildDiagnosisPayload — sections & gating', () => {
         });
         expect('D_944065539' in p).toBe(false);
         expect('D_425815239' in p).toBe(false);
-        expect('D_858052564_1_1' in p).toBe(false);
+        expect(nestedDKey(m.screening.optionValues.breast2D, m.screening.year) in p).toBe(false);
     });
 
     it('drops wrong-site screenings but keeps right-site ones (site changed mid-flow)', () => {
@@ -246,14 +288,14 @@ describe('buildDiagnosisPayload — sections & gating', () => {
         expect('D_425815239' in p).toBe(false);           // breast option flag never emitted for colon
         expect(p.D_122234136).toBe('353358909');          // colonoscopy chosen
         expect(p.D_603167806).toBe('104430631');          // other colon options -> explicit No
-        expect(p.D_858052564_1_1).toBe('2018');           // colonCol is S1 (only valid chosen)
+        expect(p.D_122234136_D_858052564).toBe('2018');   // colonCol parent
     });
 
     it('screeningDetected=No emits the flag and nothing else from the section', () => {
         const p = buildDiagnosisPayload({ primarySite: 'lung', dxYear: '2020', screeningDetected: false, screenings: [{ type: 'lungCT', year: '2019' }] });
         expect(p.D_944065539).toBe('104430631');
         expect('D_633630015' in p).toBe(false);
-        expect('D_858052564_1_1' in p).toBe(false);
+        expect(nestedDKey(m.screening.optionValues.lungCT, m.screening.year) in p).toBe(false);
     });
 
     it('emits the physician NPI once its mapping cid is assigned (TODO flip)', () => {
@@ -261,8 +303,8 @@ describe('buildDiagnosisPayload — sections & gating', () => {
         try {
             m.treatment.physNpi = 999999999;
             const p = buildDiagnosisPayload(goldenState);
-            expect(p.D_999999999_1_1).toBe('1234567890');
-            expect('D_999999999_1_2' in p).toBe(false);   // unmatched physician has no npi
+            expect(p.D_244216107_D_999999999_1_1).toBe('1234567890');
+            expect('D_244216107_D_999999999_2_2' in p).toBe(false); // unmatched physician has no npi
         } finally {
             m.treatment.physNpi = original;
         }

@@ -475,7 +475,7 @@ const renderPaymentCard = (data) => {
     return renderCard(icon, type, href, false);
 }
 
-// "Share New Health Information" card. Shown only to verified, active, living participants (issue #1295).
+// "Share New Health Information" card. Shown only to verified, active participants (issue #1295).
 const renderShareHealthInfoCard = (data) => {
     if (!isVerifiedNotWithdrawn(data)) return '';
     return renderCard('./images/share-health-info-icon.svg', 'shareHealthInfo', '#share-health-info', false);

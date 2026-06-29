@@ -1,6 +1,14 @@
-import { renderQuestion, navButtons, monthSelect, fieldError, clearFieldErrors } from '../ui.js';
+import {
+    renderQuestion,
+    navButtons,
+    monthSelect,
+    fieldError,
+    clearFieldErrors,
+    q4HeaderFallback,
+    q4HeaderI18nKey,
+} from '../ui.js';
 import { SCREENING_OPTIONS, SCREENS } from '../constants.js';
-import { isValidScreeningYear } from '../validation.js';
+import { isScreeningYearOnOrBeforeDiagnosis, isValidScreeningYear } from '../validation.js';
 import { isScreeningComplete } from '../conditionalLogic.js';
 import {
     renderFacilityAddress, attachFacilityAddressEvents, harvestFacility, fillFacility,
@@ -20,7 +28,7 @@ export const renderScreeningDetail = (content, ctx) => {
 
     renderQuestion(content, `
         <div class="d-flex align-items-start">
-            <h2 class="srcdx-question mb-0" data-screen-heading data-i18n="shareHealthInfo.q4Header">4. Was this cancer detected through routine screening?</h2>
+            <h2 class="srcdx-question mb-0" data-screen-heading data-i18n="${q4HeaderI18nKey(d.primarySite)}">${q4HeaderFallback(d.primarySite)}</h2>
             <span class="srcdx-info ms-2" data-tooltip-key="shareHealthInfo.scrnDef_routine" tabindex="0" role="img" aria-label="More information">i</span>
         </div>
         <div class="form-check form-check-inline mt-2">
@@ -33,20 +41,20 @@ export const renderScreeningDetail = (content, ctx) => {
         </div>
         <p class="srcdx-strong mt-4" id="srcdxScrnIntro">
             <span data-i18n="shareHealthInfo.scrnDetailIntro1">Please fill out the following information about your</span>
-            <u><span data-i18n="shareHealthInfo.scrnDetailSite_${d.primarySite}">${d.primarySite}</span> &gt; <span data-i18n="${metaFor(scr.type).i18nKey || ''}">${scr.type}</span></u><span data-i18n="shareHealthInfo.scrnDetailIntro2"> screening.</span>
+            <u><span data-i18n="${metaFor(scr.type).i18nKey || ''}">${scr.type}</span></u><span data-i18n="shareHealthInfo.scrnDetailIntro2"> screening.</span>
         </p>
         <h3 class="srcdx-subheading" data-i18n="shareHealthInfo.scrnDateOfScreening">Date of screening:</h3>
         <div class="row">
             <div class="col-6 col-sm-4"><label for="srcdxScrnMo" data-i18n="shareHealthInfo.monthLabel">Month</label>${monthSelect('srcdxScrnMo')}</div>
             <div class="col-6 col-sm-4"><label for="srcdxScrnYr" data-i18n="shareHealthInfo.yearLabelRequired">Year <span class="required">*</span></label>
-                <input type="text" inputmode="numeric" maxlength="4" class="form-control" id="srcdxScrnYr" placeholder="Enter year"></div>
+                <input type="text" inputmode="numeric" maxlength="4" class="form-control" id="srcdxScrnYr" data-i18n="shareHealthInfo.scrnYearInput" placeholder="Enter year"></div>
         </div>
         <h3 class="srcdx-subheading" data-i18n="shareHealthInfo.scrnPhysSectionHeader">Name of your referring physician (e.g., primary care provider, OB/GYN):</h3>
         <div class="row">
             <div class="col-6 col-md-5"><label for="srcdxScrnPhysFirst" data-i18n="shareHealthInfo.physFirst">First name</label>
-                <input type="text" class="form-control" id="srcdxScrnPhysFirst" autocomplete="off" maxlength="100" placeholder="Enter first name"></div>
+                <input type="text" class="form-control" id="srcdxScrnPhysFirst" autocomplete="off" maxlength="100" data-i18n="shareHealthInfo.physFirstInput" placeholder="Enter first name"></div>
             <div class="col-6 col-md-5"><label for="srcdxScrnPhysLast" data-i18n="shareHealthInfo.physLast">Last name</label>
-                <input type="text" class="form-control" id="srcdxScrnPhysLast" autocomplete="off" maxlength="100" placeholder="Enter last name"></div>
+                <input type="text" class="form-control" id="srcdxScrnPhysLast" autocomplete="off" maxlength="100" data-i18n="shareHealthInfo.physLastInput" placeholder="Enter last name"></div>
             ${npiEnabled ? renderNpiSlots(NPI_IDS) : ''}
         </div>
         <h3 class="srcdx-subheading" data-i18n="shareHealthInfo.scrnFacilityHeader">Enter the facility or hospital address where you were screened:</h3>
@@ -98,8 +106,12 @@ export const renderScreeningDetail = (content, ctx) => {
             fieldError(content, 'srcdxScrnYr', 'shareHealthInfo.scrnYearError', 'Please enter a valid year.');
             return;
         }
+        if (d.dxYear && !isScreeningYearOnOrBeforeDiagnosis(scr.year, d.dxYear)) {
+            fieldError(content, 'srcdxScrnYr', 'shareHealthInfo.scrnYearAfterDxError', 'The year of screening cannot be after the year of diagnosis.');
+            return;
+        }
         // Interstitial status appears only while another selected screening needs detail.
-        if (pos.editMode !== 'item' && d.screenings.some((s) => !isScreeningComplete(s))) {
+        if (pos.editMode !== 'item' && d.screenings.some((s) => !isScreeningComplete(s, { dxYear: d.dxYear }))) {
             ctx.reroute(SCREENS.SCREENING_STATUS);
         } else {
             ctx.next();

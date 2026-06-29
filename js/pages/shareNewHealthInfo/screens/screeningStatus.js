@@ -1,4 +1,4 @@
-import { renderQuestion, navButtons } from '../ui.js';
+import { renderQuestion, navButtons, q4HeaderFallback, q4HeaderI18nKey } from '../ui.js';
 import { SCREENING_OPTIONS, PRIMARY_SITES, SCREENS } from '../constants.js';
 import { isScreeningComplete } from '../conditionalLogic.js';
 
@@ -8,12 +8,13 @@ export const renderScreeningStatus = (content, ctx) => {
     const d = ctx.state.getState();
     const pos = ctx.state.getPosition();
     const siteMeta = PRIMARY_SITES.find((s) => s.key === d.primarySite) || {};
-    const nextIncomplete = d.screenings.find((s) => !isScreeningComplete(s));
+    const completeOpts = { dxYear: d.dxYear };
+    const nextIncomplete = d.screenings.find((s) => !isScreeningComplete(s, completeOpts));
 
     const rows = d.screenings.map((scr) => {
         const meta = optionMeta(scr.type);
         const info = `<span class="srcdx-info ms-1" data-tooltip-key="${meta.tooltipKey}" tabindex="0" role="img" aria-label="More information">i</span>`;
-        if (isScreeningComplete(scr)) {
+        if (isScreeningComplete(scr, completeOpts)) {
             return `
             <div class="mb-2" data-status-row="${scr.type}">
                 <span data-i18n="${meta.i18nKey}">${scr.type}</span>${info}
@@ -30,7 +31,7 @@ export const renderScreeningStatus = (content, ctx) => {
 
     renderQuestion(content, `
         <div class="d-flex align-items-start">
-            <h2 class="srcdx-question mb-0" data-screen-heading data-i18n="shareHealthInfo.q4Header">4. Was this cancer detected through routine screening?</h2>
+            <h2 class="srcdx-question mb-0" data-screen-heading data-i18n="${q4HeaderI18nKey(d.primarySite)}">${q4HeaderFallback(d.primarySite)}</h2>
             <span class="srcdx-info ms-2" data-tooltip-key="shareHealthInfo.scrnDef_routine" tabindex="0" role="img" aria-label="More information">i</span>
         </div>
         <div class="form-check form-check-inline mt-2">
@@ -58,8 +59,8 @@ export const renderScreeningStatus = (content, ctx) => {
     content.querySelector('#srcdxBack').addEventListener('click', () => ctx.reroute(SCREENS.SCREENING_DETAIL));
     content.querySelector('#srcdxNext').addEventListener('click', () => {
         d.screenings = d.screenings.filter((scr) =>
-            isScreeningComplete(scr) || content.querySelector(`#status_${scr.type}`)?.checked);
-        const nextIdx = d.screenings.findIndex((s) => !isScreeningComplete(s));
+            isScreeningComplete(scr, completeOpts) || content.querySelector(`#status_${scr.type}`)?.checked);
+        const nextIdx = d.screenings.findIndex((s) => !isScreeningComplete(s, completeOpts));
         if (nextIdx === -1) { ctx.next(); return; }
         pos.editingScreeningIndex = nextIdx;
         ctx.reroute(SCREENS.SCREENING_DETAIL);

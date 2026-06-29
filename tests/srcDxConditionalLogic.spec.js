@@ -23,15 +23,15 @@ import {
 const NOW = new Date('2026-06-03T12:00:00.000Z');
 
 describe('isVerifiedNotWithdrawn', () => {
-    it('true only for verified, not-withdrawn, not-destroy-requested', () => {
+    it('true for verified, not-withdrawn participants', () => {
         expect(isVerifiedNotWithdrawn(participantVerifiedNotWithdrawn)).toBe(true);
+        expect(isVerifiedNotWithdrawn(participantDataDestroyRequested)).toBe(true);
+        expect(isVerifiedNotWithdrawn(participantDeceasedEmr)).toBe(true);
+        expect(isVerifiedNotWithdrawn(participantDeceasedNorc)).toBe(true);
     });
-    it('false for not-verified / withdrawn / destroy-requested / deceased / empty', () => {
+    it('false for not-verified / withdrawn / empty', () => {
         expect(isVerifiedNotWithdrawn(participantNotVerified)).toBe(false);
         expect(isVerifiedNotWithdrawn(participantWithdrawn)).toBe(false);
-        expect(isVerifiedNotWithdrawn(participantDataDestroyRequested)).toBe(false);
-        expect(isVerifiedNotWithdrawn(participantDeceasedEmr)).toBe(false);
-        expect(isVerifiedNotWithdrawn(participantDeceasedNorc)).toBe(false);
         expect(isVerifiedNotWithdrawn({})).toBe(false);
     });
 });
@@ -104,11 +104,21 @@ describe('completeness checks', () => {
         expect(isTreatmentComplete({ type: 'chemo', startYear: '2030' }, { now: NOW })).toBe(true);  // scheduled (future, within +5)
         expect(isTreatmentComplete({ type: 'chemo', startYear: '2099' }, { now: NOW })).toBe(false); // beyond +5
     });
+    it('isTreatmentComplete rejects treatment years before the diagnosis year when dxYear is provided', () => {
+        expect(isTreatmentComplete({ type: 'chemo', startYear: '2020' }, { now: NOW, dxYear: '2020' })).toBe(true);
+        expect(isTreatmentComplete({ type: 'chemo', startYear: '2021' }, { now: NOW, dxYear: '2020' })).toBe(true);
+        expect(isTreatmentComplete({ type: 'chemo', startYear: '2019' }, { now: NOW, dxYear: '2020' })).toBe(false);
+    });
     it('isScreeningComplete requires a type and a valid screening year', () => {
         expect(isScreeningComplete({ type: 'breast2D', year: '2025' }, { now: NOW })).toBe(true);
         expect(isScreeningComplete({ type: null, year: '2025' }, { now: NOW })).toBe(false);
         expect(isScreeningComplete({ type: 'breast2D', year: '' }, { now: NOW })).toBe(false);
         expect(isScreeningComplete({ type: 'breast2D', year: '2030' }, { now: NOW })).toBe(true);
+    });
+    it('isScreeningComplete rejects screenings after the diagnosis year when dxYear is provided', () => {
+        expect(isScreeningComplete({ type: 'breast2D', year: '2020' }, { now: NOW, dxYear: '2020' })).toBe(true);
+        expect(isScreeningComplete({ type: 'breast2D', year: '2019' }, { now: NOW, dxYear: '2020' })).toBe(true);
+        expect(isScreeningComplete({ type: 'breast2D', year: '2021' }, { now: NOW, dxYear: '2020' })).toBe(false);
     });
 });
 
@@ -118,27 +128,51 @@ describe('isDiagnosisSubmittable', () => {
             { primarySite: 'prostate', dxYear: '2020', txReceived: false, treatments: [], screenings: [] },
             { now: NOW })).toBe(true);
     });
+    it('true when Q3 is answered Yes but no optional treatment type is selected', () => {
+        expect(isDiagnosisSubmittable(
+            { primarySite: 'prostate', dxYear: '2020', txReceived: true, treatments: [], screenings: [] },
+            { now: NOW })).toBe(true);
+    });
     it('false without a primary site', () => {
         expect(isDiagnosisSubmittable({ dxYear: '2020' }, { now: NOW })).toBe(false);
     });
     it('false with an invalid diagnosis year', () => {
         expect(isDiagnosisSubmittable({ primarySite: 'breast', txReceived: false, dxYear: '2099' }, { now: NOW })).toBe(false);
     });
-    it('false when Q3 (treatment received) is unanswered', () => {
-        // The empty-treatments escape path can reach Review with txReceived=null — must not submit.
+    it('true when optional Q3 (treatment received) is unanswered', () => {
         expect(isDiagnosisSubmittable(
             { primarySite: 'prostate', dxYear: '2020', txReceived: null, treatments: [], screenings: [] },
-            { now: NOW })).toBe(false);
+            { now: NOW })).toBe(true);
+    });
+    it('ignores stale hidden treatment rows when optional Q3 is unanswered', () => {
+        expect(isDiagnosisSubmittable(
+            { primarySite: 'prostate', dxYear: '2020', txReceived: null, treatments: [{ type: 'chemo', startYear: '' }], screenings: [] },
+            { now: NOW })).toBe(true);
     });
     it('false if any treatment lacks a valid start year', () => {
         expect(isDiagnosisSubmittable(
             { primarySite: 'breast', dxYear: '2020', txReceived: true, treatments: [{ type: 'chemo', startYear: '' }], screeningDetected: false },
             { now: NOW })).toBe(false);
     });
+    it('false if any treatment start year is before the diagnosis year', () => {
+        expect(isDiagnosisSubmittable(
+            { primarySite: 'prostate', dxYear: '2020', txReceived: true, treatments: [{ type: 'chemo', startYear: '2019' }], screenings: [] },
+            { now: NOW })).toBe(false);
+    });
     it('false if any screening lacks a valid year', () => {
         expect(isDiagnosisSubmittable(
             { primarySite: 'breast', dxYear: '2020', txReceived: false, screeningDetected: true, screenings: [{ type: 'breast2D', year: '' }] },
             { now: NOW })).toBe(false);
+    });
+    it('false if any current-site screening year is after the diagnosis year', () => {
+        expect(isDiagnosisSubmittable(
+            { primarySite: 'breast', dxYear: '2020', txReceived: false, screeningDetected: true, screenings: [{ type: 'breast2D', year: '2021' }] },
+            { now: NOW })).toBe(false);
+    });
+    it('keeps treatment years after diagnosis accepted when otherwise valid', () => {
+        expect(isDiagnosisSubmittable(
+            { primarySite: 'prostate', dxYear: '2020', txReceived: true, treatments: [{ type: 'chemo', startYear: '2021' }], screenings: [] },
+            { now: NOW })).toBe(true);
     });
     it('true for a full valid diagnosis', () => {
         expect(isDiagnosisSubmittable({

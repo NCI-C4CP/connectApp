@@ -19,5 +19,19 @@ export const isValidYearWithAllowance = (value, { now = new Date(), futureAllowa
 
 export const isValidScreeningYear = isValidYearWithAllowance;
 
+export const isScreeningYearOnOrBeforeDiagnosis = (screeningYear, diagnosisYear) => {
+    const screening = String(screeningYear ?? '').trim();
+    const diagnosis = String(diagnosisYear ?? '').trim();
+    if (!isValidYearFormat(screening) || !isValidYearFormat(diagnosis)) return false;
+    return Number(screening) <= Number(diagnosis);
+};
+
+export const isTreatmentYearOnOrAfterDiagnosis = (treatmentYear, diagnosisYear) => {
+    const treatment = String(treatmentYear ?? '').trim();
+    const diagnosis = String(diagnosisYear ?? '').trim();
+    if (!isValidYearFormat(treatment) || !isValidYearFormat(diagnosis)) return false;
+    return Number(treatment) >= Number(diagnosis);
+};
+
 export const isNonEmpty = (value) =>
     typeof value === 'string' ? value.trim().length > 0 : value != null;

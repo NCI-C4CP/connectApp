@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { setup, m, dk, Y, N, getPayload } from './support.js';
+import { setup, m, dk, ndk, txdk, Y, N, getPayload } from './support.js';
 
 const startNoTreatmentDiagnosis = async (page, site) => {
     await page.click('#srcdxAddDiagnosis');
@@ -23,16 +23,17 @@ test.describe('Ops testing-plan coverage', () => {
         await startNoTreatmentDiagnosis(page, 'lung');
 
         await expect(page.locator('#scrnDetectedYes')).toBeVisible();
+        await expect(page.locator('[data-i18n="shareHealthInfo.q4Header_lung"]')).toBeVisible();
         await page.check('#scrnDetectedYes');
-        await expect(page.locator('#scrn_lungCT')).toBeVisible();
+        await expect(page.locator('#scrn_lungCT')).toHaveCount(0);
+        await expect(page.locator('#srcdxScrnOptions')).toHaveCount(0);
         await expect(page.locator('#scrn_breast2D')).toHaveCount(0);
         await expect(page.locator('#scrn_colonCol')).toHaveCount(0);
-        await page.check('#scrn_lungCT');
         await page.click('#srcdxNext');
-        await page.click('#srcdxNext');
+        await expect(page.locator('#srcdxScrnYr')).toBeVisible();
 
         await page.selectOption('#srcdxScrnMo', '0');
-        await page.fill('#srcdxScrnYr', '2021');
+        await page.fill('#srcdxScrnYr', '2020');
         await page.fill('#srcdxScrnPhysFirst', 'Jane');
         await page.fill('#srcdxScrnPhysLast', 'Doe');
         await page.fill('#UPAddressScrn_0Line1', 'Lung Imaging Center');
@@ -45,14 +46,14 @@ test.describe('Ops testing-plan coverage', () => {
         expect(payload[dk(m.primarySite)]).toBe(String(m.cancerSites.lung));
         expect(payload[dk(m.screening.detected)]).toBe(Y);
         expect(payload[dk(m.screening.optionValues.lungCT)]).toBe(Y);
-        expect(payload[dk(m.screening.month, 1, 1)]).toBe('286592124');
-        expect(payload[dk(m.screening.year, 1, 1)]).toBe('2021');
-        expect(payload[dk(m.screening.phyFirstName, 1, 1)]).toBe('Jane');
-        expect(payload[dk(m.screening.phyLastName, 1, 1)]).toBe('Doe');
-        expect(payload[dk(m.screening.facility.line1, 1, 1)]).toBe('Lung Imaging Center');
-        expect(payload[dk(m.screening.facility.city, 1, 1)]).toBe('Bethesda');
-        expect(payload[dk(m.screening.facility.state, 1, 1)]).toBe('MD');
-        expect(payload[dk(m.screening.facility.zip, 1, 1)]).toBe('20814');
+        expect(payload[ndk(m.screening.optionValues.lungCT, m.screening.month)]).toBe('286592124');
+        expect(payload[ndk(m.screening.optionValues.lungCT, m.screening.year)]).toBe('2020');
+        expect(payload[ndk(m.screening.optionValues.lungCT, m.screening.phyFirstName)]).toBe('Jane');
+        expect(payload[ndk(m.screening.optionValues.lungCT, m.screening.phyLastName)]).toBe('Doe');
+        expect(payload[ndk(m.screening.optionValues.lungCT, m.screening.facility.line1)]).toBe('Lung Imaging Center');
+        expect(payload[ndk(m.screening.optionValues.lungCT, m.screening.facility.city)]).toBe('Bethesda');
+        expect(payload[ndk(m.screening.optionValues.lungCT, m.screening.facility.state)]).toBe('MD');
+        expect(payload[ndk(m.screening.optionValues.lungCT, m.screening.facility.zip)]).toBe('20814');
     });
 
     test('international screening facility stores region/postal/country under merged facility CIDs', async ({ page }) => {
@@ -76,11 +77,11 @@ test.describe('Ops testing-plan coverage', () => {
 
         const payload = await submitFromReview(page);
         const fac = m.screening.facility;
-        expect(payload[dk(fac.intlFlag, 1, 1)]).toBe(Y);
-        expect(payload[dk(fac.line1, 1, 1)]).toBe('Munich Screening Center');
-        expect(payload[dk(fac.state, 1, 1)]).toBe('Bavaria');
-        expect(payload[dk(fac.zip, 1, 1)]).toBe('80331');
-        expect(payload[dk(fac.country, 1, 1)]).toBe('780612099');
+        expect(payload[ndk(m.screening.optionValues.breast2D, fac.intlFlag)]).toBe(Y);
+        expect(payload[ndk(m.screening.optionValues.breast2D, fac.line1)]).toBe('Munich Screening Center');
+        expect(payload[ndk(m.screening.optionValues.breast2D, fac.state)]).toBe('Bavaria');
+        expect(payload[ndk(m.screening.optionValues.breast2D, fac.zip)]).toBe('80331');
+        expect(payload[ndk(m.screening.optionValues.breast2D, fac.country)]).toBe('780612099');
     });
 
     test('all four treatment types plus Other description and nested physicians are captured', async ({ page }) => {
@@ -121,16 +122,16 @@ test.describe('Ops testing-plan coverage', () => {
         expect(payload[dk(m.treatment.radiation)]).toBe(Y);
         expect(payload[dk(m.treatment.other)]).toBe(Y);
         expect(payload[dk(m.treatment.otherDescribe)]).toBe('Immunotherapy');
-        expect(payload[dk(m.treatment.startYear, 1, 1)]).toBe('2021');
-        expect(payload[dk(m.treatment.startYear, 2, 2)]).toBe('2022');
-        expect(payload[dk(m.treatment.startYear, 3, 3)]).toBe('2023');
-        expect(payload[dk(m.treatment.startYear, 4, 4)]).toBe('2024');
-        expect(payload[dk(m.treatment.physFirstName, 2, 1)]).toBe('Alice');
-        expect(payload[dk(m.treatment.physLastName, 2, 1)]).toBe('Jones');
-        expect(payload[dk(m.treatment.physFirstName, 2, 2)]).toBe('Bob');
-        expect(payload[dk(m.treatment.physLastName, 2, 2)]).toBe('Lee');
-        expect(payload[dk(m.treatment.physFirstName, 2, 3)]).toBe('Carol');
-        expect(payload[dk(m.treatment.physLastName, 2, 3)]).toBe('Patel');
+        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021');
+        expect(payload[ndk(m.treatment.surgery, m.treatment.startYear)]).toBe('2022');
+        expect(payload[ndk(m.treatment.radiation, m.treatment.startYear)]).toBe('2023');
+        expect(payload[ndk(m.treatment.other, m.treatment.startYear)]).toBe('2024');
+        expect(payload[txdk(m.treatment.surgery, m.treatment.physFirstName, 1)]).toBe('Alice');
+        expect(payload[txdk(m.treatment.surgery, m.treatment.physLastName, 1)]).toBe('Jones');
+        expect(payload[txdk(m.treatment.surgery, m.treatment.physFirstName, 2)]).toBe('Bob');
+        expect(payload[txdk(m.treatment.surgery, m.treatment.physLastName, 2)]).toBe('Lee');
+        expect(payload[txdk(m.treatment.surgery, m.treatment.physFirstName, 3)]).toBe('Carol');
+        expect(payload[txdk(m.treatment.surgery, m.treatment.physLastName, 3)]).toBe('Patel');
     });
 
     test('full breast path captures diagnosis, treatment, screening, and review-submit payload', async ({ page }) => {
@@ -139,7 +140,7 @@ test.describe('Ops testing-plan coverage', () => {
         await page.check('#site_breast');
         await page.click('#srcdxNext');
         await page.selectOption('#srcdxDxMonth', '10');
-        await page.fill('#srcdxDxYear', '2024');
+        await page.fill('#srcdxDxYear', '2021');
         await page.click('#srcdxNext');
 
         await page.check('#txReceivedYes');
@@ -189,19 +190,19 @@ test.describe('Ops testing-plan coverage', () => {
         const payload = await submitFromReview(page);
         expect(payload[dk(m.primarySite)]).toBe(String(m.cancerSites.breast));
         expect(payload[dk(m.dxMonth)]).toBe('615680906');
-        expect(payload[dk(m.dxYear)]).toBe('2024');
+        expect(payload[dk(m.dxYear)]).toBe('2021');
         expect(payload[dk(m.treatment.chemo)]).toBe(Y);
         expect(payload[dk(m.treatment.surgery)]).toBe(Y);
         expect(payload[dk(m.treatment.radiation)]).toBe(N);
-        expect(payload[dk(m.treatment.startYear, 1, 1)]).toBe('2021');
-        expect(payload[dk(m.treatment.endYear, 1, 1)]).toBe('2021');
-        expect(payload[dk(m.treatment.physLastName, 2, 1)]).toBe('Reed');
-        expect(payload[dk(m.treatment.facility.line1, 2, 1)]).toBe('Treatment Center B');
+        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021');
+        expect(payload[ndk(m.treatment.chemo, m.treatment.endYear)]).toBe('2021');
+        expect(payload[txdk(m.treatment.surgery, m.treatment.physLastName, 1)]).toBe('Reed');
+        expect(payload[txdk(m.treatment.surgery, m.treatment.facility.line1, 1)]).toBe('Treatment Center B');
         expect(payload[dk(m.screening.detected)]).toBe(Y);
         expect(payload[dk(m.screening.optionValues.breast2D)]).toBe(Y);
-        expect(payload[dk(m.screening.month, 1, 1)]).toBe('463502254');
-        expect(payload[dk(m.screening.year, 1, 1)]).toBe('2020');
-        expect(payload[dk(m.screening.phyLastName, 1, 1)]).toBe('Hopper');
-        expect(payload[dk(m.screening.facility.line1, 1, 1)]).toBe('Breast Imaging Center');
+        expect(payload[ndk(m.screening.optionValues.breast2D, m.screening.month)]).toBe('463502254');
+        expect(payload[ndk(m.screening.optionValues.breast2D, m.screening.year)]).toBe('2020');
+        expect(payload[ndk(m.screening.optionValues.breast2D, m.screening.phyLastName)]).toBe('Hopper');
+        expect(payload[ndk(m.screening.optionValues.breast2D, m.screening.facility.line1)]).toBe('Breast Imaging Center');
     });
 });

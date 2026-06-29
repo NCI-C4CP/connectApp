@@ -108,7 +108,15 @@ export const loadCancerDxProgress = async () => {
 
 const siteLabelFromCid = (siteCid) => {
     const key = Object.keys(m.cancerSites).find((k) => String(m.cancerSites[k]) === siteCid);
-    return key ? translateText(`shareHealthInfo.site_${key}`) : '';
+    if (!key) return { i18nKey: '', fallback: '', otherText: '' };
+    const i18nKey = `shareHealthInfo.site_${key}`;
+    return { i18nKey, fallback: translateText(i18nKey), otherText: '' };
+};
+const siteLabelFromRow = (row) => {
+    const siteCid = row[`D_${m.primarySite}`];
+    const label = siteLabelFromCid(siteCid);
+    const otherText = String(row[`D_${m.primarySiteOther}`] ?? '').trim();
+    return String(siteCid) === String(m.cancerSites.other) ? { ...label, otherText } : label;
 };
 const monthCodeFromCid = (monthCid) => {
     const code = Object.keys(m.monthValues).find((c) => String(m.monthValues[c]) === monthCid);
@@ -128,7 +136,7 @@ export const getPreviouslyReportedDx = async () => {
         const year = row[`D_${m.dxYear}`] || '';
         const monthCode = monthCodeFromCid(row[`D_${m.dxMonth}`]);
         return {
-            location: siteLabelFromCid(row[`D_${m.primarySite}`]),
+            location: siteLabelFromRow(row),
             dxDate: monthCode === null ? year : `${String(monthCode + 1).padStart(2, '0')}/${year}`,
         };
     });

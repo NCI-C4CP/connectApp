@@ -109,21 +109,25 @@ describe('loadCancerDxProgress (server resume)', () => {
 });
 
 describe('getPreviouslyReportedDx', () => {
-    it('maps submitted rows to { location (i18n site label), dxDate MM/YYYY or YYYY }', async () => {
+    it('maps submitted rows to { location (dynamic i18n site label), dxDate MM/YYYY or YYYY }', async () => {
         fetchStub.mockResolvedValue(jsonResponse({
             data: {
                 inProgress: null,
                 submitted: [
                     { D_181737942: '847945207', D_299768751: '615680906', D_908235757: '2024' }, // breast, Nov
                     { D_181737942: '295976386', D_908235757: '2021' },                            // prostate, year only
+                    { D_181737942: '807835037', D_546976551: 'Gallbladder', D_908235757: '2020' }, // other, with write-in
+                    { D_181737942: '807835037', D_546976551: '   ', D_908235757: '2019' },         // other, blank write-in
                 ],
             },
             code: 200,
         }));
         const { getPreviouslyReportedDx } = await importDataAccess();
         expect(await getPreviouslyReportedDx()).toEqual([
-            { location: 'shareHealthInfo.site_breast', dxDate: '11/2024' },
-            { location: 'shareHealthInfo.site_prostate', dxDate: '2021' },
+            { location: { i18nKey: 'shareHealthInfo.site_breast', fallback: 'shareHealthInfo.site_breast', otherText: '' }, dxDate: '11/2024' },
+            { location: { i18nKey: 'shareHealthInfo.site_prostate', fallback: 'shareHealthInfo.site_prostate', otherText: '' }, dxDate: '2021' },
+            { location: { i18nKey: 'shareHealthInfo.site_other', fallback: 'shareHealthInfo.site_other', otherText: 'Gallbladder' }, dxDate: '2020' },
+            { location: { i18nKey: 'shareHealthInfo.site_other', fallback: 'shareHealthInfo.site_other', otherText: '' }, dxDate: '2019' },
         ]);
     });
 

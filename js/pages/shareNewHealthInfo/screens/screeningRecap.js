@@ -1,4 +1,11 @@
-import { renderQuestion, navButtons, fieldError, clearFieldErrors } from '../ui.js';
+import {
+    renderQuestion,
+    navButtons,
+    fieldError,
+    clearFieldErrors,
+    q4HeaderFallback,
+    q4HeaderI18nKey,
+} from '../ui.js';
 import { SCREENING_OPTIONS, PRIMARY_SITES } from '../constants.js';
 import { isScreeningComplete } from '../conditionalLogic.js';
 
@@ -20,7 +27,7 @@ export const renderScreeningRecap = (content, ctx) => {
 
     renderQuestion(content, `
         <div class="d-flex align-items-start">
-            <h2 class="srcdx-question mb-0" data-screen-heading data-i18n="shareHealthInfo.q4Header">4. Was this cancer detected through routine screening?</h2>
+            <h2 class="srcdx-question mb-0" data-screen-heading data-i18n="${q4HeaderI18nKey(d.primarySite)}">${q4HeaderFallback(d.primarySite)}</h2>
             <span class="srcdx-info ms-2" data-tooltip-key="shareHealthInfo.scrnDef_routine" tabindex="0" role="img" aria-label="More information">i</span>
         </div>
         <div class="form-check form-check-inline mt-2">
@@ -49,7 +56,7 @@ export const renderScreeningRecap = (content, ctx) => {
             fieldError(content, 'srcdxRecapList', 'shareHealthInfo.q4TypeRequired', 'Please select at least one screening.');
             return;
         }
-        const firstIncompleteIndex = d.screenings.findIndex((s) => !isScreeningComplete(s));
+        const firstIncompleteIndex = d.screenings.findIndex((s) => !isScreeningComplete(s, { dxYear: d.dxYear }));
         ctx.state.getPosition().editingScreeningIndex = firstIncompleteIndex >= 0 ? firstIncompleteIndex : 0;
         ctx.next();
     });
