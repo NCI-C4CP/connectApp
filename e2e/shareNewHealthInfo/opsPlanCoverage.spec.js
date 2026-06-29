@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { setup, m, dk, ndk, Y, N, getPayload } from './support.js';
+import { setup, m, dk, ndk, txdk, Y, N, getPayload } from './support.js';
 
 const startNoTreatmentDiagnosis = async (page, site) => {
     await page.click('#srcdxAddDiagnosis');
@@ -126,12 +126,12 @@ test.describe('Ops testing-plan coverage', () => {
         expect(payload[ndk(m.treatment.surgery, m.treatment.startYear)]).toBe('2022');
         expect(payload[ndk(m.treatment.radiation, m.treatment.startYear)]).toBe('2023');
         expect(payload[ndk(m.treatment.other, m.treatment.startYear)]).toBe('2024');
-        expect(payload[ndk(m.treatment.surgery, m.treatment.physFirstName, 1)]).toBe('Alice');
-        expect(payload[ndk(m.treatment.surgery, m.treatment.physLastName, 1)]).toBe('Jones');
-        expect(payload[ndk(m.treatment.surgery, m.treatment.physFirstName, 2)]).toBe('Bob');
-        expect(payload[ndk(m.treatment.surgery, m.treatment.physLastName, 2)]).toBe('Lee');
-        expect(payload[ndk(m.treatment.surgery, m.treatment.physFirstName, 3)]).toBe('Carol');
-        expect(payload[ndk(m.treatment.surgery, m.treatment.physLastName, 3)]).toBe('Patel');
+        expect(payload[txdk(m.treatment.surgery, m.treatment.physFirstName, 1)]).toBe('Alice');
+        expect(payload[txdk(m.treatment.surgery, m.treatment.physLastName, 1)]).toBe('Jones');
+        expect(payload[txdk(m.treatment.surgery, m.treatment.physFirstName, 2)]).toBe('Bob');
+        expect(payload[txdk(m.treatment.surgery, m.treatment.physLastName, 2)]).toBe('Lee');
+        expect(payload[txdk(m.treatment.surgery, m.treatment.physFirstName, 3)]).toBe('Carol');
+        expect(payload[txdk(m.treatment.surgery, m.treatment.physLastName, 3)]).toBe('Patel');
     });
 
     test('full breast path captures diagnosis, treatment, screening, and review-submit payload', async ({ page }) => {
@@ -196,8 +196,8 @@ test.describe('Ops testing-plan coverage', () => {
         expect(payload[dk(m.treatment.radiation)]).toBe(N);
         expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021');
         expect(payload[ndk(m.treatment.chemo, m.treatment.endYear)]).toBe('2021');
-        expect(payload[ndk(m.treatment.surgery, m.treatment.physLastName, 1)]).toBe('Reed');
-        expect(payload[ndk(m.treatment.surgery, m.treatment.facility.line1, 1)]).toBe('Treatment Center B');
+        expect(payload[txdk(m.treatment.surgery, m.treatment.physLastName, 1)]).toBe('Reed');
+        expect(payload[txdk(m.treatment.surgery, m.treatment.facility.line1, 1)]).toBe('Treatment Center B');
         expect(payload[dk(m.screening.detected)]).toBe(Y);
         expect(payload[dk(m.screening.optionValues.breast2D)]).toBe(Y);
         expect(payload[ndk(m.screening.optionValues.breast2D, m.screening.month)]).toBe('463502254');

@@ -11,6 +11,7 @@ const NO = String(fieldMapping.no);
 
 export const dKey = (cid, ...idx) => ['D_' + cid, ...idx].join('_');
 export const nestedDKey = (parentCid, childCid, ...idx) => ['D_' + parentCid, 'D_' + childCid, ...idx].join('_');
+const treatmentRowDKey = (parentCid, childCid, row) => nestedDKey(parentCid, childCid, row, row);
 
 export const TREATMENT_TYPE_ORDER = Object.freeze(['chemo', 'surgery', 'radiation', 'other']);
 
@@ -84,12 +85,13 @@ export const buildDiagnosisPayload = (state = {}) => {
         }
         (Array.isArray(tx.physicians) ? tx.physicians : []).filter(hasPhysicianContent).forEach((phys, j) => {
             const P = j + 1;
-            setIf(payload, nestedDKey(parentCid, m.treatment.physFirstName, P), phys.firstName);
-            setIf(payload, nestedDKey(parentCid, m.treatment.physLastName, P), phys.lastName);
-            if (!isTodoCid(m.treatment.physNpi)) setIf(payload, nestedDKey(parentCid, m.treatment.physNpi, P), phys.npi);
+            setIf(payload, treatmentRowDKey(parentCid, m.treatment.physFirstName, P), phys.firstName);
+            setIf(payload, treatmentRowDKey(parentCid, m.treatment.physLastName, P), phys.lastName);
+            if (!isTodoCid(m.treatment.physNpi)) setIf(payload, treatmentRowDKey(parentCid, m.treatment.physNpi, P), phys.npi);
         });
         (Array.isArray(tx.facilities) ? tx.facilities : []).filter(hasFacilityContent).forEach((f, j) => {
-            Object.assign(payload, buildFacility(m.treatment.facility, f, (cid) => nestedDKey(parentCid, cid, j + 1)));
+            const F = j + 1;
+            Object.assign(payload, buildFacility(m.treatment.facility, f, (cid) => treatmentRowDKey(parentCid, cid, F)));
         });
     });
 

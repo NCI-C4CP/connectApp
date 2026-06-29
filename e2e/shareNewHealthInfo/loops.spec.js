@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { setup, m, dk, ndk, Y, N, getPayload, toTreatmentDetail } from './support.js';
+import { setup, m, dk, ndk, txdk, Y, N, getPayload, toTreatmentDetail } from './support.js';
 
 // Drive to the treatment-detail screen for a single Chemotherapy treatment (prostate = non-screening).
 const toChemoDetail = (page) => toTreatmentDetail(page, { site: 'prostate' }); // shared walk in support.js
@@ -114,11 +114,11 @@ test.describe('Loops & repeatable inputs', () => {
         await page.click('#srcdxNext'); // submit
         const payload = await getPayload(page);
         const fac = m.treatment.facility;
-        expect(payload[ndk(m.treatment.chemo, fac.intlFlag, 1)]).toBe(Y);
-        expect(payload[ndk(m.treatment.chemo, fac.state, 1)]).toBe('Greater London'); // merged state/region <- region
-        expect(payload[ndk(m.treatment.chemo, fac.zip, 1)]).toBe('SW3 6JJ');          // merged zip/postal <- postal
-        expect(payload[ndk(m.treatment.chemo, fac.country, 1)]).toBe('156628245');    // select value '2' (UK) -> country response cid
-        expect(payload[ndk(m.treatment.chemo, fac.line4, 1)]).toBe('Building B, Chelsea');
+        expect(payload[txdk(m.treatment.chemo, fac.intlFlag, 1)]).toBe(Y);
+        expect(payload[txdk(m.treatment.chemo, fac.state, 1)]).toBe('Greater London'); // merged state/region <- region
+        expect(payload[txdk(m.treatment.chemo, fac.zip, 1)]).toBe('SW3 6JJ');          // merged zip/postal <- postal
+        expect(payload[txdk(m.treatment.chemo, fac.country, 1)]).toBe('156628245');    // select value '2' (UK) -> country response cid
+        expect(payload[txdk(m.treatment.chemo, fac.line4, 1)]).toBe('Building B, Chelsea');
     });
 
     test('mocked Google Places autocomplete fills a domestic facility and is captured', async ({ page }) => {
@@ -146,12 +146,12 @@ test.describe('Loops & repeatable inputs', () => {
         await page.click('#srcdxNext');
         const payload = await getPayload(page);
         const fac = m.treatment.facility;
-        expect(payload[ndk(m.treatment.chemo, fac.intlFlag, 1)]).toBe(N);
-        expect(payload[ndk(m.treatment.chemo, fac.line1, 1)]).toBe('Johns Hopkins Hospital');
-        expect(payload[ndk(m.treatment.chemo, fac.line2, 1)]).toBe('1800 Orleans Street');
-        expect(payload[ndk(m.treatment.chemo, fac.city, 1)]).toBe('Baltimore');
-        expect(payload[ndk(m.treatment.chemo, fac.state, 1)]).toBe('MD');
-        expect(payload[ndk(m.treatment.chemo, fac.zip, 1)]).toBe('21287');
+        expect(payload[txdk(m.treatment.chemo, fac.intlFlag, 1)]).toBe(N);
+        expect(payload[txdk(m.treatment.chemo, fac.line1, 1)]).toBe('Johns Hopkins Hospital');
+        expect(payload[txdk(m.treatment.chemo, fac.line2, 1)]).toBe('1800 Orleans Street');
+        expect(payload[txdk(m.treatment.chemo, fac.city, 1)]).toBe('Baltimore');
+        expect(payload[txdk(m.treatment.chemo, fac.state, 1)]).toBe('MD');
+        expect(payload[txdk(m.treatment.chemo, fac.zip, 1)]).toBe('21287');
     });
 
     test('mocked Google Places autocomplete stays disabled for an added international facility', async ({ page }) => {
@@ -273,8 +273,8 @@ test.describe('Loops & repeatable inputs', () => {
         await page.click('#srcdxNext'); // submit
         const payload = await getPayload(page);
         const fac = m.treatment.facility;
-        expect(payload[ndk(m.treatment.chemo, fac.line1, 1)]).toBe('Hospital A');
-        expect(payload[ndk(m.treatment.chemo, fac.line1, 2)]).toBe('Hospital B');
+        expect(payload[txdk(m.treatment.chemo, fac.line1, 1)]).toBe('Hospital A');
+        expect(payload[txdk(m.treatment.chemo, fac.line1, 2)]).toBe('Hospital B');
     });
 
     test('screening recap: unchecking a chosen screening drops it from the loop and the payload', async ({ page }) => {

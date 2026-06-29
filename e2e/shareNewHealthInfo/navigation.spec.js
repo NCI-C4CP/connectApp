@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { setup, m, dk, ndk, Y, N, getPayload, toTreatmentGate, toTreatmentSummary } from './support.js';
+import { setup, m, dk, ndk, txdk, Y, N, getPayload, toTreatmentGate, toTreatmentSummary } from './support.js';
 
 test.describe('Navigation, changing answers, data flow, and resume', () => {
     test('Back discards the screen you leave (forward saves, back clears)', async ({ page }) => {
@@ -218,7 +218,7 @@ test.describe('Navigation, changing answers, data flow, and resume', () => {
         await page.click('#srcdxNext');               // submit
 
         const payload = await getPayload(page);
-        expect(payload[ndk(m.treatment.chemo, m.treatment.physFirstName, 1)]).toBe('Ada');
+        expect(payload[txdk(m.treatment.chemo, m.treatment.physFirstName, 1)]).toBe('Ada');
         expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021');
     });
 

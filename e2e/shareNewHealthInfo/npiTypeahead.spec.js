@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { setup, m, ndk, getPayload, toTreatmentDetail, toTreatmentGate } from './support.js';
+import { setup, m, ndk, txdk, getPayload, toTreatmentDetail, toTreatmentGate } from './support.js';
 
 // NPI provider typeahead, end to end: suggestions while typing in the physician Last name,
 // selection fills the names + captures the NPI into the payload, edits clear the match, and
@@ -81,9 +81,9 @@ test.describe('NPI provider typeahead', () => {
         const payload = await getPayload(page);
         // NPI is captured in state (rides stateJSON for resume) but OMITTED from the D_ fields
         // while its concept id is still TODO — flips on automatically when the mapping gets the cid.
-        expect(ndk(m.treatment.chemo, m.treatment.physNpi, 1) in payload).toBe(false);
-        expect(payload[ndk(m.treatment.chemo, m.treatment.physFirstName, 1)]).toBe('MAYA');
-        expect(payload[ndk(m.treatment.chemo, m.treatment.physLastName, 1)]).toBe('SANTOS');
+        expect(txdk(m.treatment.chemo, m.treatment.physNpi, 1) in payload).toBe(false);
+        expect(payload[txdk(m.treatment.chemo, m.treatment.physFirstName, 1)]).toBe('MAYA');
+        expect(payload[txdk(m.treatment.chemo, m.treatment.physLastName, 1)]).toBe('SANTOS');
     });
 
     test('editing a name after matching clears the chip and the payload omits the NPI', async ({ page }) => {
@@ -100,9 +100,9 @@ test.describe('NPI provider typeahead', () => {
         await page.click('#srcdxNext');
         await page.click('#srcdxNext');
         const payload = await getPayload(page);
-        expect(ndk(m.treatment.chemo, m.treatment.physNpi, 1) in payload).toBe(false);
-        expect(payload[ndk(m.treatment.chemo, m.treatment.physLastName, 1)]).toBe('Santosa');
-        expect(payload[ndk(m.treatment.chemo, m.treatment.physFirstName, 1)]).toBe('MAYA'); // typed names persist
+        expect(txdk(m.treatment.chemo, m.treatment.physNpi, 1) in payload).toBe(false);
+        expect(payload[txdk(m.treatment.chemo, m.treatment.physLastName, 1)]).toBe('Santosa');
+        expect(payload[txdk(m.treatment.chemo, m.treatment.physFirstName, 1)]).toBe('MAYA'); // typed names persist
     });
 
     test('no matches shows the manual-entry hint and never blocks the flow', async ({ page }) => {
@@ -119,8 +119,8 @@ test.describe('NPI provider typeahead', () => {
         await page.click('#srcdxNext');
         await page.click('#srcdxNext');
         const payload = await getPayload(page);
-        expect(payload[ndk(m.treatment.chemo, m.treatment.physLastName, 1)]).toBe('Zzz');
-        expect(ndk(m.treatment.chemo, m.treatment.physNpi, 1) in payload).toBe(false);
+        expect(payload[txdk(m.treatment.chemo, m.treatment.physLastName, 1)]).toBe('Zzz');
+        expect(txdk(m.treatment.chemo, m.treatment.physNpi, 1) in payload).toBe(false);
     });
 
     test('a match survives the add-another-physician rerender; only matched rows emit an NPI', async ({ page }) => {
@@ -137,8 +137,8 @@ test.describe('NPI provider typeahead', () => {
         await page.click('#srcdxNext');
         await page.click('#srcdxNext');
         const payload = await getPayload(page);
-        expect(ndk(m.treatment.chemo, m.treatment.physNpi, 1) in payload).toBe(false); // TODO-cid: omitted (state still carries it)
-        expect(ndk(m.treatment.chemo, m.treatment.physNpi, 2) in payload).toBe(false);
+        expect(txdk(m.treatment.chemo, m.treatment.physNpi, 1) in payload).toBe(false); // TODO-cid: omitted (state still carries it)
+        expect(txdk(m.treatment.chemo, m.treatment.physNpi, 2) in payload).toBe(false);
     });
 
     test('the screening referring physician gets the same typeahead; payload carries phyNpi', async ({ page }) => {

@@ -3,7 +3,8 @@
 // self-confirm. Conventions under test (per the data dictionary + analytics decisions):
 //   - D_<questionCid> keys; every D_ value a string (response CIDs, years, text)
 //   - nested detail keys are parented by the selected treatment/screening option CID:
-//     D_<parentCid>_D_<childCid>; repeatable treatment physician/facility rows add _<counter>
+//     D_<parentCid>_D_<childCid>; repeatable treatment physician/facility rows add
+//     matching Quest-style row counters (_1_1, _2_2, ...)
 //   - months emitted as month response cids; countries as dictionary country cids
 //   - merged dictionary variables: facility state/region -> one cid, zip/postal -> one cid
 //   - server-owned fields (DxNumber, site DxDt, identity) are never client-emitted
@@ -81,22 +82,22 @@ const goldenPayload = {
     D_244216107_D_742710886: '526483288', // start month = May
     D_244216107_D_281136649: '2023',
     D_244216107_D_735592270: '353358909', // ongoing = Yes (XOR: no end keys)
-    D_244216107_D_964819753_1: 'Maya', D_244216107_D_740626474_1: 'Santos',
-    D_244216107_D_964819753_2: 'Jon', D_244216107_D_740626474_2: 'Santoso',
-    D_244216107_D_539812906_1: '104430631', // facility 1: domestic
-    D_244216107_D_165350319_1: 'Sibley Memorial Hospital',
-    D_244216107_D_456014563_1: '5255 Loughboro Rd NW',
-    D_244216107_D_493041638_1: 'Washington',
-    D_244216107_D_215797578_1: 'District of Columbia', // merged state/region <- state
-    D_244216107_D_385095107_1: '20016',                // merged zip/postal <- zip
-    D_244216107_D_539812906_2: '353358909', // facility 2: international
-    D_244216107_D_165350319_2: 'Royal Marsden',
-    D_244216107_D_456014563_2: '203 Fulham Rd',
-    D_244216107_D_460490909_2: 'Building B, Chelsea',  // line4 = international-only
-    D_244216107_D_493041638_2: 'London',
-    D_244216107_D_215797578_2: 'Greater London',       // merged state/region <- region
-    D_244216107_D_385095107_2: 'SW3 6JJ',              // merged zip/postal <- postal
-    D_244216107_D_785016438_2: '156628245',            // country: select value '2' -> UK response cid
+    D_244216107_D_964819753_1_1: 'Maya', D_244216107_D_740626474_1_1: 'Santos',
+    D_244216107_D_964819753_2_2: 'Jon', D_244216107_D_740626474_2_2: 'Santoso',
+    D_244216107_D_539812906_1_1: '104430631', // facility 1: domestic
+    D_244216107_D_165350319_1_1: 'Sibley Memorial Hospital',
+    D_244216107_D_456014563_1_1: '5255 Loughboro Rd NW',
+    D_244216107_D_493041638_1_1: 'Washington',
+    D_244216107_D_215797578_1_1: 'District of Columbia', // merged state/region <- state
+    D_244216107_D_385095107_1_1: '20016',                // merged zip/postal <- zip
+    D_244216107_D_539812906_2_2: '353358909', // facility 2: international
+    D_244216107_D_165350319_2_2: 'Royal Marsden',
+    D_244216107_D_456014563_2_2: '203 Fulham Rd',
+    D_244216107_D_460490909_2_2: 'Building B, Chelsea',  // line4 = international-only
+    D_244216107_D_493041638_2_2: 'London',
+    D_244216107_D_215797578_2_2: 'Greater London',       // merged state/region <- region
+    D_244216107_D_385095107_2_2: 'SW3 6JJ',              // merged zip/postal <- postal
+    D_244216107_D_785016438_2_2: '156628245',            // country: select value '2' -> UK response cid
     // --- Treatment parent = surgery (293873603) ---
     D_293873603_D_742710886: '286592124', // start month = January
     D_293873603_D_281136649: '2024',
@@ -238,12 +239,12 @@ describe('buildDiagnosisPayload — sections & gating', () => {
             }],
         });
 
-        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physFirstName, 1)]).toBe('Ada');
-        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physFirstName, 2)]).toBe('Katherine');
-        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physFirstName, 3)]).toBeUndefined();
-        expect(p[nestedDKey(m.treatment.chemo, m.treatment.facility.line1, 1)]).toBe('Facility A');
-        expect(p[nestedDKey(m.treatment.chemo, m.treatment.facility.line1, 2)]).toBe('Facility C');
-        expect(p[nestedDKey(m.treatment.chemo, m.treatment.facility.line1, 3)]).toBeUndefined();
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physFirstName, 1, 1)]).toBe('Ada');
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physFirstName, 2, 2)]).toBe('Katherine');
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physFirstName, 3, 3)]).toBeUndefined();
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.facility.line1, 1, 1)]).toBe('Facility A');
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.facility.line1, 2, 2)]).toBe('Facility C');
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.facility.line1, 3, 3)]).toBeUndefined();
     });
 
     it('compacts non-empty physician and facility rows before assigning counters', () => {
@@ -262,11 +263,11 @@ describe('buildDiagnosisPayload — sections & gating', () => {
             }],
         });
 
-        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physFirstName, 1)]).toBe('Maya');
-        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physLastName, 1)]).toBe('Santos');
-        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physFirstName, 2)]).toBeUndefined();
-        expect(p[nestedDKey(m.treatment.chemo, m.treatment.facility.line1, 1)]).toBe('Hospital B');
-        expect(p[nestedDKey(m.treatment.chemo, m.treatment.facility.line1, 2)]).toBeUndefined();
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physFirstName, 1, 1)]).toBe('Maya');
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physLastName, 1, 1)]).toBe('Santos');
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.physFirstName, 2, 2)]).toBeUndefined();
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.facility.line1, 1, 1)]).toBe('Hospital B');
+        expect(p[nestedDKey(m.treatment.chemo, m.treatment.facility.line1, 2, 2)]).toBeUndefined();
     });
 
     it('omits screening entirely for non-eligible sites, even with stale screening state', () => {
@@ -302,8 +303,8 @@ describe('buildDiagnosisPayload — sections & gating', () => {
         try {
             m.treatment.physNpi = 999999999;
             const p = buildDiagnosisPayload(goldenState);
-            expect(p.D_244216107_D_999999999_1).toBe('1234567890');
-            expect('D_244216107_D_999999999_2' in p).toBe(false); // unmatched physician has no npi
+            expect(p.D_244216107_D_999999999_1_1).toBe('1234567890');
+            expect('D_244216107_D_999999999_2_2' in p).toBe(false); // unmatched physician has no npi
         } finally {
             m.treatment.physNpi = original;
         }

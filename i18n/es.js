@@ -2207,7 +2207,7 @@
         "goBack": "Volver atrás",
         // Q4 screening
         "q4Header": "4. ¿Este cáncer se detectó en una revisión de rutina?",
-        "q4Header_lung": "4. ¿Este cáncer se detectó en una revisión de rutina? Es decir, tomografía computarizada (también llamada tomografía computarizada de dosis baja)",
+        "q4Header_lung": "4. ¿Este cáncer se detectó en una revisión de rutina? Es decir, tomografía computarizada, también llamada tomografía computarizada (TC) de dosis baja",
         "q4Choose": "Elija las pruebas de detección que detectaron su cáncer:",
         "q4ChooseHelp": "Puede elegir tantas como necesite. Se le pedirá más información sobre cada una que elija.",
         "q4Required": "Seleccione Sí o No.",
@@ -2339,7 +2339,7 @@
         "scrn_breastMRI": "IRM de mama",
         "scrn_breastUS": "Ecografía",
         "scrn_breastCBE": "Examen clínico de mama",
-        "scrn_lungCT": "Tomografía computarizada (TC) de dosis baja",
+        "scrn_lungCT": "Tomografía computarizada, también llamada tomografía computarizada (TC) de dosis baja",
         "scrn_colonCol": "Colonoscopia",
         "scrn_colonCT": "Colonoscopia virtual por tomografía computarizada",
         "scrn_colonSig": "Sigmoidoscopia flexible",
