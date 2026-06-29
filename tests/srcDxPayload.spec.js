@@ -3,7 +3,8 @@
 // self-confirm. Conventions under test (per the data dictionary + analytics decisions):
 //   - D_<questionCid> keys; every D_ value a string (response CIDs, years, text)
 //   - nested detail keys are parented by the selected treatment/screening option CID:
-//     D_<parentCid>_D_<childCid>; repeatable treatment physician/facility rows add _<counter>_<counter>
+//     D_<parentCid>_D_<childCid>; repeatable treatment physician/facility rows add
+//     matching Quest-style row counters (_1_1, _2_2, ...)
 //   - months emitted as month response cids; countries as dictionary country cids
 //   - merged dictionary variables: facility state/region -> one cid, zip/postal -> one cid
 //   - server-owned fields (DxNumber, site DxDt, identity) are never client-emitted
