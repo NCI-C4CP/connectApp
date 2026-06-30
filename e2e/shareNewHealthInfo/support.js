@@ -9,6 +9,11 @@ import fieldMapping from '../../js/fieldToConceptIdMapping.js';
 const here = dirname(fileURLToPath(import.meta.url));
 const sharedStub = readFileSync(join(here, 'stubs/shared.stub.js'), 'utf8');
 const dataAccessStub = readFileSync(join(here, 'stubs/dataAccess.stub.js'), 'utf8');
+const conditionalLogicSource = readFileSync(join(here, '../../js/pages/shareNewHealthInfo/conditionalLogic.js'), 'utf8');
+const conditionalLogicStub = conditionalLogicSource.replace(
+    'export const SELF_REPORT_CANCER_DX_ENABLED = false;',
+    'export const SELF_REPORT_CANCER_DX_ENABLED = true;'
+);
 
 export const F = fieldMapping;
 export const m = fieldMapping.selfReportCancerDx;
@@ -28,6 +33,8 @@ export const deceased = { code: 200, data: { [F.verification]: F.verified, [F.co
 export const setup = async (page, { fixture = verified, prior = [], dataAccessBody = dataAccessStub, i18n = null, enableNPIRegistry = false } = {}) => {
     await page.route('**/js/shared.js', (route) =>
         route.fulfill({ contentType: 'application/javascript', body: sharedStub }));
+    await page.route('**/js/pages/shareNewHealthInfo/conditionalLogic.js', (route) =>
+        route.fulfill({ contentType: 'application/javascript', body: conditionalLogicStub }));
     await page.route('**/js/pages/shareNewHealthInfo/dataAccess.js', (route) =>
         route.fulfill({ contentType: 'application/javascript', body: dataAccessBody }));
     await page.addInitScript(([f, p, dict, npiEnabled]) => {
