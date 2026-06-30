@@ -172,7 +172,7 @@ window.onload = async () => {
             const idToken = await user.getIdToken();
             appState.set({ idToken });
             if (!user.isAnonymous) {
-                localforage.clear();
+                if (typeof localforage !== 'undefined') localforage.clear();
                 const firstSignInTime = new Date(user.metadata.creationTime).toISOString();
                 appState.setState({ participantData: { firstSignInTime } });
 
@@ -535,7 +535,7 @@ export const signOut = async () => {
         window.DD_RUM.stopSession();
         isDataDogUserSessionSet = false;
     }
-    localforage.clear();
+    if (typeof localforage !== 'undefined') localforage.clear();
 
     await firebase.auth().signOut();
 
