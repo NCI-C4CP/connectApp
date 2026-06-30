@@ -1,7 +1,7 @@
 // Controller for the Self-Report Cancer Diagnosis flow.
 
 import { getMyData, hideAnimation, getSelectedLanguage } from '../../shared.js';
-import { isVerifiedNotWithdrawn } from './conditionalLogic.js';
+import { canAccessSelfReportCancerDx, isSelfReportCancerDxEnabled } from './conditionalLogic.js';
 import {
     getPreviouslyReportedDx, submitSelfReportCancerDx, saveCancerDxProgress, loadCancerDxProgress,
     loadShareHealthInfoSettings,
@@ -346,6 +346,13 @@ const showProgressLoadError = () => {
 };
 
 export const renderShareNewHealthInfo = async (dataResponse) => {
+    if (!isSelfReportCancerDxEnabled()) {
+        resetRuntime();
+        window.location.hash = '#dashboard';
+        hideAnimation();
+        return;
+    }
+
     const response = dataResponse && dataResponse.data ? dataResponse : await getMyData();
     participant = (response && response.data) || {};
     const nextParticipantKey = participantKeyFor(participant);
@@ -354,9 +361,10 @@ export const renderShareNewHealthInfo = async (dataResponse) => {
     }
     currentParticipantKey = nextParticipantKey;
 
-    if (!isVerifiedNotWithdrawn(participant)) {
+    if (!canAccessSelfReportCancerDx(participant)) {
         resetRuntime();
         window.location.hash = '#dashboard';
+        hideAnimation();
         return;
     }
 
