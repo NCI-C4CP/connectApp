@@ -276,9 +276,10 @@ describe('homePage magic link handling', () => {
     expect(sharedMocks.firebaseSignInRender).not.toHaveBeenCalled();
   });
 
-  it('sets location.search to the clean value when magic link search needs cleaning', async () => {
+  it('cleans magic link search in-place before rendering FirebaseUI', async () => {
     const dirtySearch = '?mode=signIn&oobCode=abc123&apiKey=key456&extra=junk';
     const cleanSearch = '?mode=signIn&oobCode=abc123&apiKey=key456';
+    const replaceState = vi.fn();
 
     const env = setupTestEnvironment({
       location: {
@@ -286,10 +287,14 @@ describe('homePage magic link handling', () => {
         search: dirtySearch,
         hash: '#',
       },
+      window: {
+        history: { replaceState },
+      },
     });
 
     sharedMocks.isMagicLinkCallbackUrl.mockReturnValue(true);
     sharedMocks.getCleanSearchString.mockReturnValue(cleanSearch);
+    sharedMocks.firebaseSignInRender.mockResolvedValue();
 
     installDocumentByIdMap({
       root: { innerHTML: '' },
@@ -297,9 +302,11 @@ describe('homePage magic link handling', () => {
 
     await homePage();
 
-    // location.search should be set to the clean version
-    // (in a real browser this triggers a page reload)
-    expect(env.location.search).toBe(cleanSearch);
+    expect(replaceState).toHaveBeenCalledWith({}, expect.any(String), 'http://localhost:3000/?mode=signIn&oobCode=abc123&apiKey=key456#');
+    expect(env.location.search).toBe(dirtySearch);
+    expect(sharedMocks.firebaseSignInRender).toHaveBeenCalledWith({
+      account: { type: 'magicLink', value: '' },
+    });
   });
 });
 

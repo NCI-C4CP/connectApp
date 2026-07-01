@@ -638,7 +638,7 @@ canvas {
     border-radius: 0.4rem;
 }
 
-.form-control, .close-modal, .card, .toast, .card-header, .faq-btn, .links-border-right {
+.close-modal, .card, .toast, .card-header, .faq-btn, .links-border-right {
     background-color: inherit !important;
     color: inherit !important;
     border-color: inherit !important;
@@ -934,8 +934,7 @@ input:checked + .slider:before {
     letter-spacing: 0.07px;
     text-align: center;
     line-height: 25px;
-    font-family: Montserrat-Bold;
-
+    font-family: 'Montserrat', sans-serif;
 }
 
 .homeTitleTextMobile em{
@@ -965,7 +964,7 @@ input:checked + .slider:before {
     font-size:18px;
     text-align: left;
     line-height: 27px;
-    font-family: NotoSans;
+    font-family: 'Noto Sans', sans-serif;
     color: #2E2E2E !important;
     padding: 6px 12px !important;
 }

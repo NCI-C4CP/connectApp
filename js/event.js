@@ -1,4 +1,4 @@
-import { allCountries, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, sitesNotEnrolling, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, addressValidation, statesWithAbbreviations, escapeHTML, updateStartDHQParticipantData, mergeAndDeduplicateArrays, analyzeUSPSAddressSuggestion, mapUSPSErrorsToFieldTargets, applyUSPSFieldErrors, getUSPSUnvalidatedValue, validPhoneNumberFormat } from "./shared.js";
+import { allCountries, allStates, dataSavingBtn, storeResponse, validatePin, createParticipantRecord, showAnimation, hideAnimation, sites, sitesNotEnrolling, errorMessage, BirthMonths, getAge, getMyData, hasUserData, retrieveNotifications, toggleNavbarMobileView, appState, logDDRumError, showErrorAlert, translateHTML, translateText, firebaseSignInRender, emailAddressValidation, emailValidationStatus, emailValidationAnalysis, validEmailFormat, validNameFormat, escapeHTML, updateStartDHQParticipantData, mergeAndDeduplicateArrays, getUSPSUnvalidatedValue, validPhoneNumberFormat, validateAddress } from "./shared.js";
 import { consentTemplate } from "./pages/consent.js";
 import { heardAboutStudy, healthCareProvider, duplicateAccountReminderRender, noLongerEnrollingRender,  requestPINTemplate } from "./pages/healthCareProvider.js";
 import { renderDashboard } from "./pages/dashboard.js";
@@ -393,7 +393,7 @@ export const addMoreFormerName = () => {
     div1_1.classList.add('form-group', 'row')
 	
     const select = document.createElement('select');	
-    select.classList.add('form-control', 'col-md-3');
+    select.classList.add('form-select', 'col-md-3');
     select.setAttribute('data-i18n', "form.formerNameCategory");
     select.setAttribute('data-error-required', translateText('form.formerNameCategory'));
     select.style = "max-width:190px"
@@ -501,133 +501,6 @@ const addAnotherEmailField = () => {
     document.getElementById('additionalEmailBtn').innerHTML = '';
 }
 
-const validateAddress = async (focus, addr1Id, addr2Id, cityId, stateId, zipId, isInternational = false) => {
-    let hasError = false
-    const result = { warnings: [] }
-    let isValidatedByUSPS = false;
-
-    // Bypass USPS validation for international addresses
-    if (isInternational) {
-        return {
-            hasError: false,
-            result: {},
-            isValidatedByUSPS: false
-        }
-    }
-
-    const streetAddress = document.getElementById(addr1Id).value
-    const secondaryAddress = document.getElementById(addr2Id)?.value || ""
-    const ct = document.getElementById(cityId).value
-    const state = document.getElementById(stateId).value
-    const zipCode = document.getElementById(zipId).value
-    const addrValidationPayload = {
-        streetAddress,
-        secondaryAddress,
-        city: ct,
-        state: statesWithAbbreviations[state],
-        zipCode
-    }
-    const _addressValidation = await addressValidation(addrValidationPayload);
-
-    // Missing object
-    if (!_addressValidation) {
-        console.error('User Profile - Invalid Address (empty response from USPS validation process)', addrValidationPayload, _addressValidation);
-        hasError = true;
-        errorMessage(
-            addr1Id,
-            '<span data-i18n="event.invalidAddress">' +
-            translateText("event.invalidAddress") +
-            "</span>",
-            focus
-        );
-        if (focus) document.getElementById(addr1Id).focus();
-        focus = false;
-
-    // Error response from USPS validation process
-    } else if (_addressValidation.error || !_addressValidation.address || (_addressValidation.status && _addressValidation.status >= 500)) {
-        const statusVal = Number(_addressValidation.error?.status ?? _addressValidation.status ?? 0);
-        const isServiceUnavailable = statusVal === 0 || statusVal >= 500;
-
-        // Do not block profile submission on service unavailable errors
-        if (isServiceUnavailable && !_addressValidation.error?.errors?.length) {
-            console.error('User Profile - USPS validation unavailable', addrValidationPayload, _addressValidation);
-            result.warnings = result.warnings || [];
-            result.warnings.push({
-                code: 'SERVICE_UNAVAILABLE',
-                text: 'USPS validation unavailable; address not verified'
-            });
-            isValidatedByUSPS = false;
-        } else {
-            console.error('User Profile - Invalid Address', addrValidationPayload, _addressValidation);
-            hasError = true;
-            let handledError = false;
-            if (_addressValidation.error?.errors?.length) {
-                const mapped = mapUSPSErrorsToFieldTargets(_addressValidation.error.errors, {
-                    addr1Id,
-                    cityId,
-                    stateId,
-                    zipId,
-                });
-                handledError = mapped.handled;
-                focus = applyUSPSFieldErrors(mapped.targets, focus);
-            }
-            if (!handledError) {
-                errorMessage(
-                    addr1Id,
-                    '<span data-i18n="event.invalidAddress">' +
-                    translateText("event.invalidAddress") +
-                    "</span>",
-                    focus
-                );
-                if (focus) document.getElementById(addr1Id).focus();
-                focus = false;
-            }
-        }
-
-    // Success response from USPS validation process
-    } else {
-        const { address } = _addressValidation || {};
-        if (!address) {
-            hasError = true;
-            errorMessage(
-                addr1Id,
-                '<span data-i18n="event.invalidAddress">' +
-                translateText("event.invalidAddress") +
-                "</span>",
-                focus
-            );
-            if (focus) document.getElementById(addr1Id).focus();
-            focus = false;
-        } else {
-            // Analyze USPS response to decide suggestion + validation status
-            const additionalInfo = _addressValidation.additionalInfo || {};
-            const matches = _addressValidation.matches || [];
-            const analysis = analyzeUSPSAddressSuggestion({
-                streetAddress,
-                secondaryAddress,
-                city: ct,
-                state,
-                zipCode,
-                uspsAddress: address,
-                matches,
-                additionalInfo,
-            });
-
-            if (analysis.warnings?.length) result.warnings = analysis.warnings;
-            if (analysis.original) result.original = analysis.original;
-            if (analysis.suggestion) result.suggestion = analysis.suggestion;
-
-            isValidatedByUSPS = analysis.isValidatedByUSPS;
-        }
-    }
-    
-    return {
-        hasError,
-        result,
-        isValidatedByUSPS
-    }
-}
-    
 export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
     const userProfileForm = document.getElementById('userProfileForm');
     userProfileForm.addEventListener('submit', async e => {
@@ -708,6 +581,18 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
                         focus = false;
                         hasError = true;
                         console.error('User Profile - Invalid Pattern', element.id);
+                    }
+                }
+                if(validationPattern && validationPattern === 'birthState') {
+                    if(!validBirthStateRegex.test(element.value)) {
+                        errorMessage(
+                            element.id,
+                            `<span data-i18n="${dataI18n}">${translateText(dataI18n)}</span>`,
+                            focus
+                        );
+                        focus = false;
+                        hasError = true;
+                        console.error('User Profile - Invalid Birth State', element.id);
                     }
                 }
             }
@@ -1082,9 +967,17 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
 
         if (!hasError) {
             const isMailingAddressInternational = document.getElementById("UPAddress1International")?.checked || false;
-            const validateMailAddress = await validateAddress(focus, "UPAddress1Line1", "UPAddress1Line2", "UPAddress1City", "UPAddress1State", "UPAddress1Zip", isMailingAddressInternational);
+            const validateMailAddress = await validateAddress({
+                focus,
+                addr1Id: "UPAddress1Line1",
+                addr2Id: "UPAddress1Line2",
+                cityId: "UPAddress1City",
+                stateId: "UPAddress1State",
+                zipId: "UPAddress1Zip",
+                isInternational: isMailingAddressInternational,
+            });
             uspsSuggestion.isMailAddressValid = !validateMailAddress.hasError
-            uspsSuggestion.mailAddress = validateMailAddress.result
+            uspsSuggestion.mailAddress = validateMailAddress.addressComparison
             
             // Only mark as validated if USPS API returned success (200 OK with address)
             isMailingAddressValidated = validateMailAddress.isValidatedByUSPS;
@@ -1117,9 +1010,17 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
 
             if (!hasError) {
                 const isPhysicalAddressInternational = document.getElementById("UPAddress2International")?.checked || false;
-                const validatePhysicalAddress = await validateAddress(focus, "UPAddress2Line1", "UPAddress2Line2", "UPAddress2City", "UPAddress2State", "UPAddress2Zip", isPhysicalAddressInternational);
+                const validatePhysicalAddress = await validateAddress({
+                    focus,
+                    addr1Id: "UPAddress2Line1",
+                    addr2Id: "UPAddress2Line2",
+                    cityId: "UPAddress2City",
+                    stateId: "UPAddress2State",
+                    zipId: "UPAddress2Zip",
+                    isInternational: isPhysicalAddressInternational,
+                });
                 uspsSuggestion.isPhysicalAddressValid = !validatePhysicalAddress.hasError
-                uspsSuggestion.physicalAddress = validatePhysicalAddress.result
+                uspsSuggestion.physicalAddress = validatePhysicalAddress.addressComparison
 
                 isPhysicalAddressValidated = validatePhysicalAddress.isValidatedByUSPS;
             }
@@ -1154,9 +1055,17 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
 
             if (!hasError) {
                 const isAltAddressInternational = document.getElementById("UPAddress3International")?.checked || false;
-                const validateAlternateAddress = await validateAddress(focus, "UPAddress3Line1", "UPAddress3Line2", "UPAddress3City", "UPAddress3State", "UPAddress3Zip", isAltAddressInternational);
+                const validateAlternateAddress = await validateAddress({
+                    focus,
+                    addr1Id: "UPAddress3Line1",
+                    addr2Id: "UPAddress3Line2",
+                    cityId: "UPAddress3City",
+                    stateId: "UPAddress3State",
+                    zipId: "UPAddress3Zip",
+                    isInternational: isAltAddressInternational,
+                });
                 uspsSuggestion.isAlternateAddressValid = !validateAlternateAddress.hasError
-                uspsSuggestion.alternateAddress = validateAlternateAddress.result;
+                uspsSuggestion.alternateAddress = validateAlternateAddress.addressComparison;
 
                 isAltAddressValidated = validateAlternateAddress.isValidatedByUSPS;
             }
@@ -1228,14 +1137,15 @@ export const addEventUPSubmit = async (queryPhoneNoArray, queryEmailArray) => {
                 formerNameData;
 
         // User Profile Place of Birth
-        if (document.getElementById('cityOfBirth').value && document.getElementById('cityOfBirth').value.trim() !== '') {
-            formData[fieldMapping.cityOfBirth] = escapeHTML(document.getElementById('cityOfBirth').value.trim());
+        if (document.getElementById('countryOfOrigin').value && document.getElementById('countryOfOrigin').value !== '') {
+            formData[fieldMapping.countryOfOrigin] = parseInt(escapeHTML(document.getElementById('countryOfOrigin').value.trim()), 10);
         }
         if (document.getElementById('stateOfBirth').value && document.getElementById('stateOfBirth').value.trim() !== '') {
-            formData[fieldMapping.stateOfBirth] = escapeHTML(document.getElementById('stateOfBirth').value.trim());
+            const stateVal = document.getElementById('stateOfBirth').value.trim().slice(0, 48);
+            formData[fieldMapping.stateOfBirth] = escapeHTML(stateVal);
         }
-        if (document.getElementById('countryOfOrigin').value && document.getElementById('countryOfOrigin').value !== '') {
-            formData[fieldMapping.countryOfOrigin] = fieldMapping.countries[document.getElementById('countryOfOrigin').value];
+        if (document.getElementById('cityOfBirth').value && document.getElementById('cityOfBirth').value.trim() !== '') {
+            formData[fieldMapping.cityOfBirth] = escapeHTML(document.getElementById('cityOfBirth').value.trim());
         }
 
         const gender = document.getElementsByName('UPRadio');
@@ -1896,16 +1806,16 @@ const verifyUserDetails = (formData) => {
             <div class="col"><strong data-i18n="form.birthPlaceSubHeader">Place of birth</strong></div>
         </div>
          <div class="row">
-            <div class="col" data-i18n="form.cityOfBirth.title">City</div>
-            <div class="col">${formData[fieldMapping.cityOfBirth] || ''}</div>
+            <div class="col" data-i18n="form.countryOfBirth.title">Country</div>
+            <div class="col" ${formData[fieldMapping.countryOfOrigin] ? `data-i18n="countries.${Object.keys(fieldMapping.countries).find(key => fieldMapping.countries[key] === formData[fieldMapping.countryOfOrigin])}"` : ''}>${formData[fieldMapping.countryOfOrigin] ? translateText(`countries.${Object.keys(fieldMapping.countries).find(key => fieldMapping.countries[key] === formData[fieldMapping.countryOfOrigin])}`) : ''}</div>
         </div>
          <div class="row">
             <div class="col" data-i18n="form.stateOfBirth.title">State</div>
             <div class="col">${formData[fieldMapping.stateOfBirth] || ''}</div>
         </div>
          <div class="row">
-            <div class="col" data-i18n="form.countryOfOrigin.title">Country</div>
-            <div class="col" ${formData[fieldMapping.countryOfOrigin] ? `data-i18n="countries.${Object.keys(fieldMapping.countries).find(key => fieldMapping.countries[key] === formData[fieldMapping.countryOfOrigin])}"` : ''}>${formData[fieldMapping.countryOfOrigin] ? translateText(`countries.${Object.keys(fieldMapping.countries).find(key => fieldMapping.countries[key] === formData[fieldMapping.countryOfOrigin])}`) : ''}</div>
+            <div class="col" data-i18n="form.cityOfBirth.title">City</div>
+            <div class="col">${formData[fieldMapping.cityOfBirth] || ''}</div>
         </div>
         <div class="row">
             <div class="col"><strong data-i18n="event.contactInfo">Contact Information</strong></div>
@@ -2591,6 +2501,80 @@ export const updateActiveNavItem = (clonedElement) => {
 
 export const addEventCheckCanText = () => {
 } 
+
+const validBirthStateRegex = /^[\p{L}\p{M}\s'.\-()]+$/u;
+
+export const addEventBirthCountryToggle = () => {
+    const countrySelect = document.getElementById('countryOfOrigin');
+    if (!countrySelect) return;
+
+    countrySelect.addEventListener('change', () => {
+        const selectedValue = countrySelect.value;
+        const cityInput = document.getElementById('cityOfBirth');
+        const currentStateEl = document.getElementById('stateOfBirth');
+
+        if (!selectedValue) {
+            // No country selected — disable city and state
+            cityInput.disabled = true;
+            cityInput.value = '';
+            if (currentStateEl) {
+                currentStateEl.disabled = true;
+                currentStateEl.value = '';
+            }
+            return;
+        }
+
+        cityInput.disabled = false;
+
+        const isUSA = selectedValue === String(fieldMapping.countries.usa);
+
+        if (isUSA) {
+            // Switch to dropdown if not already
+            if (currentStateEl.tagName !== 'SELECT') {
+                const select = document.createElement('select');
+                select.className = 'form-select';
+                select.style.cssText = 'margin-left:0px; max-width:301px;';
+                select.id = 'stateOfBirth';
+                const defaultOpt = document.createElement('option');
+                defaultOpt.className = 'option-dark-mode';
+                defaultOpt.value = '';
+                defaultOpt.setAttribute('data-i18n', 'form.selectOption');
+                defaultOpt.textContent = translateText('form.selectOption');
+                select.appendChild(defaultOpt);
+                for (const state in allStates) {
+                    if (state === 'NA') continue;
+                    const opt = document.createElement('option');
+                    opt.className = 'option-dark-mode';
+                    opt.value = state;
+                    opt.setAttribute('data-i18n', `shared.state${state.replace(/\s/g, '')}`);
+                    opt.textContent = translateText(`shared.state${state.replace(/\s/g, '')}`);
+                    select.appendChild(opt);
+                }
+                currentStateEl.replaceWith(select);
+            }
+        } else {
+            // Switch to text input if not already
+            if (currentStateEl.tagName !== 'INPUT') {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.className = 'form-control input-validation';
+                input.style.cssText = 'margin-left:0px; max-width:301px;';
+                input.id = 'stateOfBirth';
+                input.maxLength = 48;
+                input.setAttribute('data-i18n', 'form.stateOfBirth');
+                input.setAttribute('data-validation-pattern', 'birthState');
+                input.placeholder = translateText('form.stateOfBirth.placeholder');
+                currentStateEl.replaceWith(input);
+            }
+        }
+
+        // Re-fetch in case the element was replaced above, and enable it.
+        // The initial render is a disabled <select>; selecting USA reuses that
+        // element (no replaceWith), so the disabled attribute must be cleared here.
+        const stateEl = document.getElementById('stateOfBirth');
+        if (stateEl) stateEl.disabled = false;
+    });
+}
 
 export const addEventLanguageSelection = () => {
     const selector = document.getElementById('languageSelector');

@@ -1,4 +1,5 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import { installDocumentByIdMap } from './helpers.js';
 import { registerSharedRuntimeModuleMocks } from './moduleMocks.js';
 
 registerSharedRuntimeModuleMocks();
@@ -33,6 +34,40 @@ const USPS_TEST_CASES = {
       vacant: 'N',
     },
     matches: [{ code: '31', text: 'Single Response - exact match' }],
+  },
+  successWithCorrectionCode22: {
+    address: {
+      streetAddress: '6061 SOUTH BROAD STREET',
+      streetAddressAbbreviation: '6061 SOUTH BROAD STREET',
+      secondaryAddress: '',
+      cityAbbreviation: 'PHILADELPHIA',
+      city: 'PHILADELPHIA',
+      state: 'PA',
+      ZIPCode: '19142',
+      ZIPPlus4: '',
+      urbanization: '',
+    },
+    additionalInfo: {
+      deliveryPoint: '',
+      carrierRoute: '',
+      DPVConfirmation: ' ',
+      DPVCMRA: '',
+      business: '',
+      centralDeliveryPoint: '',
+      vacant: '',
+    },
+    corrections: [
+      {
+        code: '22',
+        text: 'Multiple addresses were found for the information you entered, and no default exists.',
+      },
+    ],
+    matches: [
+      {
+        code: '',
+        text: '',
+      },
+    ],
   },
   successWithSecondaryAddress: {
     address: {
@@ -170,7 +205,48 @@ let analyzeUSPSAddressSuggestion;
 let getUSPSDeliverabilityWarnings;
 let mapUSPSErrorsToFieldTargets;
 let addressValidation;
+let validateAddress;
 let appState;
+
+const createFieldElement = (value = '') => ({
+  value,
+  parentNode: {
+    querySelectorAll: vi.fn(() => []),
+    appendChild: vi.fn(),
+  },
+  classList: {
+    add: vi.fn(),
+  },
+  focus: vi.fn(),
+});
+
+const installAddressValidationFields = (overrides = {}) => {
+  const elements = {
+    address1: createFieldElement('123 fake street'),
+    address2: createFieldElement(''),
+    city: createFieldElement('denver'),
+    state: createFieldElement('Colorado'),
+    zip: createFieldElement('80112'),
+    ...overrides,
+  };
+
+  const documentStub = installDocumentByIdMap(elements);
+  documentStub.createElement = vi.fn(() => ({
+    children: [],
+    append(child) {
+      this.children.push(child);
+    },
+    appendChild(child) {
+      this.children.push(child);
+      if (child?.textContent) this.innerHTML += child.textContent;
+    },
+    classList: [],
+    innerHTML: '',
+  }));
+  documentStub.createTextNode = vi.fn((textContent) => ({ textContent }));
+
+  return elements;
+};
 
 beforeAll(async () => {
   vi.resetModules();
@@ -180,6 +256,7 @@ beforeAll(async () => {
   getUSPSDeliverabilityWarnings = sharedModule.getUSPSDeliverabilityWarnings;
   mapUSPSErrorsToFieldTargets = sharedModule.mapUSPSErrorsToFieldTargets;
   addressValidation = sharedModule.addressValidation;
+  validateAddress = sharedModule.validateAddress;
   appState = sharedModule.appState;
 });
 
@@ -189,13 +266,10 @@ beforeEach(() => {
 });
 
 describe('USPS address validation behavior', () => {
-  it('returns no deliverability warnings while USPS warnings are intentionally bypassed', () => {
-    const warnings = getUSPSDeliverabilityWarnings(
-      USPS_TEST_CASES.multipleAddresses.additionalInfo,
-      USPS_TEST_CASES.multipleAddresses.matches,
-    );
+  it('derives deliverability warnings from USPS match metadata', () => {
+    const warnings = getUSPSDeliverabilityWarnings(USPS_TEST_CASES.multipleAddresses);
 
-    expect(warnings).toEqual([]);
+    expect(warnings).toEqual([{ code: 'MULTIPLE', text: 'Multiple responses found' }]);
   });
 
   it.each(['success', 'successWithCorrections', 'vacantAddress', 'businessAddress'])(
@@ -208,13 +282,11 @@ describe('USPS address validation behavior', () => {
         city: response.address.city.toLowerCase(),
         state: response.address.state,
         zipCode: response.address.ZIPCode,
-        uspsAddress: response.address,
-        matches: response.matches,
-        additionalInfo: response.additionalInfo,
+        uspsValidationResult: response,
       });
 
-      expect(result.suggestion).toBeUndefined();
-      expect(result.original).toBeUndefined();
+      expect(result.suggestion).toBeNull();
+      expect(result.original).toBeNull();
       expect(result.warnings).toEqual([]);
       expect(result.isValidatedByUSPS).toBe(true);
       expect(result.isExactMatch).toBe(true);
@@ -234,9 +306,7 @@ describe('USPS address validation behavior', () => {
       city: input.city,
       state: input.state,
       zipCode: input.zip,
-      uspsAddress: response.address,
-      matches: response.matches,
-      additionalInfo: response.additionalInfo,
+      uspsValidationResult: response,
     });
 
     expect(result.suggestion).toBeDefined();
@@ -289,6 +359,123 @@ describe('USPS address validation behavior', () => {
       { id: 'zip', i18nKey: 'event.invalidZip' },
       { id: 'city', i18nKey: 'event.invalidCity' },
     ]);
+  });
+
+  it('validateAddress reads DOM fields and returns the canonical exact-match result', async () => {
+    installAddressValidationFields();
+    globalThis.fetch = vi.fn(async (_url, options) => ({
+      ok: true,
+      status: 200,
+      json: async () => {
+        expect(JSON.parse(options.body)).toEqual({
+          streetAddress: '123 fake street',
+          secondaryAddress: '',
+          city: 'denver',
+          state: 'CO',
+          zipCode: '80112',
+        });
+        return USPS_TEST_CASES.success;
+      },
+    }));
+
+    const result = await validateAddress({
+      addr1Id: 'address1',
+      addr2Id: 'address2',
+      cityId: 'city',
+      stateId: 'state',
+      zipId: 'zip',
+    });
+
+    expect(result).toEqual({
+      hasError: false,
+      addressComparison: { warnings: [] },
+      addressNotFound: false,
+      isValidatedByUSPS: true,
+    });
+  });
+
+  it('validateAddress returns an unverified address warning when USPS is unavailable', async () => {
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    installAddressValidationFields();
+    globalThis.fetch = vi.fn(async () => ({
+      ok: false,
+      status: 500,
+      json: async () => USPS_TEST_CASES.serverError,
+    }));
+
+    const result = await validateAddress({
+      addr1Id: 'address1',
+      addr2Id: 'address2',
+      cityId: 'city',
+      stateId: 'state',
+      zipId: 'zip',
+    });
+
+    expect(result).toEqual({
+      hasError: false,
+      addressComparison: {
+        warnings: [{
+          code: 'SERVICE_UNAVAILABLE',
+          text: 'USPS validation unavailable; address not verified',
+        }],
+      },
+      addressNotFound: true,
+      isValidatedByUSPS: false,
+    });
+    expect(consoleSpy).toHaveBeenCalled();
+  });
+
+  it('validateAddress marks USPS correction code 22 as address not found', async () => {
+    const address = USPS_TEST_CASES.successWithCorrectionCode22.address;
+    installAddressValidationFields({
+      address1: createFieldElement(address.streetAddress),
+      city: createFieldElement(address.city),
+      state: createFieldElement(address.state),
+      zip: createFieldElement(address.ZIPCode),
+    });
+    globalThis.fetch = vi.fn(async () => ({
+      ok: true,
+      status: 200,
+      json: async () => ({
+        ...USPS_TEST_CASES.successWithCorrectionCode22,
+      }),
+    }));
+
+    const result = await validateAddress({
+      addr1Id: 'address1',
+      addr2Id: 'address2',
+      cityId: 'city',
+      stateId: 'state',
+      zipId: 'zip',
+    });
+
+    expect(result).toEqual({
+      hasError: false,
+      addressComparison: { warnings: [] },
+      addressNotFound: true,
+      isValidatedByUSPS: false,
+    });
+  });
+
+  it('validateAddress bypasses USPS for international addresses', async () => {
+    globalThis.fetch = vi.fn();
+
+    const result = await validateAddress({
+      isInternational: true,
+      addr1Id: 'address1',
+      addr2Id: 'address2',
+      cityId: 'city',
+      stateId: 'state',
+      zipId: 'zip',
+    });
+
+    expect(globalThis.fetch).not.toHaveBeenCalled();
+    expect(result).toEqual({
+      hasError: false,
+      addressComparison: { warnings: [] },
+      addressNotFound: false,
+      isValidatedByUSPS: false,
+    });
   });
 
   it('addressValidation returns USPS server errors unchanged', async () => {

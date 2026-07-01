@@ -9,3 +9,6 @@ local-dev/
 npm-debug.log*
 images/.DS_Store
 coverage/
+test-results/
+playwright-report/
+docs/

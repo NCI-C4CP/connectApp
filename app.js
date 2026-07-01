@@ -13,6 +13,7 @@ import { renderPaymentPage } from "./js/pages/payment.js";
 import { renderSamplesPage } from "./js/pages/samples.js";
 import { renderVerifiedPage } from "./js/pages/verifiedPage.js";
 import { renderDashboard } from "./js/pages/dashboard.js";
+import { renderShareNewHealthInfo, teardownShareNewHealthInfo } from "./js/pages/shareNewHealthInfo/index.js";
 import { firebaseConfig as devFirebaseConfig } from "./dev/config.js";
 import { firebaseConfig as stageFirebaseConfig } from "./stage/config.js";
 import { firebaseConfig as prodFirebaseConfig } from "./prod/config.js";
@@ -136,11 +137,13 @@ window.onload = async () => {
         window.DD_RUM && window.DD_RUM.init({ ...datadogConfig, env: 'stage', version: appVersion });
     }
     else if (isLocalDev) {
-        const { firebaseConfig: localDevFirebaseConfig } = await import("./local-dev/config.js");
+        const { firebaseConfig: localDevFirebaseConfig, mapsApiKey: localMapsApiKey } = await import("./local-dev/config.js");
         if (!localDevFirebaseConfig) {
             console.error('Local development requires a firebaseConfig variable defined in ./local-dev/config.js.');
             return;
         }
+        // Local Maps/Places is opt-in via `local-dev/config.js` (set `mapsApiKey` to enable Places autocomplete).
+        if (localMapsApiKey) script.src = `https://maps.googleapis.com/maps/api/js?key=${localMapsApiKey}&libraries=places&callback=Function.prototype`
         !firebase.apps.length ? firebase.initializeApp(localDevFirebaseConfig) : firebase.app();
     } else {
         script.src = `https://maps.googleapis.com/maps/api/js?key=${devFirebaseConfig.apiKey}&libraries=places&callback=Function.prototype`
@@ -149,8 +152,8 @@ window.onload = async () => {
     }
 
     !isLocalDev && window.DD_RUM && window.DD_RUM.startSessionReplayRecording();
-    
-    document.body.appendChild(script)
+
+    if (script.src) document.body.appendChild(script)
 
     auth = firebase.auth();
 
@@ -245,6 +248,7 @@ export const router = async () => {
 
     let loggedIn = await userLoggedIn();
     const route =  window.location.hash || '#';
+    if (route !== '#share-health-info') teardownShareNewHealthInfo();
     let exceptions = ['#joining-connect','#after-you-join','#long-term-study-activities','#what-connect-will-do','#how-your-information-will-help-prevent-cancer','#why-connect-is-important','#what-to-expect-if-you-decide-to-join','#where-this-study-takes-place','#about-our-researchers','#a-resource-for-science']
     if (loggedIn === false) {
         toggleNavBar(route, {}); // If not logged in, pass no data to toggleNavBar
@@ -304,7 +308,8 @@ export const router = async () => {
             else if (route === '#payment') renderPaymentPage();
             else if (route === '#verified') renderVerifiedPage();
             else if (route === '#surveys') renderSurveys();
-            else window.location.hash = '#';   
+            else if (route === '#share-health-info') renderShareNewHealthInfo(data);
+            else window.location.hash = '#';
         }
     }
 }
