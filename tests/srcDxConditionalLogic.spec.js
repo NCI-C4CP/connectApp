@@ -1,7 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import {
-    SELF_REPORT_CANCER_DX_ENABLED,
-    canAccessSelfReportCancerDx,
     isVerifiedNotWithdrawn,
     shouldShowSiteOther,
     canContinueFromPrimarySite,
@@ -35,13 +33,6 @@ describe('isVerifiedNotWithdrawn', () => {
         expect(isVerifiedNotWithdrawn(participantNotVerified)).toBe(false);
         expect(isVerifiedNotWithdrawn(participantWithdrawn)).toBe(false);
         expect(isVerifiedNotWithdrawn({})).toBe(false);
-    });
-});
-
-describe('self-report cancer dx release gate', () => {
-    it('keeps the feature disabled until Ops validation is complete', () => {
-        expect(SELF_REPORT_CANCER_DX_ENABLED).toBe(false);
-        expect(canAccessSelfReportCancerDx(participantVerifiedNotWithdrawn)).toBe(false);
     });
 });
 

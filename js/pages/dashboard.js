@@ -5,7 +5,7 @@ import { consentTemplate } from "./consent.js";
 import { addEventHeardAboutStudy, addEventRequestPINForm, addEventHealthCareProviderSubmit, addEventPinAutoUpperCase, addEventHealthProviderModalSubmit, addEventToggleSubmit, storeParameters } from "../event.js";
 import { heardAboutStudy, requestPINTemplate, healthCareProvider, noLongerEnrollingRender } from "./healthCareProvider.js";
 import fieldMapping from '../fieldToConceptIdMapping.js';
-import { canAccessSelfReportCancerDx } from "./shareNewHealthInfo/conditionalLogic.js";
+import { isVerifiedNotWithdrawn } from "./shareNewHealthInfo/conditionalLogic.js";
 
 export const renderDashboard = async (data, fromUserProfile, collections) => {
     const mainContent = document.getElementById('root');
@@ -475,9 +475,9 @@ const renderPaymentCard = (data) => {
     return renderCard(icon, type, href, false);
 }
 
-// "Share New Health Information" card. Disabled pending validation.
+// "Share New Health Information" card. Shown only to verified, active participants (issue #1295).
 const renderShareHealthInfoCard = (data) => {
-    if (!canAccessSelfReportCancerDx(data)) return '';
+    if (!isVerifiedNotWithdrawn(data)) return '';
     return renderCard('./images/share-health-info-icon.svg', 'shareHealthInfo', '#share-health-info', false);
 }
 

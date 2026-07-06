@@ -17,10 +17,6 @@ import {
     isValidYearWithAllowance,
 } from './validation.js';
 
-// TODO(#1295): Re-enable after Self-Report Cancer Diagnosis passes validation.
-export const SELF_REPORT_CANCER_DX_ENABLED = false;
-export const isSelfReportCancerDxEnabled = () => SELF_REPORT_CANCER_DX_ENABLED;
-
 /**
  * Card / route eligibility: verified and not withdrawn.
  * (Requirements: RcrtV_Verification_v1r0 = 1 AND HdWd_WdConsent_v1r0 = 0.)
@@ -32,9 +28,6 @@ export const isVerifiedNotWithdrawn = (data = {}) => {
     return data[verification] === verified
         && data[consentWithdrawn] !== yes;
 };
-
-export const canAccessSelfReportCancerDx = (data = {}) =>
-    isSelfReportCancerDxEnabled() && isVerifiedNotWithdrawn(data);
 
 /** Q1: show the "Other — please describe" write-in only when site === other. */
 export const shouldShowSiteOther = (primarySite) => primarySite === PRIMARY_SITE_OTHER_KEY;
