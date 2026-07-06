@@ -36,7 +36,7 @@ const hidden = (suffix) => el(suffix).classList.contains('d-none');
 
 describe('renderFacilityAddress', () => {
     it('renders the expected fields with the id-prefix convention', () => {
-        ['Line1', 'Line2', 'Line3', 'Line4', 'City', 'State', 'Region', 'Zip', 'Postal', 'Country', 'International']
+        ['Line1', 'Line2', 'Line3', 'Line4', 'City', 'State', 'Region', 'Zip', 'Postal', 'Country', 'International', 'GoogleValidated']
             .forEach((suffix) => expect(el(suffix), suffix).not.toBeNull());
     });
     it('marks text inputs with translatable placeholder keys', () => {
@@ -55,6 +55,7 @@ describe('renderFacilityAddress', () => {
         expect(hidden('Postal')).toBe(true);
         expect(hidden('CountryRow')).toBe(true);
         expect(hidden('Line4Row')).toBe(true);
+        expect(el('GoogleValidated').value).toBe('false');
     });
     it('fences browser autofill: each block is its own <form> with standard address tokens; Line 1 stays off', () => {
         // The form boundary keeps the physician fields (outside it) and sibling facility blocks out
@@ -127,6 +128,7 @@ describe('harvestFacility', () => {
             line1: 'Sibley Memorial Hospital', line2: '5255 Loughboro Rd NW',
             city: 'Washington', state: 'DC', zip: '20016',
             isInternational: false, line4: '', region: '', postal: '', country: '',
+            googleAddressValidated: false,
         });
     });
     it('captures international fields (region/postal/country), not state/zip', () => {
@@ -144,7 +146,7 @@ describe('harvestFacility', () => {
             line1: 'Royal Marsden', isInternational: true,
             line4: 'Building B, Chelsea',
             region: 'Greater London', postal: 'SW3 6JJ', country: '2',
-            state: '', zip: '',
+            state: '', zip: '', googleAddressValidated: false,
         });
     });
 });
@@ -154,12 +156,23 @@ describe('fillFacility', () => {
         fillFacility(content, ID, {
             line1: 'Royal Marsden', line2: '203 Fulham Rd', city: 'London',
             region: 'Greater London', postal: 'SW3 6JJ', country: 'gbr', isInternational: true,
+            googleAddressValidated: true,
         });
         expect(el('Line1').value).toBe('Royal Marsden');
         expect(el('Region').value).toBe('Greater London');
         expect(el('International').checked).toBe(true);
         expect(hidden('Region')).toBe(false);
         expect(hidden('State')).toBe(true);
+        expect(el('GoogleValidated').value).toBe('false');
+    });
+
+    it('repopulates domestic Google validation state', () => {
+        fillFacility(content, ID, {
+            line1: 'Sibley Memorial Hospital', line2: '5255 Loughboro Rd NW', city: 'Washington',
+            state: 'DC', zip: '20016', isInternational: false, googleAddressValidated: true,
+        });
+        expect(el('GoogleValidated').value).toBe('true');
+        expect(harvestFacility(content, ID).googleAddressValidated).toBe(true);
     });
 });
 
@@ -255,6 +268,54 @@ describe('name autocomplete (Google Places)', () => {
         expect(el('City').value).toBe('Baltimore');
         expect(el('State').value).toBe('MD'); // long_name selected; short_name ('XX') would no-op to ''
         expect(el('Zip').value).toBe('21287');
+        expect(el('GoogleValidated').value).toBe('true');
+        expect(harvestFacility(content, ID).googleAddressValidated).toBe(true);
+    });
+
+    it('clears Google validation when a selected address is manually edited', () => {
+        focusLine1();
+        const ac = instances[instances.length - 1];
+        ac.place = {
+            name: 'Johns Hopkins Hospital',
+            address_components: [
+                { types: ['street_number'], long_name: '1800' },
+                { types: ['route'], long_name: 'Orleans St' },
+                { types: ['locality'], long_name: 'Baltimore' },
+                { types: ['administrative_area_level_1'], long_name: 'MD' },
+                { types: ['postal_code'], long_name: '21287' },
+            ],
+        };
+        ac.cb();
+        expect(el('GoogleValidated').value).toBe('true');
+
+        el('City').value = 'Bethesda';
+        el('City').dispatchEvent(new win.Event('input'));
+
+        expect(el('GoogleValidated').value).toBe('false');
+        expect(harvestFacility(content, ID).googleAddressValidated).toBe(false);
+    });
+
+    it('clears Google validation when switched to international', () => {
+        focusLine1();
+        const ac = instances[instances.length - 1];
+        ac.place = {
+            name: 'Johns Hopkins Hospital',
+            address_components: [
+                { types: ['street_number'], long_name: '1800' },
+                { types: ['route'], long_name: 'Orleans St' },
+                { types: ['locality'], long_name: 'Baltimore' },
+                { types: ['administrative_area_level_1'], long_name: 'MD' },
+                { types: ['postal_code'], long_name: '21287' },
+            ],
+        };
+        ac.cb();
+        expect(el('GoogleValidated').value).toBe('true');
+
+        el('International').checked = true;
+        el('International').dispatchEvent(new win.Event('change'));
+
+        expect(el('GoogleValidated').value).toBe('false');
+        expect(harvestFacility(content, ID).googleAddressValidated).toBe(false);
     });
 
     it('ignores a stale Places callback after switching to international', () => {

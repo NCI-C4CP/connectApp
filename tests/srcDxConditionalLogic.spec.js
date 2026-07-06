@@ -5,6 +5,7 @@ import {
     canContinueFromPrimarySite,
     isScreeningEligible,
     getScreeningOptionsForSite,
+    canAddFacility,
     canAddPhysician,
     applyOngoingExclusivity,
     isTreatmentComplete,
@@ -77,6 +78,15 @@ describe('canAddPhysician (max 10)', () => {
         expect(canAddPhysician(9)).toBe(true);
         expect(canAddPhysician(10)).toBe(false);
         expect(canAddPhysician(11)).toBe(false);
+    });
+});
+
+describe('canAddFacility (max 10)', () => {
+    it('allows up to 10', () => {
+        expect(canAddFacility(0)).toBe(true);
+        expect(canAddFacility(9)).toBe(true);
+        expect(canAddFacility(10)).toBe(false);
+        expect(canAddFacility(11)).toBe(false);
     });
 });
 

@@ -28,6 +28,7 @@ const countryOptions = () =>
  */
 export const renderFacilityAddress = (idPrefix, { showName = true } = {}) => `
     <form class="srcdx-facility mb-3" data-facility="${idPrefix}" autocomplete="on" novalidate>
+        <input type="hidden" id="UPAddress${idPrefix}GoogleValidated" value="false">
         ${showName ? `
         <div class="form-group mb-2">
             <label for="UPAddress${idPrefix}Line1" data-i18n="shareHealthInfo.facName">Line 1 (name of facility)</label>
@@ -80,6 +81,11 @@ export const renderFacilityAddress = (idPrefix, { showName = true } = {}) => `
 
 const q = (content, idPrefix, suffix) => content.querySelector(`#UPAddress${idPrefix}${suffix}`);
 
+const setGoogleValidated = (content, idPrefix, value) => {
+    const input = q(content, idPrefix, 'GoogleValidated');
+    if (input) input.value = value ? 'true' : 'false';
+};
+
 const domesticAutocompleteOptions = () => ({
     types: ['establishment'],
     componentRestrictions: { country: 'us' },
@@ -125,6 +131,7 @@ const applyInternational = (content, idPrefix, intl) => {
     const line4Row = q(content, idPrefix, 'Line4Row');
     if (line4Row) line4Row.classList.toggle('d-none', !intl);
     if (!intl) { const l4 = q(content, idPrefix, 'Line4'); if (l4) l4.value = ''; }
+    if (intl) setGoogleValidated(content, idPrefix, false);
 
     const stateLabel = q(content, idPrefix, 'StateLabel');
     if (stateLabel) {
@@ -140,6 +147,7 @@ const applyInternational = (content, idPrefix, intl) => {
     }
     if (intl) disableNameAutocomplete(content, idPrefix);
     else attachNameAutocomplete(content, idPrefix);
+    attachGoogleValidationInvalidation(content, idPrefix);
 };
 
 export const teardownFacilityAddressEvents = () => {
@@ -191,12 +199,24 @@ const attachNameAutocomplete = (content, idPrefix) => {
             set('City', city);
             set('State', state);
             set('Zip', zip);
+            setGoogleValidated(content, idPrefix, true);
         });
         line1.removeEventListener('focus', init);
         focusRegistry.delete(idPrefix);
     };
     focusRegistry.set(idPrefix, { input: line1, handler: init });
     line1.addEventListener('focus', init);
+};
+
+const attachGoogleValidationInvalidation = (content, idPrefix) => {
+    ['Line1', 'Line2', 'Line3', 'Line4', 'City', 'State', 'Region', 'Zip', 'Postal', 'Country']
+        .forEach((suffix) => {
+            const input = q(content, idPrefix, suffix);
+            if (!input || input.dataset.srcdxGoogleValidationListener) return;
+            const eventName = input.tagName === 'SELECT' ? 'change' : 'input';
+            input.addEventListener(eventName, () => setGoogleValidated(content, idPrefix, false));
+            input.dataset.srcdxGoogleValidationListener = 'true';
+        });
 };
 
 /** Wire the international toggle + name autocomplete for one rendered instance. */
@@ -213,6 +233,7 @@ export const attachFacilityAddressEvents = (content, idPrefix) => {
         intlCb.addEventListener('change', (e) => applyInternational(content, idPrefix, e.target.checked));
         intlCb.dataset.srcdxIntlListener = 'true';
     }
+    attachGoogleValidationInvalidation(content, idPrefix);
     attachNameAutocomplete(content, idPrefix);
 };
 
@@ -229,6 +250,7 @@ export const harvestFacility = (content, idPrefix) => {
         region: intl ? v('Region') : '',
         postal: intl ? v('Postal') : '',
         country: intl ? v('Country') : '',
+        googleAddressValidated: !intl && q(content, idPrefix, 'GoogleValidated')?.value === 'true',
     };
 };
 
@@ -237,6 +259,7 @@ export const fillFacility = (content, idPrefix, f = {}) => {
     const set = (suffix, val) => { const el = q(content, idPrefix, suffix); if (el && val != null) el.value = val; };
     set('Line1', f.line1); set('Line2', f.line2); set('Line3', f.line3); set('Line4', f.line4); set('City', f.city);
     set('State', f.state); set('Zip', f.zip); set('Region', f.region); set('Postal', f.postal); set('Country', f.country);
+    setGoogleValidated(content, idPrefix, !!f.googleAddressValidated && !f.isInternational);
     const cb = q(content, idPrefix, 'International');
     if (cb) {
         cb.checked = !!f.isInternational;

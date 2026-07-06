@@ -7,6 +7,7 @@ import {
     SCREENING_ELIGIBLE_SITES,
     SCREENING_OPTIONS_BY_SITE,
     PRIMARY_SITE_OTHER_KEY,
+    MAX_FACILITIES,
     MAX_PHYSICIANS,
 } from './constants.js';
 import {
@@ -44,6 +45,9 @@ export const getScreeningOptionsForSite = (primarySite) =>
 
 /** Up to MAX_PHYSICIANS (10) per treatment type. */
 export const canAddPhysician = (count) => count < MAX_PHYSICIANS;
+
+/** Up to MAX_FACILITIES (10) per treatment type. */
+export const canAddFacility = (count) => count < MAX_FACILITIES;
 
 /**
  * End-date XOR "ongoing": if ongoing is checked, end month/year are cleared.
