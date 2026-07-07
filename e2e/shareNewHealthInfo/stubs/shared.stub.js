@@ -60,3 +60,6 @@ export const removeAllErrors = () => {
 
 export const allStates = { AL: 1, AK: 2, AZ: 3, CA: 4, DC: 5, MD: 6, NY: 7 };
 export const allCountries = { 'United States': 1, 'United Kingdom': 2, Canada: 3, Germany: 4 };
+
+// IHCS site-code -> display-name map (Health Care System Update section reads the signup site).
+export const sites = () => (window.__SRCDX_SITES__ || { 1: 'Sanford Health' });

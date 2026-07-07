@@ -218,6 +218,17 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                         storeResponse(formData);
                 }
 
+                // One-time banner announcing the Share New Health Information card (issue #1658, July release).
+                // Shown to verified, not withdrawn participants on their first sign-in after release.
+                if (isVerifiedNotWithdrawn(data) && data['newHealthInfoBannerSeen'] !== true) {
+                    topMessage += `${topMessage.trim() !== '' ? '<br><br>' : ''}
+                        <span data-i18n="mytodolist.newHealthInfoBanner">The new Share New Health Information card is now on your Dashboard. Here, you can let us know if you change where you get your primary care and share information about a recent cancer diagnosis. In the future, return to this card to check for other options to share information with our team.</span>
+                    `;
+                    let formData = {};
+                    formData['newHealthInfoBannerSeen'] = true;
+                    storeResponse(formData);
+                }
+
                 const surveyMessage = await checkForNewSurveys(data, collections);
 
                 if (surveyMessage) {

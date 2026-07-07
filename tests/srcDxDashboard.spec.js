@@ -37,6 +37,7 @@ vi.mock('../js/pages/healthCareProvider.js', () => ({
     noLongerEnrollingRender: vi.fn(),
 }));
 
+import * as shared from '../js/shared.js';
 import fieldMapping from '../js/fieldToConceptIdMapping.js';
 import { renderDashboard } from '../js/pages/dashboard.js';
 
@@ -52,6 +53,7 @@ const baseData = (overrides = {}) => ({
     verifiedSeen: true,
     updatesSeen: true,
     secondaryDismissed: true,
+    newHealthInfoBannerSeen: true,
     ...overrides,
 });
 
@@ -103,5 +105,29 @@ describe('dashboard Share New Health Information card', () => {
             const root = await render(data);
             expect(root.querySelector('#shareHealthInfoCard')).toBeNull();
         }
+    });
+});
+
+describe('dashboard Share New Health Information one-time banner (issue #1658)', () => {
+    it('shows the banner once and stores the seen flag on first sign-in after release', async () => {
+        const data = baseData();
+        delete data.newHealthInfoBannerSeen;
+        const root = await render(data);
+        expect(root.querySelector('[data-i18n="mytodolist.newHealthInfoBanner"]')).not.toBeNull();
+        expect(shared.storeResponse).toHaveBeenCalledWith({ newHealthInfoBannerSeen: true });
+    });
+
+    it('does not show the banner again after it has been seen', async () => {
+        const root = await render(baseData());
+        expect(root.querySelector('[data-i18n="mytodolist.newHealthInfoBanner"]')).toBeNull();
+        expect(shared.storeResponse).not.toHaveBeenCalledWith({ newHealthInfoBannerSeen: true });
+    });
+
+    it('does not show the banner to withdrawn participants', async () => {
+        const data = baseData({ [fieldMapping.consentWithdrawn]: fieldMapping.yes });
+        delete data.newHealthInfoBannerSeen;
+        const root = await render(data);
+        expect(root.querySelector('[data-i18n="mytodolist.newHealthInfoBanner"]')).toBeNull();
+        expect(shared.storeResponse).not.toHaveBeenCalledWith({ newHealthInfoBannerSeen: true });
     });
 });

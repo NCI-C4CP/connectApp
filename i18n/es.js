@@ -740,6 +740,7 @@
     },
     "mytodolist": {
         "newUpdates": "<span style=\"font-weight: bold\">¡Hemos actualizado MyConnect!</span><br>Puede notar que algunas cosas se ven un poco diferentes aquí. Aunque nada relacionado con el estudio ha cambiado, hemos realizado algunas mejoras en el diseño para darle a MyConnect una apariencia renovada y facilitar su navegación.<br><br>¿Necesita actualizar su perfil, su información de inicio de sesión, o para ver formularios relacionados con su participación? Nomas haga clic en \"Editar mi perfil\" en el menu de perfiles en la parte superior en la esquina derecha de su pantalla.<br><br>Estaremos implementando otras actualizaciones de diseño en los próximos meses, así que manténgase atento/a a más mejoras. Si tiene alguna pregunta sobre los cambios, no dude en comunicarse con nuestro equipo en el <a href=\"https://MyConnect.cancer.gov/support\" target=\"_blank\">Centro de Asistencia de Connect</a>.<br><br>¡Esperamos que disfrute de la nueva experiencia!",
+        "newHealthInfoBanner": "La nueva ficha Compartir Información Nueva de Salud ya está disponible en su panel de control. Aquí puede indicarnos si cambia de centro de atención primaria y compartir información sobre un diagnóstico reciente de cáncer. En el futuro, vuelva a esta ficha para consultar otras opciones para compartir información con nuestro equipo.",
         "withdrawnConnect": "Se ha retirado de Connect. No recopilaremos más datos sobre usted. Si tiene alguna pregunta, llame al Centro de Asistencia de Connect al 1-877-775-7004 o escríbales a <a href=\"mailto:ConnectAyuda@norc.org\">ConnectAyuda@norc.org</a>.",
         "deletedData": "A pedido de usted, hemos eliminado sus datos de Connect. Si tiene alguna pregunta, llame al Centro de Asistencia de Connect al 1-877-775-7004 o escríbales a <a href=\"mailto:ConnectAyuda@norc.org\">ConnectAyuda@norc.org</a>.",
         "newFormSign": "Tiene un nuevo <a href=\"#forms\">formulario</a> para firmar.",
@@ -2119,8 +2120,23 @@
         "reportCancerIntro": "Nos interesa conocer los diagnósticos de cáncer que pueda recibir después de comenzar a participar en Connect. Si desea agregar detalles sobre un nuevo diagnóstico de cáncer, haga clic en el botón “Agregue su diagnóstico” para compartir información que utilizaremos para recopilar datos importantes con fines de investigación.",
         "addYourDiagnosis": "Agregue su diagnóstico",
         "addADiagnosis": "Agregue un diagnóstico",
+        // Health Care System Update section (issue #1658).
+        // TODO(#1658): awaiting official approved Spanish translations for the new July strings.
+        // Keys intentionally OMITTED here fall back to English via translateText until approved
+        // content arrives: hcsIntro, hcsCurrentFacility, hcsJoinedWith, hcsJoinedWithEnd,
+        // hcsIsThePlace, hcsUpdateButton, hcsFacAddressHeader, hcsFacName, hcsFacNameInput,
+        // hcsChangeDateLabel, hcsYearInput, hcsAdditionalInfo, hcsAdditionalInfoPrompt,
+        // hcsSubmitButton, hcsClearButton, hcsThankYou, hcsLastUpdated, hcsAddrLine1-4, hcsNone,
+        // hcsFacNameRequired, hcsFacLine2Required, hcsYearError, hcsZipError.
+        // The keys below only reuse June-approved translations for the same preexisting fields
+        // (hcsFacLine2 = approved facLine2 text plus the required marker; the shared facility
+        // component keys facIntl/facLine3/facCity/facState/facZip/facRegion/facPostal/facCountry
+        // and the month names are already approved above/below).
         "hcsHeader": "Actualización del sistema de atención médica",
-        "hcsComingSoon": "Próximamente",
+        "hcsFacLine2": "Línea 2 (calle, ruta rural) <span class=\"required\">*</span>",
+        "hcsAddrCity": "Ciudad",
+        "hcsAddrState": "Estado",
+        "hcsAddrZip": "Código postal",
         "previouslyReportedHeader": "Diagnósticos de cáncer informados anteriormente",
         "previouslyReportedLocation": "Lugar",
         "previouslyReportedDate": "Fecha del diagnóstico",

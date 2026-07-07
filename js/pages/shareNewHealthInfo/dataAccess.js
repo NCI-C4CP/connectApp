@@ -2,6 +2,7 @@
 
 import { appState, getIdToken, getApiBaseUrl, getAppSettings, translateText } from '../../shared.js';
 import fieldMapping from '../../fieldToConceptIdMapping.js';
+import { parseHcsRow } from './hcsPayload.js';
 
 const m = fieldMapping.selfReportCancerDx;
 
@@ -143,6 +144,34 @@ export const getPreviouslyReportedDx = async () => {
             dxDate: monthCode === null ? year : `${String(monthCode + 1).padStart(2, '0')}/${year}`,
         };
     });
+};
+
+// Health Care System Update (issue #1658)
+
+// Never throws. The section handles revert/retry.
+export const submitSelfReportHCSUpdate = async (snapshot) => {
+    try {
+        const response = await authedFetch('storeSelfReportHCSUpdate', { method: 'POST', body: snapshot });
+        if (!response) return { code: 0 };
+        return await response.json();
+    } catch (e) {
+        return { code: 0, message: String(e && e.message) };
+    }
+};
+
+/**
+ * Most recent submitted HCS update, parsed for display, or null when the participant
+ * has never reported a change. Throws on network failure to distinguish "never updated" from "could not load".
+ */
+export const getMostRecentHCSUpdate = async () => {
+    const response = await authedFetch('getSelfReportHCSUpdate');
+    if (!response) throw new Error('Unable to load health care system updates');
+    if (!response.ok) throw new Error(`Unable to load health care system updates: ${response.status}`);
+    const json = await response.json();
+    const submitted = json?.data?.submitted;
+    if (!Array.isArray(submitted) || !submitted.length) return null;
+    // Server returns rows ascending by submitted timestamp; display only the latest.
+    return parseHcsRow(submitted[submitted.length - 1]);
 };
 
 export const loadShareHealthInfoSettings = async () => {

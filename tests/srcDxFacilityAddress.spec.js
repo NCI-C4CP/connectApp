@@ -377,3 +377,36 @@ describe('name autocomplete (Google Places)', () => {
         expect(clearedArgs.includes(input)).toBe(true);
     });
 });
+
+describe('label overrides (Health Care System Update variant, issue #1658)', () => {
+    const HCS_ID = 'HcsFac';
+    const hcsOptions = {
+        nameLabelKey: 'shareHealthInfo.hcsFacName',
+        nameLabelFallback: 'Line 1 (name of primary care facility) <span class="required">*</span>',
+        namePlaceholderKey: 'shareHealthInfo.hcsFacNameInput',
+        namePlaceholderFallback: 'Enter primary care facility',
+        line2LabelKey: 'shareHealthInfo.hcsFacLine2',
+        line2LabelFallback: 'Line 2 (street, rural route) <span class="required">*</span>',
+    };
+
+    it('renders overridden Line 1/Line 2 label keys, required markers, and the placeholder override', () => {
+        content.innerHTML = renderFacilityAddress(HCS_ID, hcsOptions);
+        const line1Label = content.querySelector(`label[for="UPAddress${HCS_ID}Line1"]`);
+        expect(line1Label.dataset.i18n).toBe('shareHealthInfo.hcsFacName');
+        expect(line1Label.querySelector('.required')).not.toBeNull();
+        const line1Input = content.querySelector(`#UPAddress${HCS_ID}Line1`);
+        expect(line1Input.dataset.i18n).toBe('shareHealthInfo.hcsFacNameInput');
+        expect(line1Input.getAttribute('placeholder')).toBe('Enter primary care facility');
+        const line2Label = content.querySelector(`label[for="UPAddress${HCS_ID}Line2"]`);
+        expect(line2Label.dataset.i18n).toBe('shareHealthInfo.hcsFacLine2');
+        expect(line2Label.querySelector('.required')).not.toBeNull();
+    });
+
+    it('leaves the cancer-dx defaults untouched when no options are passed (regression)', () => {
+        content.innerHTML = renderFacilityAddress(ID);
+        const line1Label = content.querySelector(`label[for="UPAddress${ID}Line1"]`);
+        expect(line1Label.dataset.i18n).toBe('shareHealthInfo.facName');
+        expect(line1Label.querySelector('.required')).toBeNull();
+        expect(content.querySelector(`label[for="UPAddress${ID}Line2"]`).dataset.i18n).toBe('shareHealthInfo.facLine2');
+    });
+});

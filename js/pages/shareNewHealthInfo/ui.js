@@ -30,14 +30,20 @@ export const card = (titleKey, titleFallback, bodyHtml) => `
         <div class="srcdx-card-body">${bodyHtml}</div>
     </div>`;
 
+// Shell for the Health Care System Update section (issue #1658). On resting screens
+// (landing + confirmation) the controller mounts the interactive section into #srcdxHcsSection,
+// replacing this card. Mid-process screens keep this non-interactive collapsed card so the
+// section stays visible without competing with the in-progress report.
 const hcsCard = () => `
-    <div class="card srcdx-card srcdx-collapsible srcdx-collapsed mb-3" data-srcdx-card>
-        <div class="srcdx-card-header" role="button" tabindex="0" data-srcdx-toggle>
-            <span class="srcdx-card-title" data-i18n="shareHealthInfo.hcsHeader">Health Care System Update</span>
-            <span class="srcdx-card-chevron" aria-hidden="true"></span>
-        </div>
-        <div class="srcdx-card-body">
-            <p class="mb-0" data-i18n="shareHealthInfo.hcsComingSoon">Coming soon</p>
+    <div id="srcdxHcsSection">
+        <div class="card srcdx-card srcdx-collapsible srcdx-collapsed mb-3" data-srcdx-card>
+            <div class="srcdx-card-header" role="button" tabindex="0" data-srcdx-toggle>
+                <span class="srcdx-card-title" data-i18n="shareHealthInfo.hcsHeader">Health Care System Update</span>
+                <span class="srcdx-card-chevron" aria-hidden="true"></span>
+            </div>
+            <div class="srcdx-card-body">
+                <p class="mb-0" data-i18n="shareHealthInfo.hcsIntro">Connect is a long-term study. We recognize the health system where you receive care may change over time.</p>
+            </div>
         </div>
     </div>`;
 

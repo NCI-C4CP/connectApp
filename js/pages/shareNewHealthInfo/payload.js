@@ -22,7 +22,7 @@ const setIf = (obj, key, value, cond = true) => {
 const isTodoCid = (cid) => typeof cid === 'string' && cid.startsWith('TODO');
 const monthCid = (code) => (isPresent(code) && m.monthValues[code] !== undefined ? String(m.monthValues[code]) : undefined);
 
-const buildFacility = (facCids, facility, keyFor) => {
+export const buildFacility = (facCids, facility, keyFor) => {
     const out = {};
     if (!hasFacilityContent(facility)) return out;
     const intl = !!facility.isInternational;

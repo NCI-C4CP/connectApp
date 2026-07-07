@@ -454,6 +454,31 @@ export default
             uterine: 382789932, other: 252291829,
         },
     },
+    // Self-Report Health Care System Update ("Share New Health Information", issue #1658).
+    selfReportHCSUpdate: {
+        // Month response cids (same shared dictionary responses as selfReportCancerDx.monthValues).
+        monthValues: {
+            0: 286592124, 1: 802747980, 2: 676299940, 3: 463502254, 4: 526483288, 5: 842005720,
+            6: 574954852, 7: 887495026, 8: 181090983, 9: 259643910, 10: 615680906, 11: 840678879,
+        },
+        facility: {
+            line1: 624974556,  // Line 1 = name of primary care facility
+            line2: 655907949, // Line 2 = main address line (street, rural route, etc.)
+            line3: 858545898,
+            line4: 134439170,
+            city: 973363047,
+            state: 783801971,  // Merged state/region (for international addresses)
+            zip: 734087990,    // Merged zip/postal (for international addresses)
+            intlFlag: 892107008,
+            googleValidated: 771921322,
+            country: 111301575,
+        },
+        changeMonth: 994200497,
+        changeYear: 353158944,
+        additionalInfo: 519981637,
+        // Server-stamped at submit (ISO8601 string).
+        submittedTimestamp: 223569179,
+    },
 
     // @deprecated. Retain until migration to Quest2 is complete. External variables passed into Quest that require extra async/await handling.
     delayedParameterArray: [

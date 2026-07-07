@@ -26,20 +26,29 @@ const countryOptions = () =>
  *    state/zip together (section-* tokens on form-less fields degraded Chrome to single-field fill).
  * The form never submits (no submit button + a preventDefault guard), so an Enter keypress can't reload the app.
  */
-export const renderFacilityAddress = (idPrefix, { showName = true } = {}) => `
+export const renderFacilityAddress = (idPrefix, {
+    showName = true,
+    // The HCS section overrides the Line 1/Line 2 label keys (facility wording + required asterisks).
+    nameLabelKey = 'shareHealthInfo.facName',
+    nameLabelFallback = 'Line 1 (name of facility)',
+    namePlaceholderKey = 'shareHealthInfo.facNameInput',
+    namePlaceholderFallback = 'Enter name of facility',
+    line2LabelKey = 'shareHealthInfo.facLine2',
+    line2LabelFallback = 'Line 2 (street, rural route)',
+} = {}) => `
     <form class="srcdx-facility mb-3" data-facility="${idPrefix}" autocomplete="on" novalidate>
         <input type="hidden" id="UPAddress${idPrefix}GoogleValidated" value="false">
         ${showName ? `
         <div class="form-group mb-2">
-            <label for="UPAddress${idPrefix}Line1" data-i18n="shareHealthInfo.facName">Line 1 (name of facility)</label>
-            <input type="text" class="form-control" id="UPAddress${idPrefix}Line1" autocomplete="off" maxlength="70" data-i18n="shareHealthInfo.facNameInput" placeholder="Enter name of facility">
+            <label for="UPAddress${idPrefix}Line1" data-i18n="${nameLabelKey}">${nameLabelFallback}</label>
+            <input type="text" class="form-control" id="UPAddress${idPrefix}Line1" autocomplete="off" maxlength="70" data-i18n="${namePlaceholderKey}" placeholder="${namePlaceholderFallback}">
         </div>` : ''}
         <div class="form-check mb-2">
             <input class="form-check-input" type="checkbox" id="UPAddress${idPrefix}International">
             <label class="form-check-label" for="UPAddress${idPrefix}International" data-i18n="shareHealthInfo.facIntl">This facility is located outside the United States</label>
         </div>
         <div class="form-group mb-2">
-            <label for="UPAddress${idPrefix}Line2" data-i18n="shareHealthInfo.facLine2">Line 2 (street, rural route)</label>
+            <label for="UPAddress${idPrefix}Line2" data-i18n="${line2LabelKey}">${line2LabelFallback}</label>
             <input type="text" class="form-control" id="UPAddress${idPrefix}Line2" autocomplete="address-line1" maxlength="70" data-i18n="shareHealthInfo.facLine2Input" placeholder="Enter street, rural route">
         </div>
         <div class="form-group mb-2">

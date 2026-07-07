@@ -55,3 +55,18 @@ export const loadShareHealthInfoSettings = async () => ({
 // NPI typeahead transport: default = no matches. Specs that exercise the typeahead pass a
 // custom dataAccessBody with a provider fixture instead.
 export const searchNPIProviders = async () => [];
+
+// --- Health Care System Update (issue #1658) ---
+// Latest-update fixture is a parsed display row (the real getMostRecentHCSUpdate returns the
+// parseHcsRow output, not the raw D_ document).
+export const getMostRecentHCSUpdate = async () => {
+    if (window.__HCS_FETCH_FAIL__) throw new Error('hcs fetch failed (stubbed)');
+    return window.__HCS_LATEST__ ?? null;
+};
+
+export const submitSelfReportHCSUpdate = async (snapshot) => {
+    window.__HCS_LAST_PAYLOAD__ = snapshot;
+    if (window.__HCS_SUBMIT_FAIL__) return { code: 500 };
+    window.__HCS_SUBMITTED__ = (window.__HCS_SUBMITTED__ || []).concat([snapshot]);
+    return { code: 200 };
+};
