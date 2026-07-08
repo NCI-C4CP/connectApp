@@ -13,11 +13,25 @@ const dataAccessStub = readFileSync(join(here, 'stubs/dataAccess.stub.js'), 'utf
 export const F = fieldMapping;
 export const m = fieldMapping.selfReportCancerDx;
 
-// Quest-flat payload helpers (mirror payload.js key helpers — payload.js itself cannot be imported
-// here: it transitively pulls js/shared.js, whose module scope needs browser globals).
+// Payload helpers mirror the nested source-question contract without importing payload.js
+// here: it transitively pulls js/shared.js, whose module scope needs browser globals.
 export const dk = (cid, ...idx) => ['D_' + cid, ...idx].join('_');
-export const ndk = (parentCid, childCid, ...idx) => ['D_' + parentCid, 'D_' + childCid, ...idx].join('_');
-export const txdk = (parentCid, childCid, position) => ndk(parentCid, childCid, position, position);
+export const sourceChild = (payload, sourceCid, childCid, ...idx) =>
+    payload?.[dk(sourceCid)]?.[dk(childCid, ...idx)];
+export const primary = (payload, childCid, ...idx) =>
+    sourceChild(payload, m.sourceQuestions.primarySite, childCid, ...idx);
+export const txType = (payload, childCid, ...idx) =>
+    sourceChild(payload, m.sourceQuestions.treatmentType, childCid, ...idx);
+export const screeningType = (payload, childCid, ...idx) =>
+    sourceChild(payload, m.sourceQuestions.screeningType, childCid, ...idx);
+export const txDetail = (payload, parentCid, childCid, ...idx) =>
+    payload?.[dk(parentCid)]?.[dk(childCid, ...idx)];
+export const txOngoing = (payload, parentCid, childCid, ...idx) =>
+    payload?.[dk(parentCid)]?.[dk(m.sourceQuestions.treatmentOngoingEnd)]?.[dk(childCid, ...idx)];
+export const txRow = (payload, parentCid, childCid, position) =>
+    txDetail(payload, parentCid, childCid, position, position);
+export const screeningDetail = (payload, parentCid, childCid, ...idx) =>
+    payload?.[dk(parentCid)]?.[dk(childCid, ...idx)];
 export const Y = String(fieldMapping.yes);
 export const N = String(fieldMapping.no);
 

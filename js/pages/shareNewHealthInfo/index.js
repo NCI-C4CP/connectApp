@@ -357,6 +357,7 @@ export const renderShareNewHealthInfo = async (dataResponse) => {
     if (!isVerifiedNotWithdrawn(participant)) {
         resetRuntime();
         window.location.hash = '#dashboard';
+        hideAnimation();
         return;
     }
 
