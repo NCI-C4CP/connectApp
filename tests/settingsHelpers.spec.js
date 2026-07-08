@@ -607,4 +607,109 @@ describe('settingsHelpers', () => {
     expect(settingsSharedMocks.showAnimation).toHaveBeenCalledTimes(1);
     expect(settingsSharedMocks.hideAnimation).toHaveBeenCalledTimes(1);
   });
+
+  describe('changeMailingAddress country fields', () => {
+    const buildAddressDom = (id) => {
+      const elements = {};
+      elements[`mailingAddressFail${id}`] = { style: { display: 'block' } };
+      elements[`changeMailingAddressGroup${id}`] = { style: { display: 'block' } };
+      elements[`mailingAddressError${id}`] = { textContent: '' };
+      elements['mailingAddressFail'] = { style: { display: 'none' } };
+      elements['mailingAddressError'] = { innerHTML: '' };
+      return elements;
+    };
+
+    const buildAddressUserData = (overrides = {}) => ({
+      [cId.userProfileHistory]: [],
+      [cId.prefEmail]: 'test@example.com',
+      [cId.address1]: '123 Main St',
+      [cId.city]: 'Denver',
+      [cId.state]: 'CO',
+      [cId.zip]: '80202',
+      [cId.country]: '',
+      [cId.isIntlAddr]: cId.no,
+      ...overrides,
+    });
+
+    it('sets country to null (not empty string) for domestic mailing address (id=1)', async () => {
+      installDocumentByIdMap(buildAddressDom(1));
+
+      const userData = buildAddressUserData();
+      await settingsHelpers.changeMailingAddress(1, '456 Oak Ave', '', 'Boulder', 'CO', '80301', userData, cId.no, '', null, false);
+
+      const storeCall = settingsSharedMocks.storeResponse.mock.calls[0]?.[0];
+      expect(storeCall).toBeDefined();
+      expect(storeCall[cId.country]).toBeNull();
+      expect(storeCall[cId.country]).not.toBe('');
+    });
+
+    it('sets country to parsed integer for international mailing address (id=1)', async () => {
+      installDocumentByIdMap(buildAddressDom(1));
+
+      const userData = buildAddressUserData({ [cId.isIntlAddr]: cId.yes, [cId.country]: 999 });
+      await settingsHelpers.changeMailingAddress(1, '456 Oak Ave', '', 'London', 'ENG', 'SW1A', userData, cId.yes, 'Line 3', '123', false);
+
+      const storeCall = settingsSharedMocks.storeResponse.mock.calls[0]?.[0];
+      expect(storeCall).toBeDefined();
+      expect(storeCall[cId.country]).toBe(123);
+    });
+
+    it('sets country to null when parseInt fails on non-numeric country value for international address', async () => {
+      installDocumentByIdMap(buildAddressDom(1));
+
+      const userData = buildAddressUserData({ [cId.isIntlAddr]: cId.yes });
+      await settingsHelpers.changeMailingAddress(1, '456 Oak Ave', '', 'London', 'ENG', 'SW1A', userData, cId.yes, 'Line 3', 'InvalidCountry', false);
+
+      const storeCall = settingsSharedMocks.storeResponse.mock.calls[0]?.[0];
+      expect(storeCall).toBeDefined();
+      expect(storeCall[cId.country]).toBeNull();
+      expect(storeCall[cId.country]).not.toBe('');
+    });
+
+    it('sets physicalCountry to null for domestic physical address (id=2)', async () => {
+      installDocumentByIdMap(buildAddressDom(2));
+
+      const userData = buildAddressUserData({ [cId.physicalAddress1]: '789 Pine', [cId.physicalCountry]: '' });
+      await settingsHelpers.changeMailingAddress(2, '101 Elm St', '', 'Aurora', 'CO', '80010', userData, cId.no, '', null, false);
+
+      const storeCall = settingsSharedMocks.storeResponse.mock.calls[0]?.[0];
+      expect(storeCall).toBeDefined();
+      expect(storeCall[cId.physicalCountry]).toBeNull();
+      expect(storeCall[cId.physicalCountry]).not.toBe('');
+    });
+
+    it('sets physicalCountry to null when clearing physical address (id=2)', async () => {
+      installDocumentByIdMap(buildAddressDom(2));
+
+      const userData = buildAddressUserData({ [cId.physicalAddress1]: '789 Pine', [cId.physicalCountry]: 456 });
+      await settingsHelpers.changeMailingAddress(2, '', '', '', '', '', userData, undefined, '', null, false, true);
+
+      const storeCall = settingsSharedMocks.storeResponse.mock.calls[0]?.[0];
+      expect(storeCall).toBeDefined();
+      expect(storeCall[cId.physicalCountry]).toBeNull();
+    });
+
+    it('sets altCountry to null for domestic alt address (id=3)', async () => {
+      installDocumentByIdMap(buildAddressDom(3));
+
+      const userData = buildAddressUserData({ [cId.altAddress1]: '222 Birch', [cId.altCountry]: '' });
+      await settingsHelpers.changeMailingAddress(3, '333 Cedar', '', 'Lakewood', 'CO', '80226', userData, cId.no, '', null, false);
+
+      const storeCall = settingsSharedMocks.storeResponse.mock.calls[0]?.[0];
+      expect(storeCall).toBeDefined();
+      expect(storeCall[cId.altCountry]).toBeNull();
+      expect(storeCall[cId.altCountry]).not.toBe('');
+    });
+
+    it('sets altCountry to parsed integer for international alt address (id=3)', async () => {
+      installDocumentByIdMap(buildAddressDom(3));
+
+      const userData = buildAddressUserData({ [cId.altAddress1]: '222 Birch', [cId.altCountry]: 999, [cId.isIntlAltAddress]: cId.yes });
+      await settingsHelpers.changeMailingAddress(3, '333 Cedar', '', 'Paris', 'IDF', '75001', userData, cId.yes, 'Apt 2', '789', false);
+
+      const storeCall = settingsSharedMocks.storeResponse.mock.calls[0]?.[0];
+      expect(storeCall).toBeDefined();
+      expect(storeCall[cId.altCountry]).toBe(789);
+    });
+  });
 });
