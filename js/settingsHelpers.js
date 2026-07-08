@@ -976,7 +976,7 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.isPOBox]: isPOBox ? cId.yes : cId.no,
       [cId.isIntlAddr]: isInternational ?? cId.no,
       [cId.address3]: addressLine3 && isInternational === cId.yes ? addressLine3 : '', 
-      [cId.country]: country && isInternational === cId.yes ? parseInt(country, 10) || '' : '',
+      [cId.country]: country && isInternational === cId.yes ? parseInt(country, 10) || null : null,
       [cId.isMailingAddressUSPSUnvalidated]: getUSPSUnvalidatedValue(isValidatedByUSPS, cId.yes, cId.no),
     };
   } else if (id === 2) {
@@ -989,7 +989,7 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.physicalZip]: isClearing ? null : (zip ? zip.toString() : ""),
       [cId.physicalAddrIntl]: isClearing ? null : isInternational,
       [cId.physicalAddress3]: isClearing ? null : (addressLine3 && isInternational === cId.yes ? addressLine3 : ''), 
-      [cId.physicalCountry]: isClearing ? null : (country && isInternational === cId.yes ? parseInt(country, 10) || '' : ''), 
+      [cId.physicalCountry]: isClearing ? null : (country && isInternational === cId.yes ? parseInt(country, 10) || null : null), 
       [cId.isPhysicalAddressUSPSUnvalidated]: isClearing ? null : getUSPSUnvalidatedValue(isValidatedByUSPS, cId.yes, cId.no),
     };
   } else if (id === 3) {
@@ -1008,7 +1008,7 @@ export const changeMailingAddress = async (id, addressLine1, addressLine2, city,
       [cId.isPOBoxAltAddress]: isAltClearing ? null : (isPOBox ? cId.yes : cId.no),
       [cId.isIntlAltAddress]: isAltClearing ? null : isInternational,
       [cId.altAddress3]: isAltClearing ? null : (addressLine3 && isInternational === cId.yes ? addressLine3 : ''), 
-      [cId.altCountry]: isAltClearing ? null : (country && isInternational === cId.yes ? parseInt(country, 10) || '' : ''), 
+      [cId.altCountry]: isAltClearing ? null : (country && isInternational === cId.yes ? parseInt(country, 10) || null : null), 
       [cId.isAltAddressUSPSUnvalidated]: isAltClearing ? null : getUSPSUnvalidatedValue(isValidatedByUSPS, cId.yes, cId.no),
      };
   }
