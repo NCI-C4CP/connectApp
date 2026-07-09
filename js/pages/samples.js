@@ -473,7 +473,7 @@ const submitNewMailingAddress = async (id, addressLine1, addressLine2, city, sta
     const userData = data.data;
     const isInternational = conceptId.no; // no international addresses here (kit shipments are for domestic, non-PO Box addresses only)
     const addressLine3 = '';
-    const country = '';
+    const country = null;
     const isSuccess = await changeMailingAddress(id, addressLine1, addressLine2, city, state, zip, userData, isInternational, addressLine3, country, isPOBox, false, isValidatedByUSPS).catch(function (error) {
         console.error('Error', error);
         document.getElementById(`mailingAddressFail${id}`).style.display = 'block';
