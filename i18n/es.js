@@ -2127,13 +2127,13 @@
         // hcsIsThePlace, hcsUpdateButton, hcsFacAddressHeader, hcsFacName, hcsFacNameInput,
         // hcsChangeDateLabel, hcsYearInput, hcsAdditionalInfo, hcsAdditionalInfoPrompt,
         // hcsSubmitButton, hcsClearButton, hcsThankYou, hcsLastUpdated, hcsAddrLine1-4, hcsNone,
-        // hcsFacNameRequired, hcsFacLine2Required, hcsYearError, hcsZipError.
+        // hcsFacNameRequired, hcsYearError, hcsZipError.
         // The keys below only reuse June-approved translations for the same preexisting fields
-        // (hcsFacLine2 = approved facLine2 text plus the required marker; the shared facility
+        // (hcsFacLine2 reuses the approved facLine2 text; the shared facility
         // component keys facIntl/facLine3/facCity/facState/facZip/facRegion/facPostal/facCountry
         // and the month names are already approved above/below).
         "hcsHeader": "Actualización del sistema de atención médica",
-        "hcsFacLine2": "Línea 2 (calle, ruta rural) <span class=\"required\">*</span>",
+        "hcsFacLine2": "Línea 2 (calle, ruta rural)",
         "hcsAddrCity": "Ciudad",
         "hcsAddrState": "Estado",
         "hcsAddrZip": "Código postal",

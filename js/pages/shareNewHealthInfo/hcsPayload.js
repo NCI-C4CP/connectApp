@@ -28,7 +28,7 @@ export const makeHcsUpdate = () => ({
 
 export const buildHcsPayload = (state = {}) => {
     const payload = {};
-    Object.assign(payload, buildFacility(h.facility, state.facility, dKey));
+    Object.assign(payload, buildFacility(h.facility, state.facility, dKey, { includeExplicitInternational: true }));
     setIf(payload, dKey(h.changeMonth), monthCid(state.changeMonth));
     setIf(payload, dKey(h.changeYear), state.changeYear);
     setIf(payload, dKey(h.additionalInfo), state.additionalInfo);

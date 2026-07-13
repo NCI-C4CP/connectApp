@@ -10,6 +10,24 @@ const here = dirname(fileURLToPath(import.meta.url));
 const sharedStub = readFileSync(join(here, 'stubs/shared.stub.js'), 'utf8');
 const dataAccessStub = readFileSync(join(here, 'stubs/dataAccess.stub.js'), 'utf8');
 
+const withRequiredDataAccessExports = (body) => {
+    let next = body;
+    if (!/\bexport\s+const\s+getMostRecentHCSUpdate\b/.test(next)) {
+        next += `
+export const getMostRecentHCSUpdate = async () => null;
+`;
+    }
+    if (!/\bexport\s+const\s+submitSelfReportHCSUpdate\b/.test(next)) {
+        next += `
+export const submitSelfReportHCSUpdate = async (snapshot) => {
+    window.__HCS_LAST_PAYLOAD__ = snapshot;
+    return { code: 200, stubbed: true };
+};
+`;
+    }
+    return next;
+};
+
 export const F = fieldMapping;
 export const m = fieldMapping.selfReportCancerDx;
 
@@ -43,7 +61,7 @@ export const setup = async (page, { fixture = verified, prior = [], dataAccessBo
     await page.route('**/js/shared.js', (route) =>
         route.fulfill({ contentType: 'application/javascript', body: sharedStub }));
     await page.route('**/js/pages/shareNewHealthInfo/dataAccess.js', (route) =>
-        route.fulfill({ contentType: 'application/javascript', body: dataAccessBody }));
+        route.fulfill({ contentType: 'application/javascript', body: withRequiredDataAccessExports(dataAccessBody) }));
     await page.addInitScript(([f, p, dict, npiEnabled, hcsRow]) => {
         window.__SRCDX_FIXTURE__ = f;
         window.__SRCDX_PRIOR__ = p;

@@ -85,6 +85,17 @@ describe('buildHcsPayload', () => {
         const state = { ...makeHcsUpdate(), changeYear: '2024' };
         expect(buildHcsPayload(state)).toEqual({ D_353158944: '2024' });
     });
+
+    it('preserves an explicit international Yes when no address text is entered', () => {
+        const state = makeHcsUpdate();
+        state.changeYear = '2024';
+        state.facility.isInternational = true;
+        expect(buildHcsPayload(state)).toEqual({
+            D_892107008: '353358909',
+            D_771921322: '104430631',
+            D_353158944: '2024',
+        });
+    });
 });
 
 describe('buildHcsSnapshot', () => {

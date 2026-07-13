@@ -107,30 +107,48 @@ const initialBodyHtml = (siteName) => `
     <div class="mt-3">${updateButtonHtml()}</div>`;
 
 // 'view', prior update exists (per Ops note on comp 18: no IHCS header; one Update button for everything).
-const latestBodyHtml = (row) => `
-    ${introHtml()}
-    <div class="d-flex justify-content-between align-items-start mb-2">
-        <strong data-i18n="shareHealthInfo.hcsFacAddressHeader">Primary care facility address:</strong>
-        ${updateButtonHtml()}
-    </div>
-    ${addressDisplayHtml(row)}
-    <p class="mt-3 mb-2"><strong><span data-i18n="shareHealthInfo.hcsLastUpdated">Primary care facility last updated:</span> ${lastUpdatedHtml(row)}</strong></p>
-    ${isNonEmpty(row.additionalInfo) ? `
-    <p class="mb-0"><strong data-i18n="shareHealthInfo.hcsAdditionalInfo">Additional information:</strong><br>${escapeHTML(row.additionalInfo)}</p>` : ''}`;
+const hasAddressDisplayContent = (row) => [
+    row.line1, row.line2, row.line3, row.line4, row.city, row.stateOrRegion, row.zipOrPostal, row.countryCid,
+].some(isNonEmpty);
 
-// The [IHCS] slot in "… is the place where you get your primary care" (comps 18/19) shows the
-// most recently reported facility name when one exists and falls back to the signup IHCS site name for first-time updaters.
+const latestBodyHtml = (row) => {
+    const addressBlock = hasAddressDisplayContent(row) ? `
+        <div class="d-flex justify-content-between align-items-start mb-2">
+            <strong data-i18n="shareHealthInfo.hcsFacAddressHeader">Primary care facility address:</strong>
+            ${updateButtonHtml()}
+        </div>
+        ${addressDisplayHtml(row)}` : `
+        <div class="d-flex justify-content-end mb-2">${updateButtonHtml()}</div>`;
+    return `
+        ${introHtml()}
+        ${addressBlock}
+        <p class="mt-3 mb-2" data-srcdxhcs-last-updated>
+            <strong class="d-block" data-i18n="shareHealthInfo.hcsLastUpdated">Primary care facility last updated:</strong>
+            <span data-srcdxhcs-last-updated-value>${lastUpdatedHtml(row)}</span>
+        </p>
+        ${isNonEmpty(row.additionalInfo) ? `
+        <p class="mb-0"><strong data-i18n="shareHealthInfo.hcsAdditionalInfo">Additional information:</strong><br>${escapeHTML(row.additionalInfo)}</p>` : ''}`;
+};
+
+const currentFacilityHtml = (name) => isNonEmpty(name)
+    ? `${currentFacilityHeaderHtml()}${isThePlaceHtml(name)}`
+    : '';
+
+// First-time updaters see the signup IHCS. After an update, only a facility name explicitly supplied
+// in the latest record is described as current; sparse records do not carry an older name forward.
 const editingBodyHtml = (currentFacilityName) => `
     ${introHtml()}
-    ${currentFacilityHeaderHtml()}${isThePlaceHtml(currentFacilityName)}
+    ${currentFacilityHtml(currentFacilityName)}
     <p class="mb-2"><strong data-i18n="shareHealthInfo.hcsFacAddressHeader">Primary care facility address:</strong></p>
     ${renderFacilityAddress(FACILITY_ID_PREFIX, {
         nameLabelKey: 'shareHealthInfo.hcsFacName',
         nameLabelFallback: 'Line 1 (name of primary care facility) <span class="required">*</span>',
         namePlaceholderKey: 'shareHealthInfo.hcsFacNameInput',
         namePlaceholderFallback: 'Enter primary care facility',
+        nameRequired: true,
         line2LabelKey: 'shareHealthInfo.hcsFacLine2',
-        line2LabelFallback: 'Line 2 (street, rural route) <span class="required">*</span>',
+        line2LabelFallback: 'Line 2 (street, rural route)',
+        regionMaxLength: 48,
     })}
     <p class="mt-3 mb-2"><strong data-i18n="shareHealthInfo.hcsChangeDateLabel">Date you changed your primary care facility:</strong></p>
     <div class="row">
@@ -178,8 +196,7 @@ const sectionHtml = (bodyHtml) => `
 const bodyHtmlForState = (participant) => {
     if (view === 'submitted') return submittedBodyHtml();
     if (view === 'editing') {
-        const reportedName = latest && isNonEmpty(latest.line1) ? latest.line1 : '';
-        return editingBodyHtml(reportedName || ihcsName(participant));
+        return editingBodyHtml(latest ? latest.line1 : ihcsName(participant));
     }
     if (loadFailed) return loadErrorBodyHtml();
     return latest ? latestBodyHtml(latest) : initialBodyHtml(ihcsName(participant));
@@ -198,10 +215,6 @@ const harvestDraft = (content) => {
 const validateDraft = (content, draft) => {
     if (!isNonEmpty(draft.facility.line1)) {
         fieldError(content, `UPAddress${FACILITY_ID_PREFIX}Line1`, 'shareHealthInfo.hcsFacNameRequired', 'Please enter the name of your primary care facility.');
-        return false;
-    }
-    if (!isNonEmpty(draft.facility.line2)) {
-        fieldError(content, `UPAddress${FACILITY_ID_PREFIX}Line2`, 'shareHealthInfo.hcsFacLine2Required', 'Please enter the street address of your primary care facility.');
         return false;
     }
     if (!draft.facility.isInternational && isNonEmpty(draft.facility.zip) && !/^\d{5}$/.test(draft.facility.zip)) {

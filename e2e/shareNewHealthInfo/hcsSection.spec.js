@@ -1,6 +1,6 @@
 // E2E for the Health Care System Update section (issue #1658): section states, the edit form,
 // validation, the flat submit payload, and the Google Places validated-flag lifecycle (a fake
-// google.maps.places.Autocomplete injected so the pick -> validated / edit -> invalidated
+// google.maps.places.Autocomplete injected so the pick -> validated / core-address edit -> invalidated
 // behavior runs in a browser without the live API).
 
 import { test, expect } from '@playwright/test';
@@ -31,13 +31,19 @@ const latestRow = (overrides = {}) => ({
     ...overrides,
 });
 
+const yearOnlyRow = (overrides = {}) => latestRow({
+    line1: '', line2: '', line3: '', line4: '', city: '', stateOrRegion: '', zipOrPostal: '',
+    countryCid: '', isInternational: false, changeMonthCode: null, additionalInfo: '',
+    ...overrides,
+});
+
 const openEditForm = async (page, opts) => {
     await setup(page, opts);
     await page.click('#srcdxHcsUpdate');
     await expect(page.locator('#UPAddressHcsFacLine1')).toBeVisible();
 };
 
-const fillMinimumValid = async (page) => {
+const fillDomesticUpdate = async (page) => {
     await page.fill('#UPAddressHcsFacLine1', 'New Care Facility');
     await page.fill('#UPAddressHcsFacLine2', '1 Care Way');
     await page.fill('#srcdxHcsChangeYr', String(currentYear));
@@ -61,22 +67,22 @@ const injectFakeGooglePlaces = (page) => page.addInitScript(() => {
     };
 });
 
-const pickGooglePlace = async (page) => {
+const pickGooglePlace = async (page, place = {
+    name: 'SIBLEY MEMORIAL HOSPITAL',
+    address_components: [
+        { types: ['street_number'], long_name: '5255' },
+        { types: ['route'], long_name: 'Loughboro Rd NW' },
+        { types: ['locality'], long_name: 'Washington' },
+        { types: ['administrative_area_level_1'], long_name: 'DC' },
+        { types: ['postal_code'], long_name: '20016' },
+    ],
+}) => {
     await page.focus('#UPAddressHcsFacLine1'); // autocomplete attaches on first focus
-    await page.evaluate(() => {
-        window.__GOOGLE_PLACE__ = {
-            name: 'SIBLEY MEMORIAL HOSPITAL',
-            address_components: [
-                { types: ['street_number'], long_name: '5255' },
-                { types: ['route'], long_name: 'Loughboro Rd NW' },
-                { types: ['locality'], long_name: 'Washington' },
-                { types: ['administrative_area_level_1'], long_name: 'DC' }, // stub allStates keys are abbreviations
-                { types: ['postal_code'], long_name: '20016' },
-            ],
-        };
+    await page.evaluate((selectedPlace) => {
+        window.__GOOGLE_PLACE__ = selectedPlace;
         const ac = window.__GOOGLE_ACS__.at(-1);
         ac.listeners.place_changed();
-    });
+    }, place);
 };
 
 test.describe('HCS section — resting states', () => {
@@ -89,16 +95,38 @@ test.describe('HCS section — resting states', () => {
         await expect(section.locator('#UPAddressHcsFacLine1')).toHaveCount(0);
     });
 
-    test('previously-updated: latest facility, bold last-updated line, additional info, no IHCS header', async ({ page }) => {
+    test('previously-updated: latest facility, bold last-updated label, regular date on the next line', async ({ page }) => {
         await setup(page, { hcsLatest: latestRow() });
         const section = page.locator('#srcdxHcsSection');
         await expect(section).toContainText('SIBLEY MEMORIAL HOSPITAL');
-        await expect(section).toContainText('November 2025');
+        const updatedBlock = section.locator('[data-srcdxhcs-last-updated]');
+        const updatedLabel = updatedBlock.locator('strong');
+        const updatedValue = updatedBlock.locator('[data-srcdxhcs-last-updated-value]');
+        await expect(updatedLabel).toHaveText('Primary care facility last updated:');
+        await expect(updatedValue).toHaveText('November 2025');
+        const [labelBox, valueBox] = await Promise.all([updatedLabel.boundingBox(), updatedValue.boundingBox()]);
+        expect(valueBox.y).toBeGreaterThanOrEqual(labelBox.y + labelBox.height);
+        expect(await updatedLabel.evaluate((el) => getComputedStyle(el).fontWeight)).toBe('700');
+        expect(await updatedValue.evaluate((el) => getComputedStyle(el).fontWeight)).toBe('400');
         await expect(section).toContainText('Additional information that was provided goes here.');
         await expect(section).not.toContainText('You joined Connect with');
         await expect(section).not.toContainText('Current primary care facility:');
         // Empty Line 3 renders italic "None" (comp 18).
         await expect(section.locator('.fst-italic')).toContainText('None');
+    });
+
+    test('year-only latest update shows the date without an empty address block or false current-facility fallback', async ({ page }) => {
+        await setup(page, { hcsLatest: yearOnlyRow() });
+        const section = page.locator('#srcdxHcsSection');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsFacAddressHeader"]')).toHaveCount(0);
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsNone"]')).toHaveCount(0);
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsLastUpdated"]')).toBeVisible();
+        await expect(section).toContainText('2025');
+
+        await page.click('#srcdxHcsUpdate');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsCurrentFacility"]')).toHaveCount(0);
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsIsThePlace"]')).toHaveCount(0);
+        await expect(section).not.toContainText('Sanford Health');
     });
 
     test('section collapses and re-expands from the header chevron', async ({ page }) => {
@@ -120,11 +148,14 @@ test.describe('HCS section — resting states', () => {
 });
 
 test.describe('HCS section — edit form and validation', () => {
-    test('Update opens the form: required markers on Line 1/Line 2/Year, month dropdown, textarea, Submit + Clear', async ({ page }) => {
+    test('Update opens the form with facility name and Year required, while Line 2 remains optional', async ({ page }) => {
         await openEditForm(page);
         await expect(page.locator('label[for="UPAddressHcsFacLine1"] .required')).toBeVisible();
-        await expect(page.locator('label[for="UPAddressHcsFacLine2"] .required')).toBeVisible();
+        await expect(page.locator('label[for="UPAddressHcsFacLine2"] .required')).toHaveCount(0);
         await expect(page.locator('label[for="srcdxHcsChangeYr"] .required')).toBeVisible();
+        await expect(page.locator('#UPAddressHcsFacLine1')).toHaveAttribute('required', '');
+        await expect(page.locator('#UPAddressHcsFacLine1')).toHaveAttribute('aria-required', 'true');
+        await expect(page.locator('#UPAddressHcsFacRegion')).toHaveAttribute('maxlength', '48');
         await expect(page.locator('#srcdxHcsChangeMo')).toBeVisible();
         await expect(page.locator('#srcdxHcsAddlInfo')).toBeVisible();
         await expect(page.locator('#srcdxHcsSubmit')).toBeVisible();
@@ -140,17 +171,20 @@ test.describe('HCS section — edit form and validation', () => {
         await expect(page.locator('#UPAddressHcsFacLine1')).toHaveValue(''); // blank form = new record
     });
 
-    test('blocks submit without required fields, then field-by-field', async ({ page }) => {
+    test('blocks on required facility name and Year, and on invalid optional values', async ({ page }) => {
         await openEditForm(page);
+        await page.fill('#srcdxHcsChangeYr', String(currentYear));
         await page.click('#srcdxHcsSubmit');
-        await expect(page.locator('#UPAddressHcsFacLine1.invalid')).toBeVisible(); // Line 1 first
+        await expect(page.locator('#UPAddressHcsFacLine1.invalid')).toBeVisible();
         expect(await hcsPayload(page)).toBeFalsy();
 
         await page.fill('#UPAddressHcsFacLine1', 'New Care Facility');
+        await page.fill('#srcdxHcsChangeYr', '');
         await page.click('#srcdxHcsSubmit');
-        await expect(page.locator('#UPAddressHcsFacLine2.invalid')).toBeVisible();
+        await expect(page.locator('#srcdxHcsChangeYr.invalid')).toBeVisible();
+        expect(await hcsPayload(page)).toBeFalsy();
 
-        await page.fill('#UPAddressHcsFacLine2', '1 Care Way');
+        await page.fill('#srcdxHcsChangeYr', String(currentYear));
         await page.fill('#UPAddressHcsFacZip', '123'); // malformed domestic zip
         await page.click('#srcdxHcsSubmit');
         await expect(page.locator('#UPAddressHcsFacZip.invalid')).toBeVisible();
@@ -162,9 +196,24 @@ test.describe('HCS section — edit form and validation', () => {
         expect(await hcsPayload(page)).toBeFalsy();
     });
 
+    test('facility-name-and-year submission succeeds while optional address fields remain omitted', async ({ page }) => {
+        await openEditForm(page);
+        await page.fill('#UPAddressHcsFacLine1', 'New Care Facility');
+        await page.fill('#srcdxHcsChangeYr', String(currentYear));
+        await page.click('#srcdxHcsSubmit');
+
+        await expect(page.locator('#srcdxHcsSection .srcdx-callout')).toContainText('Thank you for keeping us up to date');
+        const payload = await hcsPayload(page);
+        expect(payload[dk(h.changeYear)]).toBe(String(currentYear));
+        expect(payload[dk(h.facility.line1)]).toBe('New Care Facility');
+        expect(payload[dk(h.facility.line2)]).toBeUndefined();
+        expect(payload[dk(h.facility.intlFlag)]).toBe(N);
+        expect(payload[dk(h.facility.googleValidated)]).toBe(N);
+    });
+
     test('Clear blanks the form', async ({ page }) => {
         await openEditForm(page);
-        await fillMinimumValid(page);
+        await fillDomesticUpdate(page);
         await page.click('#srcdxHcsClear');
         await expect(page.locator('#UPAddressHcsFacLine1')).toHaveValue('');
         await expect(page.locator('#srcdxHcsChangeYr')).toHaveValue('');
@@ -172,7 +221,7 @@ test.describe('HCS section — edit form and validation', () => {
 
     test('manual entry submits the flat payload with Google-validated No and shows the thank-you state', async ({ page }) => {
         await openEditForm(page);
-        await fillMinimumValid(page);
+        await fillDomesticUpdate(page);
         await page.fill('#UPAddressHcsFacCity', 'Washington');
         await page.selectOption('#UPAddressHcsFacState', 'DC');
         await page.fill('#UPAddressHcsFacZip', '20016');
@@ -200,7 +249,7 @@ test.describe('HCS section — edit form and validation', () => {
     test('failed submit shows the error box and re-enables the button', async ({ page }) => {
         await page.addInitScript(() => { window.__HCS_SUBMIT_FAIL__ = true; });
         await openEditForm(page);
-        await fillMinimumValid(page);
+        await fillDomesticUpdate(page);
         await page.click('#srcdxHcsSubmit');
         await expect(page.locator('#srcdxHcsError .alert-danger')).toBeVisible();
         await expect(page.locator('#srcdxHcsSubmit')).toBeEnabled();
@@ -226,7 +275,7 @@ test.describe('HCS section — Google Places validated-flag lifecycle', () => {
         expect(payload[dk(h.facility.line1)]).toBe('SIBLEY MEMORIAL HOSPITAL'); // verbatim casing
     });
 
-    test('editing any field after a Google pick invalidates the flag', async ({ page }) => {
+    test('editing a Google-matched core field after a pick invalidates the flag', async ({ page }) => {
         await injectFakeGooglePlaces(page);
         await openEditForm(page);
         await pickGooglePlace(page);
@@ -266,6 +315,125 @@ test.describe('HCS section — Google Places validated-flag lifecycle', () => {
         expect(payload[dk(h.facility.state)]).toBe('Greater London'); // merged state/region cid
         expect(payload[dk(h.facility.zip)]).toBe('SW3 6JJ');          // merged zip/postal cid
         expect(payload[dk(h.facility.country)]).toBe('156628245');    // United Kingdom response cid
+    });
+
+    test('an explicit international Yes is preserved with only the required facility name', async ({ page }) => {
+        await openEditForm(page);
+        await page.check('#UPAddressHcsFacInternational');
+        await page.fill('#UPAddressHcsFacLine1', 'Royal Marsden');
+        await page.fill('#srcdxHcsChangeYr', String(currentYear));
+        await page.click('#srcdxHcsSubmit');
+
+        const payload = await hcsPayload(page);
+        expect(payload[dk(h.facility.intlFlag)]).toBe(Y);
+        expect(payload[dk(h.facility.googleValidated)]).toBe(N);
+        expect(payload[dk(h.facility.line1)]).toBe('Royal Marsden');
+        expect(payload[dk(h.facility.line2)]).toBeUndefined();
+    });
+});
+
+test.describe('HCS DEV testing plan — cases 1–3', () => {
+    test.beforeEach(async ({ page }) => {
+        await page.clock.setFixedTime(new Date('2026-07-09T12:00:00.000Z'));
+    });
+
+    test('Case 1a: blank year blocks submission', async ({ page }) => {
+        await openEditForm(page);
+        await page.fill('#UPAddressHcsFacLine1', 'Test Primary Care Facility');
+        await page.click('#srcdxHcsSubmit');
+
+        await expect(page.locator('#srcdxHcsChangeYr.invalid')).toBeVisible();
+        await expect(page.locator('#srcdxHcsChangeYr').locator('xpath=..').locator('.error-text')).toBeVisible();
+        expect(await hcsPayload(page)).toBeFalsy();
+    });
+
+    test('Case 1b: year 2028 is rejected as more than one year in the future', async ({ page }) => {
+        await openEditForm(page);
+        await page.fill('#UPAddressHcsFacLine1', 'Test Primary Care Facility');
+        await page.fill('#srcdxHcsChangeYr', '2028');
+        await page.click('#srcdxHcsSubmit');
+
+        await expect(page.locator('#srcdxHcsChangeYr.invalid')).toBeVisible();
+        expect(await hcsPayload(page)).toBeFalsy();
+    });
+
+    test('Case 1c: January 2025 submits the authoritative month/year CIDs', async ({ page }) => {
+        await openEditForm(page);
+        await page.fill('#UPAddressHcsFacLine1', 'Test Primary Care Facility');
+        await page.selectOption('#srcdxHcsChangeMo', '0');
+        await page.fill('#srcdxHcsChangeYr', '2025');
+        await page.click('#srcdxHcsSubmit');
+
+        const payload = await hcsPayload(page);
+        expect(payload[dk(h.facility.line1)]).toBe('Test Primary Care Facility');
+        expect(payload[dk(h.changeMonth)]).toBe('286592124');
+        expect(payload[dk(h.changeYear)]).toBe('2025');
+        expect(payload[dk(h.submittedTimestamp)]).toBeUndefined(); // FaaS owns D_223569179.
+        expect(payload[String(fieldMapping.docLastUpdatedTimestamp)]).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+    });
+
+    test('Case 2: international fields and Netherlands CID submit with required facility name and no Line 2', async ({ page }) => {
+        await openEditForm(page);
+        await page.check('#UPAddressHcsFacInternational');
+
+        await expect(page.locator('#UPAddressHcsFacLine4Row')).toBeVisible();
+        await expect(page.locator('#UPAddressHcsFacState')).toBeHidden();
+        await expect(page.locator('#UPAddressHcsFacRegion')).toBeVisible();
+        await expect(page.locator('#UPAddressHcsFacZip')).toBeHidden();
+        await expect(page.locator('#UPAddressHcsFacPostal')).toBeVisible();
+        await expect(page.locator('#UPAddressHcsFacCountryRow')).toBeVisible();
+        await expect(page.locator('#UPAddressHcsFacStateLabel')).toHaveAttribute('data-i18n', 'shareHealthInfo.facRegion');
+        await expect(page.locator('#UPAddressHcsFacZipLabel')).toHaveAttribute('data-i18n', 'shareHealthInfo.facPostal');
+
+        await page.fill('#UPAddressHcsFacLine1', 'Amsterdam Medical Center');
+        await page.fill('#UPAddressHcsFacLine4', 'Line 4');
+        await page.fill('#UPAddressHcsFacCity', 'Amsterdam');
+        await page.fill('#UPAddressHcsFacRegion', 'Holland');
+        await page.fill('#UPAddressHcsFacPostal', '1012 AW');
+        await page.selectOption('#UPAddressHcsFacCountry', '149');
+        await page.fill('#srcdxHcsChangeYr', '2025'); // required submission prerequisite omitted from the plan row
+        await page.click('#srcdxHcsSubmit');
+
+        const payload = await hcsPayload(page);
+        expect(payload[dk(h.facility.intlFlag)]).toBe(Y);
+        expect(payload[dk(h.facility.googleValidated)]).toBe(N);
+        expect(payload[dk(h.facility.line1)]).toBe('Amsterdam Medical Center');
+        expect(payload[dk(h.facility.line2)]).toBeUndefined();
+        expect(payload[dk(h.facility.line4)]).toBe('Line 4');
+        expect(payload[dk(h.facility.city)]).toBe('Amsterdam');
+        expect(payload[dk(h.facility.state)]).toBe('Holland');
+        expect(payload[dk(h.facility.zip)]).toBe('1012 AW');
+        expect(payload[dk(h.facility.country)]).toBe('786642491');
+    });
+
+    test('Case 3: Google-selected Emory address retains Yes when supplemental Line 3 is entered', async ({ page }) => {
+        await injectFakeGooglePlaces(page);
+        await openEditForm(page);
+        await pickGooglePlace(page, {
+            name: 'Emory University Hospital Midtown',
+            address_components: [
+                { types: ['street_number'], long_name: '550' },
+                { types: ['route'], long_name: 'Peachtree Street Northeast' },
+                { types: ['locality'], long_name: 'Atlanta' },
+                { types: ['administrative_area_level_1'], long_name: 'Georgia' },
+                { types: ['postal_code'], long_name: '30308' },
+            ],
+        });
+        await page.fill('#UPAddressHcsFacLine3', 'XXXX');
+        await expect(page.locator('#UPAddressHcsFacGoogleValidated')).toHaveValue('true');
+        await page.fill('#srcdxHcsAddlInfo', 'Primary care team moved to Midtown.');
+        await page.fill('#srcdxHcsChangeYr', '2025'); // required submission prerequisite omitted from the plan row
+        await page.click('#srcdxHcsSubmit');
+
+        const payload = await hcsPayload(page);
+        expect(payload[dk(h.facility.line1)]).toBe('Emory University Hospital Midtown');
+        expect(payload[dk(h.facility.line2)]).toBe('550 Peachtree Street Northeast');
+        expect(payload[dk(h.facility.line3)]).toBe('XXXX');
+        expect(payload[dk(h.facility.city)]).toBe('Atlanta');
+        expect(payload[dk(h.facility.state)]).toBe('Georgia');
+        expect(payload[dk(h.facility.zip)]).toBe('30308');
+        expect(payload[dk(h.facility.googleValidated)]).toBe(Y);
+        expect(payload[dk(h.additionalInfo)]).toBe('Primary care team moved to Midtown.');
     });
 });
 

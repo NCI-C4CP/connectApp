@@ -22,9 +22,10 @@ const setIf = (obj, key, value, cond = true) => {
 const isTodoCid = (cid) => typeof cid === 'string' && cid.startsWith('TODO');
 const monthCid = (code) => (isPresent(code) && m.monthValues[code] !== undefined ? String(m.monthValues[code]) : undefined);
 
-export const buildFacility = (facCids, facility, keyFor) => {
+export const buildFacility = (facCids, facility, keyFor, { includeExplicitInternational = false } = {}) => {
     const out = {};
-    if (!hasFacilityContent(facility)) return out;
+    const explicitInternational = includeExplicitInternational && facility?.isInternational === true;
+    if (!hasFacilityContent(facility) && !explicitInternational) return out;
     const intl = !!facility.isInternational;
     out[keyFor(facCids.intlFlag)] = intl ? YES : NO;
     out[keyFor(facCids.googleValidated)] = !intl && facility.googleAddressValidated ? YES : NO;

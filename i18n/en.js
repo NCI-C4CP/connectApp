@@ -2130,7 +2130,7 @@ const en = {
         "hcsFacNameInput": {
             "placeholder": "Enter primary care facility"
         },
-        "hcsFacLine2": "Line 2 (street, rural route) <span class=\"required\">*</span>",
+        "hcsFacLine2": "Line 2 (street, rural route)",
         "hcsChangeDateLabel": "Date you changed your primary care facility:",
         "hcsYearInput": {
             "placeholder": "Enter year of change"
@@ -2150,7 +2150,6 @@ const en = {
         "hcsAddrZip": "Zip Code",
         "hcsNone": "None",
         "hcsFacNameRequired": "Please enter the name of your primary care facility.",
-        "hcsFacLine2Required": "Please enter the street address of your primary care facility.",
         "hcsYearError": "Please enter a valid year (YYYY) no more than 1 year in the future.",
         "hcsZipError": "Please enter a valid 5-digit zip code.",
         "previouslyReportedHeader": "Previously Reported Cancer Diagnoses",

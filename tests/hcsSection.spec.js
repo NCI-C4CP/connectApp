@@ -20,8 +20,8 @@ vi.mock('../js/pages/shareNewHealthInfo/dataAccess.js', () => ({
     getMostRecentHCSUpdate: vi.fn(),
 }));
 
-import * as shared from '../js/shared.js';
 import fieldMapping from '../js/fieldToConceptIdMapping.js';
+import * as shared from '../js/shared.js';
 import { submitSelfReportHCSUpdate, getMostRecentHCSUpdate } from '../js/pages/shareNewHealthInfo/dataAccess.js';
 import { mountHcsSection, resetHcsSection, HCS_SECTION_ID } from '../js/pages/shareNewHealthInfo/hcsSection.js';
 
@@ -44,6 +44,12 @@ const latestRow = (overrides = {}) => ({
     changeYear: '2025',
     additionalInfo: 'Additional information that was provided goes here.',
     submittedTimestamp: '2025-11-20T15:21:26.763Z',
+    ...overrides,
+});
+
+const yearOnlyRow = (overrides = {}) => latestRow({
+    line1: '', line2: '', line3: '', line4: '', city: '', stateOrRegion: '', zipOrPostal: '',
+    countryCid: '', isInternational: false, changeMonthCode: null, additionalInfo: '',
     ...overrides,
 });
 
@@ -104,14 +110,47 @@ describe('editing state', () => {
         expect(content.querySelector('#srcdxHcsAddlInfo')).not.toBeNull();
         expect(content.querySelector('#srcdxHcsSubmit')).not.toBeNull();
         expect(content.querySelector('#srcdxHcsClear')).not.toBeNull();
+        expect(content.querySelector('label[for="UPAddressHcsFacLine1"] .required')).not.toBeNull();
+        expect(content.querySelector('label[for="UPAddressHcsFacLine2"] .required')).toBeNull();
+        expect(content.querySelector('label[for="srcdxHcsChangeYr"] .required')).not.toBeNull();
+        expect(content.querySelector('#UPAddressHcsFacLine1').required).toBe(true);
+        expect(content.querySelector('#UPAddressHcsFacLine1').getAttribute('aria-required')).toBe('true');
+        expect(content.querySelector('#UPAddressHcsFacRegion').maxLength).toBe(48);
     });
 
-    it('blocks submit without a facility name and does not call the API', async () => {
+    it('blocks submit when the required facility name is blank or whitespace', async () => {
         await enterEditing();
+        content.querySelector('#srcdxHcsChangeYr').value = '2026';
         content.querySelector('#srcdxHcsSubmit').click();
         await flush();
-        expect(shared.errorMessage).toHaveBeenCalled();
+        expect(shared.errorMessage).toHaveBeenCalledWith(
+            'UPAddressHcsFacLine1',
+            expect.stringContaining('shareHealthInfo.hcsFacNameRequired'),
+            false,
+        );
+        expect(content.querySelector('#UPAddressHcsFacLine1').getAttribute('aria-invalid')).toBe('true');
         expect(submitSelfReportHCSUpdate).not.toHaveBeenCalled();
+
+        content.querySelector('#UPAddressHcsFacLine1').value = '   ';
+        content.querySelector('#srcdxHcsSubmit').click();
+        await flush();
+        expect(submitSelfReportHCSUpdate).not.toHaveBeenCalled();
+    });
+
+    it('submits with the required facility name and change year while omitting optional address fields', async () => {
+        submitSelfReportHCSUpdate.mockResolvedValue({ code: 200 });
+        await enterEditing();
+        content.querySelector('#UPAddressHcsFacLine1').value = 'New Facility';
+        content.querySelector('#srcdxHcsChangeYr').value = '2026';
+        content.querySelector('#srcdxHcsSubmit').click();
+        await flush();
+        expect(submitSelfReportHCSUpdate).toHaveBeenCalledTimes(1);
+        const snapshot = submitSelfReportHCSUpdate.mock.calls[0][0];
+        expect(snapshot.D_353158944).toBe('2026');
+        expect(snapshot.D_624974556).toBe('New Facility');
+        expect(snapshot.D_655907949).toBeUndefined();
+        expect(snapshot.D_892107008).toBe('104430631');
+        expect(snapshot.D_771921322).toBe('104430631');
     });
 
     it('blocks submit on a change year too far in the future', async () => {
@@ -179,7 +218,7 @@ describe('editing state', () => {
         content.querySelector('#srcdxHcsSubmit').click();
         await flush();
         expect(content.querySelector('#srcdxHcsError').innerHTML).not.toBe('');
-        content.querySelector('#UPAddressHcsFacLine1').value = ''; // now fails validation
+        content.querySelector('#srcdxHcsChangeYr').value = ''; // fails validation
         content.querySelector('#srcdxHcsSubmit').click();
         await flush();
         expect(content.querySelector('#srcdxHcsError').innerHTML).toBe('');
@@ -244,6 +283,24 @@ describe('Google-validated flag and international path', () => {
         expect(snapshot.D_111301575).toBe('156628245');      // United Kingdom response cid
     });
 
+    it('preserves international Yes when only the required facility name is entered', async () => {
+        submitSelfReportHCSUpdate.mockResolvedValue({ code: 200 });
+        await enterEditing();
+        const intl = content.querySelector('#UPAddressHcsFacInternational');
+        intl.checked = true;
+        intl.dispatchEvent(new win.Event('change'));
+        content.querySelector('#UPAddressHcsFacLine1').value = 'Royal Marsden';
+        content.querySelector('#srcdxHcsChangeYr').value = '2026';
+        content.querySelector('#srcdxHcsSubmit').click();
+        await flush();
+
+        const snapshot = submitSelfReportHCSUpdate.mock.calls[0][0];
+        expect(snapshot.D_892107008).toBe('353358909');
+        expect(snapshot.D_771921322).toBe('104430631');
+        expect(snapshot.D_624974556).toBe('Royal Marsden');
+        expect(snapshot.D_655907949).toBeUndefined();
+    });
+
     it('collapse toggle flips the card and survives a state re-render', async () => {
         await mount();
         const header = content.querySelector('[data-srcdxhcs-toggle]');
@@ -287,13 +344,17 @@ describe('mount staleness guard', () => {
 });
 
 describe('previously-updated view', () => {
-    it('shows the latest facility, bold last-updated date, and additional info — without the IHCS header', async () => {
+    it('shows the latest facility, bold last-updated label, regular date, and additional info — without the IHCS header', async () => {
         getMostRecentHCSUpdate.mockResolvedValue(latestRow());
         await mount();
         expect(content.textContent).toContain('Sibley Memorial Hospital');
         expect(content.querySelector('[data-i18n="shareHealthInfo.hcsLastUpdated"]')).not.toBeNull();
         expect(content.querySelector('[data-i18n="shareHealthInfo.month_november"]')).not.toBeNull();
         expect(content.textContent).toContain('2025');
+        const updatedBlock = content.querySelector('[data-srcdxhcs-last-updated]');
+        expect(updatedBlock.querySelector('strong').textContent.trim()).toBe('Primary care facility last updated:');
+        expect(updatedBlock.querySelector('strong').classList.contains('d-block')).toBe(true);
+        expect(updatedBlock.querySelector('[data-srcdxhcs-last-updated-value]').textContent.trim()).toBe('November 2025');
         expect(content.textContent).toContain('Additional information that was provided goes here.');
         // Ops: once an update exists, the "Current primary care facility" header goes away.
         expect(content.querySelector('[data-i18n="shareHealthInfo.hcsCurrentFacility"]')).toBeNull();
@@ -318,5 +379,20 @@ describe('previously-updated view', () => {
         await mount();
         expect(content.querySelector('[data-i18n="shareHealthInfo.month_november"]')).toBeNull();
         expect(content.textContent).toContain('2025');
+    });
+
+    it('a year-only latest record omits the empty address block and does not assert a current facility on edit', async () => {
+        getMostRecentHCSUpdate.mockResolvedValue(yearOnlyRow());
+        await mount();
+        expect(content.querySelector('[data-i18n="shareHealthInfo.hcsFacAddressHeader"]')).toBeNull();
+        expect(content.querySelector('[data-i18n="shareHealthInfo.hcsNone"]')).toBeNull();
+        expect(content.querySelector('[data-i18n="shareHealthInfo.hcsLastUpdated"]')).not.toBeNull();
+        expect(content.textContent).toContain('2025');
+        expect(content.querySelector('#srcdxHcsUpdate')).not.toBeNull();
+
+        content.querySelector('#srcdxHcsUpdate').click();
+        expect(content.querySelector('[data-i18n="shareHealthInfo.hcsCurrentFacility"]')).toBeNull();
+        expect(content.querySelector('[data-i18n="shareHealthInfo.hcsIsThePlace"]')).toBeNull();
+        expect(content.textContent).not.toContain('Sanford Health');
     });
 });

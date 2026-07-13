@@ -28,20 +28,22 @@ const countryOptions = () =>
  */
 export const renderFacilityAddress = (idPrefix, {
     showName = true,
-    // The HCS section overrides the Line 1/Line 2 label keys (facility wording + required asterisks).
+    // The HCS section overrides the Line 1/Line 2 label keys and requires the facility name.
     nameLabelKey = 'shareHealthInfo.facName',
     nameLabelFallback = 'Line 1 (name of facility)',
     namePlaceholderKey = 'shareHealthInfo.facNameInput',
     namePlaceholderFallback = 'Enter name of facility',
+    nameRequired = false,
     line2LabelKey = 'shareHealthInfo.facLine2',
     line2LabelFallback = 'Line 2 (street, rural route)',
+    regionMaxLength = 45,
 } = {}) => `
     <form class="srcdx-facility mb-3" data-facility="${idPrefix}" autocomplete="on" novalidate>
         <input type="hidden" id="UPAddress${idPrefix}GoogleValidated" value="false">
         ${showName ? `
         <div class="form-group mb-2">
             <label for="UPAddress${idPrefix}Line1" data-i18n="${nameLabelKey}">${nameLabelFallback}</label>
-            <input type="text" class="form-control" id="UPAddress${idPrefix}Line1" autocomplete="off" maxlength="70" data-i18n="${namePlaceholderKey}" placeholder="${namePlaceholderFallback}">
+            <input type="text" class="form-control" id="UPAddress${idPrefix}Line1" autocomplete="off" maxlength="70" data-i18n="${namePlaceholderKey}" placeholder="${namePlaceholderFallback}"${nameRequired ? ' required aria-required="true"' : ''}>
         </div>` : ''}
         <div class="form-check mb-2">
             <input class="form-check-input" type="checkbox" id="UPAddress${idPrefix}International">
@@ -71,7 +73,7 @@ export const renderFacilityAddress = (idPrefix, {
                     <option class="option-dark-mode" value="" data-i18n="shareHealthInfo.selectOption">-- Select --</option>
                     ${stateOptions()}
                 </select>
-                <input type="text" class="form-control d-none" id="UPAddress${idPrefix}Region" autocomplete="address-level1" maxlength="45">
+                <input type="text" class="form-control d-none" id="UPAddress${idPrefix}Region" autocomplete="address-level1" maxlength="${regionMaxLength}">
             </div>
             <div class="col-6 mb-2">
                 <label id="UPAddress${idPrefix}ZipLabel" for="UPAddress${idPrefix}Zip" data-i18n="shareHealthInfo.facZip">Zip</label>
@@ -218,7 +220,9 @@ const attachNameAutocomplete = (content, idPrefix) => {
 };
 
 const attachGoogleValidationInvalidation = (content, idPrefix) => {
-    ['Line1', 'Line2', 'Line3', 'Line4', 'City', 'State', 'Region', 'Zip', 'Postal', 'Country']
+    // Line 3 is supplemental unit/suite/building information that Places does not populate.
+    // Adding it does not alter the Google-matched establishment or core street address.
+    ['Line1', 'Line2', 'City', 'State', 'Region', 'Zip', 'Postal', 'Country']
         .forEach((suffix) => {
             const input = q(content, idPrefix, suffix);
             if (!input || input.dataset.srcdxGoogleValidationListener) return;
