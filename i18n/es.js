@@ -2120,23 +2120,41 @@
         "reportCancerIntro": "Nos interesa conocer los diagnósticos de cáncer que pueda recibir después de comenzar a participar en Connect. Si desea agregar detalles sobre un nuevo diagnóstico de cáncer, haga clic en el botón “Agregue su diagnóstico” para compartir información que utilizaremos para recopilar datos importantes con fines de investigación.",
         "addYourDiagnosis": "Agregue su diagnóstico",
         "addADiagnosis": "Agregue un diagnóstico",
-        // Health Care System Update section (issue #1658).
-        // TODO(#1658): awaiting official approved Spanish translations for the new July strings.
-        // Keys intentionally OMITTED here fall back to English via translateText until approved
-        // content arrives: hcsIntro, hcsCurrentFacility, hcsJoinedWith, hcsJoinedWithEnd,
-        // hcsIsThePlace, hcsUpdateButton, hcsFacAddressHeader, hcsFacName, hcsFacNameInput,
-        // hcsChangeDateLabel, hcsYearInput, hcsAdditionalInfo, hcsAdditionalInfoPrompt,
-        // hcsSubmitButton, hcsClearButton, hcsThankYou, hcsLastUpdated, hcsAddrLine1-4, hcsNone,
-        // hcsFacNameRequired, hcsYearError, hcsZipError.
-        // The keys below only reuse June-approved translations for the same preexisting fields
-        // (hcsFacLine2 reuses the approved facLine2 text; the shared facility
-        // component keys facIntl/facLine3/facCity/facState/facZip/facRegion/facPostal/facCountry
-        // and the month names are already approved above/below).
-        "hcsHeader": "Actualización del sistema de atención médica",
+        // Health Care System Updates (issue #1658).
+        "hcsHeader": "Cambio del sistema de atención médica",
+        "hcsIntro": "Connect es un estudio a largo plazo. Sabemos que el sistema de salud en el que recibe atención puede cambiar con el tiempo.",
+        "hcsCurrentFacility": "Centro de atención primaria actual:",
+        "hcsJoinedWith": "Comenzó a participar en Connect con",
+        "hcsJoinedWithEnd": "como su centro de atención primaria. Si eso ha cambiado, haga clic en el botón Editar.",
+        "hcsIsThePlace": "es el lugar donde recibe su atención primaria.",
+        "hcsUpdateButton": "Editar",
+        "hcsFacAddressHeader": "Dirección del centro de atención primaria:",
+        "hcsFacName": "Línea 1 (nombre del centro de atención primaria) <span class=\"required\">*</span>",
+        "hcsFacNameInput": {
+            "placeholder": "Ingrese el nombre del centro de atención primaria"
+        },
         "hcsFacLine2": "Línea 2 (calle, ruta rural)",
+        "hcsChangeDateLabel": "Fecha en la que cambió de centro de atención primaria:",
+        "hcsYearInput": {
+            "placeholder": "Ingrese el año"
+        },
+        "hcsAdditionalInfo": "Información adicional:",
+        "hcsAdditionalInfoPrompt": "Proporcione cualquier información adicional a continuación:",
+        "hcsSubmitButton": "Enviar cambio de atención médica",
+        "hcsClearButton": "Borrar",
+        "hcsThankYou": "Gracias por mantenernos informados. Puede volver y poner al día esta información en cualquier momento.",
+        "hcsLastUpdated": "Último cambio del centro de atención primaria:",
+        "hcsAddrLine1": "Línea 1 de Dirección del centro de atención primaria",
+        "hcsAddrLine2": "Línea 2 de Dirección del centro de atención primaria",
+        "hcsAddrLine3": "Línea 3 de Dirección del centro de atención primaria",
+        "hcsAddrLine4": "Línea 4 de Dirección del centro de atención primaria",
         "hcsAddrCity": "Ciudad",
         "hcsAddrState": "Estado",
         "hcsAddrZip": "Código postal",
+        "hcsNone": "No se proporcionó",
+        "hcsFacNameRequired": "Ingrese el nombre del centro de atención primaria.",
+        "hcsYearError": "Ingrese un año válido (AAAA) que no sea más de 1 año en el futuro.",
+        "hcsZipError": "Ingrese un código postal válido de 5 dígitos.",
         "previouslyReportedHeader": "Diagnósticos de cáncer informados anteriormente",
         "previouslyReportedLocation": "Lugar",
         "previouslyReportedDate": "Fecha del diagnóstico",

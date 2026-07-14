@@ -15,6 +15,13 @@ const translateNode = (root) => {
         if (!key) return;
         const t = i18nLookup(key);
         if (typeof t === 'string') node.innerHTML = t;
+        else if (t && typeof t === 'object') {
+            Object.entries(t).forEach(([name, value]) => {
+                if (name === 'innerHTML') node.innerHTML = value;
+                else if (name === 'innerText') node.innerText = value;
+                else node.setAttribute(name, value);
+            });
+        }
     };
     if (root.getAttribute && root.getAttribute('data-i18n')) apply(root);
     root.querySelectorAll('[data-i18n]').forEach(apply);

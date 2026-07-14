@@ -6,6 +6,7 @@
 import { test, expect } from '@playwright/test';
 import { setup, withdrawn, dk } from './support.js';
 import fieldMapping from '../../js/fieldToConceptIdMapping.js';
+import es from '../../i18n/es.js';
 
 const h = fieldMapping.selfReportHCSUpdate;
 const Y = String(fieldMapping.yes);
@@ -144,6 +145,74 @@ test.describe('HCS section — resting states', () => {
         const section = page.locator('#srcdxHcsSection');
         await expect(section.locator('.alert-danger')).toBeVisible();
         await expect(section.locator('#srcdxHcsUpdate')).toHaveCount(0);
+    });
+});
+
+test.describe('HCS section — approved Spanish content', () => {
+    test('renders the approved landing, edit-form, and confirmation copy', async ({ page }) => {
+        await setup(page, { i18n: es });
+        const section = page.locator('#srcdxHcsSection');
+
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsHeader"]')).toHaveText('Cambio del sistema de atención médica');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsIntro"]')).toHaveText('Connect es un estudio a largo plazo. Sabemos que el sistema de salud en el que recibe atención puede cambiar con el tiempo.');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsCurrentFacility"]')).toHaveText('Centro de atención primaria actual:');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsJoinedWith"]')).toHaveText('Comenzó a participar en Connect con');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsJoinedWithEnd"]')).toHaveText('como su centro de atención primaria. Si eso ha cambiado, haga clic en el botón Editar.');
+        await expect(section.locator('#srcdxHcsUpdate')).toHaveText('Editar');
+
+        await page.click('#srcdxHcsUpdate');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsIsThePlace"]')).toHaveText('es el lugar donde recibe su atención primaria.');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsFacAddressHeader"]')).toHaveText('Dirección del centro de atención primaria:');
+        await expect(page.locator('label[for="UPAddressHcsFacLine1"]')).toContainText('Línea 1 (nombre del centro de atención primaria)');
+        await expect(page.locator('#UPAddressHcsFacLine1')).toHaveAttribute('placeholder', 'Ingrese el nombre del centro de atención primaria');
+        await expect(page.locator('label[for="UPAddressHcsFacLine2"]')).toHaveText('Línea 2 (calle, ruta rural)');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsChangeDateLabel"]')).toHaveText('Fecha en la que cambió de centro de atención primaria:');
+        await expect(page.locator('#srcdxHcsChangeYr')).toHaveAttribute('placeholder', 'Ingrese el año');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsAdditionalInfo"]')).toHaveText('Información adicional:');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsAdditionalInfoPrompt"]')).toHaveText('Proporcione cualquier información adicional a continuación:');
+        await expect(page.locator('#srcdxHcsSubmit')).toHaveText('Enviar cambio de atención médica');
+        await expect(page.locator('#srcdxHcsClear')).toHaveText('Borrar');
+
+        await page.click('#srcdxHcsSubmit');
+        await expect(page.locator('#UPAddressHcsFacLine1').locator('xpath=..').locator('.form-error')).toHaveText('Ingrese el nombre del centro de atención primaria.');
+
+        await page.fill('#UPAddressHcsFacLine1', 'Centro de prueba');
+        await page.click('#srcdxHcsSubmit');
+        await expect(page.locator('#srcdxHcsChangeYr').locator('xpath=..').locator('.form-error')).toHaveText('Ingrese un año válido (AAAA) que no sea más de 1 año en el futuro.');
+
+        await page.fill('#srcdxHcsChangeYr', String(currentYear));
+        await page.fill('#UPAddressHcsFacZip', '123');
+        await page.click('#srcdxHcsSubmit');
+        await expect(page.locator('#UPAddressHcsFacZip').locator('xpath=..').locator('.form-error')).toHaveText('Ingrese un código postal válido de 5 dígitos.');
+
+        await page.fill('#UPAddressHcsFacZip', '');
+        await page.click('#srcdxHcsSubmit');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsThankYou"]')).toHaveText('Gracias por mantenernos informados. Puede volver y poner al día esta información en cualquier momento.');
+    });
+
+    test('renders the approved saved-update labels', async ({ page }) => {
+        await setup(page, { i18n: es, hcsLatest: latestRow() });
+        const section = page.locator('#srcdxHcsSection');
+
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsFacAddressHeader"]')).toHaveText('Dirección del centro de atención primaria:');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsAddrLine1"]')).toHaveText('Línea 1 de Dirección del centro de atención primaria');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsAddrLine2"]')).toHaveText('Línea 2 de Dirección del centro de atención primaria');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsAddrLine3"]')).toHaveText('Línea 3 de Dirección del centro de atención primaria');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsAddrCity"]')).toHaveText('Ciudad');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsAddrState"]')).toHaveText('Estado');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsAddrZip"]')).toHaveText('Código postal');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsNone"]')).toHaveText('No se proporcionó');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsLastUpdated"]')).toHaveText('Último cambio del centro de atención primaria:');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsAdditionalInfo"]')).toHaveText('Información adicional:');
+    });
+
+    test('renders the extracted Line 4 label for a saved international address', async ({ page }) => {
+        await setup(page, {
+            i18n: es,
+            hcsLatest: latestRow({ isInternational: true, line4: 'Building B' }),
+        });
+
+        await expect(page.locator('[data-i18n="shareHealthInfo.hcsAddrLine4"]')).toHaveText('Línea 4 de Dirección del centro de atención primaria');
     });
 });
 
