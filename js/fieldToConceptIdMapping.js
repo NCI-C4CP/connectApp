@@ -362,6 +362,12 @@ export default
     // Self-Report Cancer Diagnosis ("Share New Health Information", issue #1295)
     selfReportCancerDx: {
         dxNumber: 480939157,      // Server-computed at submit
+        sourceQuestions: {
+            primarySite: 176158861,
+            treatmentType: 388069854,
+            treatmentOngoingEnd: 566057154,
+            screeningType: 130601750,
+        },
         // Primary diagnosis
         primarySite: 181737942,
         primarySiteOther: 546976551,
@@ -401,28 +407,28 @@ export default
             other: 807835037,
             unavailableUnknown: 178420302, // faas parity only — not a process option
         },
-        // Treatment (looped per selected type, _T_T; physicians/facilities _T_P/_T_F)
+        // Treatment details are stored under the selected treatment type; physicians/facilities use _1_1 counters.
         treatment: {
             chemo: 244216107, surgery: 293873603, radiation: 555019890, other: 459406752,
-            otherDescribe: 420392069, // flat. No loop suffix (only one 'other' treatment can exist)
+            otherDescribe: 420392069, // treatment-type source child. No loop suffix (only one 'other' treatment can exist)
             startMonth: 742710886, startYear: 281136649,
             endMonth: 625530863, endYear: 729162012, ongoing: 735592270,
             physFirstName: 964819753, physLastName: 740626474,
-            physNpi: "TODO_TxPhysNPI",
+            physNpi: 609996916,
             facility: {
                 line1: 165350319, line2: 456014563, line3: 783145717, line4: 460490909,
                 city: 493041638,
                 state: 215797578,  // Merged state/region (for international addresses)
                 zip: 385095107,    // Merged zip/postal (for international addresses)
-                intlFlag: 539812906, country: 785016438,
+                intlFlag: 539812906, googleValidated: 568499390, country: 785016438,
             },
         },
-        // Screening (looped per chosen option, _S_S; breast/colon/lung only)
+        // Screening details are stored under the selected screening option; one physician/facility per option.
         screening: {
             detected: 944065539,
             month: 853862770, year: 858052564,
-            phyFirstName: 239126548, phyLastName: 130343311,
-            phyNpi: "TODO_ScrnPhyNPI",
+            physFirstName: 239126548, physLastName: 130343311,
+            physNpi: 879021105,
             optionValues: {
                 breast2D: 425815239, breastCEM: 759642936, breastMRI: 528508094,
                 breastUS: 502929020, breastCBE: 412252588, lungCT: 633630015,
@@ -433,7 +439,7 @@ export default
                 city: 591687168,
                 state: 513329248,  // Merged state/region (for international addresses)
                 zip: 404892571,    // Merged zip/postal (for international addresses)
-                intlFlag: 501859375, country: 874199876,
+                intlFlag: 501859375, googleValidated: 803865514, country: 874199876,
             },
         },
         // Per-site submitted timestamps (ISO8601 strings)

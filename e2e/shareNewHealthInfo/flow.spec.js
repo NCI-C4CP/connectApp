@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { setup, withdrawn, deceased, m, dk, Y, N, getPayload } from './support.js';
+import { setup, withdrawn, deceased, m, dk, primary, screeningType, Y, N, getPayload } from './support.js';
 import en from '../../i18n/en.js';
 
 test.describe('Share New Health Information — E2E', () => {
@@ -69,7 +69,7 @@ test.describe('Share New Health Information — E2E', () => {
         await page.click('#srcdxNext');
 
         const payload = await getPayload(page);
-        expect(payload[dk(m.primarySite)]).toBe(String(m.cancerSites.prostate));
+        expect(primary(payload, m.primarySite)).toBe(String(m.cancerSites.prostate));
         expect(payload[dk(m.dxYear)]).toBe('2020');
         expect(payload[dk(m.txReceived)]).toBe(N);
     });
@@ -129,9 +129,9 @@ test.describe('Share New Health Information — E2E', () => {
 
         await page.click('#srcdxNext'); // review → submit
         const payload = await getPayload(page);
-        expect(payload[dk(m.primarySite)]).toBe(String(m.cancerSites.breast));
+        expect(primary(payload, m.primarySite)).toBe(String(m.cancerSites.breast));
         expect(payload[dk(m.screening.detected)]).toBe(Y);
-        expect(payload[dk(m.screening.optionValues.breast2D)]).toBe(Y);
+        expect(screeningType(payload, m.screening.optionValues.breast2D)).toBe(Y);
         // DxDt + DxNumber are SERVER-stamped at submit — the client snapshot must never carry them.
         expect(dk(m.dxSubmittedTimestamps.breast) in payload).toBe(false);
         expect(dk(m.dxNumber) in payload).toBe(false);

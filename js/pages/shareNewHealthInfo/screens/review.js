@@ -2,6 +2,7 @@ import { renderQuestion, navButtons, q4HeaderFallback, q4HeaderI18nKey, treatmen
 import { escapeHTML, translateHTML, allCountries } from '../../../shared.js';
 import { SCREENS, PRIMARY_SITES, SCREENING_OPTIONS, MONTHS } from '../constants.js';
 import { isScreeningEligible, isDiagnosisSubmittable, getScreeningOptionsForSite } from '../conditionalLogic.js';
+import { hasFacilityContent } from '../contentChecks.js';
 
 const siteI18n = (key) => PRIMARY_SITES.find((s) => s.key === key)?.i18nKey || '';
 const scrnI18n = (key) => SCREENING_OPTIONS.find((o) => o.key === key)?.i18nKey || '';
@@ -64,7 +65,7 @@ const treatmentRow = (t, i) => {
         ? ' (<span data-i18n="shareHealthInfo.txOngoingShort">ongoing</span>)'
         : (t.endYear ? ` &ndash; ${monthYear(t.endMonth, t.endYear)}` : '')}`;
     const phys = t.physicians.filter((p) => p.firstName || p.lastName).map((p) => `<div>${physLine(p)}</div>`).join('');
-    const facs = t.facilities.filter((f) => f.line1 || f.line2 || f.city)
+    const facs = t.facilities.filter(hasFacilityContent)
         .map((f) => `<div class="mb-2">${addressBlock(f)}</div>`).join('');
     const body = `
         ${labeled('shareHealthInfo.txDates', 'Dates of treatment:', dates)}
@@ -75,7 +76,7 @@ const treatmentRow = (t, i) => {
 
 const screeningRow = (s, i) => {
     const phys = (s.physician.firstName || s.physician.lastName) ? `<div>${physLine(s.physician)}</div>` : '';
-    const fac = (s.facility.line1 || s.facility.line2 || s.facility.city) ? addressBlock(s.facility) : '';
+    const fac = hasFacilityContent(s.facility) ? addressBlock(s.facility) : '';
     const body = `
         ${labeled('shareHealthInfo.scrnDateOfScreening', 'Date of screening:', monthYear(s.month, s.year))}
         ${labeled('shareHealthInfo.scrnPhysSectionHeader', 'Name of your referring physician (e.g., primary care provider, OB/GYN):', phys)}

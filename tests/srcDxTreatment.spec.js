@@ -219,6 +219,14 @@ describe('treatmentDetail', () => {
         expect(content.querySelectorAll('[data-fac-wrap]')).toHaveLength(2);
     });
 
+    it('caps the add-facility button at 10', () => {
+        setupOneTreatment();
+        const ctx = makeCtx(renderTreatmentDetail);
+        for (let i = 0; i < 9; i++) state.addFacility(0); // now 10
+        renderTreatmentDetail(content, ctx);
+        expect(content.querySelector('#srcdxAddFac').disabled).toBe(true);
+    });
+
     it('auto-sequences through multiple treatment types before advancing', () => {
         state.getState().txReceived = true;
         state.addTreatment('chemo');

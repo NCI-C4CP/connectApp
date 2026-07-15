@@ -113,9 +113,12 @@ const siteLabelFromCid = (siteCid) => {
     return { i18nKey, fallback: translateText(i18nKey), otherText: '' };
 };
 const siteLabelFromRow = (row) => {
-    const siteCid = row[`D_${m.primarySite}`];
+    const siteGroup = row[`D_${m.sourceQuestions.primarySite}`];
+    const siteCid = siteGroup && typeof siteGroup === 'object' && !Array.isArray(siteGroup)
+        ? siteGroup[`D_${m.primarySite}`]
+        : undefined;
     const label = siteLabelFromCid(siteCid);
-    const otherText = String(row[`D_${m.primarySiteOther}`] ?? '').trim();
+    const otherText = String(siteGroup?.[`D_${m.primarySiteOther}`] ?? '').trim();
     return String(siteCid) === String(m.cancerSites.other) ? { ...label, otherText } : label;
 };
 const monthCodeFromCid = (monthCid) => {

@@ -81,6 +81,25 @@ describe('review (edit-from-review)', () => {
         expect(content.querySelector('[data-review-row="tx_0"]').textContent).toContain('other (Immunotherapy)');
     });
 
+    it('shows facility rows in review when any payload-relevant address field has content', () => {
+        seedBreastDiagnosis();
+        state.getState().treatments[0].facilities = [{
+            line1: '', line2: '', line3: '', line4: '', city: '', state: 'Maryland',
+            region: '', zip: '20814', postal: '', country: '', isInternational: false,
+        }];
+        state.getState().screenings[0].facility = {
+            line1: '', line2: '', line3: '', line4: '', city: '', state: 'Utah',
+            region: '', zip: '84132', postal: '', country: '', isInternational: false,
+        };
+        const ctx = { state, goTo: vi.fn(), back: vi.fn(), submit: vi.fn() };
+        renderReview(content, ctx);
+        content.querySelector('[data-expander="tx_0"]').click();
+        content.querySelector('[data-expander="scrn_0"]').click();
+
+        expect(content.querySelector('#srcdxRow_tx_0').textContent).toContain('Maryland 20814');
+        expect(content.querySelector('#srcdxRow_scrn_0').textContent).toContain('Utah 84132');
+    });
+
     it('omits the screening card for a non-screening site', () => {
         state.getState().primarySite = 'prostate';
         state.getState().dxYear = '2020';
