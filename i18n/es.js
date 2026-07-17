@@ -476,7 +476,7 @@
         "consentPageBody5List": "<li>Mis datos se almacenarán de manera segura en la base de datos de Connect.</li><li>Connect almacenará para futuras investigaciones las muestras que yo done. Esas muestras podrían contener mi material genético (ADN). </li><li>Los investigadores utilizarán mis datos y los datos de otros participantes para hacer estudios sobre temas específicos sobre cáncer u otros temas de salud.</li><li>Se me pedirá que responda encuestas y done más muestras en el futuro. Puedo decir que sí o que no, y seguiré siendo participante de Connect de cualquier manera.</li><li>Puedo retirarme (abandonar el estudio) en cualquier momento. Si me retiro, no sufriré ninguna penalización.</li><li>Puedo comunicarme en cualquier momento con el Centro de Asistencia de Connect desde <a href=\"https://cancer.gov/connectstudy/support\" target=\"_blank\">cancer.gov/connectstudy/support</a> o llamar al 1-877-775-7004 (de lunes a viernes de 8:00 a. m. a 10:00 p. m. o los fines de semana de 9:00 a. m. a 6:00 p. m., hora del centro de EE. UU.) para hacer preguntas sobre el estudio y mi participación. </li>",
         "consentPageWait": "Espere, por favor...",
         "consentIframeHFHS": {
-            "src": "./forms/consent/HFHS_Consent_V0.04_Span.html"
+            "src": "./forms/consent/HFHS_Consent_V0.05_Span.html"
         },
         "consentIframeHP": {
             "src": "./forms/consent/HP_Consent_V0.06_Span.html"
@@ -511,7 +511,7 @@
         "consentUnsignedHFHS": {
             "title": "Descargar el formulario de consentimiento",
             "innerHTML": "Descargar una copia sin firmar del formulario de consentimiento informado&nbsp;<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/HFHS_Consent_V0.04_Span.pdf"
+            "href": "./forms/consent/HFHS_Consent_V0.05_Span.pdf"
         },
         "consentUnsignedHP": {
             "title": "Descargar el formulario de consentimiento",
