@@ -195,6 +195,7 @@ export default
         "D_369168474": "CancerScreeningHistory",
         "D_497020618": "DHQ3",
         "D_312845734": "ROIPreference2026",
+        "D_515124081": "DietScreener",
     },
 
     "Module1_OLD": {
@@ -359,6 +360,16 @@ export default
         "standaloneSurvey": true,
         "version": "716532434",
     },
+
+    DietScreener: {
+        "conceptId": "D_515124081",
+        "startTs": "824039046",
+        "completeTs": "676097165",
+        "statusFlag": "301686481",
+        "standaloneSurvey": true,
+        "version": "921489984",
+    },
+    
     // Self-Report Cancer Diagnosis ("Share New Health Information", issue #1295)
     selfReportCancerDx: {
         dxNumber: 480939157,      // Server-computed at submit
