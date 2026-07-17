@@ -1,6 +1,6 @@
 export default {
   HFHS: {
-    Consent: "V0.04",
+    Consent: "V0.05",
     HIPAA: "V0.02",
   },
   HP: {
