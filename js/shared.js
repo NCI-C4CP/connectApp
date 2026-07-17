@@ -4487,12 +4487,14 @@ export const setModuleAttributes = async (data, modules, collections) => {
             if (data[fieldMapping.DietScreener.statusFlag] && data[fieldMapping.DietScreener.statusFlag] !== fieldMapping.moduleStatus.notYetEligible) {
                 modules["Diet Screener"].enabled = true;
             }
-
-            if (data[fieldMapping.DietScreener.statusFlag] === fieldMapping.moduleStatus.submitted) {
-                modules["Diet Screener"].completed = true;
-            }
         }
         
+    }
+
+    //If the diet screener is marked as submitted then it should be enabled and marked completed regardless of other criteria
+    if (data[fieldMapping.DietScreener.statusFlag] === fieldMapping.moduleStatus.submitted) {
+        modules["Diet Screener"].enabled = true;
+        modules["Diet Screener"].completed = true;
     }
 
     // Survey is closed: only show for participants who have already submitted it
