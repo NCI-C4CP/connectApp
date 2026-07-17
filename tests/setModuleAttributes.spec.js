@@ -27,6 +27,7 @@ const buildModules = () => ({
   'Cancer Screening History': { moduleId: 'CancerScreeningHistory', enabled: false },
   'Diet History Questionnaire III (DHQ III)': { moduleId: 'DHQ3', enabled: false },
   '2026 Return of Results Preference Survey': { moduleId: 'ROIPreference2026', enabled: false },
+  'Diet Screener': { moduleId: 'DietScreener', enabled: false },
 });
 
 // Stub firebase.auth() so getIdToken() resolves (needed if DHQ3 allocation is triggered).
@@ -167,6 +168,13 @@ describe('setModuleAttributes – static attributes', () => {
 
     expect(result['2026 Return of Results Preference Survey'].header).toBe('2026 Return of Results Preference Survey');
     expect(result['2026 Return of Results Preference Survey'].estimatedTime).toBe('mytodolist.10_15minutes');
+  });
+
+  it('sets Diet Screener attributes', async () => {
+    const result = await setModuleAttributes({}, buildModules(), []);
+
+    expect(result['Diet Screener'].header).toBe('Diet Screener');
+    expect(result['Diet Screener'].estimatedTime).toBe('mytodolist.5minutes');
   });
 });
 
@@ -371,6 +379,13 @@ describe('setModuleAttributes – completion flags', () => {
     const result = await setModuleAttributes(data, buildModules(), []);
 
     expect(result['Menstrual Cycle'].completed).toBe(true);
+  });
+
+  it('marks Diet Screener as completed when submitted', async () => {
+    const data = { [fieldMapping.DietScreener.statusFlag]: fieldMapping.moduleStatus.submitted };
+    const result = await setModuleAttributes(data, buildModules(), []);
+
+    expect(result['Diet Screener'].completed).toBe(true);
   });
 });
 
