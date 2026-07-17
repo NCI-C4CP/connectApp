@@ -4304,7 +4304,7 @@ export const setModuleAttributes = async (data, modules, collections) => {
     modules['2026 Return of Results Preference Survey'].description = 'mytodolist.mainBodyReturnOfResults2026Description';
     modules['2026 Return of Results Preference Survey'].estimatedTime = 'mytodolist.10_15minutes';
 
-    modules['Diet Screener'].header = 'Diet Screener'; 
+    modules['Diet Screener'].header = 'Diet Snapshot'; 
     modules['Diet Screener'].description = 'mytodolist.mainBodyDietScreenerDescription';
     modules['Diet Screener'].estimatedTime = 'mytodolist.5minutes';
 
@@ -4476,7 +4476,12 @@ export const setModuleAttributes = async (data, modules, collections) => {
             modules["Diet History Questionnaire III (DHQ III)"].completed = true;
         }
 
-        const appSettingsData = await getAppSettings(['dietScreenerGoLive']);
+        let appSettingsData = null;
+        try {
+            appSettingsData = await getAppSettings(['dietScreenerGoLive']);
+        } catch (e) {
+            console.error('Failed to load app setting dietScreenerGoLive:', e);
+        }
         //The Diet Screener is also triggered at 180 days if it is enabled for the application
         if (appSettingsData && appSettingsData['dietScreenerGoLive'] && currentTime > new Date(appSettingsData['dietScreenerGoLive'])) {
             if (data[fieldMapping.DietScreener.statusFlag] && data[fieldMapping.DietScreener.statusFlag] !== fieldMapping.moduleStatus.notYetEligible) {
