@@ -491,7 +491,7 @@
             "src": "./forms/consent/KPHI_Consent_V0.04_Span.html"
         },
         "consentIframeKPNW": {
-            "src": "./forms/consent/KPNW_Consent_V0.04_Span.html"
+            "src": "./forms/consent/KPNW_Consent_V0.05_Span.html"
         },
         "consentIframeMarshfield": {
             "src": "./forms/consent/Marshfield_Consent_V0.04_Span.html"
@@ -536,7 +536,7 @@
         "consentUnsignedKPNW": {
             "title": "Descargar el formulario de consentimiento",
             "innerHTML": "Descargar una copia sin firmar del formulario de consentimiento informado&nbsp;<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/KPNW_Consent_V0.04_Span.pdf"
+            "href": "./forms/consent/KPNW_Consent_V0.05_Span.pdf"
         },
         "consentUnsignedMarshfield": {
             "title": "Descargar el formulario de consentimiento",
@@ -583,7 +583,7 @@
             "src": "./forms/HIPAA/KPHI_HIPAA_V0.02_Span.html"
         },
         "hipaaIframeKPNW": {
-            "src": "./forms/HIPAA/KPNW_HIPAA_V0.02_Span.html"
+            "src": "./forms/HIPAA/KPNW_HIPAA_V0.03_Span.html"
         },
         "hipaaIframeMarshfield": {
             "src": "./forms/HIPAA/Marshfield_HIPAA_V0.02_Span.html"
@@ -628,7 +628,7 @@
         "hipaaUnsignedKPNW": {
             "title": "Descargar el formulario de divulgación de registros de salud",
             "innerHTML": "Descargar una copia sin firmar de la Autorización de la HIPAA&nbsp;<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/HIPAA/KPNW_HIPAA_V0.02_Span.pdf"
+            "href": "./forms/HIPAA/KPNW_HIPAA_V0.03_Span.pdf"
         },
         "hipaaUnsignedMarshfield": {
             "title": "Descargar el formulario de divulgación de registros de salud",

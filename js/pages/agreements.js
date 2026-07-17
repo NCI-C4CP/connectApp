@@ -52,6 +52,10 @@ const siteToHipaaSignPosMap = {
             "Eng": {nameX:110,nameY:415,signatureX:110,signatureY:455,dateX:110,dateY:375},
             "Span": {nameX:188,nameY:415,signatureX:80,signatureY:455,dateX:80,dateY:375},
         },
+        "V0.03": {
+            "Eng": {nameX:110,nameY:415,signatureX:110,signatureY:455,dateX:110,dateY:375},
+            "Span": {nameX:188,nameY:415,signatureX:80,signatureY:455,dateX:80,dateY:375},
+        },
         "default": {nameX:110,nameY:415,signatureX:110,signatureY:455,dateX:110,dateY:375},
     },
     "NCI": {

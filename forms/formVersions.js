@@ -20,8 +20,8 @@ export default {
     HIPAA: "V0.02",
   },
   KPNW: {
-    Consent: "V0.04",
-    HIPAA: "V0.02",
+    Consent: "V0.05",
+    HIPAA: "V0.03",
   },
   Marshfield: {
     Consent: "V0.04",
