@@ -5,6 +5,7 @@ import fieldMapping from '../../fieldToConceptIdMapping.js';
 import { parseHcsRow } from './hcsPayload.js';
 
 const m = fieldMapping.selfReportCancerDx;
+const selfReportMonthValues = fieldMapping.selfReportMonthValues;
 
 // Localhost can opt into a connectFaas emulator via local-dev/config.js.
 let apiBasePromise = null;
@@ -123,7 +124,7 @@ const siteLabelFromRow = (row) => {
     return String(siteCid) === String(m.cancerSites.other) ? { ...label, otherText } : label;
 };
 const monthCodeFromCid = (monthCid) => {
-    const code = Object.keys(m.monthValues).find((c) => String(m.monthValues[c]) === monthCid);
+    const code = Object.keys(selfReportMonthValues).find((c) => String(selfReportMonthValues[c]) === monthCid);
     return code === undefined ? null : Number(code);
 };
 

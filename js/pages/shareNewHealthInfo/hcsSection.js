@@ -23,8 +23,8 @@ const FACILITY_ID_PREFIX = 'HcsFac';
 // Prevent a change year more than 1 year in the future.
 const CHANGE_YEAR_FUTURE_ALLOWANCE = 1;
 
-let view = 'view';
-let latest;          // undefined = not fetched. null = never updated. object = parsed latest row.
+let sectionState = 'view';
+let latestHcsUpdate; // undefined = not fetched. null = never updated. object = parsed latest row.
 let loadFailed = false;
 let collapsed = false; // comps 18-20 show the section expanded by default
 // Staleness guard for the async mount: a reset or newer mount abandons
@@ -33,8 +33,8 @@ let epoch = 0;
 
 export const resetHcsSection = () => {
     epoch += 1;
-    view = 'view';
-    latest = undefined;
+    sectionState = 'view';
+    latestHcsUpdate = undefined;
     loadFailed = false;
     collapsed = false;
 };
@@ -194,12 +194,12 @@ const sectionHtml = (bodyHtml) => `
     </div>`;
 
 const bodyHtmlForState = (participant) => {
-    if (view === 'submitted') return submittedBodyHtml();
-    if (view === 'editing') {
-        return editingBodyHtml(latest ? latest.line1 : ihcsName(participant));
+    if (sectionState === 'submitted') return submittedBodyHtml();
+    if (sectionState === 'editing') {
+        return editingBodyHtml(latestHcsUpdate ? latestHcsUpdate.line1 : ihcsName(participant));
     }
     if (loadFailed) return loadErrorBodyHtml();
-    return latest ? latestBodyHtml(latest) : initialBodyHtml(ihcsName(participant));
+    return latestHcsUpdate ? latestBodyHtml(latestHcsUpdate) : initialBodyHtml(ihcsName(participant));
 };
 
 const harvestDraft = (content) => {
@@ -252,11 +252,11 @@ const wireSection = (content, participant) => {
     }
 
     content.querySelector('#srcdxHcsUpdate')?.addEventListener('click', () => {
-        view = 'editing';
+        sectionState = 'editing';
         renderSection(content, participant);
     });
 
-    if (view === 'editing') {
+    if (sectionState === 'editing') {
         attachFacilityAddressEvents(content, FACILITY_ID_PREFIX);
 
         content.querySelector('#srcdxHcsClear')?.addEventListener('click', () => {
@@ -279,8 +279,8 @@ const wireSection = (content, participant) => {
                 showSubmitError(content);
                 return;
             }
-            view = 'submitted';
-            latest = undefined; // the next mount refetches the new latest row
+            sectionState = 'submitted';
+            latestHcsUpdate = undefined; // the next mount refetches the new latest row
             renderSection(content, participant);
         });
     }
@@ -291,7 +291,7 @@ const renderSection = (content, participant) => {
     if (!container) return;
     container.innerHTML = translateHTML(sectionHtml(bodyHtmlForState(participant)));
     wireSection(content, participant);
-    if (view === 'editing') fillFacility(content, FACILITY_ID_PREFIX, makeHcsUpdate().facility);
+    if (sectionState === 'editing') fillFacility(content, FACILITY_ID_PREFIX, makeHcsUpdate().facility);
 };
 
 /**
@@ -304,9 +304,9 @@ export const mountHcsSection = async (content, { participant } = {}) => {
     if (!container) return;
     // Mounts happen only on resting screens. The thank-you body and any in-progress edit belong to the interaction that rendered them.
     // So re-mounts always start from the resting view.
-    view = 'view';
+    sectionState = 'view';
     const startEpoch = epoch;
-    if (latest === undefined) {
+    if (latestHcsUpdate === undefined) {
         let fetched, failed = false;
         try {
             fetched = await getMostRecentHCSUpdate();
@@ -315,7 +315,7 @@ export const mountHcsSection = async (content, { participant } = {}) => {
             failed = true;
         }
         if (epoch !== startEpoch) return; // reset while fetching — leave state for the next mount
-        latest = failed ? undefined : fetched;
+        latestHcsUpdate = failed ? undefined : fetched;
         loadFailed = failed;
     }
     // A newer render replaced the shell (e.g. the user entered the workflow mid-fetch).

@@ -21,7 +21,7 @@ const latestRow = (overrides = {}) => ({
     line3: '',
     line4: '',
     city: 'Washington',
-    stateOrRegion: 'DC',
+    stateOrRegion: 'District of Columbia',
     zipOrPostal: '20016',
     isInternational: false,
     countryCid: '',
@@ -74,7 +74,7 @@ const pickGooglePlace = async (page, place = {
         { types: ['street_number'], long_name: '5255' },
         { types: ['route'], long_name: 'Loughboro Rd NW' },
         { types: ['locality'], long_name: 'Washington' },
-        { types: ['administrative_area_level_1'], long_name: 'DC' },
+        { types: ['administrative_area_level_1'], long_name: 'District of Columbia' },
         { types: ['postal_code'], long_name: '20016' },
     ],
 }) => {
@@ -292,7 +292,7 @@ test.describe('HCS section — edit form and validation', () => {
         await openEditForm(page);
         await fillDomesticUpdate(page);
         await page.fill('#UPAddressHcsFacCity', 'Washington');
-        await page.selectOption('#UPAddressHcsFacState', 'DC');
+        await page.selectOption('#UPAddressHcsFacState', 'District of Columbia');
         await page.fill('#UPAddressHcsFacZip', '20016');
         await page.selectOption('#srcdxHcsChangeMo', '10'); // November
         await page.fill('#srcdxHcsAddlInfo', 'Moved across town.');
@@ -305,11 +305,11 @@ test.describe('HCS section — edit form and validation', () => {
         expect(payload[dk(h.facility.line1)]).toBe('New Care Facility');
         expect(payload[dk(h.facility.line2)]).toBe('1 Care Way');
         expect(payload[dk(h.facility.city)]).toBe('Washington');
-        expect(payload[dk(h.facility.state)]).toBe('DC');
+        expect(payload[dk(h.facility.state)]).toBe('District of Columbia');
         expect(payload[dk(h.facility.zip)]).toBe('20016');
         expect(payload[dk(h.facility.intlFlag)]).toBe(N);
         expect(payload[dk(h.facility.googleValidated)]).toBe(N); // typed by hand -> not validated
-        expect(payload[dk(h.changeMonth)]).toBe(String(h.monthValues[10]));
+        expect(payload[dk(h.changeMonth)]).toBe(String(fieldMapping.selfReportMonthValues[10]));
         expect(payload[dk(h.changeYear)]).toBe(String(currentYear));
         expect(payload[dk(h.additionalInfo)]).toBe('Moved across town.');
         expect(payload[dk(h.submittedTimestamp)]).toBeUndefined(); // server-owned
@@ -334,7 +334,7 @@ test.describe('HCS section — Google Places validated-flag lifecycle', () => {
         await expect(page.locator('#UPAddressHcsFacLine1')).toHaveValue('SIBLEY MEMORIAL HOSPITAL');
         await expect(page.locator('#UPAddressHcsFacLine2')).toHaveValue('5255 Loughboro Rd NW');
         await expect(page.locator('#UPAddressHcsFacCity')).toHaveValue('Washington');
-        await expect(page.locator('#UPAddressHcsFacState')).toHaveValue('DC');
+        await expect(page.locator('#UPAddressHcsFacState')).toHaveValue('District of Columbia');
         await expect(page.locator('#UPAddressHcsFacZip')).toHaveValue('20016');
 
         await page.fill('#srcdxHcsChangeYr', String(currentYear));

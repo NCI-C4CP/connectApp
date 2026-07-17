@@ -359,6 +359,11 @@ export default
         "standaloneSurvey": true,
         "version": "716532434",
     },
+    // Shared Self-Report month response cids (per constants.js MONTHS).
+    selfReportMonthValues: {
+        0: 286592124, 1: 802747980, 2: 676299940, 3: 463502254, 4: 526483288, 5: 842005720,
+        6: 574954852, 7: 887495026, 8: 181090983, 9: 259643910, 10: 615680906, 11: 840678879,
+    },
     // Self-Report Cancer Diagnosis ("Share New Health Information", issue #1295)
     selfReportCancerDx: {
         dxNumber: 480939157,      // Server-computed at submit
@@ -374,11 +379,6 @@ export default
         dxMonth: 299768751,
         dxYear: 908235757,
         txReceived: 874288004,
-        // Month response cids (per constants.js MONTHS).
-        monthValues: {
-            0: 286592124, 1: 802747980, 2: 676299940, 3: 463502254, 4: 526483288, 5: 842005720,
-            6: 574954852, 7: 887495026, 8: 181090983, 9: 259643910, 10: 615680906, 11: 840678879,
-        },
         // Primary-site response cids (names + values match connectFaas utils/fieldToConceptIdMapping.js `cancerSites`).
         cancerSites: {
             anal: 939782495,
@@ -456,11 +456,6 @@ export default
     },
     // Self-Report Health Care System Update ("Share New Health Information", issue #1658).
     selfReportHCSUpdate: {
-        // Month response cids (same shared dictionary responses as selfReportCancerDx.monthValues).
-        monthValues: {
-            0: 286592124, 1: 802747980, 2: 676299940, 3: 463502254, 4: 526483288, 5: 842005720,
-            6: 574954852, 7: 887495026, 8: 181090983, 9: 259643910, 10: 615680906, 11: 840678879,
-        },
         facility: {
             line1: 624974556,  // Line 1 = name of primary care facility
             line2: 655907949, // Line 2 = main address line (street, rural route, etc.)
