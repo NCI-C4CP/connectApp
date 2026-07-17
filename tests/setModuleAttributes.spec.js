@@ -173,7 +173,7 @@ describe('setModuleAttributes – static attributes', () => {
   it('sets Diet Screener attributes', async () => {
     const result = await setModuleAttributes({}, buildModules(), []);
 
-    expect(result['Diet Screener'].header).toBe('Diet Screener');
+    expect(result['Diet Screener'].header).toBe('Diet Snapshot');
     expect(result['Diet Screener'].estimatedTime).toBe('mytodolist.5minutes');
   });
 });
