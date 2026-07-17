@@ -120,6 +120,10 @@ const siteToConsentSignPosMap = {
             "Eng": {nameX:90,nameY:410,signatureX:110,signatureY:330,dateX:90,dateY:370},
             "Span": {nameX:105,nameY:410,signatureX:105,signatureY:330,dateX:105,dateY:370}
         },
+        "V0.05":  {
+            "Eng": {nameX:90,nameY:410,signatureX:110,signatureY:330,dateX:90,dateY:370},
+            "Span": {nameX:105,nameY:410,signatureX:105,signatureY:330,dateX:105,dateY:370}
+        },
         "default": {nameX:110,nameY:380,signatureX:115,signatureY:300,dateX:110,dateY:340},
     },
     

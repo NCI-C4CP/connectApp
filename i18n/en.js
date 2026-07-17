@@ -476,7 +476,7 @@ const en = {
         "consentPageBody5List": "<li>My data will be securely stored in the Connect database.</li><li>Samples I donate will be stored by Connect for future research. These samples may contain my genetic material (DNA).</li><li>My data and data from other participants will be used by researchers to do studies on cancer specific or other health topics.</li><li>I will be asked to answer surveys and donate more samples in the future. I can say yes or no, and I will remain a Connect participant either way.</li><li>I can withdraw (quit) at any time. There is no penalty if I withdraw.</li><li>I can contact the Connect Support Center at <a href=\"https://cancer.gov/connectstudy/support\" target=\"_blank\">cancer.gov/connectstudy/support</a> or 1-866-462-6621 (8:00 a.m.-10:00 p.m. CT on weekdays, and 9:00 a.m.-6:00 p.m. CT on weekends) with questions about the study and my participation at any time.</li>",
         "consentPageWait": "Please wait...",
         "consentIframeHFHS": {
-            "src": "./forms/consent/HFHS_Consent_V0.04.html"
+            "src": "./forms/consent/HFHS_Consent_V0.05.html"
         },
         "consentIframeHP": {
             "src": "./forms/consent/HP_Consent_V0.06.html"
@@ -511,7 +511,7 @@ const en = {
         "consentUnsignedHFHS": {
             "title": "Download consent form",
             "innerHTML": " Download an unsigned copy of the informed consent form&nbsp<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/HFHS_Consent_V0.04.pdf"
+            "href": "./forms/consent/HFHS_Consent_V0.05.pdf"
         },
         "consentUnsignedHP": {
             "title": "Download consent form",
