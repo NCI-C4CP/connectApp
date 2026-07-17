@@ -16,6 +16,7 @@ vi.mock('../js/shared.js', () => ({
     setModuleAttributes: vi.fn(async (data, modules) => modules),
     checkIfComplete: vi.fn(() => false),
     escapeHTML: vi.fn((s) => String(s ?? '')),
+    logDDRumError: vi.fn(),
 }));
 
 vi.mock('../js/pages/questionnaire.js', () => ({ blockParticipant: vi.fn() }));
@@ -129,5 +130,31 @@ describe('dashboard Share New Health Information one-time banner (issue #1658)',
         const root = await render(data);
         expect(root.querySelector('[data-i18n="mytodolist.newHealthInfoBanner"]')).toBeNull();
         expect(shared.storeResponse).not.toHaveBeenCalledWith({ newHealthInfoBannerSeen: true });
+    });
+});
+
+describe('dashboard seen-flag persistence', () => {
+    it.each([
+        ['updatesSeen', 'mytodolist.newUpdates'],
+        ['newHealthInfoBannerSeen', 'mytodolist.newHealthInfoBanner'],
+    ])('logs a rejected %s write without interrupting dashboard rendering', async (flagName, bannerKey) => {
+        const error = new Error('network error');
+        const data = baseData();
+        delete data[flagName];
+        shared.storeResponse.mockRejectedValueOnce(error);
+
+        const root = await render(data);
+        await Promise.resolve();
+
+        expect(root.querySelector(`[data-i18n="${bannerKey}"]`)).not.toBeNull();
+        expect(shared.logDDRumError).toHaveBeenCalledWith(
+            error,
+            'DashboardSeenFlagPersistenceError',
+            expect.objectContaining({
+                userAction: 'persist dashboard seen flag',
+                flagName,
+                timestamp: expect.any(String),
+            }),
+        );
     });
 });

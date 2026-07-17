@@ -1,4 +1,4 @@
-import { hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML, reportConfiguration, setReportAttributes, sitesNotEnrolling, setModuleAttributes, checkIfComplete, escapeHTML } from "../shared.js";
+import { hideAnimation, questionnaireModules, storeResponse, isParticipantDataDestroyed, translateHTML, reportConfiguration, setReportAttributes, sitesNotEnrolling, setModuleAttributes, checkIfComplete, escapeHTML, logDDRumError } from "../shared.js";
 import { blockParticipant } from "./questionnaire.js";
 import { renderUserProfile } from "../components/form.js";
 import { consentTemplate } from "./consent.js";
@@ -6,6 +6,19 @@ import { addEventHeardAboutStudy, addEventRequestPINForm, addEventHealthCareProv
 import { heardAboutStudy, requestPINTemplate, healthCareProvider, noLongerEnrollingRender } from "./healthCareProvider.js";
 import fieldMapping from '../fieldToConceptIdMapping.js';
 import { isVerifiedNotWithdrawn } from "./shareNewHealthInfo/conditionalLogic.js";
+
+const persistDashboardSeenFlag = (flagName) => {
+    const formData = { [flagName]: true };
+
+    Promise.resolve(storeResponse(formData)).catch((error) => {
+        const normalizedError = error instanceof Error ? error : new Error(String(error));
+        logDDRumError(normalizedError, 'DashboardSeenFlagPersistenceError', {
+            userAction: 'persist dashboard seen flag',
+            flagName,
+            timestamp: new Date().toISOString(),
+        });
+    });
+};
 
 export const renderDashboard = async (data, fromUserProfile, collections) => {
     const mainContent = document.getElementById('root');
@@ -213,9 +226,7 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                                 We hope you enjoy the new experience!
                             </span>
                         `
-                        let formData = {};
-                        formData['updatesSeen'] = true;
-                        storeResponse(formData);
+                        persistDashboardSeenFlag('updatesSeen');
                 }
 
                 // One-time banner announcing the Share New Health Information card (issue #1658, July release).
@@ -224,9 +235,7 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                     topMessage += `${topMessage.trim() !== '' ? '<br><br>' : ''}
                         <span data-i18n="mytodolist.newHealthInfoBanner">The new Share New Health Information card is now on your Dashboard. Here, you can let us know if you change where you get your primary care and share information about a recent cancer diagnosis. In the future, return to this card to check for other options to share information with our team.</span>
                     `;
-                    let formData = {};
-                    formData['newHealthInfoBannerSeen'] = true;
-                    storeResponse(formData);
+                    persistDashboardSeenFlag('newHealthInfoBannerSeen');
                 }
 
                 const surveyMessage = await checkForNewSurveys(data, collections);

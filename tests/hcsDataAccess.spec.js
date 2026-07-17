@@ -1,4 +1,4 @@
-// Health Care System Update tests forfunctions in dataAccess.js.
+// Health Care System Update tests for functions in dataAccess.js.
 // hostname pinned non-localhost so the gitignored local-dev override can't leak in.
 
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
