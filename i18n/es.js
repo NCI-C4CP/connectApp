@@ -1740,7 +1740,7 @@
         "modCancerScreeningHistorySurvey": "Encuesta sobre historial de exámenes de detección de cáncer",
         "modDietHistoryQuestionnaireIIIDHQIII": "Cuestionario de Historial Alimentación III (DHQ III, por sus siglas en ingles)",
         "mod2026ReturnofResultsPreferenceSurvey": "Encuesta de Preferencias para la Devolución de Resultados 2026",
-        "modDietScreener": "Resumen de la dieta",
+        "modDietSnapshot": "Resumen de la dieta",
         "sessionInactiveTitle": "Inactivo",
         "sessionInactive": "Ha estado inactivo durante 20 minutos, ¿desea extender la sesión?<div class=\"modal-footer\"><button type=\"button\" title=\"Cerrar\" class=\"btn btn-dark log-out-user\" data-bs-dismiss=\"modal\">Cerrar sesión</button><button type=\"button\" title=\"Continuar\" class=\"btn btn-primary extend-user-session\" data-bs-dismiss=\"modal\">Continuar</button></div>",
         "homeTitle": "My Connect - Inicio",
