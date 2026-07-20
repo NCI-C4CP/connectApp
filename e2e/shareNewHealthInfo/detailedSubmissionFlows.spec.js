@@ -19,7 +19,7 @@ const submitFromReview = async (page) => {
     return getPayload(page);
 };
 
-test.describe('Ops testing-plan coverage', () => {
+test.describe('Detailed diagnosis submission flows', () => {
     test('lung CT screening path captures screening date, physician, and domestic facility', async ({ page }) => {
         await setup(page);
         await startNoTreatmentDiagnosis(page, 'lung');
@@ -40,7 +40,7 @@ test.describe('Ops testing-plan coverage', () => {
         await page.fill('#srcdxScrnPhysLast', 'Doe');
         await page.fill('#UPAddressScrn_0Line1', 'Lung Imaging Center');
         await page.fill('#UPAddressScrn_0City', 'Bethesda');
-        await page.selectOption('#UPAddressScrn_0State', 'MD');
+        await page.selectOption('#UPAddressScrn_0State', 'Maryland');
         await page.fill('#UPAddressScrn_0Zip', '20814');
         await page.click('#srcdxNext');
 
@@ -54,7 +54,7 @@ test.describe('Ops testing-plan coverage', () => {
         expect(screeningDetail(payload, m.screening.optionValues.lungCT, m.screening.physLastName)).toBe('Doe');
         expect(screeningDetail(payload, m.screening.optionValues.lungCT, m.screening.facility.line1)).toBe('Lung Imaging Center');
         expect(screeningDetail(payload, m.screening.optionValues.lungCT, m.screening.facility.city)).toBe('Bethesda');
-        expect(screeningDetail(payload, m.screening.optionValues.lungCT, m.screening.facility.state)).toBe('MD');
+        expect(screeningDetail(payload, m.screening.optionValues.lungCT, m.screening.facility.state)).toBe('Maryland');
         expect(screeningDetail(payload, m.screening.optionValues.lungCT, m.screening.facility.zip)).toBe('20814');
     });
 
@@ -159,7 +159,7 @@ test.describe('Ops testing-plan coverage', () => {
         await page.fill('#srcdxPhysLast_0', 'Santos');
         await page.fill('#UPAddressTx_0_0Line1', 'Treatment Center A');
         await page.fill('#UPAddressTx_0_0City', 'Bethesda');
-        await page.selectOption('#UPAddressTx_0_0State', 'MD');
+        await page.selectOption('#UPAddressTx_0_0State', 'Maryland');
         await page.fill('#UPAddressTx_0_0Zip', '20814');
         await page.click('#srcdxNext');
 
@@ -171,7 +171,7 @@ test.describe('Ops testing-plan coverage', () => {
         await page.fill('#srcdxPhysLast_0', 'Reed');
         await page.fill('#UPAddressTx_1_0Line1', 'Treatment Center B');
         await page.fill('#UPAddressTx_1_0City', 'Washington');
-        await page.selectOption('#UPAddressTx_1_0State', 'DC');
+        await page.selectOption('#UPAddressTx_1_0State', 'District of Columbia');
         await page.fill('#UPAddressTx_1_0Zip', '20016');
         await page.click('#srcdxNext');
 
@@ -186,7 +186,7 @@ test.describe('Ops testing-plan coverage', () => {
         await page.fill('#srcdxScrnPhysLast', 'Hopper');
         await page.fill('#UPAddressScrn_0Line1', 'Breast Imaging Center');
         await page.fill('#UPAddressScrn_0City', 'Bethesda');
-        await page.selectOption('#UPAddressScrn_0State', 'MD');
+        await page.selectOption('#UPAddressScrn_0State', 'Maryland');
         await page.fill('#UPAddressScrn_0Zip', '20814');
         await page.click('#srcdxNext');
 

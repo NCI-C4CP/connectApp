@@ -20,7 +20,7 @@ const installMockPlacesAutocomplete = async (page) => {
                 { long_name: '1800', types: ['street_number'] },
                 { long_name: 'Orleans Street', types: ['route'] },
                 { long_name: 'Baltimore', types: ['locality'] },
-                { long_name: 'MD', types: ['administrative_area_level_1'] },
+                { long_name: 'Maryland', types: ['administrative_area_level_1'] },
                 { long_name: '21287', types: ['postal_code'] },
             ],
         };
@@ -141,7 +141,7 @@ test.describe('Loops & repeatable inputs', () => {
         await expect(page.locator('#UPAddressTx_0_0Line1')).toHaveValue('Johns Hopkins Hospital');
         await expect(page.locator('#UPAddressTx_0_0Line2')).toHaveValue('1800 Orleans Street');
         await expect(page.locator('#UPAddressTx_0_0City')).toHaveValue('Baltimore');
-        await expect(page.locator('#UPAddressTx_0_0State')).toHaveValue('MD');
+        await expect(page.locator('#UPAddressTx_0_0State')).toHaveValue('Maryland');
         await expect(page.locator('#UPAddressTx_0_0Zip')).toHaveValue('21287');
 
         await page.click('#srcdxNext');
@@ -154,7 +154,7 @@ test.describe('Loops & repeatable inputs', () => {
         expect(txRow(payload, m.treatment.chemo, fac.line1, 1)).toBe('Johns Hopkins Hospital');
         expect(txRow(payload, m.treatment.chemo, fac.line2, 1)).toBe('1800 Orleans Street');
         expect(txRow(payload, m.treatment.chemo, fac.city, 1)).toBe('Baltimore');
-        expect(txRow(payload, m.treatment.chemo, fac.state, 1)).toBe('MD');
+        expect(txRow(payload, m.treatment.chemo, fac.state, 1)).toBe('Maryland');
         expect(txRow(payload, m.treatment.chemo, fac.zip, 1)).toBe('21287');
     });
 
