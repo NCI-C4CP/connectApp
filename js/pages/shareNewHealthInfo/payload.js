@@ -6,6 +6,7 @@ import { countryCidFromSelectValue } from './countryCid.js';
 import { hasFacilityContent, hasPhysicianContent, isPresent } from './contentChecks.js';
 
 const m = fieldMapping.selfReportCancerDx;
+const selfReportMonthValues = fieldMapping.selfReportMonthValues;
 const DOC_LAST_UPDATED = fieldMapping.docLastUpdatedTimestamp;
 const YES = String(fieldMapping.yes);
 const NO = String(fieldMapping.no);
@@ -20,11 +21,12 @@ const setIf = (obj, key, value, cond = true) => {
     return obj;
 };
 const isTodoCid = (cid) => typeof cid === 'string' && cid.startsWith('TODO');
-const monthCid = (code) => (isPresent(code) && m.monthValues[code] !== undefined ? String(m.monthValues[code]) : undefined);
+const monthCid = (code) => (isPresent(code) && selfReportMonthValues[code] !== undefined ? String(selfReportMonthValues[code]) : undefined);
 
-const buildFacility = (facCids, facility, keyFor) => {
+export const buildFacility = (facCids, facility, keyFor, { includeExplicitInternational = false } = {}) => {
     const out = {};
-    if (!hasFacilityContent(facility)) return out;
+    const explicitInternational = includeExplicitInternational && facility?.isInternational === true;
+    if (!hasFacilityContent(facility) && !explicitInternational) return out;
     const intl = !!facility.isInternational;
     out[keyFor(facCids.intlFlag)] = intl ? YES : NO;
     out[keyFor(facCids.googleValidated)] = !intl && facility.googleAddressValidated ? YES : NO;
@@ -139,7 +141,7 @@ export const buildDiagnosisPayload = (state = {}) => {
 // Same snapshot for every save and submit. stateJSON/positionJSON support resume and TODO-cid fields.
 export const buildProgressSnapshot = (state, position, { lang, now = new Date() } = {}) => ({
     ...buildDiagnosisPayload(state),
-    784119588: lang,
+    [fieldMapping.surveyLanguage]: lang,
     [DOC_LAST_UPDATED]: now.toISOString(),
     stateJSON: JSON.stringify({ state }),
     positionJSON: JSON.stringify(position),

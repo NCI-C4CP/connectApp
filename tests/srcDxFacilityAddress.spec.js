@@ -295,6 +295,29 @@ describe('name autocomplete (Google Places)', () => {
         expect(harvestFacility(content, ID).googleAddressValidated).toBe(false);
     });
 
+    it('keeps Google validation when supplemental Line 3 is added after selection', () => {
+        focusLine1();
+        const ac = instances[instances.length - 1];
+        ac.place = {
+            name: 'Johns Hopkins Hospital',
+            address_components: [
+                { types: ['street_number'], long_name: '1800' },
+                { types: ['route'], long_name: 'Orleans St' },
+                { types: ['locality'], long_name: 'Baltimore' },
+                { types: ['administrative_area_level_1'], long_name: 'MD' },
+                { types: ['postal_code'], long_name: '21287' },
+            ],
+        };
+        ac.cb();
+        expect(el('GoogleValidated').value).toBe('true');
+
+        el('Line3').value = 'Suite 100';
+        el('Line3').dispatchEvent(new win.Event('input'));
+
+        expect(el('GoogleValidated').value).toBe('true');
+        expect(harvestFacility(content, ID).googleAddressValidated).toBe(true);
+    });
+
     it('clears Google validation when switched to international', () => {
         focusLine1();
         const ac = instances[instances.length - 1];
@@ -375,5 +398,41 @@ describe('name autocomplete (Google Places)', () => {
         const clearedArgs = clearInstanceListeners.mock.calls.map((c) => c[0]);
         expect(clearedArgs.includes(instance)).toBe(true);
         expect(clearedArgs.includes(input)).toBe(true);
+    });
+});
+
+describe('label overrides (Health Care System Update variant, issue #1658)', () => {
+    const HCS_ID = 'HcsFac';
+    const hcsOptions = {
+        nameLabelKey: 'shareHealthInfo.hcsFacName',
+        nameLabelFallback: 'Line 1 (name of primary care facility)',
+        namePlaceholderKey: 'shareHealthInfo.hcsFacNameInput',
+        namePlaceholderFallback: 'Enter primary care facility',
+        line2LabelKey: 'shareHealthInfo.hcsFacLine2',
+        line2LabelFallback: 'Line 2 (street, rural route)',
+        regionMaxLength: 48,
+    };
+
+    it('renders optional HCS labels, the placeholder override, and the HCS Region limit', () => {
+        content.innerHTML = renderFacilityAddress(HCS_ID, hcsOptions);
+        const line1Label = content.querySelector(`label[for="UPAddress${HCS_ID}Line1"]`);
+        expect(line1Label.dataset.i18n).toBe('shareHealthInfo.hcsFacName');
+        expect(line1Label.querySelector('.required')).toBeNull();
+        const line1Input = content.querySelector(`#UPAddress${HCS_ID}Line1`);
+        expect(line1Input.dataset.i18n).toBe('shareHealthInfo.hcsFacNameInput');
+        expect(line1Input.getAttribute('placeholder')).toBe('Enter primary care facility');
+        const line2Label = content.querySelector(`label[for="UPAddress${HCS_ID}Line2"]`);
+        expect(line2Label.dataset.i18n).toBe('shareHealthInfo.hcsFacLine2');
+        expect(line2Label.querySelector('.required')).toBeNull();
+        expect(content.querySelector(`#UPAddress${HCS_ID}Region`).maxLength).toBe(48);
+    });
+
+    it('leaves the cancer-dx defaults untouched when no options are passed (regression)', () => {
+        content.innerHTML = renderFacilityAddress(ID);
+        const line1Label = content.querySelector(`label[for="UPAddress${ID}Line1"]`);
+        expect(line1Label.dataset.i18n).toBe('shareHealthInfo.facName');
+        expect(line1Label.querySelector('.required')).toBeNull();
+        expect(content.querySelector(`label[for="UPAddress${ID}Line2"]`).dataset.i18n).toBe('shareHealthInfo.facLine2');
+        expect(content.querySelector(`#UPAddress${ID}Region`).maxLength).toBe(45);
     });
 });

@@ -13,6 +13,7 @@ import { nextRenderableScreen, pushHistory, popHistory, canRenderScreen, fallbac
 import { buildProgressSnapshot } from './payload.js';
 import { teardownFacilityAddressEvents } from '../../components/facilityAddress.js';
 import { teardownNpiTypeaheads } from './npiTypeahead.js';
+import { mountHcsSection, resetHcsSection } from './hcsSection.js';
 import { renderLanding } from './screens/landing.js';
 import { renderPrimarySite } from './screens/primarySite.js';
 import { renderDiagnosisDate } from './screens/diagnosisDate.js';
@@ -87,6 +88,7 @@ const resetRuntime = ({ clearParticipant = false } = {}) => {
     state.resetState();
     discardEditSnapshot();
     resetConfirmState();
+    resetHcsSection();
     teardownScreenEventSources();
     if (clearParticipant) {
         participant = {};
@@ -314,6 +316,8 @@ const renderScreenId = (screenId) => {
     if (screenId !== SCREENS.CONFIRMATION) persist();
     teardownScreenEventSources();
     renderer(content, ctx);
+    // The confirmation screen is a resting state: mount the interactive HCS section.
+    if (screenId === SCREENS.CONFIRMATION) mountHcsSection(content, { participant });
 };
 
 const startDiagnosis = () => {
@@ -337,6 +341,7 @@ const showLanding = async () => {
     state.getPosition().screenId = SCREENS.LANDING;
     if (hasServerRow) persist();
     renderLanding(content, { onStart: startDiagnosis, prior });
+    await mountHcsSection(content, { participant });
 };
 
 const showProgressLoadError = () => {

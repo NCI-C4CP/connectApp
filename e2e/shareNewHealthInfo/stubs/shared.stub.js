@@ -15,6 +15,13 @@ const translateNode = (root) => {
         if (!key) return;
         const t = i18nLookup(key);
         if (typeof t === 'string') node.innerHTML = t;
+        else if (t && typeof t === 'object') {
+            Object.entries(t).forEach(([name, value]) => {
+                if (name === 'innerHTML') node.innerHTML = value;
+                else if (name === 'innerText') node.innerText = value;
+                else node.setAttribute(name, value);
+            });
+        }
     };
     if (root.getAttribute && root.getAttribute('data-i18n')) apply(root);
     root.querySelectorAll('[data-i18n]').forEach(apply);
@@ -58,5 +65,17 @@ export const removeAllErrors = () => {
     document.querySelectorAll('.invalid').forEach((e) => e.classList.remove('invalid'));
 };
 
-export const allStates = { AL: 1, AK: 2, AZ: 3, CA: 4, DC: 5, MD: 6, NY: 7 };
-export const allCountries = { 'United States': 1, 'United Kingdom': 2, Canada: 3, Germany: 4 };
+export const allStates = {
+    'Alabama': 1,
+    'Alaska': 2,
+    'Arizona': 3,
+    'California': 5,
+    'District of Columbia': 9,
+    'Georgia': 11,
+    'Maryland': 21,
+    'New York': 33,
+};
+export const allCountries = { 'United States': 1, 'United Kingdom': 2, Canada: 3, Germany: 4, Netherlands: 149 };
+
+// IHCS site-code -> display-name map (Health Care System Update section reads the signup site).
+export const sites = () => (window.__SRCDX_SITES__ || { 1: 'Sanford Health' });
