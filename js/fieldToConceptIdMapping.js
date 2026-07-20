@@ -195,6 +195,7 @@ export default
         "D_369168474": "CancerScreeningHistory",
         "D_497020618": "DHQ3",
         "D_312845734": "ROIPreference2026",
+        "D_515124081": "DietScreener",
     },
 
     "Module1_OLD": {
@@ -359,6 +360,16 @@ export default
         "standaloneSurvey": true,
         "version": "716532434",
     },
+
+    DietScreener: {
+        "conceptId": "D_515124081",
+        "startTs": "824039046",
+        "completeTs": "676097165",
+        "statusFlag": "301686481",
+        "standaloneSurvey": true,
+        "version": "921489984",
+    },
+    
     // Shared Self-Report month response cids (per constants.js MONTHS).
     selfReportMonthValues: {
         0: 286592124, 1: 802747980, 2: 676299940, 3: 463502254, 4: 526483288, 5: 842005720,

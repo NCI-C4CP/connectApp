@@ -125,7 +125,6 @@ const renderMainBody = async (data, collections, tab) => {
     let template = `<ul class="questionnaire-module-list" role="list">`;
     let modules = questionnaireModules();
     modules = await setModuleAttributes(data, modules, collections);
-    
     let toDisplaySystem = [
         {
             header: "First Survey",
@@ -181,8 +180,10 @@ const renderMainBody = async (data, collections, tab) => {
     }
 
     modules["Cancer Screening History"].enabled && toDisplaySystem.unshift({ body: ["Cancer Screening History"] });
-
+    
     modules["Diet History Questionnaire III (DHQ III)"].enabled && toDisplaySystem.unshift({ body: ["Diet History Questionnaire III (DHQ III)"] });
+    
+    modules["Diet Screener"].enabled && toDisplaySystem.unshift({ body: ["Diet Screener"] });
 
     modules["2026 Return of Results Preference Survey"].enabled && toDisplaySystem.unshift({ body: ["2026 Return of Results Preference Survey"] });
 
