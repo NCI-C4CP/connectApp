@@ -19,7 +19,7 @@ const submitFromReview = async (page) => {
     return getPayload(page);
 };
 
-test.describe('Ops testing-plan coverage', () => {
+test.describe('Detailed diagnosis submission flows', () => {
     test('lung CT screening path captures screening date, physician, and domestic facility', async ({ page }) => {
         await setup(page);
         await startNoTreatmentDiagnosis(page, 'lung');

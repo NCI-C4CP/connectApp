@@ -2,7 +2,17 @@
 // persistence with sessionStorage so page.reload() resume flows keep working, logs every save
 // for write-semantics assertions, and captures the submitted snapshot.
 
+import fieldMapping from '../../fieldToConceptIdMapping.js';
+import { parseHcsRow } from './hcsPayload.js';
+
 const KEY = 'srcdx_inprogress_e2e';
+const HCS_KEY = 'srcdx_hcs_submitted_e2e';
+const hcsMapping = fieldMapping.selfReportHCSUpdate;
+
+const hcsRows = () => {
+    try { return JSON.parse(sessionStorage.getItem(HCS_KEY) || '[]'); }
+    catch (_) { return []; }
+};
 
 // Ordered event log (each save completion vs the submit start) for the submit/save race test.
 // Default-off instrumentation: window.__SRCDX_SAVE_DELAY_MS__ holds a save "in flight" so a test
@@ -61,12 +71,22 @@ export const searchNPIProviders = async () => [];
 // parseHcsRow output, not the raw D_ document).
 export const getMostRecentHCSUpdate = async () => {
     if (window.__HCS_FETCH_FAIL__) throw new Error('hcs fetch failed (stubbed)');
-    return window.__HCS_LATEST__ ?? null;
+    if (window.__HCS_LATEST__ !== undefined) return window.__HCS_LATEST__;
+    const rows = hcsRows();
+    window.__HCS_STORED_ROWS__ = rows;
+    return rows.length ? parseHcsRow(rows.at(-1)) : null;
 };
 
 export const submitSelfReportHCSUpdate = async (snapshot) => {
     window.__HCS_LAST_PAYLOAD__ = snapshot;
     if (window.__HCS_SUBMIT_FAIL__) return { code: 500 };
     window.__HCS_SUBMITTED__ = (window.__HCS_SUBMITTED__ || []).concat([snapshot]);
+    const rows = hcsRows();
+    rows.push({
+        ...snapshot,
+        [`D_${hcsMapping.submittedTimestamp}`]: new Date().toISOString(),
+    });
+    sessionStorage.setItem(HCS_KEY, JSON.stringify(rows));
+    window.__HCS_STORED_ROWS__ = rows;
     return { code: 200 };
 };
