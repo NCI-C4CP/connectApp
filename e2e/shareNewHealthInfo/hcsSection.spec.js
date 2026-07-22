@@ -93,7 +93,7 @@ test.describe('HCS section — resting states', () => {
         await expect(section.locator('[data-srcdxhcs-card]')).not.toHaveClass(/srcdx-collapsed/);
         await expect(section).toContainText('You joined Connect with Sanford Health');
         await expect(section.locator('.srcdx-hcs-facility-name')).toHaveText('Sanford Health');
-        await expect(section.locator('.srcdx-hcs-facility-name')).toHaveCSS('font-weight', '700');
+        await expect(section.locator('.srcdx-hcs-facility-name')).toHaveCSS('font-weight', /^(700|bold)$/);
         await expect(section.locator('#srcdxHcsUpdate')).toHaveText('Edit');
         await expect(section.locator('#UPAddressHcsFacLine1')).toHaveCount(0);
     });
@@ -104,7 +104,7 @@ test.describe('HCS section — resting states', () => {
         await expect(section).toContainText('SIBLEY MEMORIAL HOSPITAL');
         await expect(section).toContainText('SIBLEY MEMORIAL HOSPITAL is the place where you get your primary care.');
         await expect(section.locator('.srcdx-hcs-facility-name')).toHaveText('SIBLEY MEMORIAL HOSPITAL');
-        await expect(section.locator('.srcdx-hcs-facility-name')).toHaveCSS('font-weight', '700');
+        await expect(section.locator('.srcdx-hcs-facility-name')).toHaveCSS('font-weight', /^(700|bold)$/);
         const updatedBlock = section.locator('[data-srcdxhcs-last-updated]');
         const updatedLabel = updatedBlock.locator('strong');
         const updatedValue = updatedBlock.locator('[data-srcdxhcs-last-updated-value]');

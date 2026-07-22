@@ -61,7 +61,7 @@ const joinedWithHtml = (siteName) => `
 const isThePlaceHtml = (siteName) => `
     <p>${facilityNameHtml(siteName)} <span data-i18n="shareHealthInfo.hcsIsThePlace">is the place where you get your primary care.</span></p>`;
 
-const updateButtonHtml = () => `
+const editButtonHtml = () => `
     <button type="button" class="btn btn-light" id="srcdxHcsUpdate" data-i18n="shareHealthInfo.hcsUpdateButton">Edit</button>`;
 
 const addrValueHtml = (value) => (isNonEmpty(value)
@@ -106,7 +106,7 @@ const initialBodyHtml = (siteName) => `
     ${introHtml()}
     ${currentFacilityHeaderHtml()}
     ${joinedWithHtml(siteName)}
-    <div class="mt-3">${updateButtonHtml()}</div>`;
+    <div class="mt-3">${editButtonHtml()}</div>`;
 
 // 'view', prior update exists: show the latest facility as current and one Edit button for everything.
 const hasAddressDisplayContent = (row) => [
@@ -117,10 +117,10 @@ const latestBodyHtml = (row) => {
     const addressBlock = hasAddressDisplayContent(row) ? `
         <div class="d-flex justify-content-between align-items-start mb-2">
             <strong data-i18n="shareHealthInfo.hcsFacAddressHeader">Primary care facility address:</strong>
-            ${updateButtonHtml()}
+            ${editButtonHtml()}
         </div>
         ${addressDisplayHtml(row)}` : `
-        <div class="d-flex justify-content-end mb-2">${updateButtonHtml()}</div>`;
+        <div class="d-flex justify-content-end mb-2">${editButtonHtml()}</div>`;
     return `
         ${introHtml()}
         ${isNonEmpty(row.line1) ? isThePlaceHtml(row.line1) : ''}
