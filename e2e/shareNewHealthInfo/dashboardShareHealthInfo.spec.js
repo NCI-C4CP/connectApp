@@ -5,6 +5,7 @@ import { F, dashboardParticipant, setupDashboard } from './dashboardSupport.js';
 
 const card = (page) => page.locator('#shareHealthInfoCard');
 const banner = (page) => page.locator('[data-i18n="mytodolist.newHealthInfoBanner"]');
+const plainText = (html) => html.replace(/<[^>]+>/g, '');
 const withoutBannerSeen = (overrides = {}) => {
     const participant = dashboardParticipant(overrides);
     delete participant.newHealthInfoBannerSeen;
@@ -36,7 +37,8 @@ test.describe('Dashboard — Share New Health Information eligibility and announ
         await setupDashboard(page, { participant: withoutBannerSeen(), i18n: en });
 
         await expect(card(page)).toBeVisible();
-        await expect(banner(page)).toHaveText(en.mytodolist.newHealthInfoBanner);
+        await expect(banner(page)).toHaveText(plainText(en.mytodolist.newHealthInfoBanner));
+        await expect(banner(page).locator('strong')).toHaveText('Share New Health Information');
         await expect.poll(() => page.evaluate(() => window.__DASHBOARD_DATA__.newHealthInfoBannerSeen)).toBe(true);
         await expect.poll(() => page.evaluate(() => window.__DASHBOARD_STORES__)).toContainEqual({ newHealthInfoBannerSeen: true });
 
@@ -47,13 +49,15 @@ test.describe('Dashboard — Share New Health Information eligibility and announ
 
     test('announcement content renders from the approved English and Spanish dictionaries', async ({ page }) => {
         await setupDashboard(page, { participant: withoutBannerSeen(), i18n: en });
-        await expect(banner(page)).toHaveText(en.mytodolist.newHealthInfoBanner);
+        await expect(banner(page)).toHaveText(plainText(en.mytodolist.newHealthInfoBanner));
+        await expect(banner(page).locator('strong')).toHaveText('Share New Health Information');
 
         await page.evaluate((dictionary) => {
             window.__I18N__ = dictionary;
             window.__DASHBOARD_DATA__.newHealthInfoBannerSeen = false;
             return window.__renderDashboard();
         }, es);
-        await expect(banner(page)).toHaveText(es.mytodolist.newHealthInfoBanner);
+        await expect(banner(page)).toHaveText(plainText(es.mytodolist.newHealthInfoBanner));
+        await expect(banner(page).locator('strong')).toHaveText('Compartir Información Nueva de Salud');
     });
 });

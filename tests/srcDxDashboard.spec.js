@@ -114,7 +114,9 @@ describe('dashboard Share New Health Information one-time banner (issue #1658)',
         const data = baseData();
         delete data.newHealthInfoBannerSeen;
         const root = await render(data);
-        expect(root.querySelector('[data-i18n="mytodolist.newHealthInfoBanner"]')).not.toBeNull();
+        const banner = root.querySelector('[data-i18n="mytodolist.newHealthInfoBanner"]');
+        expect(banner).not.toBeNull();
+        expect(banner.querySelector('strong')?.textContent).toBe('Share New Health Information');
         expect(shared.storeResponse).toHaveBeenCalledWith({ newHealthInfoBannerSeen: true });
     });
 

@@ -736,7 +736,7 @@ const en = {
     },
     "mytodolist": {
         "newUpdates": "<span style=\"font-weight: bold\">We've Updated MyConnect!</span><br> You may notice things look a little different here. While nothing about the study has changed, we've made some design improvements to give MyConnect a fresh new look and make it easier navigate.<br><br>Need to update your profile, sign-in information, or view forms related to your participation? Just click \"Edit my profile\" in the Profile menu at the top right-hand corner of your screen.<br><br>We’ll be rolling out other design updates over the next few months, so stay tuned for even more improvements! If you have any questions about the changes, feel free to contact our team at the <a href=\"https://MyConnect.cancer.gov/support\" target=\"_blank\">Connect Support Center</a>.<br><br>We hope you enjoy the new experience!",
-        "newHealthInfoBanner": "The new Share New Health Information card is now on your Dashboard. Here, you can let us know if you change where you get your primary care and share information about a recent cancer diagnosis. In the future, return to this card to check for other options to share information with our team.",
+        "newHealthInfoBanner": "The new <strong>Share New Health Information</strong> card is now on your Dashboard. Here, you can let us know if you change where you get your primary care and share information about a recent cancer diagnosis. In the future, return to this card to check for other options to share information with our team.",
         "withdrawnConnect": "You have withdrawn from Connect. We will not collect any more data from you. If you have any questions, please contact the Connect Support Center by calling 1-877-505-0253 or by emailing <a href='mailto:ConnectSupport@norc.org'>ConnectSupport@norc.org</a>.",
         "deletedData": "At your request, we have deleted your Connect data. If you have any questions, please contact the Connect Support Center by calling 1-877-505-0253 or by emailing  <a href='mailto:ConnectSupport@norc.org'>ConnectSupport@norc.org</a>.",
         "newFormSign": "You have a new <a href='#forms'>form</a> to sign.",
@@ -2125,9 +2125,9 @@ const en = {
         "hcsIntro": "Connect is a long-term study. We recognize the health system where you receive care may change over time.",
         "hcsCurrentFacility": "Current primary care facility:",
         "hcsJoinedWith": "You joined Connect with",
-        "hcsJoinedWithEnd": "as your primary care facility. If this has changed, click the Update button.",
+        "hcsJoinedWithEnd": "as your primary care facility. If this has changed, click the Edit button.",
         "hcsIsThePlace": "is the place where you get your primary care.",
-        "hcsUpdateButton": "Update",
+        "hcsUpdateButton": "Edit",
         "hcsFacAddressHeader": "Primary care facility address:",
         "hcsFacName": "Line 1 (name of primary care facility) <span class=\"required\">*</span>",
         "hcsFacNameInput": {
