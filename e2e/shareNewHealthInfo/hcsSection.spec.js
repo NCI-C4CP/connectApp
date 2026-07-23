@@ -87,12 +87,14 @@ const pickGooglePlace = async (page, place = {
 };
 
 test.describe('HCS section — resting states', () => {
-    test('never-updated: IHCS affiliation sentence with the signup site name, expanded, Update button', async ({ page }) => {
+    test('never-updated: IHCS affiliation sentence with a bold signup site name, expanded, Edit button', async ({ page }) => {
         await setup(page);
         const section = page.locator('#srcdxHcsSection');
         await expect(section.locator('[data-srcdxhcs-card]')).not.toHaveClass(/srcdx-collapsed/);
         await expect(section).toContainText('You joined Connect with Sanford Health');
-        await expect(section.locator('#srcdxHcsUpdate')).toBeVisible();
+        await expect(section.locator('.srcdx-hcs-facility-name')).toHaveText('Sanford Health');
+        await expect(section.locator('.srcdx-hcs-facility-name')).toHaveCSS('font-weight', /^(700|bold)$/);
+        await expect(section.locator('#srcdxHcsUpdate')).toHaveText('Edit');
         await expect(section.locator('#UPAddressHcsFacLine1')).toHaveCount(0);
     });
 
@@ -100,6 +102,9 @@ test.describe('HCS section — resting states', () => {
         await setup(page, { hcsLatest: latestRow() });
         const section = page.locator('#srcdxHcsSection');
         await expect(section).toContainText('SIBLEY MEMORIAL HOSPITAL');
+        await expect(section).toContainText('SIBLEY MEMORIAL HOSPITAL is the place where you get your primary care.');
+        await expect(section.locator('.srcdx-hcs-facility-name')).toHaveText('SIBLEY MEMORIAL HOSPITAL');
+        await expect(section.locator('.srcdx-hcs-facility-name')).toHaveCSS('font-weight', /^(700|bold)$/);
         const updatedBlock = section.locator('[data-srcdxhcs-last-updated]');
         const updatedLabel = updatedBlock.locator('strong');
         const updatedValue = updatedBlock.locator('[data-srcdxhcs-last-updated-value]');
@@ -159,9 +164,10 @@ test.describe('HCS section — approved Spanish content', () => {
         await expect(section.locator('[data-i18n="shareHealthInfo.hcsJoinedWith"]')).toHaveText('Comenzó a participar en Connect con');
         await expect(section.locator('[data-i18n="shareHealthInfo.hcsJoinedWithEnd"]')).toHaveText('como su centro de atención primaria. Si eso ha cambiado, haga clic en el botón Editar.');
         await expect(section.locator('#srcdxHcsUpdate')).toHaveText('Editar');
+        await expect(section.locator('.srcdx-hcs-facility-name')).toHaveText('Sanford Health');
 
         await page.click('#srcdxHcsUpdate');
-        await expect(section.locator('[data-i18n="shareHealthInfo.hcsIsThePlace"]')).toHaveText('es el lugar donde recibe su atención primaria.');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsIsThePlace"]')).toHaveCount(0);
         await expect(section.locator('[data-i18n="shareHealthInfo.hcsFacAddressHeader"]')).toHaveText('Dirección del centro de atención primaria:');
         await expect(page.locator('label[for="UPAddressHcsFacLine1"]')).toContainText('Línea 1 (nombre del centro de atención primaria)');
         await expect(page.locator('#UPAddressHcsFacLine1')).toHaveAttribute('placeholder', 'Ingrese el nombre del centro de atención primaria');
@@ -194,6 +200,8 @@ test.describe('HCS section — approved Spanish content', () => {
         await setup(page, { i18n: es, hcsLatest: latestRow() });
         const section = page.locator('#srcdxHcsSection');
 
+        await expect(section.locator('.srcdx-hcs-facility-name')).toHaveText('SIBLEY MEMORIAL HOSPITAL');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsIsThePlace"]')).toHaveText('es el lugar donde recibe su atención primaria.');
         await expect(section.locator('[data-i18n="shareHealthInfo.hcsFacAddressHeader"]')).toHaveText('Dirección del centro de atención primaria:');
         await expect(section.locator('[data-i18n="shareHealthInfo.hcsAddrLine1"]')).toHaveText('Línea 1 de Dirección del centro de atención primaria');
         await expect(section.locator('[data-i18n="shareHealthInfo.hcsAddrLine2"]')).toHaveText('Línea 2 de Dirección del centro de atención primaria');
@@ -217,7 +225,7 @@ test.describe('HCS section — approved Spanish content', () => {
 });
 
 test.describe('HCS section — edit form and validation', () => {
-    test('Update opens the form with facility name and Year required, while Line 2 remains optional', async ({ page }) => {
+    test('Edit opens a blank form with facility name and Year required, while Line 2 remains optional', async ({ page }) => {
         await openEditForm(page);
         await expect(page.locator('label[for="UPAddressHcsFacLine1"] .required')).toBeVisible();
         await expect(page.locator('label[for="UPAddressHcsFacLine2"] .required')).toHaveCount(0);
@@ -229,13 +237,14 @@ test.describe('HCS section — edit form and validation', () => {
         await expect(page.locator('#srcdxHcsAddlInfo')).toBeVisible();
         await expect(page.locator('#srcdxHcsSubmit')).toBeVisible();
         await expect(page.locator('#srcdxHcsClear')).toBeVisible();
-        // First-time updater: the current-facility blurb shows the signup site.
-        await expect(page.locator('#srcdxHcsSection')).toContainText('Sanford Health is the place where you get your primary care.');
+        await expect(page.locator('#srcdxHcsSection [data-i18n="shareHealthInfo.hcsIsThePlace"]')).toHaveCount(0);
+        await expect(page.locator('#srcdxHcsSection')).not.toContainText('Sanford Health');
     });
 
-    test('editing with a prior update pipes the reported facility name (verbatim casing) into the blurb', async ({ page }) => {
+    test('editing with a prior update hides the resting facility statement and starts a blank record', async ({ page }) => {
         await openEditForm(page, { hcsLatest: latestRow() });
-        await expect(page.locator('#srcdxHcsSection')).toContainText('SIBLEY MEMORIAL HOSPITAL is the place where you get your primary care.');
+        await expect(page.locator('#srcdxHcsSection [data-i18n="shareHealthInfo.hcsIsThePlace"]')).toHaveCount(0);
+        await expect(page.locator('#srcdxHcsSection')).not.toContainText('SIBLEY MEMORIAL HOSPITAL');
         await expect(page.locator('#srcdxHcsSection')).not.toContainText('Sanford Health is the place');
         await expect(page.locator('#UPAddressHcsFacLine1')).toHaveValue(''); // blank form = new record
     });
@@ -516,7 +525,8 @@ test.describe('HCS section — repeated update lifecycle', () => {
         await expect(section.locator('#UPAddressHcsFacLine1')).toHaveCount(0);
 
         await page.click('#srcdxHcsUpdate');
-        await expect(section).toContainText('Sanford Health is the place where you get your primary care.');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsIsThePlace"]')).toHaveCount(0);
+        await expect(section).not.toContainText('Sanford Health');
         await expect(page.locator('#UPAddressHcsFacLine1')).toHaveValue('');
         await expect(page.locator('#srcdxHcsChangeYr')).toHaveValue('');
 
@@ -534,13 +544,15 @@ test.describe('HCS section — repeated update lifecycle', () => {
         expect((await hcsPayload(page))[dk(h.changeMonth)]).toBe('286592124');
 
         await page.reload();
+        await expect(section).toContainText('First Primary Care Facility is the place where you get your primary care.');
         await expect(section).toContainText('First Primary Care Facility');
         await expect(section).toContainText('January 2025');
         await expect(section).toContainText('First update notes.');
         await expect(section).not.toContainText('You joined Connect with');
 
         await page.click('#srcdxHcsUpdate');
-        await expect(section).toContainText('First Primary Care Facility is the place where you get your primary care.');
+        await expect(section.locator('[data-i18n="shareHealthInfo.hcsIsThePlace"]')).toHaveCount(0);
+        await expect(section).not.toContainText('First Primary Care Facility');
         await expect(page.locator('#UPAddressHcsFacLine1')).toHaveValue('');
         await expect(page.locator('#UPAddressHcsFacLine2')).toHaveValue('');
         await expect(page.locator('#srcdxHcsChangeMo')).toHaveValue('');
@@ -559,6 +571,7 @@ test.describe('HCS section — repeated update lifecycle', () => {
         expect(secondPayload[dk(h.additionalInfo)]).toBeUndefined();
 
         await page.reload();
+        await expect(section).toContainText('Second Primary Care Facility is the place where you get your primary care.');
         await expect(section).toContainText('Second Primary Care Facility');
         await expect(section).toContainText('2026');
         await expect(section).not.toContainText('First Primary Care Facility');

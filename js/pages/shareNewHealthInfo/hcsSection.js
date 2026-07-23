@@ -1,9 +1,9 @@
 // Health Care System Update section (issue #1658) (in the Share New Health Information page).
 //
 // Section states:
-//   'view'      — no prior update: IHCS-affiliation sentence + Update button (comps: "Expanded Initial").
+//   'view'      — no prior update: IHCS-affiliation sentence + Edit button (comps: "Expanded Initial").
 //                 prior update exists: read-only latest facility + last-updated date + additional info,
-//                 with a single Update button (no piecemeal edits, per Ops).
+//                 with a single Edit button (no piecemeal edits, per Ops).
 //   'editing'   — the full form (facility address block, change date, additional info). Submit-only:
 //                 unlike the cancer-dx flow there is no save/resume for this single-screen form.
 //   'submitted' — thank-you callout for the rest of the visit. The next mount refetches and shows 'view'.
@@ -51,16 +51,18 @@ const introHtml = () => `
 const currentFacilityHeaderHtml = () => `
     <p class="mb-1"><strong data-i18n="shareHealthInfo.hcsCurrentFacility">Current primary care facility:</strong></p>`;
 
+const facilityNameHtml = (siteName) => `<strong class="srcdx-hcs-facility-name">${escapeHTML(siteName)}</strong>`;
+
 // Site names interpolate mid-sentence, so the copy is split around them (welcomeText precedent).
 const joinedWithHtml = (siteName) => `
-    <p><span data-i18n="shareHealthInfo.hcsJoinedWith">You joined Connect with</span> ${escapeHTML(siteName)}
-    <span data-i18n="shareHealthInfo.hcsJoinedWithEnd">as your primary care facility. If this has changed, click the Update button.</span></p>`;
+    <p><span data-i18n="shareHealthInfo.hcsJoinedWith">You joined Connect with</span> ${facilityNameHtml(siteName)}
+    <span data-i18n="shareHealthInfo.hcsJoinedWithEnd">as your primary care facility. If this has changed, click the Edit button.</span></p>`;
 
 const isThePlaceHtml = (siteName) => `
-    <p>${escapeHTML(siteName)} <span data-i18n="shareHealthInfo.hcsIsThePlace">is the place where you get your primary care.</span></p>`;
+    <p>${facilityNameHtml(siteName)} <span data-i18n="shareHealthInfo.hcsIsThePlace">is the place where you get your primary care.</span></p>`;
 
-const updateButtonHtml = () => `
-    <button type="button" class="btn btn-light" id="srcdxHcsUpdate" data-i18n="shareHealthInfo.hcsUpdateButton">Update</button>`;
+const editButtonHtml = () => `
+    <button type="button" class="btn btn-light" id="srcdxHcsUpdate" data-i18n="shareHealthInfo.hcsUpdateButton">Edit</button>`;
 
 const addrValueHtml = (value) => (isNonEmpty(value)
     ? `<div>${escapeHTML(value)}</div>`
@@ -99,14 +101,14 @@ const lastUpdatedHtml = (row) => {
     return `${monthHtml}${escapeHTML(row.changeYear)}`;
 };
 
-// 'view', no prior update (per Ops note on comp 18: affiliation sentence + Update button only).
+// 'view', no prior update (per Ops note on comp 18: affiliation sentence + Edit button only).
 const initialBodyHtml = (siteName) => `
     ${introHtml()}
     ${currentFacilityHeaderHtml()}
     ${joinedWithHtml(siteName)}
-    <div class="mt-3">${updateButtonHtml()}</div>`;
+    <div class="mt-3">${editButtonHtml()}</div>`;
 
-// 'view', prior update exists (per Ops note on comp 18: no IHCS header; one Update button for everything).
+// 'view', prior update exists: show the latest facility as current and one Edit button for everything.
 const hasAddressDisplayContent = (row) => [
     row.line1, row.line2, row.line3, row.line4, row.city, row.stateOrRegion, row.zipOrPostal, row.countryCid,
 ].some(isNonEmpty);
@@ -115,12 +117,13 @@ const latestBodyHtml = (row) => {
     const addressBlock = hasAddressDisplayContent(row) ? `
         <div class="d-flex justify-content-between align-items-start mb-2">
             <strong data-i18n="shareHealthInfo.hcsFacAddressHeader">Primary care facility address:</strong>
-            ${updateButtonHtml()}
+            ${editButtonHtml()}
         </div>
         ${addressDisplayHtml(row)}` : `
-        <div class="d-flex justify-content-end mb-2">${updateButtonHtml()}</div>`;
+        <div class="d-flex justify-content-end mb-2">${editButtonHtml()}</div>`;
     return `
         ${introHtml()}
+        ${isNonEmpty(row.line1) ? isThePlaceHtml(row.line1) : ''}
         ${addressBlock}
         <p class="mt-3 mb-2" data-srcdxhcs-last-updated>
             <strong class="d-block" data-i18n="shareHealthInfo.hcsLastUpdated">Primary care facility last updated:</strong>
@@ -130,15 +133,8 @@ const latestBodyHtml = (row) => {
         <p class="mb-0"><strong data-i18n="shareHealthInfo.hcsAdditionalInfo">Additional information:</strong><br>${escapeHTML(row.additionalInfo)}</p>` : ''}`;
 };
 
-const currentFacilityHtml = (name) => isNonEmpty(name)
-    ? `${currentFacilityHeaderHtml()}${isThePlaceHtml(name)}`
-    : '';
-
-// First-time updaters see the signup IHCS. After an update, only a facility name explicitly supplied
-// in the latest record is described as current; sparse records do not carry an older name forward.
-const editingBodyHtml = (currentFacilityName) => `
+const editingBodyHtml = () => `
     ${introHtml()}
-    ${currentFacilityHtml(currentFacilityName)}
     <p class="mb-2"><strong data-i18n="shareHealthInfo.hcsFacAddressHeader">Primary care facility address:</strong></p>
     ${renderFacilityAddress(FACILITY_ID_PREFIX, {
         nameLabelKey: 'shareHealthInfo.hcsFacName',
@@ -195,9 +191,7 @@ const sectionHtml = (bodyHtml) => `
 
 const bodyHtmlForState = (participant) => {
     if (sectionState === 'submitted') return submittedBodyHtml();
-    if (sectionState === 'editing') {
-        return editingBodyHtml(latestHcsUpdate ? latestHcsUpdate.line1 : ihcsName(participant));
-    }
+    if (sectionState === 'editing') return editingBodyHtml();
     if (loadFailed) return loadErrorBodyHtml();
     return latestHcsUpdate ? latestBodyHtml(latestHcsUpdate) : initialBodyHtml(ihcsName(participant));
 };

@@ -79,11 +79,13 @@ beforeEach(() => {
 });
 
 describe('initial view (no prior update)', () => {
-    it('renders the IHCS affiliation sentence with the site name and an Update button, expanded', async () => {
+    it('renders the IHCS affiliation sentence with a bold site name and an Edit button, expanded', async () => {
         await mount();
         expect(content.querySelector('[data-i18n="shareHealthInfo.hcsJoinedWith"]')).not.toBeNull();
         expect(content.textContent).toContain('Sanford Health');
-        expect(content.querySelector('#srcdxHcsUpdate')).not.toBeNull();
+        expect(content.querySelector('.srcdx-hcs-facility-name').textContent).toBe('Sanford Health');
+        expect(content.querySelector('.srcdx-hcs-facility-name').tagName).toBe('STRONG');
+        expect(content.querySelector('#srcdxHcsUpdate').textContent).toBe('Edit');
         expect(content.querySelector('[data-srcdxhcs-card]').classList.contains('srcdx-collapsed')).toBe(false);
         // No address form or facility display in the resting view.
         expect(content.querySelector('#UPAddressHcsFacLine1')).toBeNull();
@@ -99,10 +101,10 @@ describe('initial view (no prior update)', () => {
 });
 
 describe('editing state', () => {
-    it('shows the facility form, change date, additional info, and the IHCS blurb with the signup site name for first-time updaters', async () => {
+    it('shows the blank facility form without the resting current-facility statement', async () => {
         await enterEditing();
-        expect(content.querySelector('[data-i18n="shareHealthInfo.hcsIsThePlace"]')).not.toBeNull();
-        expect(content.textContent).toContain('Sanford Health');
+        expect(content.querySelector('[data-i18n="shareHealthInfo.hcsIsThePlace"]')).toBeNull();
+        expect(content.textContent).not.toContain('Sanford Health');
         expect(content.querySelector('#UPAddressHcsFacLine1')).not.toBeNull();
         expect(content.querySelector('#UPAddressHcsFacInternational')).not.toBeNull();
         expect(content.querySelector('#srcdxHcsChangeMo')).not.toBeNull();
@@ -344,10 +346,13 @@ describe('mount staleness guard', () => {
 });
 
 describe('previously-updated view', () => {
-    it('shows the latest facility, bold last-updated label, regular date, and additional info — without the IHCS header', async () => {
+    it('shows the latest facility as current, a bold last-updated label, regular date, and additional info', async () => {
         getMostRecentHCSUpdate.mockResolvedValue(latestRow());
         await mount();
         expect(content.textContent).toContain('Sibley Memorial Hospital');
+        expect(content.querySelector('[data-i18n="shareHealthInfo.hcsIsThePlace"]')).not.toBeNull();
+        expect(content.querySelector('.srcdx-hcs-facility-name').textContent).toBe('Sibley Memorial Hospital');
+        expect(content.querySelector('.srcdx-hcs-facility-name').tagName).toBe('STRONG');
         expect(content.querySelector('[data-i18n="shareHealthInfo.hcsLastUpdated"]')).not.toBeNull();
         expect(content.querySelector('[data-i18n="shareHealthInfo.month_november"]')).not.toBeNull();
         expect(content.textContent).toContain('2025');
@@ -356,7 +361,7 @@ describe('previously-updated view', () => {
         expect(updatedBlock.querySelector('strong').classList.contains('d-block')).toBe(true);
         expect(updatedBlock.querySelector('[data-srcdxhcs-last-updated-value]').textContent.trim()).toBe('November 2025');
         expect(content.textContent).toContain('Additional information that was provided goes here.');
-        // Ops: once an update exists, the "Current primary care facility" header goes away.
+        // The current-facility sentence is shown without repeating the section header.
         expect(content.querySelector('[data-i18n="shareHealthInfo.hcsCurrentFacility"]')).toBeNull();
         expect(content.querySelector('[data-i18n="shareHealthInfo.hcsJoinedWith"]')).toBeNull();
         // Empty Line 3 renders italic "None" (per comp).
@@ -364,12 +369,11 @@ describe('previously-updated view', () => {
         expect(content.querySelector('#srcdxHcsUpdate')).not.toBeNull();
     });
 
-    it('editing from the previously-updated view opens a blank form, with the reported facility name in the current-facility blurb', async () => {
+    it('editing from the previously-updated view opens a blank form without the resting facility statement', async () => {
         getMostRecentHCSUpdate.mockResolvedValue(latestRow({ line1: 'SIBLEY MEMORIAL HOSPITAL' }));
         await enterEditing();
-        // The [IHCS] slot uses the reported facility name (Google casing preserved), not the signup site.
-        expect(content.querySelector('[data-i18n="shareHealthInfo.hcsIsThePlace"]')).not.toBeNull();
-        expect(content.textContent).toContain('SIBLEY MEMORIAL HOSPITAL');
+        expect(content.querySelector('[data-i18n="shareHealthInfo.hcsIsThePlace"]')).toBeNull();
+        expect(content.textContent).not.toContain('SIBLEY MEMORIAL HOSPITAL');
         expect(content.textContent).not.toContain('Sanford Health');
         expect(content.querySelector('#UPAddressHcsFacLine1').value).toBe('');
     });
