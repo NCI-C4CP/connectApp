@@ -52,6 +52,10 @@ const siteToHipaaSignPosMap = {
             "Eng": {nameX:110,nameY:415,signatureX:110,signatureY:455,dateX:110,dateY:375},
             "Span": {nameX:188,nameY:415,signatureX:80,signatureY:455,dateX:80,dateY:375},
         },
+        "V0.03": {
+            "Eng": {nameX:110,nameY:415,signatureX:110,signatureY:455,dateX:110,dateY:375},
+            "Span": {nameX:188,nameY:415,signatureX:80,signatureY:455,dateX:80,dateY:375},
+        },
         "default": {nameX:110,nameY:415,signatureX:110,signatureY:455,dateX:110,dateY:375},
     },
     "NCI": {
@@ -113,6 +117,10 @@ const siteToConsentSignPosMap = {
             "Span": {nameX:105,nameY:410,signatureX:105,signatureY:330,dateX:105,dateY:370}
         },
         "V0.04":  {
+            "Eng": {nameX:90,nameY:410,signatureX:110,signatureY:330,dateX:90,dateY:370},
+            "Span": {nameX:105,nameY:410,signatureX:105,signatureY:330,dateX:105,dateY:370}
+        },
+        "V0.05":  {
             "Eng": {nameX:90,nameY:410,signatureX:110,signatureY:330,dateX:90,dateY:370},
             "Span": {nameX:105,nameY:410,signatureX:105,signatureY:330,dateX:105,dateY:370}
         },

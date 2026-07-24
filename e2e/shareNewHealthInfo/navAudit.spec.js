@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { setup, m, dk, ndk, Y, N, getPayload, toTreatmentSummary } from './support.js';
+import { setup, m, dk, txType, txDetail, Y, N, getPayload, toTreatmentSummary } from './support.js';
 
 // Regression guards for the navigation audit. Each test
 // reproduces a confirmed bug's trigger and asserts the fixed behavior: Back never loops/dead-ends,
@@ -43,7 +43,7 @@ test.describe('Navigation audit regressions', () => {
         await page.click('#srcdxNext');                  // review
         await page.click('#srcdxNext');                  // submit
         const payload = await getPayload(page);
-        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021');
+        expect(txDetail(payload, m.treatment.chemo, m.treatment.startYear)).toBe('2021');
     });
 
     // 'No' via Add Another must leave a clean stack. Every Back changes screen.
@@ -77,9 +77,9 @@ test.describe('Navigation audit regressions', () => {
         await page.click('#srcdxNext');                  // review
         await page.click('#srcdxNext');                  // submit succeeds (nothing incomplete)
         const payload = await getPayload(page);
-        expect(payload[dk(m.treatment.chemo)]).toBe(Y);
-        expect(payload[dk(m.treatment.surgery)]).toBe(N);
-        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021');
+        expect(txType(payload, m.treatment.chemo)).toBe(Y);
+        expect(txType(payload, m.treatment.surgery)).toBe(N);
+        expect(txDetail(payload, m.treatment.chemo, m.treatment.startYear)).toBe('2021');
     });
 
     // Removing one of several treatments leaves a valid loop cursor. Back from the summary
@@ -153,7 +153,7 @@ test.describe('Navigation audit regressions', () => {
         await page.click('#srcdxNext');                  // review
         await page.click('#srcdxNext');                  // submit
         const payload = await getPayload(page);
-        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021');
+        expect(txDetail(payload, m.treatment.chemo, m.treatment.startYear)).toBe('2021');
     });
 
     // Editing one treatment from the summary chip, next, then back must not duplicate the
@@ -168,7 +168,7 @@ test.describe('Navigation audit regressions', () => {
         await page.click('#srcdxNext');                  // review
         await page.click('#srcdxNext');                  // submit
         const payload = await getPayload(page);
-        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021'); // not wiped
+        expect(txDetail(payload, m.treatment.chemo, m.treatment.startYear)).toBe('2021'); // not wiped
     });
 
     // After a chip edit returns, Back from summary must re-enter at the last item.
@@ -212,7 +212,7 @@ test.describe('Navigation audit regressions', () => {
         await page.click('#srcdxNext');                  // review
         await page.click('#srcdxNext');                  // submit
         const payload = await getPayload(page);
-        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021');
+        expect(txDetail(payload, m.treatment.chemo, m.treatment.startYear)).toBe('2021');
     });
 
     // Resume must refuse to restore a (pre-fix) persisted broken state: an empty-treatments
@@ -274,6 +274,6 @@ test.describe('Navigation audit regressions', () => {
         await page.click('#srcdxNext');                  // submit succeeds with Q3 restored to No
         const payload = await getPayload(page);
         expect(payload[dk(m.txReceived)]).toBe(N);
-        expect(dk(m.treatment.chemo) in payload).toBe(false);
+        expect(txType(payload, m.treatment.chemo)).toBeUndefined();
     });
 });

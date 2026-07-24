@@ -195,6 +195,7 @@ export default
         "D_369168474": "CancerScreeningHistory",
         "D_497020618": "DHQ3",
         "D_312845734": "ROIPreference2026",
+        "D_515124081": "DietScreener",
     },
 
     "Module1_OLD": {
@@ -359,20 +360,36 @@ export default
         "standaloneSurvey": true,
         "version": "716532434",
     },
+
+    DietScreener: {
+        "conceptId": "D_515124081",
+        "startTs": "824039046",
+        "completeTs": "676097165",
+        "statusFlag": "301686481",
+        "standaloneSurvey": true,
+        "version": "921489984",
+    },
+    
+    // Shared Self-Report month response cids (per constants.js MONTHS).
+    selfReportMonthValues: {
+        0: 286592124, 1: 802747980, 2: 676299940, 3: 463502254, 4: 526483288, 5: 842005720,
+        6: 574954852, 7: 887495026, 8: 181090983, 9: 259643910, 10: 615680906, 11: 840678879,
+    },
     // Self-Report Cancer Diagnosis ("Share New Health Information", issue #1295)
     selfReportCancerDx: {
         dxNumber: 480939157,      // Server-computed at submit
+        sourceQuestions: {
+            primarySite: 176158861,
+            treatmentType: 388069854,
+            treatmentOngoingEnd: 566057154,
+            screeningType: 130601750,
+        },
         // Primary diagnosis
         primarySite: 181737942,
         primarySiteOther: 546976551,
         dxMonth: 299768751,
         dxYear: 908235757,
         txReceived: 874288004,
-        // Month response cids (per constants.js MONTHS).
-        monthValues: {
-            0: 286592124, 1: 802747980, 2: 676299940, 3: 463502254, 4: 526483288, 5: 842005720,
-            6: 574954852, 7: 887495026, 8: 181090983, 9: 259643910, 10: 615680906, 11: 840678879,
-        },
         // Primary-site response cids (names + values match connectFaas utils/fieldToConceptIdMapping.js `cancerSites`).
         cancerSites: {
             anal: 939782495,
@@ -401,28 +418,28 @@ export default
             other: 807835037,
             unavailableUnknown: 178420302, // faas parity only — not a process option
         },
-        // Treatment (looped per selected type, _T_T; physicians/facilities _T_P/_T_F)
+        // Treatment details are stored under the selected treatment type; physicians/facilities use _1_1 counters.
         treatment: {
             chemo: 244216107, surgery: 293873603, radiation: 555019890, other: 459406752,
-            otherDescribe: 420392069, // flat. No loop suffix (only one 'other' treatment can exist)
+            otherDescribe: 420392069, // treatment-type source child. No loop suffix (only one 'other' treatment can exist)
             startMonth: 742710886, startYear: 281136649,
             endMonth: 625530863, endYear: 729162012, ongoing: 735592270,
             physFirstName: 964819753, physLastName: 740626474,
-            physNpi: "TODO_TxPhysNPI",
+            physNpi: 609996916,
             facility: {
                 line1: 165350319, line2: 456014563, line3: 783145717, line4: 460490909,
                 city: 493041638,
                 state: 215797578,  // Merged state/region (for international addresses)
                 zip: 385095107,    // Merged zip/postal (for international addresses)
-                intlFlag: 539812906, country: 785016438,
+                intlFlag: 539812906, googleValidated: 568499390, country: 785016438,
             },
         },
-        // Screening (looped per chosen option, _S_S; breast/colon/lung only)
+        // Screening details are stored under the selected screening option; one physician/facility per option.
         screening: {
             detected: 944065539,
             month: 853862770, year: 858052564,
-            phyFirstName: 239126548, phyLastName: 130343311,
-            phyNpi: "TODO_ScrnPhyNPI",
+            physFirstName: 239126548, physLastName: 130343311,
+            physNpi: 879021105,
             optionValues: {
                 breast2D: 425815239, breastCEM: 759642936, breastMRI: 528508094,
                 breastUS: 502929020, breastCBE: 412252588, lungCT: 633630015,
@@ -433,7 +450,7 @@ export default
                 city: 591687168,
                 state: 513329248,  // Merged state/region (for international addresses)
                 zip: 404892571,    // Merged zip/postal (for international addresses)
-                intlFlag: 501859375, country: 874199876,
+                intlFlag: 501859375, googleValidated: 803865514, country: 874199876,
             },
         },
         // Per-site submitted timestamps (ISO8601 strings)
@@ -447,6 +464,26 @@ export default
             prostate: 199928758, stomach: 602773386, testicular: 494409539, thyroid: 982594729,
             uterine: 382789932, other: 252291829,
         },
+    },
+    // Self-Report Health Care System Update ("Share New Health Information", issue #1658).
+    selfReportHCSUpdate: {
+        facility: {
+            line1: 624974556,  // Line 1 = name of primary care facility
+            line2: 655907949, // Line 2 = main address line (street, rural route, etc.)
+            line3: 858545898,
+            line4: 134439170,
+            city: 973363047,
+            state: 783801971,  // Merged state/region (for international addresses)
+            zip: 734087990,    // Merged zip/postal (for international addresses)
+            intlFlag: 892107008,
+            googleValidated: 771921322,
+            country: 111301575,
+        },
+        changeMonth: 994200497,
+        changeYear: 353158944,
+        additionalInfo: 519981637,
+        // Server-stamped at submit (ISO8601 string).
+        submittedTimestamp: 223569179,
     },
 
     // @deprecated. Retain until migration to Quest2 is complete. External variables passed into Quest that require extra async/await handling.

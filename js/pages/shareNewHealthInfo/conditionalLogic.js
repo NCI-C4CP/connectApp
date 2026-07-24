@@ -7,6 +7,7 @@ import {
     SCREENING_ELIGIBLE_SITES,
     SCREENING_OPTIONS_BY_SITE,
     PRIMARY_SITE_OTHER_KEY,
+    MAX_FACILITIES,
     MAX_PHYSICIANS,
 } from './constants.js';
 import {
@@ -16,10 +17,6 @@ import {
     isValidScreeningYear,
     isValidYearWithAllowance,
 } from './validation.js';
-
-// TODO(#1295): Re-enable after Self-Report Cancer Diagnosis passes validation.
-export const SELF_REPORT_CANCER_DX_ENABLED = false;
-export const isSelfReportCancerDxEnabled = () => SELF_REPORT_CANCER_DX_ENABLED;
 
 /**
  * Card / route eligibility: verified and not withdrawn.
@@ -32,9 +29,6 @@ export const isVerifiedNotWithdrawn = (data = {}) => {
     return data[verification] === verified
         && data[consentWithdrawn] !== yes;
 };
-
-export const canAccessSelfReportCancerDx = (data = {}) =>
-    isSelfReportCancerDxEnabled() && isVerifiedNotWithdrawn(data);
 
 /** Q1: show the "Other — please describe" write-in only when site === other. */
 export const shouldShowSiteOther = (primarySite) => primarySite === PRIMARY_SITE_OTHER_KEY;
@@ -51,6 +45,9 @@ export const getScreeningOptionsForSite = (primarySite) =>
 
 /** Up to MAX_PHYSICIANS (10) per treatment type. */
 export const canAddPhysician = (count) => count < MAX_PHYSICIANS;
+
+/** Up to MAX_FACILITIES (10) per treatment type. */
+export const canAddFacility = (count) => count < MAX_FACILITIES;
 
 /**
  * End-date XOR "ongoing": if ongoing is checked, end month/year are cleared.

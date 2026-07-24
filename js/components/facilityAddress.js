@@ -26,19 +26,31 @@ const countryOptions = () =>
  *    state/zip together (section-* tokens on form-less fields degraded Chrome to single-field fill).
  * The form never submits (no submit button + a preventDefault guard), so an Enter keypress can't reload the app.
  */
-export const renderFacilityAddress = (idPrefix, { showName = true } = {}) => `
+export const renderFacilityAddress = (idPrefix, {
+    showName = true,
+    // The HCS section overrides the Line 1/Line 2 label keys and requires the facility name.
+    nameLabelKey = 'shareHealthInfo.facName',
+    nameLabelFallback = 'Line 1 (name of facility)',
+    namePlaceholderKey = 'shareHealthInfo.facNameInput',
+    namePlaceholderFallback = 'Enter name of facility',
+    nameRequired = false,
+    line2LabelKey = 'shareHealthInfo.facLine2',
+    line2LabelFallback = 'Line 2 (street, rural route)',
+    regionMaxLength = 45,
+} = {}) => `
     <form class="srcdx-facility mb-3" data-facility="${idPrefix}" autocomplete="on" novalidate>
+        <input type="hidden" id="UPAddress${idPrefix}GoogleValidated" value="false">
         ${showName ? `
         <div class="form-group mb-2">
-            <label for="UPAddress${idPrefix}Line1" data-i18n="shareHealthInfo.facName">Line 1 (name of facility)</label>
-            <input type="text" class="form-control" id="UPAddress${idPrefix}Line1" autocomplete="off" maxlength="70" data-i18n="shareHealthInfo.facNameInput" placeholder="Enter name of facility">
+            <label for="UPAddress${idPrefix}Line1" data-i18n="${nameLabelKey}">${nameLabelFallback}</label>
+            <input type="text" class="form-control" id="UPAddress${idPrefix}Line1" autocomplete="off" maxlength="70" data-i18n="${namePlaceholderKey}" placeholder="${namePlaceholderFallback}"${nameRequired ? ' required aria-required="true"' : ''}>
         </div>` : ''}
         <div class="form-check mb-2">
             <input class="form-check-input" type="checkbox" id="UPAddress${idPrefix}International">
             <label class="form-check-label" for="UPAddress${idPrefix}International" data-i18n="shareHealthInfo.facIntl">This facility is located outside the United States</label>
         </div>
         <div class="form-group mb-2">
-            <label for="UPAddress${idPrefix}Line2" data-i18n="shareHealthInfo.facLine2">Line 2 (street, rural route)</label>
+            <label for="UPAddress${idPrefix}Line2" data-i18n="${line2LabelKey}">${line2LabelFallback}</label>
             <input type="text" class="form-control" id="UPAddress${idPrefix}Line2" autocomplete="address-line1" maxlength="70" data-i18n="shareHealthInfo.facLine2Input" placeholder="Enter street, rural route">
         </div>
         <div class="form-group mb-2">
@@ -61,7 +73,7 @@ export const renderFacilityAddress = (idPrefix, { showName = true } = {}) => `
                     <option class="option-dark-mode" value="" data-i18n="shareHealthInfo.selectOption">-- Select --</option>
                     ${stateOptions()}
                 </select>
-                <input type="text" class="form-control d-none" id="UPAddress${idPrefix}Region" autocomplete="address-level1" maxlength="45">
+                <input type="text" class="form-control d-none" id="UPAddress${idPrefix}Region" autocomplete="address-level1" maxlength="${regionMaxLength}">
             </div>
             <div class="col-6 mb-2">
                 <label id="UPAddress${idPrefix}ZipLabel" for="UPAddress${idPrefix}Zip" data-i18n="shareHealthInfo.facZip">Zip</label>
@@ -79,6 +91,11 @@ export const renderFacilityAddress = (idPrefix, { showName = true } = {}) => `
     </form>`;
 
 const q = (content, idPrefix, suffix) => content.querySelector(`#UPAddress${idPrefix}${suffix}`);
+
+const setGoogleValidated = (content, idPrefix, value) => {
+    const input = q(content, idPrefix, 'GoogleValidated');
+    if (input) input.value = value ? 'true' : 'false';
+};
 
 const domesticAutocompleteOptions = () => ({
     types: ['establishment'],
@@ -125,6 +142,7 @@ const applyInternational = (content, idPrefix, intl) => {
     const line4Row = q(content, idPrefix, 'Line4Row');
     if (line4Row) line4Row.classList.toggle('d-none', !intl);
     if (!intl) { const l4 = q(content, idPrefix, 'Line4'); if (l4) l4.value = ''; }
+    if (intl) setGoogleValidated(content, idPrefix, false);
 
     const stateLabel = q(content, idPrefix, 'StateLabel');
     if (stateLabel) {
@@ -140,6 +158,7 @@ const applyInternational = (content, idPrefix, intl) => {
     }
     if (intl) disableNameAutocomplete(content, idPrefix);
     else attachNameAutocomplete(content, idPrefix);
+    attachGoogleValidationInvalidation(content, idPrefix);
 };
 
 export const teardownFacilityAddressEvents = () => {
@@ -191,12 +210,26 @@ const attachNameAutocomplete = (content, idPrefix) => {
             set('City', city);
             set('State', state);
             set('Zip', zip);
+            setGoogleValidated(content, idPrefix, true);
         });
         line1.removeEventListener('focus', init);
         focusRegistry.delete(idPrefix);
     };
     focusRegistry.set(idPrefix, { input: line1, handler: init });
     line1.addEventListener('focus', init);
+};
+
+const attachGoogleValidationInvalidation = (content, idPrefix) => {
+    // Line 3 is supplemental unit/suite/building information that Places does not populate.
+    // Adding it does not alter the Google-matched establishment or core street address.
+    ['Line1', 'Line2', 'City', 'State', 'Region', 'Zip', 'Postal', 'Country']
+        .forEach((suffix) => {
+            const input = q(content, idPrefix, suffix);
+            if (!input || input.dataset.srcdxGoogleValidationListener) return;
+            const eventName = input.tagName === 'SELECT' ? 'change' : 'input';
+            input.addEventListener(eventName, () => setGoogleValidated(content, idPrefix, false));
+            input.dataset.srcdxGoogleValidationListener = 'true';
+        });
 };
 
 /** Wire the international toggle + name autocomplete for one rendered instance. */
@@ -213,6 +246,7 @@ export const attachFacilityAddressEvents = (content, idPrefix) => {
         intlCb.addEventListener('change', (e) => applyInternational(content, idPrefix, e.target.checked));
         intlCb.dataset.srcdxIntlListener = 'true';
     }
+    attachGoogleValidationInvalidation(content, idPrefix);
     attachNameAutocomplete(content, idPrefix);
 };
 
@@ -229,6 +263,7 @@ export const harvestFacility = (content, idPrefix) => {
         region: intl ? v('Region') : '',
         postal: intl ? v('Postal') : '',
         country: intl ? v('Country') : '',
+        googleAddressValidated: !intl && q(content, idPrefix, 'GoogleValidated')?.value === 'true',
     };
 };
 
@@ -237,6 +272,7 @@ export const fillFacility = (content, idPrefix, f = {}) => {
     const set = (suffix, val) => { const el = q(content, idPrefix, suffix); if (el && val != null) el.value = val; };
     set('Line1', f.line1); set('Line2', f.line2); set('Line3', f.line3); set('Line4', f.line4); set('City', f.city);
     set('State', f.state); set('Zip', f.zip); set('Region', f.region); set('Postal', f.postal); set('Country', f.country);
+    setGoogleValidated(content, idPrefix, !!f.googleAddressValidated && !f.isInternational);
     const cb = q(content, idPrefix, 'International');
     if (cb) {
         cb.checked = !!f.isInternational;

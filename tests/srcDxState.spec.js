@@ -68,12 +68,19 @@ describe('physician cap (max 10)', () => {
 });
 
 describe('facility + screening mutators', () => {
-    it('addFacility / removeFacility keep at least one', () => {
+    it('addFacility caps at 10 and removeFacility keeps at least one', () => {
         state.addTreatment('chemo');
-        state.addFacility(0);
+        expect(state.addFacility(0)).toBe(true);
         expect(state.getState().treatments[0].facilities).toHaveLength(2);
+        for (let i = 0; i < 8; i++) expect(state.addFacility(0)).toBe(true);
+        expect(state.getState().treatments[0].facilities).toHaveLength(10);
+        expect(state.addFacility(0)).toBe(false);
+        expect(state.getState().treatments[0].facilities).toHaveLength(10);
         state.removeFacility(0, 1);
-        expect(state.getState().treatments[0].facilities).toHaveLength(1);
+        expect(state.getState().treatments[0].facilities).toHaveLength(9);
+        while (state.getState().treatments[0].facilities.length > 1) {
+            state.removeFacility(0, 1);
+        }
         state.removeFacility(0, 0);
         expect(state.getState().treatments[0].facilities).toHaveLength(1);
     });

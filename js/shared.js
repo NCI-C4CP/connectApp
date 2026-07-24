@@ -2019,6 +2019,14 @@ export const questionnaireModules = () => {
                 moduleId: "ROIPreference2026",
                 enabled: false
             },
+            'Diet Screener': {
+                path: {
+                    en: 'prod/moduleDietScreener.txt',
+                    es: 'prod/moduleDietScreenerSpanish.txt'
+                },
+                moduleId: "DietScreener",
+                enabled: false
+            }
         }
     }
 
@@ -2140,6 +2148,14 @@ export const questionnaireModules = () => {
             moduleId: "ROIPreference2026",
             enabled: false
         },
+        'Diet Screener': {
+            path: {
+                en: 'moduleDietScreenerStage.txt',
+                es: 'moduleDietScreenerStageSpanish.txt'
+            },
+            moduleId: "DietScreener",
+            enabled: false
+        }
     };
 }
 
@@ -4288,6 +4304,10 @@ export const setModuleAttributes = async (data, modules, collections) => {
     modules['2026 Return of Results Preference Survey'].description = 'mytodolist.mainBodyReturnOfResults2026Description';
     modules['2026 Return of Results Preference Survey'].estimatedTime = 'mytodolist.10_15minutes';
 
+    modules['Diet Screener'].header = 'Diet Snapshot'; 
+    modules['Diet Screener'].description = 'mytodolist.mainBodyDietScreenerDescription';
+    modules['Diet Screener'].estimatedTime = 'mytodolist.5minutes';
+
     const currentTime = new Date();
     
     if(data['331584571']?.['266600170']?.['840048338']) {
@@ -4455,6 +4475,26 @@ export const setModuleAttributes = async (data, modules, collections) => {
         if (data?.[fieldMapping.DHQ3.statusFlag] === fieldMapping.moduleStatus.submitted) {
             modules["Diet History Questionnaire III (DHQ III)"].completed = true;
         }
+
+        let appSettingsData = null;
+        try {
+            appSettingsData = await getAppSettings(['dietScreenerGoLive']);
+        } catch (e) {
+            console.error('Failed to load app setting dietScreenerGoLive:', e);
+        }
+        //The Diet Screener is also triggered at 180 days if it is enabled for the application
+        if (appSettingsData && appSettingsData['dietScreenerGoLive'] && currentTime > new Date(appSettingsData['dietScreenerGoLive'])) {
+            if (data[fieldMapping.DietScreener.statusFlag] && data[fieldMapping.DietScreener.statusFlag] !== fieldMapping.moduleStatus.notYetEligible) {
+                modules["Diet Screener"].enabled = true;
+            }
+        }
+        
+    }
+
+    //If the diet screener is marked as submitted then it should be enabled and marked completed regardless of other criteria
+    if (data[fieldMapping.DietScreener.statusFlag] === fieldMapping.moduleStatus.submitted) {
+        modules["Diet Screener"].enabled = true;
+        modules["Diet Screener"].completed = true;
     }
 
     // Survey is closed: only show for participants who have already submitted it
