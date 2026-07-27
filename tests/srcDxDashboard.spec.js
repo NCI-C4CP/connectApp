@@ -4,6 +4,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { JSDOM } from 'jsdom';
 
+const settingsMocks = vi.hoisted(() => ({
+    loadShareHealthInfoSettings: vi.fn(),
+}));
+
 vi.mock('../js/shared.js', () => ({
     hideAnimation: vi.fn(),
     questionnaireModules: vi.fn(() => ({})),
@@ -36,6 +40,9 @@ vi.mock('../js/pages/healthCareProvider.js', () => ({
     requestPINTemplate: vi.fn(() => ''),
     healthCareProvider: vi.fn(() => ''),
     noLongerEnrollingRender: vi.fn(),
+}));
+vi.mock('../js/pages/shareNewHealthInfo/dataAccess.js', () => ({
+    loadShareHealthInfoSettings: settingsMocks.loadShareHealthInfoSettings,
 }));
 
 import * as shared from '../js/shared.js';
@@ -73,6 +80,10 @@ beforeEach(() => {
     globalThis.sessionStorage = dom.window.sessionStorage;
     globalThis.bootstrap = { Modal: function Modal() { this.show = vi.fn(); this.hide = vi.fn(); } };
     vi.clearAllMocks();
+    settingsMocks.loadShareHealthInfoSettings.mockResolvedValue({
+        selfReportActive: true,
+        enableNPIRegistry: false,
+    });
 });
 
 describe('dashboard Share New Health Information card', () => {
@@ -107,6 +118,16 @@ describe('dashboard Share New Health Information card', () => {
             expect(root.querySelector('#shareHealthInfoCard')).toBeNull();
         }
     });
+
+    it('does not render when self-report is disabled', async () => {
+        settingsMocks.loadShareHealthInfoSettings.mockResolvedValue({
+            selfReportActive: false,
+            enableNPIRegistry: false,
+        });
+
+        const root = await render(baseData());
+        expect(root.querySelector('#shareHealthInfoCard')).toBeNull();
+    });
 });
 
 describe('dashboard Share New Health Information one-time banner (issue #1658)', () => {
@@ -129,6 +150,19 @@ describe('dashboard Share New Health Information one-time banner (issue #1658)',
     it('does not show the banner to withdrawn participants', async () => {
         const data = baseData({ [fieldMapping.consentWithdrawn]: fieldMapping.yes });
         delete data.newHealthInfoBannerSeen;
+        const root = await render(data);
+        expect(root.querySelector('[data-i18n="mytodolist.newHealthInfoBanner"]')).toBeNull();
+        expect(shared.storeResponse).not.toHaveBeenCalledWith({ newHealthInfoBannerSeen: true });
+    });
+
+    it('does not show or consume the banner while self-report is disabled', async () => {
+        settingsMocks.loadShareHealthInfoSettings.mockResolvedValue({
+            selfReportActive: false,
+            enableNPIRegistry: false,
+        });
+        const data = baseData();
+        delete data.newHealthInfoBannerSeen;
+
         const root = await render(data);
         expect(root.querySelector('[data-i18n="mytodolist.newHealthInfoBanner"]')).toBeNull();
         expect(shared.storeResponse).not.toHaveBeenCalledWith({ newHealthInfoBannerSeen: true });

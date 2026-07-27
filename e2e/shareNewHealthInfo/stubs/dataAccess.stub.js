@@ -58,10 +58,6 @@ export const submitSelfReportCancerDx = async (snapshot) => {
 
 export const getPreviouslyReportedDx = async () => (window.__SRCDX_PRIOR__ || []);
 
-export const loadShareHealthInfoSettings = async () => ({
-    enableNPIRegistry: window.__SRCDX_ENABLE_NPI_REGISTRY__ === true,
-});
-
 // NPI typeahead transport: default = no matches. Specs that exercise the typeahead pass a
 // custom dataAccessBody with a provider fixture instead.
 export const searchNPIProviders = async () => [];

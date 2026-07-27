@@ -9,7 +9,7 @@ vi.mock('../js/shared.js', () => ({
     appState: { getState: () => ({ idToken: 'tok' }) },
     getIdToken: async () => 'tok',
     getApiBaseUrl: () => 'https://cf.test/app',
-    getAppSettings: vi.fn(async () => ({ enableNPIRegistry: false })),
+    getAppSettings: vi.fn(async () => ({ selfReportActive: false, enableNPIRegistry: false })),
     translateText: (k) => k, // labels assert on the i18n KEY
     allCountries: { 'United States': 1, 'United Kingdom': 2 }, // payload.js -> countryCid.js dependency
 }));
@@ -27,7 +27,10 @@ beforeEach(() => {
     fetchStub = vi.fn(async () => jsonResponse({ code: 200 }));
     vi.stubGlobal('fetch', fetchStub);
     vi.stubGlobal('location', { hostname: 'app.test' });
-    vi.mocked(getAppSettings).mockReset().mockResolvedValue({ enableNPIRegistry: false });
+    vi.mocked(getAppSettings).mockReset().mockResolvedValue({
+        selfReportActive: false,
+        enableNPIRegistry: false,
+    });
 });
 
 afterEach(() => {
@@ -139,26 +142,54 @@ describe('getPreviouslyReportedDx', () => {
 });
 
 describe('loadShareHealthInfoSettings', () => {
-    it('enables NPI registry only for strict boolean true', async () => {
-        vi.mocked(getAppSettings).mockResolvedValue({ enableNPIRegistry: true });
+    it('enables each feature only for strict boolean true', async () => {
+        vi.mocked(getAppSettings).mockResolvedValue({
+            selfReportActive: true,
+            enableNPIRegistry: true,
+        });
         const { loadShareHealthInfoSettings } = await importDataAccess();
-        expect(await loadShareHealthInfoSettings()).toEqual({ enableNPIRegistry: true });
-        expect(getAppSettings).toHaveBeenCalledWith(['enableNPIRegistry']);
+
+        await expect(loadShareHealthInfoSettings()).resolves.toEqual({
+            selfReportActive: true,
+            enableNPIRegistry: true,
+        });
+        expect(getAppSettings).toHaveBeenCalledWith(['selfReportActive', 'enableNPIRegistry']);
     });
 
     it.each([
-        ['false', { enableNPIRegistry: false }],
-        ['missing', {}],
-        ['string true', { enableNPIRegistry: 'true' }],
-    ])('keeps NPI registry disabled for %s', async (_label, settings) => {
+        ['false values', { selfReportActive: false, enableNPIRegistry: false }],
+        ['missing values', {}],
+        ['string values', { selfReportActive: 'true', enableNPIRegistry: 'true' }],
+    ])('keeps both features disabled for %s', async (_label, settings) => {
         vi.mocked(getAppSettings).mockResolvedValue(settings);
         const { loadShareHealthInfoSettings } = await importDataAccess();
-        expect(await loadShareHealthInfoSettings()).toEqual({ enableNPIRegistry: false });
+
+        await expect(loadShareHealthInfoSettings()).resolves.toEqual({
+            selfReportActive: false,
+            enableNPIRegistry: false,
+        });
     });
 
-    it('defaults NPI registry off if appSettings cannot be loaded', async () => {
+    it('preserves independent settings', async () => {
+        vi.mocked(getAppSettings).mockResolvedValue({
+            selfReportActive: false,
+            enableNPIRegistry: true,
+        });
+        const { loadShareHealthInfoSettings } = await importDataAccess();
+
+        await expect(loadShareHealthInfoSettings()).resolves.toEqual({
+            selfReportActive: false,
+            enableNPIRegistry: true,
+        });
+    });
+
+    it('fails closed if appSettings cannot be loaded', async () => {
         vi.mocked(getAppSettings).mockRejectedValue(new Error('down'));
         const { loadShareHealthInfoSettings } = await importDataAccess();
-        expect(await loadShareHealthInfoSettings()).toEqual({ enableNPIRegistry: false });
+
+        await expect(loadShareHealthInfoSettings()).resolves.toEqual({
+            selfReportActive: false,
+            enableNPIRegistry: false,
+        });
     });
 });

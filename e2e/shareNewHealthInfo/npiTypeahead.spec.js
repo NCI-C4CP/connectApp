@@ -13,8 +13,6 @@ export const submitSelfReportCancerDx = async (payload) => {
 export const getPreviouslyReportedDx = async () => (window.__SRCDX_PRIOR__ || []);
 export const saveCancerDxProgress = async () => ({ code: 200 });
 export const loadCancerDxProgress = async () => null;
-export const loadShareHealthInfoSettings = async () => ({ enableNPIRegistry: true });
-
 const PROVIDERS = [
     { npi: '1234567890', firstName: 'MAYA', lastName: 'SANTOS', credential: 'M.D.', specialty: 'Medical Oncology', city: 'BETHESDA', state: 'MD' },
     { npi: '1098765432', firstName: 'JON', lastName: 'SANTOSO', credential: 'D.O.', specialty: 'Internal Medicine', city: 'ROCKVILLE', state: 'MD' },
@@ -44,7 +42,7 @@ test('NPI feature flag off renders manual physician entry without provider searc
 
 test.describe('NPI provider typeahead', () => {
     test.beforeEach(async ({ page }) => {
-        await setup(page, { dataAccessBody: npiStubBody });
+        await setup(page, { dataAccessBody: npiStubBody, enableNPIRegistry: true });
     });
 
     test('stays closed under 2 characters (no search fired)', async ({ page }) => {
