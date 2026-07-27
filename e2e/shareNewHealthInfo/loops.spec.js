@@ -422,7 +422,6 @@ test.describe('Loops & repeatable inputs', () => {
                 export const searchNPIProviders = async () => [];
                 export const saveCancerDxProgress = async () => ({ code: 200 });
                 export const loadCancerDxProgress = async () => null;
-                export const loadShareHealthInfoSettings = async () => ({ enableNPIRegistry: false });
             `,
         });
         await page.click('#srcdxAddDiagnosis');

@@ -6,6 +6,7 @@ import { addEventHeardAboutStudy, addEventRequestPINForm, addEventHealthCareProv
 import { heardAboutStudy, requestPINTemplate, healthCareProvider, noLongerEnrollingRender } from "./healthCareProvider.js";
 import fieldMapping from '../fieldToConceptIdMapping.js';
 import { isVerifiedNotWithdrawn } from "./shareNewHealthInfo/conditionalLogic.js";
+import { loadShareHealthInfoSettings } from './shareNewHealthInfo/dataAccess.js';
 
 const persistDashboardSeenFlag = (flagName) => {
     const formData = { [flagName]: true };
@@ -229,9 +230,13 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                         persistDashboardSeenFlag('updatesSeen');
                 }
 
+                const selfReportActive = isVerifiedNotWithdrawn(data)
+                    ? (await loadShareHealthInfoSettings()).selfReportActive === true
+                    : false;
+
                 // One-time banner announcing the Share New Health Information card (issue #1658, July release).
-                // Shown to verified, not withdrawn participants on their first sign-in after release.
-                if (isVerifiedNotWithdrawn(data) && data['newHealthInfoBannerSeen'] !== true) {
+                // Shown to verified, not withdrawn participants after the runtime feature flag is enabled.
+                if (selfReportActive && data['newHealthInfoBannerSeen'] !== true) {
                     topMessage += `${topMessage.trim() !== '' ? '<br><br>' : ''}
                         <span data-i18n="mytodolist.newHealthInfoBanner">The new <strong>Share New Health Information</strong> card is now on your Dashboard. Here, you can let us know if you change where you get your primary care and share information about a recent cancer diagnosis. In the future, return to this card to check for other options to share information with our team.</span>
                     `;
@@ -263,7 +268,7 @@ export const renderDashboard = async (data, fromUserProfile, collections) => {
                     showSecondaryLoginModal();
                 }
 
-                template += await renderMainBody(data, collections, 'todo');
+                template += await renderMainBody(data, collections, selfReportActive);
                 template += `
                     </div>
                     <div class="col-xl-2">
@@ -425,14 +430,14 @@ const renderWelcomeHeader = (data) => {
     return translateHTML(template);
 }
 
-const renderMainBody = async (data, collections) => {
+const renderMainBody = async (data, collections, selfReportActive) => {
     let template = `<div class="container connect-container">
         <div class="row gy-3">
             ${await renderSurveysCard(data, collections)}
             ${renderSamplesCard(data)}
             ${await renderReportsCard(data)}
             ${renderPaymentCard(data)}
-            ${renderShareHealthInfoCard(data)}
+            ${renderShareHealthInfoCard(data, selfReportActive)}
         </div>
     </div>`;
 
@@ -495,9 +500,10 @@ const renderPaymentCard = (data) => {
     return renderCard(icon, type, href, false);
 }
 
-// "Share New Health Information" card. Shown only to verified, not withdrawn participants (issue #1295).
-const renderShareHealthInfoCard = (data) => {
-    if (!isVerifiedNotWithdrawn(data)) return '';
+// "Share New Health Information" card. Shown only when enabled for a verified,
+// not-withdrawn participant (issue #1295).
+const renderShareHealthInfoCard = (data, selfReportActive) => {
+    if (!selfReportActive || !isVerifiedNotWithdrawn(data)) return '';
     return renderCard('./images/share-health-info-icon.svg', 'shareHealthInfo', '#share-health-info', false);
 }
 

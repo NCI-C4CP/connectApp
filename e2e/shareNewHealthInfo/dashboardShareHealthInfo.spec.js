@@ -16,6 +16,19 @@ const withoutBannerSeen = (overrides = {}) => {
 };
 
 test.describe('Dashboard — Share New Health Information eligibility and announcement', () => {
+    test('disabled self-report flag hides the card and does not consume the announcement', async ({ page }) => {
+        await setupDashboard(page, {
+            participant: withoutBannerSeen(),
+            i18n: en,
+            selfReportActive: false,
+        });
+
+        await expect(card(page)).toHaveCount(0);
+        await expect(banner(page)).toHaveCount(0);
+        await expect.poll(() => page.evaluate(() => window.__DASHBOARD_DATA__.newHealthInfoBannerSeen)).toBeUndefined();
+        await expect.poll(() => page.evaluate(() => window.__DASHBOARD_STORES__)).not.toContainEqual({ newHealthInfoBannerSeen: true });
+    });
+
     test('verified withdrawn participant sees neither the card nor the announcement', async ({ page }) => {
         await setupDashboard(page, {
             participant: withoutBannerSeen({ [F.consentWithdrawn]: F.yes }),
