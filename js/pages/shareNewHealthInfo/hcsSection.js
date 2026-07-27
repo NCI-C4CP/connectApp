@@ -106,7 +106,7 @@ const initialBodyHtml = (siteName) => `
     ${introHtml()}
     ${currentFacilityHeaderHtml()}
     ${joinedWithHtml(siteName)}
-    <div class="mt-3">${editButtonHtml()}</div>`;
+    <div class="d-flex justify-content-end mt-3">${editButtonHtml()}</div>`;
 
 // 'view', prior update exists: show the latest facility as current and one Edit button for everything.
 const hasAddressDisplayContent = (row) => [
