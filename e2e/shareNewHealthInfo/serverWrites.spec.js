@@ -42,7 +42,6 @@ export const submitSelfReportCancerDx = async (snapshot) => {
     return { code: 200 };
 };
 export const getPreviouslyReportedDx = async () => [];
-export const loadShareHealthInfoSettings = async () => ({ enableNPIRegistry: false });
 export const searchNPIProviders = async () => [];
 `;
 

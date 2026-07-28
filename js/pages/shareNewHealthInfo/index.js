@@ -61,7 +61,7 @@ let pendingSave = null;
 let reverting = false;
 let savesSuspended = false;
 let inFlightSavePromise = null;
-let featureFlags = { enableNPIRegistry: false };
+let featureFlags = { selfReportActive: false, enableNPIRegistry: false };
 let saveGeneration = 0;
 
 const teardownScreenEventSources = () => {
@@ -84,7 +84,7 @@ const resetRuntime = ({ clearParticipant = false } = {}) => {
     hasServerRow = false;
     reverting = false;
     savesSuspended = false;
-    featureFlags = { enableNPIRegistry: false };
+    featureFlags = { selfReportActive: false, enableNPIRegistry: false };
     state.resetState();
     discardEditSnapshot();
     resetConfirmState();
@@ -366,9 +366,16 @@ export const renderShareNewHealthInfo = async (dataResponse) => {
         return;
     }
 
+    featureFlags = await loadShareHealthInfoSettings();
+    if (featureFlags.selfReportActive !== true) {
+        resetRuntime();
+        window.location.hash = '#dashboard';
+        hideAnimation();
+        return;
+    }
+
     content = mountContainer();
     savesSuspended = false;
-    featureFlags = await loadShareHealthInfoSettings();
 
     let saved = null;
     try {

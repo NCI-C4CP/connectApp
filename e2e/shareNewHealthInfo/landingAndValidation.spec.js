@@ -50,7 +50,6 @@ test.describe('Returning-user landing (previously reported)', () => {
                 export const searchNPIProviders = async () => [];
                 export const saveCancerDxProgress = async () => ({ code: 200 });
                 export const loadCancerDxProgress = async () => null;
-                export const loadShareHealthInfoSettings = async () => ({ enableNPIRegistry: false });
             `,
         });
         await expect(page.locator('#srcdxAddDiagnosis')).toBeVisible(); // graceful: landing renders anyway
@@ -71,7 +70,6 @@ test.describe('Returning-user landing (previously reported)', () => {
                     if (loadAttempts === 1) throw new Error('backend 500');
                     return null;
                 };
-                export const loadShareHealthInfoSettings = async () => ({ enableNPIRegistry: false });
             `,
         });
         await expect(page.locator('#srcdxAddDiagnosis')).toHaveCount(0);
