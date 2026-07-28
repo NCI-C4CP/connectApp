@@ -34,6 +34,12 @@ export const logDDRumError = () => {};
 `;
 
 const moduleStubs = new Map([
+    ['**/js/pages/shareNewHealthInfo/dataAccess.js', `
+        export const loadShareHealthInfoSettings = async () => ({
+            selfReportActive: window.__DASHBOARD_SELF_REPORT_ACTIVE__ === true,
+            enableNPIRegistry: false,
+        });
+    `],
     ['**/js/pages/questionnaire.js', 'export const blockParticipant = () => {};'],
     ['**/js/components/form.js', 'export const renderUserProfile = () => {};'],
     ['**/js/pages/consent.js', 'export const consentTemplate = () => {};'],
@@ -72,22 +78,23 @@ export const dashboardParticipant = (overrides = {}) => ({
     ...overrides,
 });
 
-export const setupDashboard = async (page, { participant, i18n } = {}) => {
+export const setupDashboard = async (page, { participant, i18n, selfReportActive = true } = {}) => {
     await page.route('**/js/shared.js', (route) =>
         route.fulfill({ contentType: 'application/javascript', body: sharedStub }));
     for (const [pattern, body] of moduleStubs) {
         await page.route(pattern, (route) =>
             route.fulfill({ contentType: 'application/javascript', body }));
     }
-    await page.addInitScript(([data, dictionary]) => {
+    await page.addInitScript(([data, dictionary, selfReportEnabled]) => {
         let persisted = {};
         try { persisted = JSON.parse(sessionStorage.getItem('dashboard_seen_flags_e2e') || '{}'); }
         catch (_) { persisted = {}; }
         window.__DASHBOARD_DATA__ = { ...data, ...persisted };
         window.__DASHBOARD_STORES__ = [];
         window.__I18N__ = dictionary || {};
+        window.__DASHBOARD_SELF_REPORT_ACTIVE__ = selfReportEnabled === true;
         window.bootstrap = { Modal: class Modal { show() {} hide() {} } };
-    }, [participant || dashboardParticipant(), i18n || null]);
+    }, [participant || dashboardParticipant(), i18n || null, selfReportActive]);
     await page.goto('/e2e/shareNewHealthInfo/dashboard.harness.html');
     await page.waitForFunction(() => window.__DASHBOARD_RENDERED__ || window.__DASHBOARD_ERROR__);
     const error = await page.evaluate(() => window.__DASHBOARD_ERROR__);

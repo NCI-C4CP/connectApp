@@ -145,6 +145,14 @@ test.describe('Share New Health Information — E2E', () => {
         await expect(page.locator('#shareHealthInfoRoot')).toHaveCount(0);
     });
 
+    test('disabled self-report flag blocks direct route access', async ({ page }) => {
+        await setup(page, { selfReportActive: false });
+        await page.waitForFunction(() => window.__SRCDX_RENDERED__ === true || window.__SRCDX_ERROR__);
+        await expect(page.locator('#srcdxAddDiagnosis')).toHaveCount(0);
+        await expect(page.locator('#shareHealthInfoRoot')).toHaveCount(0);
+        await expect.poll(() => page.evaluate(() => window.location.hash)).toBe('#dashboard');
+    });
+
     test('deceased verified participant can access the self-report flow', async ({ page }) => {
         await setup(page, { fixture: deceased });
         await expect(page.locator('#srcdxAddDiagnosis')).toBeVisible();

@@ -175,12 +175,22 @@ export const getMostRecentHCSUpdate = async () => {
     return parseHcsRow(submitted[submitted.length - 1]);
 };
 
+/**
+ * Load runtime settings for Share New Health Information.
+ * Feature flags fail closed when the settings document cannot be loaded.
+ */
 export const loadShareHealthInfoSettings = async () => {
     try {
-        const settings = await getAppSettings(['enableNPIRegistry']);
-        return { enableNPIRegistry: settings?.enableNPIRegistry === true };
+        const settings = await getAppSettings(['selfReportActive', 'enableNPIRegistry']);
+        return {
+            selfReportActive: settings?.selfReportActive === true,
+            enableNPIRegistry: settings?.enableNPIRegistry === true,
+        };
     } catch (e) {
-        return { enableNPIRegistry: false };
+        return {
+            selfReportActive: false,
+            enableNPIRegistry: false,
+        };
     }
 };
 

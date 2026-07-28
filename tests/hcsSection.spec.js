@@ -85,7 +85,10 @@ describe('initial view (no prior update)', () => {
         expect(content.textContent).toContain('Sanford Health');
         expect(content.querySelector('.srcdx-hcs-facility-name').textContent).toBe('Sanford Health');
         expect(content.querySelector('.srcdx-hcs-facility-name').tagName).toBe('STRONG');
-        expect(content.querySelector('#srcdxHcsUpdate').textContent).toBe('Edit');
+        const editButton = content.querySelector('#srcdxHcsUpdate');
+        expect(editButton.textContent).toBe('Edit');
+        expect(editButton.parentElement.classList.contains('d-flex')).toBe(true);
+        expect(editButton.parentElement.classList.contains('justify-content-end')).toBe(true);
         expect(content.querySelector('[data-srcdxhcs-card]').classList.contains('srcdx-collapsed')).toBe(false);
         // No address form or facility display in the resting view.
         expect(content.querySelector('#UPAddressHcsFacLine1')).toBeNull();
