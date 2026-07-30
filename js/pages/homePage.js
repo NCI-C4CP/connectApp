@@ -180,7 +180,7 @@ export const renderHomeAboutPage =  () => {
                 <div id="cgvBody">
                    <div class="blog-intro-text" data-i18n="home.aboutStudyIntro">
                       <h2 id="why-connect-is-important">Working Together to Prevent Cancer</h2>
-                      <img loading="lazy" src=" https://www.cancer.gov/connect-prevention-study/sites/g/files/xnrzdm246/files/styles/cgov_article/public/cgov_image/media_image/2021-06/about-the-study-lead.jpg?h=becdecf7&amp;itok=03qT_e3y" width="330" height="320" style="float:right; padding-left: 5px;" alt="A group of diverse older adults standing together with their arms around each other looking to camera" />
+                      <img loading="lazy" src=" https://www.cancer.gov/connect-prevention-study/sites/dcegconnect/files/styles/cgov_article/public/cgov_image/media_image/2021-06/about-the-study-lead.jpg?h=becdecf7&itok=KRQvkujn" width="330" height="320" style="float:right; padding-left: 5px;" alt="A group of diverse older adults standing together with their arms around each other looking to camera" />
                       <p>The Connect for Cancer Prevention Study is a research study that wants to better understand the causes of cancer and how to prevent it. We are asking you to join Connect so that we can study the health and behavior patterns that may affect cancer risk.</p>
                       <p>Together, we can change the future of cancer prevention.</p>
                    </div>
@@ -222,7 +222,7 @@ export const renderHomeAboutPage =  () => {
                          <p>If we learn how to prevent cancer, we can lower the number of people who get it. Cancer is the second-leading cause of death in the United States. While treatments are improving, the number of people who get cancer is expected to rise in the next 10 years as the population ages and lifestyles and behaviors continue to change.</p>
                          <p>To study the causes of cancer and learn how to prevent it, we can follow groups of people over a long period of time. In research, we call these groups cohorts. The Connect for Cancer Prevention Study will follow a new cohort of 200,000 adults throughout the United States.</p>
                          <div class="blog-intro-text">
-                         <img loading="lazy" src="https://www.cancer.gov/connect-prevention-study/sites/g/files/xnrzdm246/files/styles/cgov_article/public/cgov_image/media_image/2021-06/biracial-family.jpg?h=10690783&amp;itok=UknIZyNT" width="300" height="210" style="float:left; padding-right:10px;" alt="A couple with two women are swinging a child held between them and smiling" />
+                         <img loading="lazy" src="https://www.cancer.gov/connect-prevention-study/sites/dcegconnect/files/styles/cgov_article/public/cgov_image/media_image/2021-06/biracial-family.jpg?h=10690783&itok=z9U9bzg4" width="300" height="210" style="float:left; padding-right:10px;" alt="A couple with two women are swinging a child held between them and smiling" />
                          <p>We are looking for people who have never had cancer to join Connect, but there are some exceptions. If you have or once had non-melanoma skin cancer, or a condition that raises the risk of getting cancer, such as ductal carcinoma <i>in situ</i> (DCIS) of the breast (stage 0 breast cancer), you <u>can still join Connect</u>. If you have any of these conditions, we hope you join Connect. We are interested in learning how these conditions may relate to cancer risk.</p>
                          </div>
                          <p>Patterns that affect cancer risk may vary based on where people live, their race and ethnicity, their age, and other factors. It is important for Connect to include many types of people so that new discoveries can benefit everybody.</p>
@@ -249,7 +249,7 @@ export const renderHomeAboutPage =  () => {
                             <p>About Our Researchers</p>
                          </h2>
                          <div class="blog-intro-text">
-                         <img loading="lazy" src="https://www.cancer.gov/connect-prevention-study/sites/g/files/xnrzdm246/files/styles/cgov_article/public/cgov_image/media_image/2021-06/female-reseracher-tablet.jpg?h=b4427edb&amp;itok=aK3gzwZv" width="320" style="float:right; padding-left:15px;" height="200" st alt="Woman wearing a lab coat looking at a tablet computer" />
+                         <img loading="lazy" src="https://www.cancer.gov/connect-prevention-study/sites/dcegconnect/files/styles/cgov_article/public/cgov_image/media_image/2021-06/female-reseracher-tablet.jpg?h=b4427edb&itok=Jnb013Zm" width="320" style="float:right; padding-left:15px;" height="200" st alt="Woman wearing a lab coat looking at a tablet computer" />
                          <p style="margin-bottom: 0.5rem">The Connect for Cancer Prevention Study is being led by our team of federal government researchers at the National Cancer Institute (NCI), part of the National Institutes of Health (NIH), and researchers at partner health care systems. Study teams at partner health care systems have experience conducting research studies like Connect, and many have particular expertise in research related to cancer.</p>
                          </div>
                          <p style="margin-bottom: 0.5rem">Our team at NCI is part of the largest cancer research group in the world that studies the causes of disease, or epidemiology. Our team and other researchers at NCI have long histories of studying cancer and have made important discoveries. For example, in another cohort study, we found that drinking coffee was associated with lower risk of death from cancer and other causes. This was good news for coffee drinkers! NCI research informs public health policy in the United States and around the world. Connect will contribute evidence that can impact public health policy far into the future.</p>
@@ -295,7 +295,7 @@ export const renderHomeExpectationsPage = () => {
           </h1>
           <div id="cgvBody">
               <div class="blog-intro-text" data-i18n="home.whatExpectIntro">
-                <img loading="lazy" src="https://www.cancer.gov/connect-prevention-study/sites/g/files/xnrzdm246/files/styles/cgov_article/public/cgov_image/media_image/2021-06/what-to-expect-lead.jpg?h=becdecf7&amp;itok=Xqd0--45" width="350" height="320" style="float:right; padding-left:15px;" alt="Two women smiling. One woman has her arm leaning on her partner."/>
+                <img loading="lazy" src="https://www.cancer.gov/connect-prevention-study/sites/dcegconnect/files/styles/cgov_article/public/cgov_image/media_image/2021-06/what-to-expect-lead.jpg?h=becdecf7&itok=w8fJnM-V" width="350" height="320" style="float:right; padding-left:15px;" alt="Two women smiling. One woman has her arm leaning on her partner."/>
                 <p>If you are interested in joining the Connect for Cancer Prevention Study and think you are eligible, it is easy to sign up. If you choose to join Connect, we will ask you to take part in study activities from time to time. Most study activities are easy to complete online a few times each year.</p>
               </div>
               <div class="accordion">
@@ -346,7 +346,7 @@ export const renderHomeExpectationsPage = () => {
                     </p>
                     <h3>3. Agree to Share Your Electronic Health Records (EHRs)</h3>
                     <div class="blog-intro-text">
-                    <img loading="lazy" src="https://www.cancer.gov/connect-prevention-study/sites/g/files/xnrzdm246/files/styles/cgov_article/public/cgov_image/media_image/2021-06/man-on-ipad.jpg?h=6fb3b3f4&amp;itok=UnPBIuSF" width="350" height="230" style="float:right; padding-left:15px" alt="A man is sitting on the couch and looking at information on a tablet"/>
+                    <img loading="lazy" src="https://www.cancer.gov/connect-prevention-study/sites/dcegconnect/files/styles/cgov_article/public/cgov_image/media_image/2021-06/man-on-ipad.jpg?h=6fb3b3f4&itok=fMtLYw1t" width="350" height="230" style="float:right; padding-left:15px" alt="A man is sitting on the couch and looking at information on a tablet"/>
                     <p>These records include information about your past, current, or future health status, test results, medical procedures, images (such as x-rays), and medicines you take.</p>
                     </div>
                     <p>Sharing your health records gives researchers a full picture of your health. Seeing the full picture can help us learn what may make some people more likely to get cancer than others.</p>
@@ -375,7 +375,7 @@ export const renderHomeExpectationsPage = () => {
                     <div data-embed-button="cgov_image_button" data-entity-embed-display="view_mode:media.image_display_article_small" data-entity-type="media" data-entity-uuid="ad936b40-5dad-48fb-a55a-eab139bae8dc" data-langcode="en" class="embedded-entity align-right">
                       <figure class="image-small centered-set">
                           <div class="centered-element">
-                            <img loading="lazy" src="https://www.cancer.gov/connect-prevention-study/sites/g/files/xnrzdm246/files/styles/cgov_article/public/cgov_contextual_image/2021-06/Surveys-icon.png?h=83bea889&amp;itok=PmiznnRF" width="100" height="100" style="float:right; padding-left:15px" alt="Online survey icon"/>
+                            <img loading="lazy" src="https://www.cancer.gov/connect-prevention-study/sites/dcegconnect/files/styles/cgov_article/public/cgov_contextual_image/2021-06/Surveys-icon.png?h=83bea889&itok=WvJk7n1K" width="100" height="100" style="float:right; padding-left:15px" alt="Online survey icon"/>
                           </div>
                       </figure>
                     </div>
@@ -384,7 +384,7 @@ export const renderHomeExpectationsPage = () => {
                     <div data-embed-button="cgov_image_button" data-entity-embed-display="view_mode:media.image_display_article_small" data-entity-type="media" data-entity-uuid="991aae93-b84a-4890-af37-563a83abc48b" data-langcode="en" class="embedded-entity align-right">
                       <figure class="image-small centered-set">
                           <div class="centered-element">
-                            <img loading="lazy" src="https://www.cancer.gov/connect-prevention-study/sites/g/files/xnrzdm246/files/styles/cgov_article/public/cgov_contextual_image/2021-06/samples-icon.png?h=ab0ab1c4&amp;itok=efuNvI64" width="100" height="100" style="float:right; padding-left:15px" alt="Icon of a small cup of a sample"/>
+                            <img loading="lazy" src="https://www.cancer.gov/connect-prevention-study/sites/dcegconnect/files/styles/cgov_article/public/cgov_contextual_image/2021-06/samples-icon.png?h=ab0ab1c4&itok=xduGqD-d" width="100" height="100" style="float:right; padding-left:15px" alt="Icon of a small cup of a sample"/>
                           </div>
                       </figure>
                     </div>
@@ -419,7 +419,7 @@ export const renderHomeExpectationsPage = () => {
                     <div data-embed-button="cgov_image_button" data-entity-embed-display="view_mode:media.image_display_article_small" data-entity-type="media" data-entity-uuid="a06c9cb7-d53a-49fc-a725-6eade93250d4" data-langcode="en" class="embedded-entity align-right">
                       <figure class="image-small centered-set">
                           <div class="centered-element">
-                            <img loading="lazy" src="https://www.cancer.gov/connect-prevention-study/sites/g/files/xnrzdm246/files/styles/cgov_article/public/cgov_contextual_image/2021-06/health-records-icon.png?h=83bea889&amp;itok=zq0TdLYR" width="100" height="100" style="float:right; padding-left:15px" alt="Health records icon"/>
+                            <img loading="lazy" src="https://www.cancer.gov/connect-prevention-study/sites/dcegconnect/files/styles/cgov_article/public/cgov_contextual_image/2021-06/health-records-icon.png?h=83bea889&itok=pzERBDvY" width="100" height="100" style="float:right; padding-left:15px" alt="Health records icon"/>
                           </div>
                       </figure>
                     </div>
