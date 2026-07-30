@@ -1,13 +1,13 @@
 // In-progress diagnosis state. Plain data only. payload.js applies concept IDs.
 
-import { MAX_PHYSICIANS, SCREENS } from './constants.js';
+import { MAX_FACILITIES, MAX_PHYSICIANS, SCREENS } from './constants.js';
 
 export const makePhysician = () => ({ firstName: '', lastName: '', npi: '' });
 
 export const makeFacility = () => ({
     line1: '', line2: '', line3: '', line4: '',
     city: '', state: '', region: '', zip: '', postal: '',
-    isInternational: false, country: '',
+    isInternational: false, country: '', googleAddressValidated: false,
 });
 
 export const makeTreatment = (type = null) => ({
@@ -93,7 +93,11 @@ export const removePhysician = (txIndex, pIndex) => {
 
 export const addFacility = (txIndex) => {
     const tx = diagnosis.treatments[txIndex];
-    if (tx) tx.facilities.push(makeFacility());
+    if (tx && tx.facilities.length < MAX_FACILITIES) {
+        tx.facilities.push(makeFacility());
+        return true;
+    }
+    return false;
 };
 export const removeFacility = (txIndex, fIndex) => {
     const tx = diagnosis.treatments[txIndex];

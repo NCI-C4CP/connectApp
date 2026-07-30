@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { setup, m, dk, ndk, Y, N, getPayload } from './support.js';
+import { setup, m, dk, txType, txDetail, Y, N, getPayload } from './support.js';
 import en from '../../i18n/en.js';
 import es from '../../i18n/es.js';
 
@@ -50,7 +50,6 @@ test.describe('Returning-user landing (previously reported)', () => {
                 export const searchNPIProviders = async () => [];
                 export const saveCancerDxProgress = async () => ({ code: 200 });
                 export const loadCancerDxProgress = async () => null;
-                export const loadShareHealthInfoSettings = async () => ({ enableNPIRegistry: false });
             `,
         });
         await expect(page.locator('#srcdxAddDiagnosis')).toBeVisible(); // graceful: landing renders anyway
@@ -71,7 +70,6 @@ test.describe('Returning-user landing (previously reported)', () => {
                     if (loadAttempts === 1) throw new Error('backend 500');
                     return null;
                 };
-                export const loadShareHealthInfoSettings = async () => ({ enableNPIRegistry: false });
             `,
         });
         await expect(page.locator('#srcdxAddDiagnosis')).toHaveCount(0);
@@ -184,8 +182,8 @@ test.describe('Validation & encoding edge cases', () => {
         await page.click('#srcdxNext');                // submit
         const payload = await getPayload(page);
         expect(dk(m.txReceived) in payload).toBe(false);
-        expect(dk(m.treatment.chemo) in payload).toBe(false);
-        expect(ndk(m.treatment.chemo, m.treatment.startYear) in payload).toBe(false);
+        expect(txType(payload, m.treatment.chemo)).toBeUndefined();
+        expect(txDetail(payload, m.treatment.chemo, m.treatment.startYear)).toBeUndefined();
     });
 
     test('Q3 treatment type selection is optional when treatment was received', async ({ page }) => {
@@ -207,11 +205,11 @@ test.describe('Validation & encoding edge cases', () => {
         await page.click('#srcdxNext');                // submit
         const payload = await getPayload(page);
         expect(payload[dk(m.txReceived)]).toBe(Y);
-        expect(payload[dk(m.treatment.chemo)]).toBe(N);
-        expect(payload[dk(m.treatment.surgery)]).toBe(N);
-        expect(payload[dk(m.treatment.radiation)]).toBe(N);
-        expect(payload[dk(m.treatment.other)]).toBe(N);
-        expect(ndk(m.treatment.chemo, m.treatment.startYear) in payload).toBe(false);
+        expect(txType(payload, m.treatment.chemo)).toBe(N);
+        expect(txType(payload, m.treatment.surgery)).toBe(N);
+        expect(txType(payload, m.treatment.radiation)).toBe(N);
+        expect(txType(payload, m.treatment.other)).toBe(N);
+        expect(txDetail(payload, m.treatment.chemo, m.treatment.startYear)).toBeUndefined();
     });
 
     test('treatment start year before diagnosis is rejected; a +5 future scheduled year is allowed', async ({ page }) => {

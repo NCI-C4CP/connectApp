@@ -9,7 +9,7 @@ vi.mock('../js/shared.js', () => ({
     appState: { getState: () => ({ idToken: 'tok' }) },
     getIdToken: async () => 'tok',
     getApiBaseUrl: () => 'https://cf.test/app',
-    getAppSettings: vi.fn(async () => ({ enableNPIRegistry: false })),
+    getAppSettings: vi.fn(async () => ({ selfReportActive: false, enableNPIRegistry: false })),
     translateText: (k) => k, // labels assert on the i18n KEY
     allCountries: { 'United States': 1, 'United Kingdom': 2 }, // payload.js -> countryCid.js dependency
 }));
@@ -27,7 +27,10 @@ beforeEach(() => {
     fetchStub = vi.fn(async () => jsonResponse({ code: 200 }));
     vi.stubGlobal('fetch', fetchStub);
     vi.stubGlobal('location', { hostname: 'app.test' });
-    vi.mocked(getAppSettings).mockReset().mockResolvedValue({ enableNPIRegistry: false });
+    vi.mocked(getAppSettings).mockReset().mockResolvedValue({
+        selfReportActive: false,
+        enableNPIRegistry: false,
+    });
 });
 
 afterEach(() => {
@@ -37,13 +40,13 @@ afterEach(() => {
 describe('saveCancerDxProgress', () => {
     it('POSTs the snapshot to storeSelfReportCancerDx?action=save with a Bearer token', async () => {
         const { saveCancerDxProgress } = await importDataAccess();
-        const res = await saveCancerDxProgress({ D_181737942: '847945207', stateJSON: '{}' });
+        const res = await saveCancerDxProgress({ D_176158861: { D_181737942: '847945207' }, stateJSON: '{}' });
         expect(res).toEqual({ code: 200 });
         const [url, options] = fetchStub.mock.calls[0];
         expect(url).toBe('https://cf.test/app?api=storeSelfReportCancerDx&action=save');
         expect(options.method).toBe('POST');
         expect(options.headers.Authorization).toBe('Bearer tok');
-        expect(JSON.parse(options.body)).toEqual({ D_181737942: '847945207', stateJSON: '{}' });
+        expect(JSON.parse(options.body)).toEqual({ D_176158861: { D_181737942: '847945207' }, stateJSON: '{}' });
     });
 
     it('resolves { code: 0 } on network failure (never throws)', async () => {
@@ -63,7 +66,7 @@ describe('saveCancerDxProgress', () => {
 describe('submitSelfReportCancerDx', () => {
     it('POSTs the same snapshot shape to storeSelfReportCancerDx?action=submit', async () => {
         const { submitSelfReportCancerDx } = await importDataAccess();
-        await submitSelfReportCancerDx({ D_181737942: '847945207' });
+        await submitSelfReportCancerDx({ D_176158861: { D_181737942: '847945207' } });
         expect(fetchStub.mock.calls[0][0]).toBe('https://cf.test/app?api=storeSelfReportCancerDx&action=submit');
         expect(fetchStub.mock.calls[0][1].method).toBe('POST');
     });
@@ -114,10 +117,10 @@ describe('getPreviouslyReportedDx', () => {
             data: {
                 inProgress: null,
                 submitted: [
-                    { D_181737942: '847945207', D_299768751: '615680906', D_908235757: '2024' }, // breast, Nov
-                    { D_181737942: '295976386', D_908235757: '2021' },                            // prostate, year only
-                    { D_181737942: '807835037', D_546976551: 'Gallbladder', D_908235757: '2020' }, // other, with write-in
-                    { D_181737942: '807835037', D_546976551: '   ', D_908235757: '2019' },         // other, blank write-in
+                    { D_176158861: { D_181737942: '847945207' }, D_299768751: '615680906', D_908235757: '2024' }, // breast, Nov
+                    { D_176158861: { D_181737942: '295976386' }, D_908235757: '2021' },                            // prostate, year only
+                    { D_176158861: { D_181737942: '807835037', D_546976551: 'Gallbladder' }, D_908235757: '2020' }, // other, with write-in
+                    { D_176158861: { D_181737942: '807835037', D_546976551: '   ' }, D_908235757: '2019' },         // other, blank write-in
                 ],
             },
             code: 200,
@@ -139,26 +142,54 @@ describe('getPreviouslyReportedDx', () => {
 });
 
 describe('loadShareHealthInfoSettings', () => {
-    it('enables NPI registry only for strict boolean true', async () => {
-        vi.mocked(getAppSettings).mockResolvedValue({ enableNPIRegistry: true });
+    it('enables each feature only for strict boolean true', async () => {
+        vi.mocked(getAppSettings).mockResolvedValue({
+            selfReportActive: true,
+            enableNPIRegistry: true,
+        });
         const { loadShareHealthInfoSettings } = await importDataAccess();
-        expect(await loadShareHealthInfoSettings()).toEqual({ enableNPIRegistry: true });
-        expect(getAppSettings).toHaveBeenCalledWith(['enableNPIRegistry']);
+
+        await expect(loadShareHealthInfoSettings()).resolves.toEqual({
+            selfReportActive: true,
+            enableNPIRegistry: true,
+        });
+        expect(getAppSettings).toHaveBeenCalledWith(['selfReportActive', 'enableNPIRegistry']);
     });
 
     it.each([
-        ['false', { enableNPIRegistry: false }],
-        ['missing', {}],
-        ['string true', { enableNPIRegistry: 'true' }],
-    ])('keeps NPI registry disabled for %s', async (_label, settings) => {
+        ['false values', { selfReportActive: false, enableNPIRegistry: false }],
+        ['missing values', {}],
+        ['string values', { selfReportActive: 'true', enableNPIRegistry: 'true' }],
+    ])('keeps both features disabled for %s', async (_label, settings) => {
         vi.mocked(getAppSettings).mockResolvedValue(settings);
         const { loadShareHealthInfoSettings } = await importDataAccess();
-        expect(await loadShareHealthInfoSettings()).toEqual({ enableNPIRegistry: false });
+
+        await expect(loadShareHealthInfoSettings()).resolves.toEqual({
+            selfReportActive: false,
+            enableNPIRegistry: false,
+        });
     });
 
-    it('defaults NPI registry off if appSettings cannot be loaded', async () => {
+    it('preserves independent settings', async () => {
+        vi.mocked(getAppSettings).mockResolvedValue({
+            selfReportActive: false,
+            enableNPIRegistry: true,
+        });
+        const { loadShareHealthInfoSettings } = await importDataAccess();
+
+        await expect(loadShareHealthInfoSettings()).resolves.toEqual({
+            selfReportActive: false,
+            enableNPIRegistry: true,
+        });
+    });
+
+    it('fails closed if appSettings cannot be loaded', async () => {
         vi.mocked(getAppSettings).mockRejectedValue(new Error('down'));
         const { loadShareHealthInfoSettings } = await importDataAccess();
-        expect(await loadShareHealthInfoSettings()).toEqual({ enableNPIRegistry: false });
+
+        await expect(loadShareHealthInfoSettings()).resolves.toEqual({
+            selfReportActive: false,
+            enableNPIRegistry: false,
+        });
     });
 });

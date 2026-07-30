@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { setup, m, ndk, txdk, getPayload, toTreatmentDetail, toTreatmentGate } from './support.js';
+import { setup, m, txRow, screeningDetail, getPayload, toTreatmentDetail, toTreatmentGate } from './support.js';
 
 // NPI provider typeahead, end to end: suggestions while typing in the physician Last name,
 // selection fills the names + captures the NPI into the payload, edits clear the match, and
@@ -13,8 +13,6 @@ export const submitSelfReportCancerDx = async (payload) => {
 export const getPreviouslyReportedDx = async () => (window.__SRCDX_PRIOR__ || []);
 export const saveCancerDxProgress = async () => ({ code: 200 });
 export const loadCancerDxProgress = async () => null;
-export const loadShareHealthInfoSettings = async () => ({ enableNPIRegistry: true });
-
 const PROVIDERS = [
     { npi: '1234567890', firstName: 'MAYA', lastName: 'SANTOS', credential: 'M.D.', specialty: 'Medical Oncology', city: 'BETHESDA', state: 'MD' },
     { npi: '1098765432', firstName: 'JON', lastName: 'SANTOSO', credential: 'D.O.', specialty: 'Internal Medicine', city: 'ROCKVILLE', state: 'MD' },
@@ -44,7 +42,7 @@ test('NPI feature flag off renders manual physician entry without provider searc
 
 test.describe('NPI provider typeahead', () => {
     test.beforeEach(async ({ page }) => {
-        await setup(page, { dataAccessBody: npiStubBody });
+        await setup(page, { dataAccessBody: npiStubBody, enableNPIRegistry: true });
     });
 
     test('stays closed under 2 characters (no search fired)', async ({ page }) => {
@@ -79,11 +77,9 @@ test.describe('NPI provider typeahead', () => {
         await page.click('#srcdxNext');                 // review
         await page.click('#srcdxNext');                 // submit
         const payload = await getPayload(page);
-        // NPI is captured in state (rides stateJSON for resume) but OMITTED from the D_ fields
-        // while its concept id is still TODO — flips on automatically when the mapping gets the cid.
-        expect(txdk(m.treatment.chemo, m.treatment.physNpi, 1) in payload).toBe(false);
-        expect(payload[txdk(m.treatment.chemo, m.treatment.physFirstName, 1)]).toBe('MAYA');
-        expect(payload[txdk(m.treatment.chemo, m.treatment.physLastName, 1)]).toBe('SANTOS');
+        expect(txRow(payload, m.treatment.chemo, m.treatment.physNpi, 1)).toBe('1234567890');
+        expect(txRow(payload, m.treatment.chemo, m.treatment.physFirstName, 1)).toBe('MAYA');
+        expect(txRow(payload, m.treatment.chemo, m.treatment.physLastName, 1)).toBe('SANTOS');
     });
 
     test('editing a name after matching clears the chip and the payload omits the NPI', async ({ page }) => {
@@ -100,9 +96,9 @@ test.describe('NPI provider typeahead', () => {
         await page.click('#srcdxNext');
         await page.click('#srcdxNext');
         const payload = await getPayload(page);
-        expect(txdk(m.treatment.chemo, m.treatment.physNpi, 1) in payload).toBe(false);
-        expect(payload[txdk(m.treatment.chemo, m.treatment.physLastName, 1)]).toBe('Santosa');
-        expect(payload[txdk(m.treatment.chemo, m.treatment.physFirstName, 1)]).toBe('MAYA'); // typed names persist
+        expect(txRow(payload, m.treatment.chemo, m.treatment.physNpi, 1)).toBeUndefined();
+        expect(txRow(payload, m.treatment.chemo, m.treatment.physLastName, 1)).toBe('Santosa');
+        expect(txRow(payload, m.treatment.chemo, m.treatment.physFirstName, 1)).toBe('MAYA'); // typed names persist
     });
 
     test('no matches shows the manual-entry hint and never blocks the flow', async ({ page }) => {
@@ -119,8 +115,8 @@ test.describe('NPI provider typeahead', () => {
         await page.click('#srcdxNext');
         await page.click('#srcdxNext');
         const payload = await getPayload(page);
-        expect(payload[txdk(m.treatment.chemo, m.treatment.physLastName, 1)]).toBe('Zzz');
-        expect(txdk(m.treatment.chemo, m.treatment.physNpi, 1) in payload).toBe(false);
+        expect(txRow(payload, m.treatment.chemo, m.treatment.physLastName, 1)).toBe('Zzz');
+        expect(txRow(payload, m.treatment.chemo, m.treatment.physNpi, 1)).toBeUndefined();
     });
 
     test('a match survives the add-another-physician rerender; only matched rows emit an NPI', async ({ page }) => {
@@ -137,11 +133,11 @@ test.describe('NPI provider typeahead', () => {
         await page.click('#srcdxNext');
         await page.click('#srcdxNext');
         const payload = await getPayload(page);
-        expect(txdk(m.treatment.chemo, m.treatment.physNpi, 1) in payload).toBe(false); // TODO-cid: omitted (state still carries it)
-        expect(txdk(m.treatment.chemo, m.treatment.physNpi, 2) in payload).toBe(false);
+        expect(txRow(payload, m.treatment.chemo, m.treatment.physNpi, 1)).toBe('1234567890');
+        expect(txRow(payload, m.treatment.chemo, m.treatment.physNpi, 2)).toBeUndefined();
     });
 
-    test('the screening referring physician gets the same typeahead; payload carries phyNpi', async ({ page }) => {
+    test('the screening referring physician gets the same typeahead; payload carries physNpi', async ({ page }) => {
         await toTreatmentGate(page, { site: 'breast' }); // screening-eligible site
         await page.check('#txReceivedNo');
         await page.click('#srcdxNext');                 // -> screening gate (Q4)
@@ -159,7 +155,7 @@ test.describe('NPI provider typeahead', () => {
         await page.click('#srcdxNext');                 // review
         await page.click('#srcdxNext');                 // submit
         const payload = await getPayload(page);
-        expect(ndk(m.screening.optionValues.breast2D, m.screening.phyNpi) in payload).toBe(false); // TODO-cid: omitted from D_ fields
-        expect(payload[ndk(m.screening.optionValues.breast2D, m.screening.phyFirstName)]).toBe('MAYA'); // the selected name DID land
+        expect(screeningDetail(payload, m.screening.optionValues.breast2D, m.screening.physNpi)).toBe('1234567890');
+        expect(screeningDetail(payload, m.screening.optionValues.breast2D, m.screening.physFirstName)).toBe('MAYA');
     });
 });

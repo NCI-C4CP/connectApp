@@ -1,12 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import {
-    SELF_REPORT_CANCER_DX_ENABLED,
-    canAccessSelfReportCancerDx,
     isVerifiedNotWithdrawn,
     shouldShowSiteOther,
     canContinueFromPrimarySite,
     isScreeningEligible,
     getScreeningOptionsForSite,
+    canAddFacility,
     canAddPhysician,
     applyOngoingExclusivity,
     isTreatmentComplete,
@@ -35,13 +34,6 @@ describe('isVerifiedNotWithdrawn', () => {
         expect(isVerifiedNotWithdrawn(participantNotVerified)).toBe(false);
         expect(isVerifiedNotWithdrawn(participantWithdrawn)).toBe(false);
         expect(isVerifiedNotWithdrawn({})).toBe(false);
-    });
-});
-
-describe('self-report cancer dx release gate', () => {
-    it('keeps the feature disabled until Ops validation is complete', () => {
-        expect(SELF_REPORT_CANCER_DX_ENABLED).toBe(false);
-        expect(canAccessSelfReportCancerDx(participantVerifiedNotWithdrawn)).toBe(false);
     });
 });
 
@@ -86,6 +78,15 @@ describe('canAddPhysician (max 10)', () => {
         expect(canAddPhysician(9)).toBe(true);
         expect(canAddPhysician(10)).toBe(false);
         expect(canAddPhysician(11)).toBe(false);
+    });
+});
+
+describe('canAddFacility (max 10)', () => {
+    it('allows up to 10', () => {
+        expect(canAddFacility(0)).toBe(true);
+        expect(canAddFacility(9)).toBe(true);
+        expect(canAddFacility(10)).toBe(false);
+        expect(canAddFacility(11)).toBe(false);
     });
 });
 

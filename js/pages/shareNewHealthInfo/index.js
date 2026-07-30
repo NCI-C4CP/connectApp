@@ -1,7 +1,7 @@
 // Controller for the Self-Report Cancer Diagnosis flow.
 
 import { getMyData, hideAnimation, getSelectedLanguage } from '../../shared.js';
-import { canAccessSelfReportCancerDx, isSelfReportCancerDxEnabled } from './conditionalLogic.js';
+import { isVerifiedNotWithdrawn } from './conditionalLogic.js';
 import {
     getPreviouslyReportedDx, submitSelfReportCancerDx, saveCancerDxProgress, loadCancerDxProgress,
     loadShareHealthInfoSettings,
@@ -13,6 +13,7 @@ import { nextRenderableScreen, pushHistory, popHistory, canRenderScreen, fallbac
 import { buildProgressSnapshot } from './payload.js';
 import { teardownFacilityAddressEvents } from '../../components/facilityAddress.js';
 import { teardownNpiTypeaheads } from './npiTypeahead.js';
+import { mountHcsSection, resetHcsSection } from './hcsSection.js';
 import { renderLanding } from './screens/landing.js';
 import { renderPrimarySite } from './screens/primarySite.js';
 import { renderDiagnosisDate } from './screens/diagnosisDate.js';
@@ -60,7 +61,7 @@ let pendingSave = null;
 let reverting = false;
 let savesSuspended = false;
 let inFlightSavePromise = null;
-let featureFlags = { enableNPIRegistry: false };
+let featureFlags = { selfReportActive: false, enableNPIRegistry: false };
 let saveGeneration = 0;
 
 const teardownScreenEventSources = () => {
@@ -83,10 +84,11 @@ const resetRuntime = ({ clearParticipant = false } = {}) => {
     hasServerRow = false;
     reverting = false;
     savesSuspended = false;
-    featureFlags = { enableNPIRegistry: false };
+    featureFlags = { selfReportActive: false, enableNPIRegistry: false };
     state.resetState();
     discardEditSnapshot();
     resetConfirmState();
+    resetHcsSection();
     teardownScreenEventSources();
     if (clearParticipant) {
         participant = {};
@@ -314,6 +316,8 @@ const renderScreenId = (screenId) => {
     if (screenId !== SCREENS.CONFIRMATION) persist();
     teardownScreenEventSources();
     renderer(content, ctx);
+    // The confirmation screen is a resting state: mount the interactive HCS section.
+    if (screenId === SCREENS.CONFIRMATION) mountHcsSection(content, { participant });
 };
 
 const startDiagnosis = () => {
@@ -337,6 +341,7 @@ const showLanding = async () => {
     state.getPosition().screenId = SCREENS.LANDING;
     if (hasServerRow) persist();
     renderLanding(content, { onStart: startDiagnosis, prior });
+    await mountHcsSection(content, { participant });
 };
 
 const showProgressLoadError = () => {
@@ -346,13 +351,6 @@ const showProgressLoadError = () => {
 };
 
 export const renderShareNewHealthInfo = async (dataResponse) => {
-    if (!isSelfReportCancerDxEnabled()) {
-        resetRuntime();
-        window.location.hash = '#dashboard';
-        hideAnimation();
-        return;
-    }
-
     const response = dataResponse && dataResponse.data ? dataResponse : await getMyData();
     participant = (response && response.data) || {};
     const nextParticipantKey = participantKeyFor(participant);
@@ -361,7 +359,15 @@ export const renderShareNewHealthInfo = async (dataResponse) => {
     }
     currentParticipantKey = nextParticipantKey;
 
-    if (!canAccessSelfReportCancerDx(participant)) {
+    if (!isVerifiedNotWithdrawn(participant)) {
+        resetRuntime();
+        window.location.hash = '#dashboard';
+        hideAnimation();
+        return;
+    }
+
+    featureFlags = await loadShareHealthInfoSettings();
+    if (featureFlags.selfReportActive !== true) {
         resetRuntime();
         window.location.hash = '#dashboard';
         hideAnimation();
@@ -370,7 +376,6 @@ export const renderShareNewHealthInfo = async (dataResponse) => {
 
     content = mountContainer();
     savesSuspended = false;
-    featureFlags = await loadShareHealthInfoSettings();
 
     let saved = null;
     try {

@@ -476,7 +476,7 @@ const en = {
         "consentPageBody5List": "<li>My data will be securely stored in the Connect database.</li><li>Samples I donate will be stored by Connect for future research. These samples may contain my genetic material (DNA).</li><li>My data and data from other participants will be used by researchers to do studies on cancer specific or other health topics.</li><li>I will be asked to answer surveys and donate more samples in the future. I can say yes or no, and I will remain a Connect participant either way.</li><li>I can withdraw (quit) at any time. There is no penalty if I withdraw.</li><li>I can contact the Connect Support Center at <a href=\"https://cancer.gov/connectstudy/support\" target=\"_blank\">cancer.gov/connectstudy/support</a> or 1-866-462-6621 (8:00 a.m.-10:00 p.m. CT on weekdays, and 9:00 a.m.-6:00 p.m. CT on weekends) with questions about the study and my participation at any time.</li>",
         "consentPageWait": "Please wait...",
         "consentIframeHFHS": {
-            "src": "./forms/consent/HFHS_Consent_V0.04.html"
+            "src": "./forms/consent/HFHS_Consent_V0.05.html"
         },
         "consentIframeHP": {
             "src": "./forms/consent/HP_Consent_V0.06.html"
@@ -491,7 +491,7 @@ const en = {
             "src": "./forms/consent/KPHI_Consent_V0.04.html"
         },
         "consentIframeKPNW": {
-            "src": "./forms/consent/KPNW_Consent_V0.04.html"
+            "src": "./forms/consent/KPNW_Consent_V0.05.html"
         },
         "consentIframeMarshfield": {
             "src": "./forms/consent/Marshfield_Consent_V0.04.html"
@@ -511,7 +511,7 @@ const en = {
         "consentUnsignedHFHS": {
             "title": "Download consent form",
             "innerHTML": " Download an unsigned copy of the informed consent form&nbsp<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/HFHS_Consent_V0.04.pdf"
+            "href": "./forms/consent/HFHS_Consent_V0.05.pdf"
         },
         "consentUnsignedHP": {
             "title": "Download consent form",
@@ -536,7 +536,7 @@ const en = {
         "consentUnsignedKPNW": {
             "title": "Download consent form",
             "innerHTML": " Download an unsigned copy of the informed consent form&nbsp<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/KPNW_Consent_V0.04.pdf"
+            "href": "./forms/consent/KPNW_Consent_V0.05.pdf"
         },
         "consentUnsignedMarshfield": {
             "title": "Download consent form",
@@ -579,7 +579,7 @@ const en = {
             "src": "./forms/HIPAA/KPHI_HIPAA_V0.02.html"
         },
         "hipaaIframeKPNW": {
-            "src": "./forms/HIPAA/KPNW_HIPAA_V0.02.html"
+            "src": "./forms/HIPAA/KPNW_HIPAA_V0.03.html"
         },
         "hipaaIframeMarshfield": {
             "src": "./forms/HIPAA/Marshfield_HIPAA_V0.02.html"
@@ -624,7 +624,7 @@ const en = {
         "hipaaUnsignedKPNW": {
             "title": "Download health records release form",
             "innerHTML": "Download an unsigned copy of the release form&nbsp<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/HIPAA/KPNW_HIPAA_V0.02.pdf"
+            "href": "./forms/HIPAA/KPNW_HIPAA_V0.03.pdf"
         },
         "hipaaUnsignedMarshfield": {
             "title": "Download health records release form",
@@ -736,6 +736,7 @@ const en = {
     },
     "mytodolist": {
         "newUpdates": "<span style=\"font-weight: bold\">We've Updated MyConnect!</span><br> You may notice things look a little different here. While nothing about the study has changed, we've made some design improvements to give MyConnect a fresh new look and make it easier navigate.<br><br>Need to update your profile, sign-in information, or view forms related to your participation? Just click \"Edit my profile\" in the Profile menu at the top right-hand corner of your screen.<br><br>We’ll be rolling out other design updates over the next few months, so stay tuned for even more improvements! If you have any questions about the changes, feel free to contact our team at the <a href=\"https://MyConnect.cancer.gov/support\" target=\"_blank\">Connect Support Center</a>.<br><br>We hope you enjoy the new experience!",
+        "newHealthInfoBanner": "The new <strong>Share New Health Information</strong> card is now on your Dashboard. Here, you can let us know if you change where you get your primary care and share information about a recent cancer diagnosis. In the future, return to this card to check for other options to share information with our team.",
         "withdrawnConnect": "You have withdrawn from Connect. We will not collect any more data from you. If you have any questions, please contact the Connect Support Center by calling 1-877-505-0253 or by emailing <a href='mailto:ConnectSupport@norc.org'>ConnectSupport@norc.org</a>.",
         "deletedData": "At your request, we have deleted your Connect data. If you have any questions, please contact the Connect Support Center by calling 1-877-505-0253 or by emailing  <a href='mailto:ConnectSupport@norc.org'>ConnectSupport@norc.org</a>.",
         "newFormSign": "You have a new <a href='#forms'>form</a> to sign.",
@@ -817,9 +818,11 @@ const en = {
         "mainBodyCancerScreeningHistoryDescription": "Questions about past tests you may have had to screen for cancer. These are tests that look for cancer in people without symptoms. Please complete this survey even if you’ve never been screened for cancer. Your responses are important.",
         "surveysCompleted": "You've finished all available Connect surveys. We will reach out to you when there are new surveys and study activities to complete. Thank you for your contributions to the study!",
         "mainBodyDHQ3Header": "Diet History Questionnaire III (DHQ III)",
-        "mainBodyDHQ3Description": "Questions about your typical diet in the past year. After clicking \"start\", the survey will open in a new browser tab or window and you will see a standard Federal data security warning message. Click \"Continue to Questionnaire\" to start the survey.",
+        "mainBodyDHQ3Description": "Detailed questions about your typical diet in the past year to give researchers the most complete understanding of your diet. After clicking \"start\", the survey will open in a new browser tab or window and you will see a standard Federal data security warning message. Click \"Continue to Questionnaire\" to start the survey.",
         "mainBodyReturnOfResults2026Header": "2026 Return of Results Preference Survey",
-        "mainBodyReturnOfResults2026Description": "Questions about the types of results and information you’re interested in getting back from Connect research."
+        "mainBodyReturnOfResults2026Description": "Questions about the types of results and information you’re interested in getting back from Connect research.",
+        "mainBodyDietScreenerHeader": "Diet Snapshot",
+        "mainBodyDietScreenerDescription": "Short list of questions about your typical diet in the past year to give researchers a snapshot of your diet."
     },
     "notifications": {
         "read": "Read",
@@ -1734,6 +1737,7 @@ const en = {
         "mod2024ConnectExperienceSurvey": "2024 Connect Experience Survey",
         "modCancerScreeningHistorySurvey": "Cancer Screening History Survey",
         "modDietHistoryQuestionnaireIIIDHQIII": "Diet History Questionnaire III (DHQ III)",
+        "modDietSnapshot": "Diet Snapshot",
         "mod2026ReturnofResultsPreferenceSurvey": "2026 Return of Results Preference Survey",
         "sessionInactiveTitle": "Inactive",
         "sessionInactive": "You were inactive for 20 minutes, would you like to extend your session?<div class=\"modal-footer\"><button type=\"button\" title=\"Close\" class=\"btn btn-dark log-out-user\" data-bs-dismiss=\"modal\">Log Out</button><button type=\"button\" title=\"Continue\" class=\"btn btn-primary extend-user-session\" data-bs-dismiss=\"modal\">Continue</button></div>",
@@ -2116,8 +2120,41 @@ const en = {
         "reportCancerIntro": "We're interested in learning about cancer diagnoses you may receive after joining Connect. If you want to add details about a new cancer diagnosis, click the \"Add Your Diagnosis\" button to share information that we'll use to collect important data for research.",
         "addYourDiagnosis": "Add Your Diagnosis",
         "addADiagnosis": "Add a Diagnosis",
+        // Health Care System Update section (issue #1658)
         "hcsHeader": "Health Care System Update",
-        "hcsComingSoon": "Coming soon",
+        "hcsIntro": "Connect is a long-term study. We recognize the health system where you receive care may change over time.",
+        "hcsCurrentFacility": "Current primary care facility:",
+        "hcsJoinedWith": "You joined Connect with",
+        "hcsJoinedWithEnd": "as your primary care facility. If this has changed, click the Edit button.",
+        "hcsIsThePlace": "is the place where you get your primary care.",
+        "hcsUpdateButton": "Edit",
+        "hcsFacAddressHeader": "Primary care facility address:",
+        "hcsFacName": "Line 1 (name of primary care facility) <span class=\"required\">*</span>",
+        "hcsFacNameInput": {
+            "placeholder": "Enter primary care facility"
+        },
+        "hcsFacLine2": "Line 2 (street, rural route)",
+        "hcsChangeDateLabel": "Date you changed your primary care facility:",
+        "hcsYearInput": {
+            "placeholder": "Enter year of change"
+        },
+        "hcsAdditionalInfo": "Additional information:",
+        "hcsAdditionalInfoPrompt": "Please provide any additional information below.",
+        "hcsSubmitButton": "Submit Health Care Update",
+        "hcsClearButton": "Clear",
+        "hcsThankYou": "Thank you for keeping us up to date. You can come back and update this information at any time.",
+        "hcsLastUpdated": "Primary care facility last updated:",
+        "hcsAddrLine1": "Primary Care Facility Address Line 1",
+        "hcsAddrLine2": "Primary Care Facility Address Line 2",
+        "hcsAddrLine3": "Primary Care Facility Address Line 3",
+        "hcsAddrLine4": "Primary Care Facility Address Line 4",
+        "hcsAddrCity": "City",
+        "hcsAddrState": "State",
+        "hcsAddrZip": "Zip Code",
+        "hcsNone": "None",
+        "hcsFacNameRequired": "Please enter the name of your primary care facility.",
+        "hcsYearError": "Please enter a valid year (YYYY) no more than 1 year in the future.",
+        "hcsZipError": "Please enter a valid 5-digit zip code.",
         "previouslyReportedHeader": "Previously Reported Cancer Diagnoses",
         "previouslyReportedLocation": "Location",
         "previouslyReportedDate": "Diagnosis date",

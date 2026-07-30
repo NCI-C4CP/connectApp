@@ -9,40 +9,83 @@ import fieldMapping from '../../js/fieldToConceptIdMapping.js';
 const here = dirname(fileURLToPath(import.meta.url));
 const sharedStub = readFileSync(join(here, 'stubs/shared.stub.js'), 'utf8');
 const dataAccessStub = readFileSync(join(here, 'stubs/dataAccess.stub.js'), 'utf8');
-const conditionalLogicSource = readFileSync(join(here, '../../js/pages/shareNewHealthInfo/conditionalLogic.js'), 'utf8');
-const conditionalLogicStub = conditionalLogicSource.replace(
-    'export const SELF_REPORT_CANCER_DX_ENABLED = false;',
-    'export const SELF_REPORT_CANCER_DX_ENABLED = true;'
-);
+
+const withRequiredDataAccessExports = (body) => {
+    let next = body;
+    if (!/\bexport\s+const\s+loadShareHealthInfoSettings\b/.test(next)) {
+        next += `
+export const loadShareHealthInfoSettings = async () => ({
+    selfReportActive: window.__SRCDX_SELF_REPORT_ACTIVE__ === true,
+    enableNPIRegistry: window.__SRCDX_ENABLE_NPI_REGISTRY__ === true,
+});
+`;
+    }
+    if (!/\bexport\s+const\s+getMostRecentHCSUpdate\b/.test(next)) {
+        next += `
+export const getMostRecentHCSUpdate = async () => null;
+`;
+    }
+    if (!/\bexport\s+const\s+submitSelfReportHCSUpdate\b/.test(next)) {
+        next += `
+export const submitSelfReportHCSUpdate = async (snapshot) => {
+    window.__HCS_LAST_PAYLOAD__ = snapshot;
+    return { code: 200, stubbed: true };
+};
+`;
+    }
+    return next;
+};
 
 export const F = fieldMapping;
 export const m = fieldMapping.selfReportCancerDx;
 
-// Quest-flat payload helpers (mirror payload.js key helpers — payload.js itself cannot be imported
-// here: it transitively pulls js/shared.js, whose module scope needs browser globals).
+// Payload helpers mirror the nested source-question contract without importing payload.js
+// here: it transitively pulls js/shared.js, whose module scope needs browser globals.
 export const dk = (cid, ...idx) => ['D_' + cid, ...idx].join('_');
-export const ndk = (parentCid, childCid, ...idx) => ['D_' + parentCid, 'D_' + childCid, ...idx].join('_');
-export const txdk = (parentCid, childCid, position) => ndk(parentCid, childCid, position, position);
+export const sourceChild = (payload, sourceCid, childCid, ...idx) =>
+    payload?.[dk(sourceCid)]?.[dk(childCid, ...idx)];
+export const primary = (payload, childCid, ...idx) =>
+    sourceChild(payload, m.sourceQuestions.primarySite, childCid, ...idx);
+export const txType = (payload, childCid, ...idx) =>
+    sourceChild(payload, m.sourceQuestions.treatmentType, childCid, ...idx);
+export const screeningType = (payload, childCid, ...idx) =>
+    sourceChild(payload, m.sourceQuestions.screeningType, childCid, ...idx);
+export const txDetail = (payload, parentCid, childCid, ...idx) =>
+    payload?.[dk(parentCid)]?.[dk(childCid, ...idx)];
+export const txOngoing = (payload, parentCid, childCid, ...idx) =>
+    payload?.[dk(parentCid)]?.[dk(m.sourceQuestions.treatmentOngoingEnd)]?.[dk(childCid, ...idx)];
+export const txRow = (payload, parentCid, childCid, position) =>
+    txDetail(payload, parentCid, childCid, position, position);
+export const screeningDetail = (payload, parentCid, childCid, ...idx) =>
+    payload?.[dk(parentCid)]?.[dk(childCid, ...idx)];
 export const Y = String(fieldMapping.yes);
 export const N = String(fieldMapping.no);
 
-export const verified = { code: 200, data: { [F.verification]: F.verified, [F.consentWithdrawn]: F.no, Connect_ID: 'E2E' } };
+export const verified = { code: 200, data: { [F.verification]: F.verified, [F.consentWithdrawn]: F.no, [F.healthcareProvider]: 1, Connect_ID: 'E2E' } };
 export const withdrawn = { code: 200, data: { [F.verification]: F.verified, [F.consentWithdrawn]: F.yes, Connect_ID: 'E2E' } };
 export const deceased = { code: 200, data: { [F.verification]: F.verified, [F.consentWithdrawn]: F.no, [F.participantDeceased]: F.yes, Connect_ID: 'E2E' } };
 
-export const setup = async (page, { fixture = verified, prior = [], dataAccessBody = dataAccessStub, i18n = null, enableNPIRegistry = false } = {}) => {
+export const setup = async (page, {
+    fixture = verified,
+    prior = [],
+    dataAccessBody = dataAccessStub,
+    i18n = null,
+    selfReportActive = true,
+    enableNPIRegistry = false,
+    hcsLatest = null,
+} = {}) => {
     await page.route('**/js/shared.js', (route) =>
         route.fulfill({ contentType: 'application/javascript', body: sharedStub }));
-    await page.route('**/js/pages/shareNewHealthInfo/conditionalLogic.js', (route) =>
-        route.fulfill({ contentType: 'application/javascript', body: conditionalLogicStub }));
     await page.route('**/js/pages/shareNewHealthInfo/dataAccess.js', (route) =>
-        route.fulfill({ contentType: 'application/javascript', body: dataAccessBody }));
-    await page.addInitScript(([f, p, dict, npiEnabled]) => {
+        route.fulfill({ contentType: 'application/javascript', body: withRequiredDataAccessExports(dataAccessBody) }));
+    await page.addInitScript(([f, p, dict, selfReportEnabled, npiEnabled, hcsRow]) => {
         window.__SRCDX_FIXTURE__ = f;
         window.__SRCDX_PRIOR__ = p;
+        window.__SRCDX_SELF_REPORT_ACTIVE__ = selfReportEnabled === true;
         window.__SRCDX_ENABLE_NPI_REGISTRY__ = npiEnabled === true;
+        if (hcsRow) window.__HCS_LATEST__ = hcsRow; // parsed display row for the HCS section
         if (dict) window.__I18N__ = dict; // when provided, the stub translateHTML resolves real labels
-    }, [fixture, prior, i18n, enableNPIRegistry]);
+    }, [fixture, prior, i18n, selfReportActive, enableNPIRegistry, hcsLatest]);
     await page.goto('/e2e/shareNewHealthInfo/harness.html');
 };
 

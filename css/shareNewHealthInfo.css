@@ -470,3 +470,16 @@
     outline: 2px solid var(--srcdx-blue);
     outline-offset: 1px;
 }
+
+/* --- Health Care System Update section (issue #1658) --- */
+#shareHealthInfoRoot .srcdx-hcs-divider {
+    border: 0;
+    border-top: 1px solid #d4d7da;
+    margin: 1rem 0 1.25rem;
+    opacity: 1;
+}
+#shareHealthInfoRoot .srcdx-hcs-field-label {
+    display: block;
+    color: #6c757d;
+    font-size: .9rem;
+}

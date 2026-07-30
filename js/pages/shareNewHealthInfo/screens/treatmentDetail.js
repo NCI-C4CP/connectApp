@@ -1,10 +1,8 @@
 import { renderQuestion, navButtons, monthSelect, fieldError, clearFieldErrors, treatmentTypeLabelHtml } from '../ui.js';
 import { SCREENS } from '../constants.js';
 import { isTreatmentYearOnOrAfterDiagnosis, isValidYearWithAllowance } from '../validation.js';
-import { applyOngoingExclusivity, canAddPhysician, isTreatmentComplete } from '../conditionalLogic.js';
-import {
-    renderFacilityAddress, attachFacilityAddressEvents, harvestFacility, fillFacility,
-} from '../../../components/facilityAddress.js';
+import { applyOngoingExclusivity, canAddFacility, canAddPhysician, isTreatmentComplete } from '../conditionalLogic.js';
+import { renderFacilityAddress, attachFacilityAddressEvents, harvestFacility, fillFacility } from '../../../components/facilityAddress.js';
 import { renderNpiSlots, attachNpiTypeahead, harvestNpi, fillNpi } from '../npiTypeahead.js';
 
 const facilityId = (txIndex, facIndex) => `Tx_${txIndex}_${facIndex}`;
@@ -83,7 +81,7 @@ export const renderTreatmentDetail = (content, ctx) => {
 
         <h3 class="srcdx-subheading" data-i18n="shareHealthInfo.txFacilityIntro">Enter the facility or hospital address where you received, are currently receiving, or are scheduled to receive treatment:</h3>
         <div id="srcdxFacilities">${facilitiesHtml}</div>
-        <button type="button" class="btn srcdx-add-link btn-sm" id="srcdxAddFac" data-i18n="shareHealthInfo.addFacility">+ Add another facility or hospital</button>
+        <button type="button" class="btn srcdx-add-link btn-sm" id="srcdxAddFac" data-i18n="shareHealthInfo.addFacility" ${canAddFacility(tx.facilities.length) ? '' : 'disabled'}>+ Add another facility or hospital</button>
 
         ${navButtons({ showBack: true })}
     `);

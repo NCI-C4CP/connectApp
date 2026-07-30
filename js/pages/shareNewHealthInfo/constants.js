@@ -77,6 +77,7 @@ export const SCREENS = Object.freeze({
 
 // Max physicians per treatment type.
 export const MAX_PHYSICIANS = 10;
+export const MAX_FACILITIES = 10;
 
 // Confirmation page outbound links.
 export const CONFIRMATION_LINKS = Object.freeze({

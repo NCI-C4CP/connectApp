@@ -36,7 +36,7 @@ const hidden = (suffix) => el(suffix).classList.contains('d-none');
 
 describe('renderFacilityAddress', () => {
     it('renders the expected fields with the id-prefix convention', () => {
-        ['Line1', 'Line2', 'Line3', 'Line4', 'City', 'State', 'Region', 'Zip', 'Postal', 'Country', 'International']
+        ['Line1', 'Line2', 'Line3', 'Line4', 'City', 'State', 'Region', 'Zip', 'Postal', 'Country', 'International', 'GoogleValidated']
             .forEach((suffix) => expect(el(suffix), suffix).not.toBeNull());
     });
     it('marks text inputs with translatable placeholder keys', () => {
@@ -55,6 +55,7 @@ describe('renderFacilityAddress', () => {
         expect(hidden('Postal')).toBe(true);
         expect(hidden('CountryRow')).toBe(true);
         expect(hidden('Line4Row')).toBe(true);
+        expect(el('GoogleValidated').value).toBe('false');
     });
     it('fences browser autofill: each block is its own <form> with standard address tokens; Line 1 stays off', () => {
         // The form boundary keeps the physician fields (outside it) and sibling facility blocks out
@@ -127,6 +128,7 @@ describe('harvestFacility', () => {
             line1: 'Sibley Memorial Hospital', line2: '5255 Loughboro Rd NW',
             city: 'Washington', state: 'DC', zip: '20016',
             isInternational: false, line4: '', region: '', postal: '', country: '',
+            googleAddressValidated: false,
         });
     });
     it('captures international fields (region/postal/country), not state/zip', () => {
@@ -144,7 +146,7 @@ describe('harvestFacility', () => {
             line1: 'Royal Marsden', isInternational: true,
             line4: 'Building B, Chelsea',
             region: 'Greater London', postal: 'SW3 6JJ', country: '2',
-            state: '', zip: '',
+            state: '', zip: '', googleAddressValidated: false,
         });
     });
 });
@@ -154,12 +156,23 @@ describe('fillFacility', () => {
         fillFacility(content, ID, {
             line1: 'Royal Marsden', line2: '203 Fulham Rd', city: 'London',
             region: 'Greater London', postal: 'SW3 6JJ', country: 'gbr', isInternational: true,
+            googleAddressValidated: true,
         });
         expect(el('Line1').value).toBe('Royal Marsden');
         expect(el('Region').value).toBe('Greater London');
         expect(el('International').checked).toBe(true);
         expect(hidden('Region')).toBe(false);
         expect(hidden('State')).toBe(true);
+        expect(el('GoogleValidated').value).toBe('false');
+    });
+
+    it('repopulates domestic Google validation state', () => {
+        fillFacility(content, ID, {
+            line1: 'Sibley Memorial Hospital', line2: '5255 Loughboro Rd NW', city: 'Washington',
+            state: 'DC', zip: '20016', isInternational: false, googleAddressValidated: true,
+        });
+        expect(el('GoogleValidated').value).toBe('true');
+        expect(harvestFacility(content, ID).googleAddressValidated).toBe(true);
     });
 });
 
@@ -255,6 +268,77 @@ describe('name autocomplete (Google Places)', () => {
         expect(el('City').value).toBe('Baltimore');
         expect(el('State').value).toBe('MD'); // long_name selected; short_name ('XX') would no-op to ''
         expect(el('Zip').value).toBe('21287');
+        expect(el('GoogleValidated').value).toBe('true');
+        expect(harvestFacility(content, ID).googleAddressValidated).toBe(true);
+    });
+
+    it('clears Google validation when a selected address is manually edited', () => {
+        focusLine1();
+        const ac = instances[instances.length - 1];
+        ac.place = {
+            name: 'Johns Hopkins Hospital',
+            address_components: [
+                { types: ['street_number'], long_name: '1800' },
+                { types: ['route'], long_name: 'Orleans St' },
+                { types: ['locality'], long_name: 'Baltimore' },
+                { types: ['administrative_area_level_1'], long_name: 'MD' },
+                { types: ['postal_code'], long_name: '21287' },
+            ],
+        };
+        ac.cb();
+        expect(el('GoogleValidated').value).toBe('true');
+
+        el('City').value = 'Bethesda';
+        el('City').dispatchEvent(new win.Event('input'));
+
+        expect(el('GoogleValidated').value).toBe('false');
+        expect(harvestFacility(content, ID).googleAddressValidated).toBe(false);
+    });
+
+    it('keeps Google validation when supplemental Line 3 is added after selection', () => {
+        focusLine1();
+        const ac = instances[instances.length - 1];
+        ac.place = {
+            name: 'Johns Hopkins Hospital',
+            address_components: [
+                { types: ['street_number'], long_name: '1800' },
+                { types: ['route'], long_name: 'Orleans St' },
+                { types: ['locality'], long_name: 'Baltimore' },
+                { types: ['administrative_area_level_1'], long_name: 'MD' },
+                { types: ['postal_code'], long_name: '21287' },
+            ],
+        };
+        ac.cb();
+        expect(el('GoogleValidated').value).toBe('true');
+
+        el('Line3').value = 'Suite 100';
+        el('Line3').dispatchEvent(new win.Event('input'));
+
+        expect(el('GoogleValidated').value).toBe('true');
+        expect(harvestFacility(content, ID).googleAddressValidated).toBe(true);
+    });
+
+    it('clears Google validation when switched to international', () => {
+        focusLine1();
+        const ac = instances[instances.length - 1];
+        ac.place = {
+            name: 'Johns Hopkins Hospital',
+            address_components: [
+                { types: ['street_number'], long_name: '1800' },
+                { types: ['route'], long_name: 'Orleans St' },
+                { types: ['locality'], long_name: 'Baltimore' },
+                { types: ['administrative_area_level_1'], long_name: 'MD' },
+                { types: ['postal_code'], long_name: '21287' },
+            ],
+        };
+        ac.cb();
+        expect(el('GoogleValidated').value).toBe('true');
+
+        el('International').checked = true;
+        el('International').dispatchEvent(new win.Event('change'));
+
+        expect(el('GoogleValidated').value).toBe('false');
+        expect(harvestFacility(content, ID).googleAddressValidated).toBe(false);
     });
 
     it('ignores a stale Places callback after switching to international', () => {
@@ -314,5 +398,41 @@ describe('name autocomplete (Google Places)', () => {
         const clearedArgs = clearInstanceListeners.mock.calls.map((c) => c[0]);
         expect(clearedArgs.includes(instance)).toBe(true);
         expect(clearedArgs.includes(input)).toBe(true);
+    });
+});
+
+describe('label overrides (Health Care System Update variant, issue #1658)', () => {
+    const HCS_ID = 'HcsFac';
+    const hcsOptions = {
+        nameLabelKey: 'shareHealthInfo.hcsFacName',
+        nameLabelFallback: 'Line 1 (name of primary care facility)',
+        namePlaceholderKey: 'shareHealthInfo.hcsFacNameInput',
+        namePlaceholderFallback: 'Enter primary care facility',
+        line2LabelKey: 'shareHealthInfo.hcsFacLine2',
+        line2LabelFallback: 'Line 2 (street, rural route)',
+        regionMaxLength: 48,
+    };
+
+    it('renders optional HCS labels, the placeholder override, and the HCS Region limit', () => {
+        content.innerHTML = renderFacilityAddress(HCS_ID, hcsOptions);
+        const line1Label = content.querySelector(`label[for="UPAddress${HCS_ID}Line1"]`);
+        expect(line1Label.dataset.i18n).toBe('shareHealthInfo.hcsFacName');
+        expect(line1Label.querySelector('.required')).toBeNull();
+        const line1Input = content.querySelector(`#UPAddress${HCS_ID}Line1`);
+        expect(line1Input.dataset.i18n).toBe('shareHealthInfo.hcsFacNameInput');
+        expect(line1Input.getAttribute('placeholder')).toBe('Enter primary care facility');
+        const line2Label = content.querySelector(`label[for="UPAddress${HCS_ID}Line2"]`);
+        expect(line2Label.dataset.i18n).toBe('shareHealthInfo.hcsFacLine2');
+        expect(line2Label.querySelector('.required')).toBeNull();
+        expect(content.querySelector(`#UPAddress${HCS_ID}Region`).maxLength).toBe(48);
+    });
+
+    it('leaves the cancer-dx defaults untouched when no options are passed (regression)', () => {
+        content.innerHTML = renderFacilityAddress(ID);
+        const line1Label = content.querySelector(`label[for="UPAddress${ID}Line1"]`);
+        expect(line1Label.dataset.i18n).toBe('shareHealthInfo.facName');
+        expect(line1Label.querySelector('.required')).toBeNull();
+        expect(content.querySelector(`label[for="UPAddress${ID}Line2"]`).dataset.i18n).toBe('shareHealthInfo.facLine2');
+        expect(content.querySelector(`#UPAddress${ID}Region`).maxLength).toBe(45);
     });
 });

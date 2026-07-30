@@ -476,7 +476,7 @@
         "consentPageBody5List": "<li>Mis datos se almacenarán de manera segura en la base de datos de Connect.</li><li>Connect almacenará para futuras investigaciones las muestras que yo done. Esas muestras podrían contener mi material genético (ADN). </li><li>Los investigadores utilizarán mis datos y los datos de otros participantes para hacer estudios sobre temas específicos sobre cáncer u otros temas de salud.</li><li>Se me pedirá que responda encuestas y done más muestras en el futuro. Puedo decir que sí o que no, y seguiré siendo participante de Connect de cualquier manera.</li><li>Puedo retirarme (abandonar el estudio) en cualquier momento. Si me retiro, no sufriré ninguna penalización.</li><li>Puedo comunicarme en cualquier momento con el Centro de Asistencia de Connect desde <a href=\"https://cancer.gov/connectstudy/support\" target=\"_blank\">cancer.gov/connectstudy/support</a> o llamar al 1-877-775-7004 (de lunes a viernes de 8:00 a. m. a 10:00 p. m. o los fines de semana de 9:00 a. m. a 6:00 p. m., hora del centro de EE. UU.) para hacer preguntas sobre el estudio y mi participación. </li>",
         "consentPageWait": "Espere, por favor...",
         "consentIframeHFHS": {
-            "src": "./forms/consent/HFHS_Consent_V0.04_Span.html"
+            "src": "./forms/consent/HFHS_Consent_V0.05_Span.html"
         },
         "consentIframeHP": {
             "src": "./forms/consent/HP_Consent_V0.06_Span.html"
@@ -491,7 +491,7 @@
             "src": "./forms/consent/KPHI_Consent_V0.04_Span.html"
         },
         "consentIframeKPNW": {
-            "src": "./forms/consent/KPNW_Consent_V0.04_Span.html"
+            "src": "./forms/consent/KPNW_Consent_V0.05_Span.html"
         },
         "consentIframeMarshfield": {
             "src": "./forms/consent/Marshfield_Consent_V0.04_Span.html"
@@ -511,7 +511,7 @@
         "consentUnsignedHFHS": {
             "title": "Descargar el formulario de consentimiento",
             "innerHTML": "Descargar una copia sin firmar del formulario de consentimiento informado&nbsp;<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/HFHS_Consent_V0.04_Span.pdf"
+            "href": "./forms/consent/HFHS_Consent_V0.05_Span.pdf"
         },
         "consentUnsignedHP": {
             "title": "Descargar el formulario de consentimiento",
@@ -536,7 +536,7 @@
         "consentUnsignedKPNW": {
             "title": "Descargar el formulario de consentimiento",
             "innerHTML": "Descargar una copia sin firmar del formulario de consentimiento informado&nbsp;<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/consent/KPNW_Consent_V0.04_Span.pdf"
+            "href": "./forms/consent/KPNW_Consent_V0.05_Span.pdf"
         },
         "consentUnsignedMarshfield": {
             "title": "Descargar el formulario de consentimiento",
@@ -583,7 +583,7 @@
             "src": "./forms/HIPAA/KPHI_HIPAA_V0.02_Span.html"
         },
         "hipaaIframeKPNW": {
-            "src": "./forms/HIPAA/KPNW_HIPAA_V0.02_Span.html"
+            "src": "./forms/HIPAA/KPNW_HIPAA_V0.03_Span.html"
         },
         "hipaaIframeMarshfield": {
             "src": "./forms/HIPAA/Marshfield_HIPAA_V0.02_Span.html"
@@ -628,7 +628,7 @@
         "hipaaUnsignedKPNW": {
             "title": "Descargar el formulario de divulgación de registros de salud",
             "innerHTML": "Descargar una copia sin firmar de la Autorización de la HIPAA&nbsp;<i class=\"fas fa-file-download\"></i>",
-            "href": "./forms/HIPAA/KPNW_HIPAA_V0.02_Span.pdf"
+            "href": "./forms/HIPAA/KPNW_HIPAA_V0.03_Span.pdf"
         },
         "hipaaUnsignedMarshfield": {
             "title": "Descargar el formulario de divulgación de registros de salud",
@@ -740,6 +740,7 @@
     },
     "mytodolist": {
         "newUpdates": "<span style=\"font-weight: bold\">¡Hemos actualizado MyConnect!</span><br>Puede notar que algunas cosas se ven un poco diferentes aquí. Aunque nada relacionado con el estudio ha cambiado, hemos realizado algunas mejoras en el diseño para darle a MyConnect una apariencia renovada y facilitar su navegación.<br><br>¿Necesita actualizar su perfil, su información de inicio de sesión, o para ver formularios relacionados con su participación? Nomas haga clic en \"Editar mi perfil\" en el menu de perfiles en la parte superior en la esquina derecha de su pantalla.<br><br>Estaremos implementando otras actualizaciones de diseño en los próximos meses, así que manténgase atento/a a más mejoras. Si tiene alguna pregunta sobre los cambios, no dude en comunicarse con nuestro equipo en el <a href=\"https://MyConnect.cancer.gov/support\" target=\"_blank\">Centro de Asistencia de Connect</a>.<br><br>¡Esperamos que disfrute de la nueva experiencia!",
+        "newHealthInfoBanner": "La nueva ficha <strong>Compartir Información Nueva de Salud</strong> ya está disponible en su panel de control. Aquí puede indicarnos si cambia de centro de atención primaria y compartir información sobre un diagnóstico reciente de cáncer. En el futuro, vuelva a esta ficha para consultar otras opciones para compartir información con nuestro equipo.",
         "withdrawnConnect": "Se ha retirado de Connect. No recopilaremos más datos sobre usted. Si tiene alguna pregunta, llame al Centro de Asistencia de Connect al 1-877-775-7004 o escríbales a <a href=\"mailto:ConnectAyuda@norc.org\">ConnectAyuda@norc.org</a>.",
         "deletedData": "A pedido de usted, hemos eliminado sus datos de Connect. Si tiene alguna pregunta, llame al Centro de Asistencia de Connect al 1-877-775-7004 o escríbales a <a href=\"mailto:ConnectAyuda@norc.org\">ConnectAyuda@norc.org</a>.",
         "newFormSign": "Tiene un nuevo <a href=\"#forms\">formulario</a> para firmar.",
@@ -821,9 +822,11 @@
         "mainBodyCancerScreeningHistoryDescription": "Preguntas sobre pruebas anteriores para detectar el cáncer. Se trata de pruebas que buscan cáncer en personas sin síntomas. Por favor, complete esta encuesta aunque nunca se haya realizado una prueba de detección de cáncer. Sus respuestas son importantes.",
         "surveysCompleted": "Ha completado todas las encuestas de Connect disponibles. Nos comunicaremos con usted cuando haya nuevas encuestas y actividades de estudio para completar. ¡Gracias por sus contribuciones al estudio!",
         "mainBodyDHQ3Header": "Cuestionario de Historial Alimentación III (DHQ III, por sus siglas en ingles)",
-        "mainBodyDHQ3Description": "Preguntas sobre su alimentación habitual en el último año. Tras hacer clic en \"Comenzar\", la encuesta se abrirá en una nueva pestaña o ventana del navegador y verá un mensaje federal estándar de advertencia sobre la seguridad de los datos. Haga clic en \"Continuar con el cuestionario\" (Continue with Questionnaire, en inglés) para comenzar la encuesta. Luego, seleccione su idioma preferido para completar la encuesta.",
+        "mainBodyDHQ3Description": "Preguntas detalladas sobre su alimentación habitual en el último año, con el fin de que los investigadores puedan comprenderla de la forma más completa posible. Tras hacer clic en \"Comenzar\", la encuesta se abrirá en una nueva pestaña o ventana del navegador y verá un mensaje federal estándar de advertencia sobre la seguridad de los datos. Haga clic en \"Continuar con el cuestionario\" (Continue with Questionnaire, en inglés) para comenzar la encuesta. Luego, seleccione su idioma preferido para completar la encuesta.",
         "mainBodyReturnOfResults2026Header": "Encuesta de Preferencias para la Devolución de Resultados 2026",
-        "mainBodyReturnOfResults2026Description": "Preguntas sobre los tipos de resultados e información que le interesa recibir de la investigación de Connect."
+        "mainBodyReturnOfResults2026Description": "Preguntas sobre los tipos de resultados e información que le interesa recibir de la investigación de Connect.",
+        "mainBodyDietScreenerHeader": "Resumen de la dieta",
+        "mainBodyDietScreenerDescription": "Una breve lista de preguntas sobre su alimentación habitual durante el último año, con el fin de ofrecer a los investigadores información general sobre su dieta."
     },
     "notifications": {
         "read": "Leídos",
@@ -1738,6 +1741,7 @@
         "modCancerScreeningHistorySurvey": "Encuesta sobre historial de exámenes de detección de cáncer",
         "modDietHistoryQuestionnaireIIIDHQIII": "Cuestionario de Historial Alimentación III (DHQ III, por sus siglas en ingles)",
         "mod2026ReturnofResultsPreferenceSurvey": "Encuesta de Preferencias para la Devolución de Resultados 2026",
+        "modDietSnapshot": "Resumen de la dieta",
         "sessionInactiveTitle": "Inactivo",
         "sessionInactive": "Ha estado inactivo durante 20 minutos, ¿desea extender la sesión?<div class=\"modal-footer\"><button type=\"button\" title=\"Cerrar\" class=\"btn btn-dark log-out-user\" data-bs-dismiss=\"modal\">Cerrar sesión</button><button type=\"button\" title=\"Continuar\" class=\"btn btn-primary extend-user-session\" data-bs-dismiss=\"modal\">Continuar</button></div>",
         "homeTitle": "My Connect - Inicio",
@@ -2119,8 +2123,41 @@
         "reportCancerIntro": "Nos interesa conocer los diagnósticos de cáncer que pueda recibir después de comenzar a participar en Connect. Si desea agregar detalles sobre un nuevo diagnóstico de cáncer, haga clic en el botón “Agregue su diagnóstico” para compartir información que utilizaremos para recopilar datos importantes con fines de investigación.",
         "addYourDiagnosis": "Agregue su diagnóstico",
         "addADiagnosis": "Agregue un diagnóstico",
-        "hcsHeader": "Actualización del sistema de atención médica",
-        "hcsComingSoon": "Próximamente",
+        // Health Care System Updates (issue #1658).
+        "hcsHeader": "Cambio del sistema de atención médica",
+        "hcsIntro": "Connect es un estudio a largo plazo. Sabemos que el sistema de salud en el que recibe atención puede cambiar con el tiempo.",
+        "hcsCurrentFacility": "Centro de atención primaria actual:",
+        "hcsJoinedWith": "Comenzó a participar en Connect con",
+        "hcsJoinedWithEnd": "como su centro de atención primaria. Si eso ha cambiado, haga clic en el botón Editar.",
+        "hcsIsThePlace": "es el lugar donde recibe su atención primaria.",
+        "hcsUpdateButton": "Editar",
+        "hcsFacAddressHeader": "Dirección del centro de atención primaria:",
+        "hcsFacName": "Línea 1 (nombre del centro de atención primaria) <span class=\"required\">*</span>",
+        "hcsFacNameInput": {
+            "placeholder": "Ingrese el nombre del centro de atención primaria"
+        },
+        "hcsFacLine2": "Línea 2 (calle, ruta rural)",
+        "hcsChangeDateLabel": "Fecha en la que cambió de centro de atención primaria:",
+        "hcsYearInput": {
+            "placeholder": "Ingrese el año"
+        },
+        "hcsAdditionalInfo": "Información adicional:",
+        "hcsAdditionalInfoPrompt": "Proporcione cualquier información adicional a continuación:",
+        "hcsSubmitButton": "Enviar cambio de atención médica",
+        "hcsClearButton": "Borrar",
+        "hcsThankYou": "Gracias por mantenernos informados. Puede volver y poner al día esta información en cualquier momento.",
+        "hcsLastUpdated": "Último cambio del centro de atención primaria:",
+        "hcsAddrLine1": "Línea 1 de Dirección del centro de atención primaria",
+        "hcsAddrLine2": "Línea 2 de Dirección del centro de atención primaria",
+        "hcsAddrLine3": "Línea 3 de Dirección del centro de atención primaria",
+        "hcsAddrLine4": "Línea 4 de Dirección del centro de atención primaria",
+        "hcsAddrCity": "Ciudad",
+        "hcsAddrState": "Estado",
+        "hcsAddrZip": "Código postal",
+        "hcsNone": "No se proporcionó",
+        "hcsFacNameRequired": "Ingrese el nombre del centro de atención primaria.",
+        "hcsYearError": "Ingrese un año válido (AAAA) que no sea más de 1 año en el futuro.",
+        "hcsZipError": "Ingrese un código postal válido de 5 dígitos.",
         "previouslyReportedHeader": "Diagnósticos de cáncer informados anteriormente",
         "previouslyReportedLocation": "Lugar",
         "previouslyReportedDate": "Fecha del diagnóstico",

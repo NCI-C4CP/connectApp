@@ -1,5 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { setup, m, dk, ndk, txdk, Y, N, getPayload, toTreatmentGate, toTreatmentSummary } from './support.js';
+import {
+    setup, m, dk, primary, txType, txDetail, txRow, screeningType, screeningDetail, Y, N,
+    getPayload, toTreatmentGate, toTreatmentSummary,
+} from './support.js';
 
 test.describe('Navigation, changing answers, data flow, and resume', () => {
     test('Back discards the screen you leave (forward saves, back clears)', async ({ page }) => {
@@ -32,8 +35,8 @@ test.describe('Navigation, changing answers, data flow, and resume', () => {
         await page.click('#srcdxNext');               // "other" is non-screening -> review
         await page.click('#srcdxNext');               // submit
         const payload = await getPayload(page);
-        expect(payload[dk(m.primarySite)]).toBe(String(m.cancerSites.other));
-        expect(payload[dk(m.primarySiteOther)]).toBe('Gallbladder');
+        expect(primary(payload, m.primarySite)).toBe(String(m.cancerSites.other));
+        expect(primary(payload, m.primarySiteOther)).toBe('Gallbladder');
     });
 
     test('Changing the site to a non-screening site drops stale screening data', async ({ page }) => {
@@ -62,9 +65,9 @@ test.describe('Navigation, changing answers, data flow, and resume', () => {
         await page.click('#srcdxNext');               // submit
 
         const payload = await getPayload(page);
-        expect(payload[dk(m.primarySite)]).toBe(String(m.cancerSites.prostate));
+        expect(primary(payload, m.primarySite)).toBe(String(m.cancerSites.prostate));
         expect(payload[dk(m.screening.detected)]).toBeUndefined();
-        expect(payload[dk(m.screening.optionValues.breast2D)]).toBeUndefined();
+        expect(screeningType(payload, m.screening.optionValues.breast2D)).toBeUndefined();
         expect(payload[dk(m.dxSubmittedTimestamps.breast)]).toBeUndefined(); // server-stamped, never client-emitted
     });
 
@@ -91,8 +94,8 @@ test.describe('Navigation, changing answers, data flow, and resume', () => {
 
         const payload = await getPayload(page);
         expect(payload[dk(m.txReceived)]).toBe(N);
-        expect(payload[dk(m.treatment.chemo)]).toBeUndefined(); // txReceived=No -> section omitted
-        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBeUndefined();
+        expect(txType(payload, m.treatment.chemo)).toBeUndefined(); // txReceived=No -> section omitted
+        expect(txDetail(payload, m.treatment.chemo, m.treatment.startYear)).toBeUndefined();
     });
 
     test('Unhappy: a future diagnosis year is rejected', async ({ page }) => {
@@ -218,8 +221,8 @@ test.describe('Navigation, changing answers, data flow, and resume', () => {
         await page.click('#srcdxNext');               // submit
 
         const payload = await getPayload(page);
-        expect(payload[txdk(m.treatment.chemo, m.treatment.physFirstName, 1)]).toBe('Ada');
-        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021');
+        expect(txRow(payload, m.treatment.chemo, m.treatment.physFirstName, 1)).toBe('Ada');
+        expect(txDetail(payload, m.treatment.chemo, m.treatment.startYear)).toBe('2021');
     });
 
     // The screening branch (Q4) is computed from the persisted primary-site answer. These two
@@ -286,12 +289,12 @@ test.describe('Navigation, changing answers, data flow, and resume', () => {
         await page.click('#srcdxNext');               // review
         await page.click('#srcdxNext');               // submit
         const payload = await getPayload(page);
-        expect(payload[dk(m.treatment.chemo)]).toBe(Y);
-        expect(payload[dk(m.treatment.surgery)]).toBe(Y);
-        expect(payload[dk(m.treatment.radiation)]).toBe(Y);
-        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021');
-        expect(payload[ndk(m.treatment.surgery, m.treatment.startYear)]).toBe('2022');
-        expect(payload[ndk(m.treatment.radiation, m.treatment.startYear)]).toBe('2023');
+        expect(txType(payload, m.treatment.chemo)).toBe(Y);
+        expect(txType(payload, m.treatment.surgery)).toBe(Y);
+        expect(txType(payload, m.treatment.radiation)).toBe(Y);
+        expect(txDetail(payload, m.treatment.chemo, m.treatment.startYear)).toBe('2021');
+        expect(txDetail(payload, m.treatment.surgery, m.treatment.startYear)).toBe('2022');
+        expect(txDetail(payload, m.treatment.radiation, m.treatment.startYear)).toBe('2023');
     });
 
     test('Add Another after chemo: adding radiation and other skips completed chemo, then visits only incomplete details', async ({ page }) => {
@@ -322,10 +325,10 @@ test.describe('Navigation, changing answers, data flow, and resume', () => {
         await expect(page.locator('[data-review-row="tx_2"]')).toContainText('Immunotherapy');
         await page.click('#srcdxNext');
         const payload = await getPayload(page);
-        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021');
-        expect(payload[ndk(m.treatment.radiation, m.treatment.startYear)]).toBe('2022');
-        expect(payload[ndk(m.treatment.other, m.treatment.startYear)]).toBe('2023');
-        expect(payload[dk(m.treatment.otherDescribe)]).toBe('Immunotherapy');
+        expect(txDetail(payload, m.treatment.chemo, m.treatment.startYear)).toBe('2021');
+        expect(txDetail(payload, m.treatment.radiation, m.treatment.startYear)).toBe('2022');
+        expect(txDetail(payload, m.treatment.other, m.treatment.startYear)).toBe('2023');
+        expect(txType(payload, m.treatment.otherDescribe)).toBe('Immunotherapy');
     });
 
     test('Add Another, then uncheck a type leaving a complete one: returns cleanly to the summary (no stale-index bounce)', async ({ page }) => {
@@ -342,9 +345,9 @@ test.describe('Navigation, changing answers, data flow, and resume', () => {
         await page.click('#srcdxNext');               // review
         await page.click('#srcdxNext');               // submit
         const payload = await getPayload(page);
-        expect(payload[dk(m.treatment.chemo)]).toBe(Y);
-        expect(payload[dk(m.treatment.surgery)]).toBe(N);              // surgery removed -> explicit No
-        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021'); // chemo data intact
+        expect(txType(payload, m.treatment.chemo)).toBe(Y);
+        expect(txType(payload, m.treatment.surgery)).toBe(N);              // surgery removed -> explicit No
+        expect(txDetail(payload, m.treatment.chemo, m.treatment.startYear)).toBe('2021'); // chemo data intact
     });
 
     test('Remove a treatment, then Add Another: loop starts at the first incomplete treatment', async ({ page }) => {
@@ -390,8 +393,8 @@ test.describe('Editing branching answers from Review', () => {
 
         await page.click('#srcdxNext');                  // submit now succeeds (detail was collected)
         const payload = await getPayload(page);
-        expect(payload[dk(m.treatment.chemo)]).toBe(Y);
-        expect(payload[ndk(m.treatment.chemo, m.treatment.startYear)]).toBe('2021');
+        expect(txType(payload, m.treatment.chemo)).toBe(Y);
+        expect(txDetail(payload, m.treatment.chemo, m.treatment.startYear)).toBe('2021');
     });
 
     test('E2: edit Q4 No->Yes at review walks the screening detail loop, then returns to review', async ({ page }) => {
@@ -411,8 +414,8 @@ test.describe('Editing branching answers from Review', () => {
 
         await page.click('#srcdxNext');                  // submit
         const payload = await getPayload(page);
-        expect(payload[dk(m.screening.optionValues.breast2D)]).toBe(Y);
-        expect(payload[ndk(m.screening.optionValues.breast2D, m.screening.year)]).toBe('2018');
+        expect(screeningType(payload, m.screening.optionValues.breast2D)).toBe(Y);
+        expect(screeningDetail(payload, m.screening.optionValues.breast2D, m.screening.year)).toBe('2018');
     });
 
     test('E2b: editing Q4 to add a screening opens the newly incomplete screening detail', async ({ page }) => {
@@ -435,10 +438,10 @@ test.describe('Editing branching answers from Review', () => {
         await page.click('#srcdxNext');                  // review
         await page.click('#srcdxNext');                  // submit
         const payload = await getPayload(page);
-        expect(payload[dk(m.screening.optionValues.breast2D)]).toBe(Y);
-        expect(payload[dk(m.screening.optionValues.breastMRI)]).toBe(Y);
-        expect(payload[ndk(m.screening.optionValues.breast2D, m.screening.year)]).toBe('2018');
-        expect(payload[ndk(m.screening.optionValues.breastMRI, m.screening.year)]).toBe('2019');
+        expect(screeningType(payload, m.screening.optionValues.breast2D)).toBe(Y);
+        expect(screeningType(payload, m.screening.optionValues.breastMRI)).toBe(Y);
+        expect(screeningDetail(payload, m.screening.optionValues.breast2D, m.screening.year)).toBe('2018');
+        expect(screeningDetail(payload, m.screening.optionValues.breastMRI, m.screening.year)).toBe('2019');
     });
 
     test('E1b: editing Q3 with all detail already complete returns straight to review (no needless re-walk)', async ({ page }) => {
@@ -490,10 +493,10 @@ test.describe('Editing branching answers from Review', () => {
         await page.click('#srcdxNext');                  // review
         await page.click('#srcdxNext');                  // submit
         const payload = await getPayload(page);
-        expect(payload[dk(m.primarySite)]).toBeTruthy();
-        expect(dk(m.screening.optionValues.breast2D) in payload).toBe(false); // breast option never emitted for colon
-        expect(payload[dk(m.screening.optionValues.colonCol)]).toBe(Y);       // colon screening present
-        expect(payload[ndk(m.screening.optionValues.colonCol, m.screening.year)]).toBe('2019');
+        expect(primary(payload, m.primarySite)).toBeTruthy();
+        expect(screeningType(payload, m.screening.optionValues.breast2D)).toBeUndefined(); // breast option never emitted for colon
+        expect(screeningType(payload, m.screening.optionValues.colonCol)).toBe(Y);       // colon screening present
+        expect(screeningDetail(payload, m.screening.optionValues.colonCol, m.screening.year)).toBe('2019');
     });
 
     test('E4: editing primary site prostate->breast leaves Q4 blank and blocks submit', async ({ page }) => {
