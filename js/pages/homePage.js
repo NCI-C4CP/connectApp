@@ -180,7 +180,7 @@ export const renderHomeAboutPage =  () => {
                 <div id="cgvBody">
                    <div class="blog-intro-text" data-i18n="home.aboutStudyIntro">
                       <h2 id="why-connect-is-important">Working Together to Prevent Cancer</h2>
-                      <img loading="lazy" src=" https://www.cancer.gov/connect-prevention-study/sites/dcegconnect/files/styles/cgov_article/public/cgov_image/media_image/2021-06/about-the-study-lead.jpg?h=becdecf7&itok=KRQvkujn" width="330" height="320" style="float:right; padding-left: 5px;" alt="A group of diverse older adults standing together with their arms around each other looking to camera" />
+                      <img loading="lazy" src="https://www.cancer.gov/connect-prevention-study/sites/dcegconnect/files/styles/cgov_article/public/cgov_image/media_image/2021-06/about-the-study-lead.jpg?h=becdecf7&itok=KRQvkujn" width="330" height="320" style="float:right; padding-left: 5px;" alt="A group of diverse older adults standing together with their arms around each other looking to camera" />
                       <p>The Connect for Cancer Prevention Study is a research study that wants to better understand the causes of cancer and how to prevent it. We are asking you to join Connect so that we can study the health and behavior patterns that may affect cancer risk.</p>
                       <p>Together, we can change the future of cancer prevention.</p>
                    </div>
@@ -249,7 +249,7 @@ export const renderHomeAboutPage =  () => {
                             <p>About Our Researchers</p>
                          </h2>
                          <div class="blog-intro-text">
-                         <img loading="lazy" src="https://www.cancer.gov/connect-prevention-study/sites/dcegconnect/files/styles/cgov_article/public/cgov_image/media_image/2021-06/female-reseracher-tablet.jpg?h=b4427edb&itok=Jnb013Zm" width="320" style="float:right; padding-left:15px;" height="200" st alt="Woman wearing a lab coat looking at a tablet computer" />
+                         <img loading="lazy" src="https://www.cancer.gov/connect-prevention-study/sites/dcegconnect/files/styles/cgov_article/public/cgov_image/media_image/2021-06/female-reseracher-tablet.jpg?h=b4427edb&itok=Jnb013Zm" width="320" style="float:right; padding-left:15px;" height="200" alt="Woman wearing a lab coat looking at a tablet computer" />
                          <p style="margin-bottom: 0.5rem">The Connect for Cancer Prevention Study is being led by our team of federal government researchers at the National Cancer Institute (NCI), part of the National Institutes of Health (NIH), and researchers at partner health care systems. Study teams at partner health care systems have experience conducting research studies like Connect, and many have particular expertise in research related to cancer.</p>
                          </div>
                          <p style="margin-bottom: 0.5rem">Our team at NCI is part of the largest cancer research group in the world that studies the causes of disease, or epidemiology. Our team and other researchers at NCI have long histories of studying cancer and have made important discoveries. For example, in another cohort study, we found that drinking coffee was associated with lower risk of death from cancer and other causes. This was good news for coffee drinkers! NCI research informs public health policy in the United States and around the world. Connect will contribute evidence that can impact public health policy far into the future.</p>
