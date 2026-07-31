@@ -95,13 +95,13 @@ export const homeNavBar = () => {
             </li>
         </div>
         <div class="navbar-nav transparent-border">
-            <li class="nav-item" data-i18n="navbar.aboutLink">
-                <a class="nav-link" href="#about" id="about" title="About"> About</a>
+            <li class="nav-item" data-i18n="navbar.expectationsLink">
+                <a class="nav-link" href="#expectations" id="expectations" title="Expectations"> What to expect</a>
             </li>
         </div>
         <div class="navbar-nav transparent-border">
-            <li class="nav-item" data-i18n="navbar.expectationsLink">
-                <a class="nav-link" href="#expectations" id="expectations" title="Expectations"> What to expect</a>
+            <li class="nav-item" data-i18n="navbar.aboutLink">
+                <a class="nav-link" href="#about" id="about" title="About"> About</a>
             </li>
         </div>
         <div class="navbar-nav transparent-border">
