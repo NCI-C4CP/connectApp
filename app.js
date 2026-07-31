@@ -84,7 +84,10 @@ window.onload = async () => {
     //Check for language storage Priority: 1) URL param, 2) localStorage, 3) default to English
     let preferredLanguage;
     if (urlParams.has('lang')) {
-        preferredLanguage = conceptIdMap.language[urlParams.get('lang')];
+        const langParam = urlParams.get('lang')?.toLowerCase();
+        if (langParam && Object.prototype.hasOwnProperty.call(conceptIdMap.language, langParam)) {
+            preferredLanguage = conceptIdMap.language[langParam];
+        }
     }
     if (!preferredLanguage) {
         preferredLanguage = window.localStorage.getItem('preferredLanguage');
