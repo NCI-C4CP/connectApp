@@ -78,15 +78,23 @@ window.onload = async () => {
         mainContent.innerHTML = `<span class="not-compatible">MyConnect is not supported on your browser. Please use Chrome, Edge, Safari or Firefox.</span>`;
         return;
     }
+    // Grab UTM parameters
+    const urlParams = new URLSearchParams(window.location.search);
 
-    //Check for language storage
-    let preferredLanguage = window.localStorage.getItem('preferredLanguage');
+    //Check for language storage Priority: 1) URL param, 2) localStorage, 3) default to English
+    let preferredLanguage;
+    if (urlParams.has('lang')) {
+        const langParam = urlParams.get('lang')?.toLowerCase();
+        if (langParam && Object.prototype.hasOwnProperty.call(conceptIdMap.language, langParam)) {
+            preferredLanguage = conceptIdMap.language[langParam];
+        }
+    }
+    if (!preferredLanguage) {
+        preferredLanguage = window.localStorage.getItem('preferredLanguage');
+    }
     if (!preferredLanguage) {
         preferredLanguage = conceptIdMap.language.en;
     }
-
-    // Grab UTM parameters
-    const urlParams = new URLSearchParams(window.location.search);
 
     // Check for a continueUrl parameter
     const continueUrlParam = urlParams.get('continueUrl');
