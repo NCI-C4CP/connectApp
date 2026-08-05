@@ -1,0 +1,21 @@
+// A small ConnectApp/Quest boundary survey. Quest's own repository
+// owns comprehensive question-type coverage.
+{"name":"D_726699695_V2"}
+
+[CHOICE] Which color do you prefer?
+(1) Blue
+(2) Green
+
+[CHECKS?] Which messages would you like to receive? Select all that apply.
+[1] Email
+[2] Text message
+
+[STATE?] In which state do you live?
+|state|id=home_state|
+
+|grid?|id="GRID_RATE"|How often do you do each activity?|[GRID_WALK] Walking;[GRID_CYCLE] Cycling;]|[(1: Never)(2: Sometimes)(3: Often)]|
+
+[DETAIL?] Add a short detail.
+|__|id=detail minlen=2 maxlen=30|
+
+[END,end] You have reached the end of this integration survey. Submit your answers.

@@ -36,6 +36,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Checkout pinned Quest integration source
+        uses: actions/checkout@v4
+        with:
+          repository: episphere/quest-dev
+          ref: 982f24ddc133d2e0153b792521da0af4c769b0b9
+          path: .cache/quest-integration
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:

@@ -11,4 +11,6 @@ images/.DS_Store
 coverage/
 test-results/
 playwright-report/
+.worktrees/
+.cache/quest-integration/
 docs/
