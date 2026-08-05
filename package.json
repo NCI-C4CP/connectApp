@@ -9,6 +9,7 @@
     "test:userProfile": "vitest run tests/userProfile.spec.js",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
+    "test:e2e:quest": "playwright test --project=quest-integration",
     "test:e2e:install": "playwright install --with-deps chromium"
   },
   "devDependencies": {
@@ -16,6 +17,7 @@
     "@vitest/coverage-v8": "^3.2.4",
     "http-server": "^14.1.1",
     "jsdom": "^29.1.1",
+    "mathjs": "13.0.3",
     "vitest": "^3.2.4"
   }
 }

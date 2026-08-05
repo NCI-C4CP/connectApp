@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConnectApp / Quest 2 integration contract</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/lib/bootstrap.min.css">
+</head>
+<body>
+    <main class="connect-container">
+        <button id="beforeQuest" type="button">Before Quest</button>
+        <div id="root"></div>
+        <a id="afterQuest" href="#after-quest">After Quest</a>
+    </main>
+
+    <script src="/lib/bootstrap.min.js"></script>
+    <script src="/node_modules/mathjs/lib/browser/math.js"></script>
+    <script type="module">
+        import { questionnaire } from '/js/pages/questionnaire.js';
+
+        try {
+            await questionnaire('Module1');
+            window.__QUEST_CONNECT_READY__ = true;
+        } catch (error) {
+            window.__QUEST_CONNECT_ERROR__ = String(error?.stack || error);
+            console.error('[quest-integration] render failed', error);
+        }
+    </script>
+</body>
+</html>
