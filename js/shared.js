@@ -4106,6 +4106,20 @@ export const escapeHTML = (str) => {
     return div.innerHTML;
 };
 
+/**
+ * Escape HTML characters for use in HTML attributes (useful for github-advanced-security bot warnings)
+ * @param {string} str 
+ * @returns {string} - Escaped string
+ */
+export const escapeAttribute = (str) => {
+    if (typeof str !== 'string' || str.length === 0) {
+        return str;
+    }
+    const div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
 export const closeModal = () => {
     const modal = bootstrap.Modal.getInstance(
         document.getElementById("connectMainModal")
