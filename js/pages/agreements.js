@@ -1,4 +1,4 @@
-import { getMyData, hasUserData, hideAnimation, showAnimation, siteAcronyms, dateTime, storeResponse, languageSuffix, getSelectedLanguage, translateHTML, translateText, appState, logDDRumError } from "../shared.js";
+import { getMyData, hasUserData, hideAnimation, showAnimation, siteAcronyms, dateTime, storeResponse, languageSuffix, getSelectedLanguage, translateHTML, translateText, appState, logDDRumError, escapeHTML } from "../shared.js";
 import { initializeCanvas } from './consent.js'
 import fieldMapping from '../fieldToConceptIdMapping.js';
 import {suffixToTextMap, suffixToTextMapDropdown} from '../settingsHelpers.js'
@@ -738,9 +738,9 @@ export async function generateSignedPdf(data, file) {
   let dateStr;
   const siteDict = siteAcronyms();
   const participantSite = siteDict[data['827220437']];
-  const middleName = data[436680969] ? ` ${data[436680969]} ` : ' ';
-  const suffix = data[480305327] ? suffixToTextMap.get(parseInt(data[480305327])) : '';
-  const participantFullName = `${data[471168198]}${middleName}${data[736251808]} ${suffix}`.trim();
+  const middleName = data[fieldMapping.consentMiddleName] ? ` ${data[fieldMapping.consentMiddleName]} ` : ' ';
+  const suffix = data[fieldMapping.consentSuffix] ? suffixToTextMap.get(parseInt(data[fieldMapping.consentSuffix])) : '';
+  const participantFullName = escapeHTML(`${data[fieldMapping.consentFirstName]}${middleName}${data[fieldMapping.consentLastName]} ${suffix}`).trim();
   const fontSize = siteToSignFontSizeMap[participantSite] ?? siteToSignFontSizeMap['default'];
   
   if (file === 'signed-consent') {

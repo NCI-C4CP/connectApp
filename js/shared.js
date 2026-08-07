@@ -2527,82 +2527,7 @@ export const inactivityTime = () => {
     };
 };
 
-export const renderSyndicate = (url, element, page) => {
-    const mainContent = document.getElementById(element);
-
-    fetch(url)
-        .then(response => response.body)
-        .then(rb => {
-            const reader = rb.getReader();
-
-            return new ReadableStream({
-                start(controller) {
-                    // The following function handles each data chunk
-                    function push() {
-                        // "done" is a Boolean and value a "Uint8Array"
-                        reader.read().then(({ done, value }) => {
-                            // If there is no more data to read
-                            if (done) {
-                                controller.close();
-                                return;
-                            }
-                            // Get the data and send it to the browser via the controller
-                            controller.enqueue(value);
-                            // Check chunks by logging to the console
-                            push();
-                        })
-                    }
-
-                    push();
-                }
-            });
-        })
-        .then(stream => {
-            // Respond with our stream
-            return new Response(stream, { headers: { "Content-Type": "text/html" } }).text();
-        })
-        .then(result => {
-            // Do things with result
-            let parsed = JSON.parse(result);
-            mainContent.innerHTML = parsed.results[0].content;
-            let toHide = document.getElementsByClassName('syndicate');
-            toHide[1].style.display = "none"
-            if (page == "expectations") {
-                let ids = ['joining-connect', 'after-you-join', 'long-term-study-activities', 'what-connect-will-do', 'how-your-information-will-help-prevent-cancer']
-                let sections = document.getElementsByTagName('section');
-                for (let i = 0; i < sections.length; i++) {
-                    let section = sections[i];
-                    section.id = ids[i];
-                }
-            }
-            if (page == "about") {
-                let ids = ['why-connect-is-important', 'what-to-expect-if-you-decide-to-join', 'where-this-study-takes-place', 'about-our-researchers', 'a-resource-for-science']
-                let sections = document.getElementsByTagName('section');
-                for (let i = 0; i < sections.length; i++) {
-                    let section = sections[i];
-                    section.id = ids[i];
-                }
-            }
-            let aLinks = document.getElementsByTagName('a');
-            let allIds = ['#', '#about', '#expectations', '#privacy', 'joining-connect', 'after-you-join', 'long-term-study-activities', 'what-connect-will-do', 'how-your-information-will-help-prevent-cancer', 'why-connect-is-important', 'what-to-expect-if-you-decide-to-join', 'where-this-study-takes-place', 'about-our-researchers', 'a-resource-for-science']
-            for (let i = 0; i < aLinks.length; i++) {
-                let section = aLinks[i];
-                let found = false;
-                for (let j = 0; j < allIds.length; j++) {
-                    if (section.href.includes(allIds[j])) {
-                        found = true;
-                    }
-                }
-                if (!found) {
-                    section.target = "_blank";
-                    console.log(section.href);
-                }
-
-            }
-            hideAnimation();
-
-        });
-}
+//renderSyndicate removed 8/7/2026 because it was no longer used and used insecure dom innerHTML assignment.
 
 export function fragment(strings, ...values) {
     const N = values.length;
@@ -4173,10 +4098,27 @@ export function replaceUnsupportedPDFCharacters(string, font) {
  * @returns {string} - Escaped string
  */
 export const escapeHTML = (str) => {
+    if (typeof str !== 'string' || str.length === 0) {
+        return str;
+    }
     const div = document.createElement('div');
     div.appendChild(document.createTextNode(str));
     return div.innerHTML;
 };
+
+/**
+ * Escape HTML characters for use in HTML attributes (useful for github-advanced-security bot warnings)
+ * @param {string} str 
+ * @returns {string} - Escaped string
+ */
+export const escapeAttribute = (str) => {
+    if (typeof str !== 'string' || str.length === 0) {
+        return str;
+    }
+    const div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML.replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
 
 export const closeModal = () => {
     const modal = bootstrap.Modal.getInstance(

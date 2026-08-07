@@ -1,4 +1,4 @@
-import { allStates, allCountries, getMyData, hasUserData, translateHTML } from "../shared.js";
+import { allStates, allCountries, getMyData, hasUserData, translateHTML, escapeHTML, escapeAttribute } from "../shared.js";
 import { addEventMonthSelection, addEventMonthConfirmationSelection, addEventUPSubmit, addEventCancerFollowUp, addEventChangeFocus, addEventAddressAutoComplete, addEventAdditionalEmail, addEventCheckCanText, addEventFormerName, addMoreFormerName, addEventBirthCountryToggle } from "../event.js";
 import cId from '../fieldToConceptIdMapping.js';
 import { addEventTogglePhysicalAddress, addEventToggleAltAddress } from "../pages/userProfile.js";
@@ -23,19 +23,19 @@ export const renderUserProfile = async () => {
             <div class="row">
                 <div class="col-md-4">
                     <label style="margin-left:-15px" data-i18n="form.firstName">First Name <span class="required">*</span></label>
-                    <input data-i18n="form.firstNameField" type="text" value="${myData.data['471168198']}" class="form-control input-validation row" id="UPFirstName" placeholder="Enter first name" disabled style="max-width:215px;">
+                    <input data-i18n="form.firstNameField" type="text" value="${escapeAttribute(myData.data[cId.consentFirstName])}" class="form-control input-validation row" id="UPFirstName" placeholder="Enter first name" disabled style="max-width:215px;">
                 </div>
                 <div class="col-md-4">
                     <label style="margin-left:-15px" data-i18n="form.middleName">Middle Name</label>
                     <input type="text"  data-i18n="form.middleNameField" value="${
-                        myData.data["436680969"] ? myData.data["436680969"] : ""
+                        myData.data[cId.consentMiddleName] ? escapeAttribute(myData.data[cId.consentMiddleName]) : ""
                     }" class="form-control input-validation row" data-validation-pattern="alphabets" data-error-validation="Your middle name should contain only uppercase and lowercase letters. Please do not use any numbers or special characters." id="UPMiddleInitial" style="max-width:215px;" disabled>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
                     <label data-i18n="form.lastName" style="margin-left:-15px">Last Name <span class="required">*</span></label>
-                    <input data-i18n="form.lastNameField" type="text" value="${myData.data['736251808']}" class="form-control input-validation row" id="UPLastName" placeholder="Enter last name" disabled style="max-width:304px;">
+                    <input data-i18n="form.lastNameField" type="text" value="${escapeAttribute(myData.data[cId.consentLastName])}" class="form-control input-validation row" id="UPLastName" placeholder="Enter last name" disabled style="max-width:304px;">
                 </div>
             </div>
             <div class="form-group row">
@@ -402,7 +402,7 @@ export const renderUserProfile = async () => {
         </div>
     `);
     
-    addEventNameConsistency(myData.data['471168198'], myData.data['736251808']);
+    addEventNameConsistency(myData.data[cId.consentFirstName], myData.data[cId.consentLastName]);
     addEventChangeFocus();
     addEventCancerFollowUp();
     addEventMonthSelection();

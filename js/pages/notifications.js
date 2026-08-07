@@ -1,4 +1,4 @@
-import { retrieveNotifications, showAnimation, hideAnimation, translateHTML, translateText } from "../shared.js";
+import { retrieveNotifications, showAnimation, hideAnimation, translateHTML, translateText, escapeHTML } from "../shared.js";
 import {addMessageCounterToNavBar} from "../components/navbar.js";
 
 
@@ -107,7 +107,7 @@ const renderMainBody = (data, tab) => {
     let hasNotification = false;
     for (let i = 0; i < data.length; i++) {
         if ((tab === 'read' && data[i].read === true) || (tab === 'unread' && data[i].read === false)) {
-            let notificationTitle = '<span data-i18n="notifications.email">'+translateText('notifications.email')+'</span> ('+data[i].notification.title+')';
+            let notificationTitle = '<span data-i18n="notifications.email">'+translateText('notifications.email')+'</span> ('+escapeHTML(data[i].notification.title)+')';
             if (data[i].notificationType === "sms") {
                 notificationTitle = '<span data-i18n="notifications.sms">'+translateText('notifications.sms')+'</span>';
               }
