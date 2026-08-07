@@ -4098,6 +4098,9 @@ export function replaceUnsupportedPDFCharacters(string, font) {
  * @returns {string} - Escaped string
  */
 export const escapeHTML = (str) => {
+    if (typeof str !== 'string' || str.length === 0) {
+        return str;
+    }
     const div = document.createElement('div');
     div.appendChild(document.createTextNode(str));
     return div.innerHTML;
