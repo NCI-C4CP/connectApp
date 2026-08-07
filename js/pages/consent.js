@@ -1035,17 +1035,17 @@ const consentSubmit = async e => {
     const CSDate = todaysDate();
 
     
-    formData['471168198'] = CSFirstName.value.trim();
-    formData['436680969'] = CSMiddleName.value.trim() === '' ? undefined : CSMiddleName.value.trim();
-    formData['736251808'] = CSLastName.value.trim();
-    formData['480305327'] = CSNameSuffix.value === '' ? undefined : parseInt(CSNameSuffix.value);
-    formData['982402227'] = CSDate.split('/')[2]+CSDate.split('/')[0]+CSDate.split('/')[1];
+    formData[fieldMapping.consentFirstName] = CSFirstName.value.trim();
+    formData[fieldMapping.consentMiddleName] = CSMiddleName.value.trim() === '' ? undefined : CSMiddleName.value.trim();
+    formData[fieldMapping.consentLastName] = CSLastName.value.trim();
+    formData[fieldMapping.consentSuffix] = CSNameSuffix.value === '' ? undefined : parseInt(CSNameSuffix.value);
+    formData['982402227'] = CSDate.split('/')[2]+CSDate.split('/')[0]+CSDate.split('/')[1]; //This is marked as deprecated in the field mapping, but it is still sent to the backend for some reason. Should this be removed?
     formData['query.firstName'] = [CSFirstName.value.trim().toLowerCase()];
     formData['query.lastName'] = [CSLastName.value.trim().toLowerCase()];
     formData[fieldMapping.consentSubmitted] = fieldMapping.yes;
     formData[fieldMapping.consentDate] = dateTime();
     formData[fieldMapping.hipaaTimestamp] = dateTime();
-    formData['558435199'] = 353358909;
+    formData[fieldMapping.hipaaAuthorization] = fieldMapping.yes;
     //consent and hipaa forms
     let siteDict = siteAcronyms();
     let langSuffix = languageSuffix();

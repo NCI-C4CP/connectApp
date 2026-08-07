@@ -78,7 +78,7 @@ registerRoute(
 );
 
 const bgSyncPlugin = new BackgroundSyncPlugin('ConnectAppBgSync', {
-	maxRetentionTime: 7 * 24 * 60, // Retry for max of 24 Hours (specified in minutes)
+	maxRetentionTime: 7 * 24 * 60, // Retry for max of 7 days (specified in minutes)
 });
 
 registerRoute(

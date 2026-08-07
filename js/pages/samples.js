@@ -301,11 +301,11 @@ const getParticipantMailToAddress = (participant) => {
 
     if (physicalAddressVal && !poBoxRegex.test(physicalAddressVal) && participant?.[physicalAddrIntl] !== yes) {
         addressObj = {
-            address_1: participant[physicalAddress1],
-            address_2: participant[physicalAddress2] || '',
-            city: participant[physicalCity],
-            state: participant[physicalState],
-            zip_code: participant[physicalZip], 
+            address_1: escapeHTML(participant[physicalAddress1]),
+            address_2: escapeHTML(participant[physicalAddress2] || ''),
+            city: escapeHTML(participant[physicalCity]),
+            state: escapeHTML(participant[physicalState]),
+            zip_code: escapeHTML(participant[physicalZip]),
         };
         addressType = 'physical';
     } else {
@@ -319,11 +319,11 @@ const getParticipantMailToAddress = (participant) => {
         }
         addressType = 'mailing';
         addressObj = {
-            address_1: participant[address1],
-            address_2: participant[address2] || '',
-            city: participant[city],
-            state: participant[state],
-            zip_code: participant[zip]
+            address_1: escapeHTML(participant[address1]),
+            address_2: escapeHTML(participant[address2] || ''),
+            city: escapeHTML(participant[city]),
+            state: escapeHTML(participant[state]),
+            zip_code: escapeHTML(participant[zip])
         };
     }
 
@@ -497,11 +497,11 @@ const renderParticipantPhysicalAddress = (participant, displayCurrentPhysicalAdd
             physicalAddress1, physicalAddress2, physicalCity, physicalState, physicalZip,
         } = conceptId;
         const addressObj = {
-            address_1: participant[physicalAddress1],
-            address_2: participant[physicalAddress2] || '',
-            city: participant[physicalCity],
-            state: participant[physicalState],
-            zip_code: participant[physicalZip]
+            address_1: escapeHTML(participant[physicalAddress1]),
+            address_2: escapeHTML(participant[physicalAddress2] || ''),
+            city: escapeHTML(participant[physicalCity]),
+            state: escapeHTML(participant[physicalState]),
+            zip_code: escapeHTML(participant[physicalZip])
         };
         const formattedAddress = `${addressObj.address_1 || ''}<br />
                 ${addressObj.address_2 ? `${addressObj.address_2}<br />` : ''}
@@ -555,11 +555,11 @@ const renderParticipantMailingAddress = (participant) => {
         address1, address2, city, state, zip
     } = conceptId;
     const addressObj = {
-        address_1: participant[address1],
-        address_2: participant[address2] || '',
-        city: participant[city],
-        state: participant[state],
-        zip_code: participant[zip]
+        address_1: escapeHTML(participant[address1]),
+        address_2: escapeHTML(participant[address2] || ''),
+        city: escapeHTML(participant[city]),
+        state: escapeHTML(participant[state]),
+        zip_code: escapeHTML(participant[zip])
     };
     const formattedAddress = `${addressObj.address_1 || ''}<br />
             ${addressObj.address_2 ? `${addressObj.address_2}<br />` : ''}
